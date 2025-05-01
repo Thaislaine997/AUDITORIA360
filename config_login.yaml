@@ -1,0 +1,18 @@
+credentials:
+  usernames:
+    admin:
+      email: contato@dpeixerassessoria.com.br
+      name: Admin
+      password: pbkdf2:sha256:260000$senha_admin_segura
+      contabilidade: ADMIN
+      role: ADMIN
+    cont1:
+      email: cont1@empresa.com.br
+      name: Cont1 RH
+      password: pbkdf2:sha256:260000$senha_cont1
+      contabilidade: CONT1
+      role: USER
+cookie:
+  name: auditoria_cookie
+  key: segredo_super_seguro
+  expiry_days: 7

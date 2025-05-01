@@ -1,0 +1,6 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/auditoria-folha/auditoria-rh-panel:latest', '.']
+
+images:
+  - 'gcr.io/auditoria-folha/auditoria-rh-panel:latest'
