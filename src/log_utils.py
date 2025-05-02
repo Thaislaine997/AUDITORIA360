@@ -13,9 +13,7 @@ def registrar_log(usuario, acao, ip=None, empresa=None, competencia=None):
         "empresa": empresa or "",
         "competencia": competencia or ""
     }
-
     write_header = not os.path.exists(LOG_FILE)
-
     with open(LOG_FILE, mode='a', newline='', encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=log_data.keys())
         if write_header:
