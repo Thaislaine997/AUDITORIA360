@@ -2,4 +2,7 @@ streamlit
 pandas
 pyyaml
 google-cloud-documentai
+google-cloud-firestore
 streamlit-authenticator
+reportlab
+requests
