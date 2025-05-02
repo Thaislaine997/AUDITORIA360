@@ -1,1 +1,2 @@
-# Auditoria RH 360 - Projeto Final
+# Auditoria RH 360
+Versão validada com integração completa

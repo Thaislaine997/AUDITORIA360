@@ -1,1 +1,1 @@
-# script que processa auditorias PDF automaticamente
+# script de auditoria automática

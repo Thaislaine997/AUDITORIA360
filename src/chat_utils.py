@@ -1,2 +1,1 @@
-def enviar_notificacao(msg):
-    print(f'Chat: {msg}')
+# envio para Google Chat webhook
