@@ -1,3 +1,4 @@
 credentials:
   usernames:
-    admin: {...}
+    admin:
+      password: '123456'

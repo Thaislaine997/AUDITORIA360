@@ -1,3 +1,5 @@
 streamlit
 pandas
+requests
 google-cloud-documentai
+fpdf

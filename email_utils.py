@@ -1,1 +1,1 @@
-# envio por e-mail via Gmail API
+# envio por e-mail automático

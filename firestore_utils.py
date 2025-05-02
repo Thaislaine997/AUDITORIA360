@@ -1,1 +1,1 @@
-# utilitários de Firestore
+# operações com Firestore
