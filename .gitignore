@@ -1,0 +1,14 @@
+!deploy/
+!deploy/Dockerfile
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.env
+.vscode/
+.idea/
+.DS_Store
+
+{
+  "python.pythonPath": ".venv\\Scripts\\python.exe"
+}
