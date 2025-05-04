@@ -39,4 +39,12 @@ CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Regras_CCT`
     texto_clausula STRING OPTIONS(description="Trecho original da cláusula da CCT (para referência)"),
     fonte_documento STRING OPTIONS(description="Nome/Caminho do arquivo PDF da CCT"),
     data_extracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP() OPTIONS(description="Quando a regra foi extraída")
+);CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Auditoria_Folha` (
+    id_auditoria STRING NOT NULL OPTIONS(description="Identificador único da auditoria"),
+    id_folha STRING NOT NULL OPTIONS(description="Referência à folha de pagamento auditada"),
+    id_regra STRING OPTIONS(description="Referência à regra da CCT aplicada (se houver)"),
+    tipo_divergencia STRING OPTIONS(description="Tipo de divergência encontrada (ex: SALARIO_INCORRETO, BENEFICIO_INCORRETO)"),
+    mensagem_auditoria STRING OPTIONS(description="Descrição detalhada da auditoria/divergência"),
+    status_auditoria STRING OPTIONS(description="Status da auditoria (ex: PENDENTE, RESOLVIDO, IGNORADO)"),
+    data_auditoria TIMESTAMP DEFAULT CURRENT_TIMESTAMP() OPTIONS(description="Quando a auditoria foi realizada")
 );

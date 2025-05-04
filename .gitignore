@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# Credentials / Secrets
+*.json # Cuidado: Seja mais específico se precisar versionar alguns JSONs
+application_default_credentials.json
+auth/gestor_contas.json # Se contiver segredos
+*.pem
+*.key
+
+# VS Code
+.vscode/
+
+# Build artifacts / Installers
+dist/
+build/
+*.egg-info/
+installers/*.exe
+installers/*.msi
+
+# Docs (se forem gerados ou muito grandes)
+docs/Relatorio_Tecnico_AuditoriaRH360.pdf
+
+# OS generated files
+.DS_Store
+Thumbs.db

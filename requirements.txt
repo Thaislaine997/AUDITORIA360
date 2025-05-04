@@ -11,3 +11,7 @@ python-docx
 email-validator
 fastapi
 uvicorn
+google-cloud-bigquery
+google-auth
+google-auth-oauthlib
+pyarrow
