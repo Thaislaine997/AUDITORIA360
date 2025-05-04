@@ -1,4 +1,23 @@
-credentials:
-  usernames:
-    admin:
-      password: '123456'
+# login.yaml
+import os
+
+USUARIOS_VALIDOS = {
+    "admin": "1234",
+    "user": "senha"
+}
+
+def login():
+    print("=== LOGIN ===")
+    usuario = input("Usuário: ").strip()
+    senha = input("Senha: ").strip()
+
+    if usuario in USUARIOS_VALIDOS and USUARIOS_VALIDOS[usuario] == senha:
+        with open("session.txt", "w") as f:
+            f.write(usuario)
+        print("Login realizado com sucesso!")
+    else:
+        print("Usuário ou senha inválidos.")
+        exit()
+
+if __name__ == "__main__":
+    login()

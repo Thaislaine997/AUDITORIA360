@@ -1,4 +1,13 @@
 streamlit
-pandas
-requests
+streamlit-authenticator
 google-cloud-documentai
+google-cloud-aiplatform
+google-cloud-storage
+google-cloud-firestore
+pandas
+PyYAML
+requests
+python-docx
+email-validator
+fastapi
+uvicorn
