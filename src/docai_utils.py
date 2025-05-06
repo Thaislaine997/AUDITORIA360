@@ -15,21 +15,13 @@ from .bq_loader import load_data_to_bigquery
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
 # --- Carregar Configurações (Prioriza Variáveis de Ambiente) ---
-ENV_GCP_PROJECT_ID = "GCP_PROJECT_ID"
-ENV_GCP_LOCATION = "GCP_LOCATION"
-ENV_DOCAI_PROCESSOR_ID = "DOCAI_PROCESSOR_ID"
-ENV_GCS_INPUT_BUCKET = "GCS_INPUT_BUCKET"
-ENV_BQ_DATASET_ID = "BQ_DATASET_ID"
-ENV_BQ_TABLE_ID = "BQ_TABLE_ID"
-
 config = {}
-
 config["gcp_project_id"] = os.environ.get("GCP_PROJECT_ID")
 config["gcp_location"] = os.environ.get("GCP_LOCATION")
 config["docai_processor_id"] = os.environ.get("DOCAI_PROCESSOR_ID")
 config["gcs_input_bucket"] = os.environ.get("GCS_INPUT_BUCKET")
-config["bq_dataset_id"] = os.environ.get(ENV_BQ_DATASET_ID)
-config["bq_table_id"] = os.environ.get(ENV_BQ_TABLE_ID)
+config["bq_dataset_id"] = os.environ.get("BQ_DATASET_ID")
+config["bq_table_id"] = os.environ.get("BQ_TABLE_ID")
 
 if not all(config.values()):
     logging.warning("Uma ou mais variáveis de ambiente essenciais não definidas. Tentando carregar de config.json...")
