@@ -14,46 +14,56 @@ from .bq_loader import load_data_to_bigquery
 # Configuração de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
-# --- Carregar Configurações Globais ---
+# --- Carregar Configurações (Prioriza Variáveis de Ambiente) ---
+ENV_GCP_PROJECT_ID = "GCP_PROJECT_ID"
+ENV_GCP_LOCATION = "GCP_LOCATION"
+ENV_DOCAI_PROCESSOR_ID = "DOCAI_PROCESSOR_ID"
+ENV_GCS_INPUT_BUCKET = "GCS_INPUT_BUCKET"
+ENV_BQ_DATASET_ID = "BQ_DATASET_ID"
+ENV_BQ_TABLE_ID = "BQ_TABLE_ID"
+
 config = {}
-try:
-    # Constrói o caminho absoluto para config.json baseado na localização deste script
-    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Diretório do script atual (/app/src)
-    CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")  # Caminho absoluto para /app/src/config.json
 
-    logging.info(f"Tentando carregar config de: {CONFIG_FILE_PATH}")
-    if os.path.exists(CONFIG_FILE_PATH):
-        with open(CONFIG_FILE_PATH, 'r') as f:
-            config = json.load(f)
-        logging.info(f"Configurações carregadas de '{CONFIG_FILE_PATH}'.")
-    else:
-        # Log mais detalhado sobre o CWD pode ajudar no debug
-        cwd = os.getcwd()  # Diretório de trabalho atual (provavelmente /app)
-        logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' NÃO encontrado. CWD: {cwd}. Verifique se o arquivo foi copiado corretamente no Dockerfile (COPY src/ ./src/).")
-        # Levantar erro é importante para parar a execução
-        raise FileNotFoundError(f"Arquivo de configuração essencial '{CONFIG_FILE_PATH}' não encontrado.")
+config["gcp_project_id"] = os.environ.get(ENV_GCP_PROJECT_ID)
+config["gcp_location"] = os.environ.get(ENV_GCP_LOCATION)
+config["docai_processor_id"] = os.environ.get(ENV_DOCAI_PROCESSOR_ID)
+config["gcs_input_bucket"] = os.environ.get(ENV_GCS_INPUT_BUCKET)
+config["bq_dataset_id"] = os.environ.get(ENV_BQ_DATASET_ID)
+config["bq_table_id"] = os.environ.get(ENV_BQ_TABLE_ID)
 
-    # Verifica se as chaves essenciais foram carregadas
-    GCP_PROJECT_ID = config.get("gcp_project_id")
-    GCP_LOCATION = config.get("gcp_location")
-    DOCAI_PROCESSOR_ID = config.get("docai_processor_id")
-    GCS_INPUT_BUCKET = config.get("gcs_input_bucket")
-    SERVICE_ACCOUNT_KEY_PATH_LOCAL_DEV = config.get("service_account_key_path_local_dev")  # Para dev local
+if not all(config.values()):
+    logging.warning("Uma ou mais variáveis de ambiente essenciais não definidas. Tentando carregar de config.json...")
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")
+    try:
+        if os.path.exists(CONFIG_FILE_PATH):
+            with open(CONFIG_FILE_PATH, 'r') as f:
+                json_config = json.load(f)
+            logging.info(f"Carregando configurações de fallback de '{CONFIG_FILE_PATH}'.")
+            config["gcp_project_id"] = config["gcp_project_id"] or json_config.get("gcp_project_id")
+            config["gcp_location"] = config["gcp_location"] or json_config.get("gcp_location")
+            config["docai_processor_id"] = config["docai_processor_id"] or json_config.get("docai_processor_id")
+            config["gcs_input_bucket"] = config["gcs_input_bucket"] or json_config.get("gcs_input_bucket")
+            config["bq_dataset_id"] = config["bq_dataset_id"] or json_config.get("bq_dataset_id")
+            config["bq_table_id"] = config["bq_table_id"] or json_config.get("bq_table_id")
+        else:
+            logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' não encontrado como fallback.")
+    except Exception as e:
+        logging.error(f"Erro ao carregar fallback de '{CONFIG_FILE_PATH}': {e}", exc_info=True)
 
-    if not all([GCP_PROJECT_ID, GCP_LOCATION, DOCAI_PROCESSOR_ID, GCS_INPUT_BUCKET]):
-        missing_keys = [k for k, v in {"gcp_project_id": GCP_PROJECT_ID, "gcp_location": GCP_LOCATION, "docai_processor_id": DOCAI_PROCESSOR_ID, "gcs_input_bucket": GCS_INPUT_BUCKET}.items() if not v]
-        logging.error(f"Configurações essenciais auscentes em '{CONFIG_FILE_PATH}': {missing_keys}")
-        raise ValueError(f"Configurações essenciais auscentes em '{CONFIG_FILE_PATH}': {missing_keys}")
+GCP_PROJECT_ID = config.get("gcp_project_id")
+GCP_LOCATION = config.get("gcp_location")
+DOCAI_PROCESSOR_ID = config.get("docai_processor_id")
+GCS_INPUT_BUCKET = config.get("gcs_input_bucket")
+BQ_DATASET_ID = config.get("bq_dataset_id")
+BQ_TABLE_ID = config.get("bq_table_id")
 
-except FileNotFoundError as e:
-    logging.error(f"Erro de arquivo não encontrado ao carregar config: {e}", exc_info=True)
-    raise  # Re-lança para falhar a função
-except KeyError as e:
-    logging.error(f"Chave de configuração ausente em '{CONFIG_FILE_PATH}': {e}. Verifique o arquivo.", exc_info=True)
-    raise
-except Exception as e:
-    logging.error(f"Erro crítico ao carregar configurações de '{CONFIG_FILE_PATH}': {e}", exc_info=True)
-    raise
+if not all([GCP_PROJECT_ID, GCP_LOCATION, DOCAI_PROCESSOR_ID, GCS_INPUT_BUCKET, BQ_DATASET_ID, BQ_TABLE_ID]):
+    missing_keys = [k for k, v in config.items() if k in ["gcp_project_id", "gcp_location", "docai_processor_id", "gcs_input_bucket", "bq_dataset_id", "bq_table_id"] and not v]
+    logging.error(f"Configurações essenciais não encontradas (via Env Vars ou config.json): {missing_keys}")
+    raise ValueError(f"Configurações essenciais ausentes: {missing_keys}")
+
+logging.info("Configurações carregadas com sucesso.")
 
 def get_docai_client(key_path=None):
     """Cria e retorna um cliente Document AI."""
@@ -171,7 +181,7 @@ def process_gcs_pdf(bucket_name: str, file_name: str, id_execucao: str | None = 
             location=GCP_LOCATION,
             processor_id=DOCAI_PROCESSOR_ID,
             gcs_uri=gcs_uri,
-            key_path=SERVICE_ACCOUNT_KEY_PATH_LOCAL_DEV
+            key_path=None
         )
 
         if document_result:
@@ -221,7 +231,7 @@ if __name__ == "__main__":
         if not GCS_INPUT_BUCKET:
             logging.error("GCS_INPUT_BUCKET não definido na configuração para execução local.")
         else:
-            pdf_blobs = list_gcs_pdfs(GCS_INPUT_BUCKET, SERVICE_ACCOUNT_KEY_PATH_LOCAL_DEV)
+            pdf_blobs = list_gcs_pdfs(GCS_INPUT_BUCKET, None)
             if not pdf_blobs:
                 logging.warning(f"Nenhum arquivo PDF encontrado no bucket GCS para teste local: gs://{GCS_INPUT_BUCKET}")
             else:
