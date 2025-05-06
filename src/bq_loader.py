@@ -14,14 +14,17 @@ logging.basicConfig(level=logging.INFO,
 # --- Carregar Configurações ---
 _global_config = {}
 try:
-    if os.path.exists("config.json"):
-        with open("config.json", 'r') as f:
+    SCRIPT_DIR_BQ = os.path.dirname(os.path.abspath(__file__))
+    CONFIG_FILE_PATH_BQ = os.path.join(SCRIPT_DIR_BQ, "config.json")
+    logging.info(f"BQ_Loader tentando carregar config de: {CONFIG_FILE_PATH_BQ}")
+    if os.path.exists(CONFIG_FILE_PATH_BQ):
+        with open(CONFIG_FILE_PATH_BQ, 'r') as f:
             _global_config = json.load(f)
-        logging.info("Configurações do BigQuery carregadas de config.json (para _global_config)")
+        logging.info(f"Configurações do BigQuery carregadas de '{CONFIG_FILE_PATH_BQ}' (para _global_config)")
     else:
-        logging.warning("Arquivo de configuração config.json não encontrado em src/ para bq_loader (_global_config).")
+        logging.warning(f"Arquivo de configuração '{CONFIG_FILE_PATH_BQ}' não encontrado para bq_loader (_global_config).")
 except Exception as e:
-    logging.error("Erro ao carregar config.json para bq_loader (_global_config): %s", e)
+    logging.error(f"Erro ao carregar '{CONFIG_FILE_PATH_BQ}' para bq_loader (_global_config): {e}")
 
 # --- Schema da Tabela BigQuery ---
 TABLE_SCHEMA = [

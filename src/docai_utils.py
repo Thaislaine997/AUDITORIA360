@@ -15,14 +15,17 @@ from .bq_loader import load_data_to_bigquery
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
 # --- Carregar Configurações Globais ---
-CONFIG_FILE_PATH = "config.json"  # Caminho relativo ao local de docai_utils.py
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Diretório do script atual (/app/src)
+CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")  # Caminho absoluto para config.json
 config = {}
 try:
+    logging.info(f"Tentando carregar config de: {CONFIG_FILE_PATH}")
     if os.path.exists(CONFIG_FILE_PATH):
         with open(CONFIG_FILE_PATH, 'r') as f:
             config = json.load(f)
     else:
-        logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' não encontrado em src/. A função pode não operar corretamente.")
+        logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' NÃO encontrado. Verifique se ele existe no diretório src/ do repositório.")
+        # As verificações de chaves abaixo irão falhar e levantar o ValueError
 
     GCP_PROJECT_ID = config.get("gcp_project_id")
     GCP_LOCATION = config.get("gcp_location")
@@ -32,10 +35,10 @@ try:
 
     if not all([GCP_PROJECT_ID, GCP_LOCATION, DOCAI_PROCESSOR_ID, GCS_INPUT_BUCKET]):
         missing_keys = [k for k, v in {"gcp_project_id": GCP_PROJECT_ID, "gcp_location": GCP_LOCATION, "docai_processor_id": DOCAI_PROCESSOR_ID, "gcs_input_bucket": GCS_INPUT_BUCKET}.items() if not v]
-        logging.error(f"Configurações essenciais ausentes em config.json: {missing_keys}")
-        raise ValueError(f"Configurações essenciais ausentes: {missing_keys}")
+        logging.error(f"Configurações essenciais ausentes em '{CONFIG_FILE_PATH}': {missing_keys}")  # Adicionado path ao log
+        raise ValueError(f"Configurações essenciais ausentes em '{CONFIG_FILE_PATH}': {missing_keys}")
 
-    logging.info("Configurações carregadas de config.json.")
+    logging.info(f"Configurações carregadas de '{CONFIG_FILE_PATH}'.")
 
 except KeyError as e:
     logging.error(f"Chave de configuração ausente em config.json: {e}. Verifique o arquivo.", exc_info=True)
