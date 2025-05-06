@@ -24,10 +24,10 @@ ENV_BQ_TABLE_ID = "BQ_TABLE_ID"
 
 config = {}
 
-config["gcp_project_id"] = os.environ.get(ENV_GCP_PROJECT_ID)
-config["gcp_location"] = os.environ.get(ENV_GCP_LOCATION)
-config["docai_processor_id"] = os.environ.get(ENV_DOCAI_PROCESSOR_ID)
-config["gcs_input_bucket"] = os.environ.get(ENV_GCS_INPUT_BUCKET)
+config["gcp_project_id"] = os.environ.get("GCP_PROJECT_ID")
+config["gcp_location"] = os.environ.get("GCP_LOCATION")
+config["docai_processor_id"] = os.environ.get("DOCAI_PROCESSOR_ID")
+config["gcs_input_bucket"] = os.environ.get("GCS_INPUT_BUCKET")
 config["bq_dataset_id"] = os.environ.get(ENV_BQ_DATASET_ID)
 config["bq_table_id"] = os.environ.get(ENV_BQ_TABLE_ID)
 
