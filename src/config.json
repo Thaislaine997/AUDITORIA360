@@ -1,1 +1,9 @@
-{"docai_extrato_id": "31284e9cb648bc0c"}
+{
+    "gcp_project_id": "333253866645",
+    "gcp_location": "us",
+    "docai_processor_id": "97da3ae0d002a992",
+    "bq_dataset_id": "auditoria_folha_dataset",
+    "bq_table_id": "docai_extracted_data",
+    "gcs_input_bucket": "auditoria-folha-input-pdfs",
+        "service_account_key_path": "C:/gcp-keysauditoria360-key/auditoria-folha-d1fffb5908b1.json"
+}

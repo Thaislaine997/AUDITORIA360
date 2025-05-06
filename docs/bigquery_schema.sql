@@ -39,7 +39,9 @@ CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Regras_CCT`
     texto_clausula STRING OPTIONS(description="Trecho original da cláusula da CCT (para referência)"),
     fonte_documento STRING OPTIONS(description="Nome/Caminho do arquivo PDF da CCT"),
     data_extracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP() OPTIONS(description="Quando a regra foi extraída")
-);CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Auditoria_Folha` (
+);
+
+CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Auditoria_Folha` (
     id_auditoria STRING NOT NULL OPTIONS(description="Identificador único da auditoria"),
     id_folha STRING NOT NULL OPTIONS(description="Referência à folha de pagamento auditada"),
     id_regra STRING OPTIONS(description="Referência à regra da CCT aplicada (se houver)"),
@@ -47,4 +49,19 @@ CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Regras_CCT`
     mensagem_auditoria STRING OPTIONS(description="Descrição detalhada da auditoria/divergência"),
     status_auditoria STRING OPTIONS(description="Status da auditoria (ex: PENDENTE, RESOLVIDO, IGNORADO)"),
     data_auditoria TIMESTAMP DEFAULT CURRENT_TIMESTAMP() OPTIONS(description="Quando a auditoria foi realizada")
+);
+
+CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.Tabela_Extratos` (
+    id_extracao STRING NOT NULL OPTIONS(description="Identificador único do processamento do extrato"),
+    id_transacao STRING NOT NULL OPTIONS(description="Identificador único da transação dentro do extrato"),
+    nome_arquivo_origem STRING OPTIONS(description="Nome do arquivo de extrato original"),
+    data_transacao DATE OPTIONS(description="Data em que a transação ocorreu"),
+    descricao STRING OPTIONS(description="Descrição da transação conforme extraída"),
+    valor_transacao NUMERIC OPTIONS(description="Valor da transação (positivo para créditos, negativo para débitos)"),
+    tipo_transacao STRING OPTIONS(description="Tipo inferido (ex: PAGAMENTO, TRANSFERENCIA, DEPOSITO, TARIFA)"),
+    banco_origem STRING OPTIONS(description="Banco associado ao extrato (se disponível)"),
+    agencia STRING OPTIONS(description="Agência associada ao extrato (se disponível)"),
+    conta STRING OPTIONS(description="Conta associada ao extrato (se disponível)"),
+    confianca_extracao FLOAT64 OPTIONS(description="Pontuação de confiança geral da extração do Document AI para esta transação"),
+    data_processamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP() OPTIONS(description="Quando o registro foi inserido/processado")
 );
