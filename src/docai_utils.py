@@ -15,36 +15,44 @@ from .bq_loader import load_data_to_bigquery
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
 # --- Carregar Configurações Globais ---
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Diretório do script atual (/app/src)
-CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")  # Caminho absoluto para config.json
 config = {}
 try:
+    # Constrói o caminho absoluto para config.json baseado na localização deste script
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Diretório do script atual (/app/src)
+    CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")  # Caminho absoluto para /app/src/config.json
+
     logging.info(f"Tentando carregar config de: {CONFIG_FILE_PATH}")
     if os.path.exists(CONFIG_FILE_PATH):
         with open(CONFIG_FILE_PATH, 'r') as f:
             config = json.load(f)
+        logging.info(f"Configurações carregadas de '{CONFIG_FILE_PATH}'.")
     else:
-        logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' NÃO encontrado. Verifique se ele existe no diretório src/ do repositório.")
-        # As verificações de chaves abaixo irão falhar e levantar o ValueError
+        # Log mais detalhado sobre o CWD pode ajudar no debug
+        cwd = os.getcwd()  # Diretório de trabalho atual (provavelmente /app)
+        logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' NÃO encontrado. CWD: {cwd}. Verifique se o arquivo foi copiado corretamente no Dockerfile (COPY src/ ./src/).")
+        # Levantar erro é importante para parar a execução
+        raise FileNotFoundError(f"Arquivo de configuração essencial '{CONFIG_FILE_PATH}' não encontrado.")
 
+    # Verifica se as chaves essenciais foram carregadas
     GCP_PROJECT_ID = config.get("gcp_project_id")
     GCP_LOCATION = config.get("gcp_location")
     DOCAI_PROCESSOR_ID = config.get("docai_processor_id")
     GCS_INPUT_BUCKET = config.get("gcs_input_bucket")
-    SERVICE_ACCOUNT_KEY_PATH_LOCAL_DEV = config.get("service_account_key_path_local_dev")
+    SERVICE_ACCOUNT_KEY_PATH_LOCAL_DEV = config.get("service_account_key_path_local_dev")  # Para dev local
 
     if not all([GCP_PROJECT_ID, GCP_LOCATION, DOCAI_PROCESSOR_ID, GCS_INPUT_BUCKET]):
         missing_keys = [k for k, v in {"gcp_project_id": GCP_PROJECT_ID, "gcp_location": GCP_LOCATION, "docai_processor_id": DOCAI_PROCESSOR_ID, "gcs_input_bucket": GCS_INPUT_BUCKET}.items() if not v]
-        logging.error(f"Configurações essenciais ausentes em '{CONFIG_FILE_PATH}': {missing_keys}")  # Adicionado path ao log
-        raise ValueError(f"Configurações essenciais ausentes em '{CONFIG_FILE_PATH}': {missing_keys}")
+        logging.error(f"Configurações essenciais auscentes em '{CONFIG_FILE_PATH}': {missing_keys}")
+        raise ValueError(f"Configurações essenciais auscentes em '{CONFIG_FILE_PATH}': {missing_keys}")
 
-    logging.info(f"Configurações carregadas de '{CONFIG_FILE_PATH}'.")
-
+except FileNotFoundError as e:
+    logging.error(f"Erro de arquivo não encontrado ao carregar config: {e}", exc_info=True)
+    raise  # Re-lança para falhar a função
 except KeyError as e:
-    logging.error(f"Chave de configuração ausente em config.json: {e}. Verifique o arquivo.", exc_info=True)
+    logging.error(f"Chave de configuração ausente em '{CONFIG_FILE_PATH}': {e}. Verifique o arquivo.", exc_info=True)
     raise
 except Exception as e:
-    logging.error("Erro crítico ao carregar configurações de config.json: %s", e, exc_info=True)
+    logging.error(f"Erro crítico ao carregar configurações de '{CONFIG_FILE_PATH}': {e}", exc_info=True)
     raise
 
 def get_docai_client(key_path=None):

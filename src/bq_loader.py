@@ -14,15 +14,18 @@ logging.basicConfig(level=logging.INFO,
 # --- Carregar Configurações ---
 _global_config = {}
 try:
-    SCRIPT_DIR_BQ = os.path.dirname(os.path.abspath(__file__))
-    CONFIG_FILE_PATH_BQ = os.path.join(SCRIPT_DIR_BQ, "config.json")
+    # Constrói o caminho absoluto para config.json baseado na localização deste script
+    SCRIPT_DIR_BQ = os.path.dirname(os.path.abspath(__file__))  # Diretório do script atual (/app/src)
+    CONFIG_FILE_PATH_BQ = os.path.join(SCRIPT_DIR_BQ, "config.json")  # Caminho absoluto para /app/src/config.json
+
     logging.info(f"BQ_Loader tentando carregar config de: {CONFIG_FILE_PATH_BQ}")
     if os.path.exists(CONFIG_FILE_PATH_BQ):
         with open(CONFIG_FILE_PATH_BQ, 'r') as f:
             _global_config = json.load(f)
         logging.info(f"Configurações do BigQuery carregadas de '{CONFIG_FILE_PATH_BQ}' (para _global_config)")
     else:
-        logging.warning(f"Arquivo de configuração '{CONFIG_FILE_PATH_BQ}' não encontrado para bq_loader (_global_config).")
+        cwd = os.getcwd()  # Diretório de trabalho atual (provavelmente /app)
+        logging.warning(f"Arquivo de configuração '{CONFIG_FILE_PATH_BQ}' não encontrado para bq_loader (_global_config). CWD: {cwd}")
 except Exception as e:
     logging.error(f"Erro ao carregar '{CONFIG_FILE_PATH_BQ}' para bq_loader (_global_config): {e}")
 
