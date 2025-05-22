@@ -1,9 +1,27 @@
 {
-    "gcp_project_id": "333253866645",
+    "gcp_project_id": "default-gcp-project",
     "gcp_location": "us",
-    "docai_processor_id": "97da3ae0d002a992",
-    "bq_dataset_id": "auditoria_folha_dataset",
-    "bq_table_id": "docai_extracted_data",
+    "docai_processor_id": "default-docai-processor-id",
+
     "gcs_input_bucket": "auditoria-folha-input-pdfs",
-        "service_account_key_path": "C:/gcp-keysauditoria360-key/auditoria-folha-d1fffb5908b1.json"
+    "gcs_control_bucket": "auditoria-folha-control-sheets",
+
+    "bq_extracted_data_table_id": "docai_extracted_data",
+    "bq_empresas_table_id": "empresas",
+    "bq_folhas_table_id": "folhas",
+    "bq_dashboard_table_id": "dashboard",
+    "bq_control_sheet_data_table_id": "controle_folha_planilha_raw_data",
+    "bq_log_table_id": "registros_log",
+
+    "RECAPTCHA_SITE_KEY": "default-site-key-please-replace",
+    "RECAPTCHA_SECRET_KEY": "default-secret-key-please-replace",
+
+    "LOG_LEVEL": "INFO",
+    "SERVER_HOST": "0.0.0.0",
+    "SERVER_PORT": 8000,
+
+    "default_control_bq_dataset_id": "default_controle_folha_dataset",
+    "default_processed_bq_dataset_id": "default_folhas_processadas_dataset",
+    "default_raw_bq_dataset_id": "default_folhas_brutas_dataset",
+    "default_log_bq_dataset_id": "default_logs_aplicacao_dataset"
 }

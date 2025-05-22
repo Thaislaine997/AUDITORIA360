@@ -1,0 +1,9 @@
+{
+  "gcp_project_id": "seu-gcp-project-id",
+  "control_bq_dataset_id": "controle_folhas_dataset",
+  "processed_bq_dataset_id": "folhas_processadas_dataset",
+  "raw_bq_dataset_id": "folhas_brutas_dataset",
+  "log_bq_dataset_id": "logs_aplicacao_dataset",
+  "log_bq_table_id": "registros_log",
+  "RECAPTCHA_SECRET_KEY": "sua-chave-secreta-recaptcha-aqui"
+}

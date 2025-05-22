@@ -1,0 +1,5 @@
+{
+    "gcp_project_id": "project_a",
+    "control_bq_dataset_id": "dataset_a",
+    "client_specific_key": "value_for_a"
+}

@@ -1,7 +1,6 @@
-
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from vertex_utils import prever_rubrica_com_vertex
+from .vertex_utils import prever_rubrica_com_vertex
 
 app = FastAPI(title="API Vertex AI - Classificação de CCTs")
 

@@ -74,6 +74,12 @@ Para desenvolvimento e testes locais, um arquivo `src/config.json` pode ser util
    pip install -r requirements.txt
    ```
 
+   Para recursos de IA Gemini, instale também:
+
+   ```bash
+   pip install google-generativeai
+   ```
+
 4. **Autentique-se no Google Cloud:**
 
    ```bash

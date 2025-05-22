@@ -3,108 +3,140 @@ import json
 import logging
 import uuid
 import os
+import sys  # Adicionado import sys
 from datetime import datetime, timezone
 from google.api_core.client_options import ClientOptions
 from google.cloud import documentai
 from google.cloud import storage
 from google.oauth2 import service_account
+from unittest.mock import MagicMock  # Import MagicMock
 
 from .bq_loader import load_data_to_bigquery
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
+logger = logging.getLogger(__name__)
 
-# --- Carregar Configurações (Prioriza Variáveis de Ambiente) ---
-config = {}
-config["gcp_project_id"] = os.environ.get("GCP_PROJECT_ID")
-config["gcp_location"] = os.environ.get("GCP_LOCATION")
-config["docai_processor_id"] = os.environ.get("DOCAI_PROCESSOR_ID")
-config["gcs_input_bucket"] = os.environ.get("GCS_INPUT_BUCKET")
-config["bq_dataset_id"] = os.environ.get("BQ_DATASET_ID")
-config["bq_table_id"] = os.environ.get("BQ_TABLE_ID")
+mock_logger_specific = MagicMock()
 
-if not all(config.values()):
-    logging.warning("Uma ou mais variáveis de ambiente essenciais não definidas. Tentando carregar de config.json...")
-    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-    CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")
-    try:
-        if os.path.exists(CONFIG_FILE_PATH):
-            with open(CONFIG_FILE_PATH, 'r') as f:
-                json_config = json.load(f)
-            logging.info(f"Carregando configurações de fallback de '{CONFIG_FILE_PATH}'.")
-            config["gcp_project_id"] = config["gcp_project_id"] or json_config.get("gcp_project_id")
-            config["gcp_location"] = config["gcp_location"] or json_config.get("gcp_location")
-            config["docai_processor_id"] = config["docai_processor_id"] or json_config.get("docai_processor_id")
-            config["gcs_input_bucket"] = config["gcs_input_bucket"] or json_config.get("gcs_input_bucket")
-            config["bq_dataset_id"] = config["bq_dataset_id"] or json_config.get("bq_dataset_id")
-            config["bq_table_id"] = config["bq_table_id"] or json_config.get("bq_table_id")
-        else:
-            logging.error(f"Arquivo de configuração '{CONFIG_FILE_PATH}' não encontrado como fallback.")
-    except Exception as e:
-        logging.error(f"Erro ao carregar fallback de '{CONFIG_FILE_PATH}': {e}", exc_info=True)
+# --- Carregar Configurações (Removido carregamento global estático) ---
+def get_docai_config(config_override: dict | None = None) -> dict:
+    """
+    Retorna um dicionário de configuração para uso no módulo docai_utils.
+    Prioriza config_override, depois variáveis de ambiente, e por fim config.json.
+    """
+    # Define as chaves de configuração esperadas
+    expected_keys = [
+        "gcp_project_id", "gcp_location", "docai_processor_id",
+        "gcs_input_bucket", "bq_dataset_id", "bq_table_id"
+    ]
+    config = {}
 
-GCP_PROJECT_ID = config.get("gcp_project_id")
-GCP_LOCATION = config.get("gcp_location")
-DOCAI_PROCESSOR_ID = config.get("docai_processor_id")
-GCS_INPUT_BUCKET = config.get("gcs_input_bucket")
-BQ_DATASET_ID = config.get("bq_dataset_id")
-BQ_TABLE_ID = config.get("bq_table_id")
+    # 1. Tenta carregar do ambiente
+    for key in expected_keys:
+        config[key] = os.environ.get(key)
 
-if not all([GCP_PROJECT_ID, GCP_LOCATION, DOCAI_PROCESSOR_ID, GCS_INPUT_BUCKET, BQ_DATASET_ID, BQ_TABLE_ID]):
-    missing_keys = [k for k, v in config.items() if k in ["gcp_project_id", "gcp_location", "docai_processor_id", "gcs_input_bucket", "bq_dataset_id", "bq_table_id"] and not v]
-    logging.error(f"Configurações essenciais não encontradas (via Env Vars ou config.json): {missing_keys}")
-    raise ValueError(f"Configurações essenciais ausentes: {missing_keys}")
+    # 2. Tenta carregar do arquivo JSON para chaves ainda não definidas pelo ambiente
+    # Verifica se alguma chave ainda é None para decidir se lê o arquivo
+    # CORREÇÃO: needs_file_load deve ser True se QUALQUER chave essencial ainda for None
+    # E não foi fornecida por override (se config_override existir e tiver a chave)
+    needs_file_load = any(
+        config[key] is None and (config_override is None or key not in config_override)
+        for key in expected_keys
+    )
 
-logging.info("Configurações carregadas com sucesso.")
+    if needs_file_load:
+        SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+        CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, "config.json")
+        json_config_from_file = {} 
+        try:
+            if os.path.exists(CONFIG_FILE_PATH):
+                with open(CONFIG_FILE_PATH, 'r') as f:
+                    json_config_from_file = json.load(f)
+                logger.info(f"Configuração carregada de {CONFIG_FILE_PATH}")
+            else:
+                logger.info(f"Arquivo de configuração {CONFIG_FILE_PATH} não encontrado. Usando apenas variáveis de ambiente e overrides.")
+                json_config_from_file = {} 
+        except Exception as e:
+            logger.warning(f"Não foi possível carregar ou processar o arquivo de configuração JSON: {CONFIG_FILE_PATH}. Erro: {e}")
+
+        # Preenche apenas as chaves que ainda são None (não foram definidas pelas variáveis de ambiente)
+        for key in expected_keys:
+            if config[key] is None:
+                config[key] = json_config_from_file.get(key)
+
+    # 3. Aplica overrides, que têm a maior prioridade
+    if config_override:
+        config.update(config_override)
+
+    # Validação final: Verifica se todas as chaves esperadas têm valores (não None)
+    # Esta validação deve ocorrer DEPOIS de todas as fontes de configuração terem sido tentadas.
+    missing_essential_keys = [key for key in expected_keys if config.get(key) is None]
+    if missing_essential_keys:
+        error_msg = f"Configuração do DocAI incompleta. Chaves essenciais ausentes ou não definidas: {', '.join(missing_essential_keys)}"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
+
+    return config
 
 def get_docai_client(key_path=None):
     """Cria e retorna um cliente Document AI."""
-    client_options = ClientOptions(api_endpoint=f"{GCP_LOCATION}-documentai.googleapis.com")
+    client_options = ClientOptions(api_endpoint=f"{os.environ.get('GCP_LOCATION')}-documentai.googleapis.com")
     try:
         if key_path:
-            logging.info(f"Criando cliente Document AI usando chave local: {key_path}")
+            logger.info(f"Criando cliente Document AI usando chave local: {key_path}")
             credentials = service_account.Credentials.from_service_account_file(key_path)
             client = documentai.DocumentProcessorServiceClient(credentials=credentials, client_options=client_options)
         else:
-            logging.info("Criando cliente Document AI usando Application Default Credentials (ADC).")
+            logger.info("Criando cliente Document AI usando Application Default Credentials (ADC).")
             client = documentai.DocumentProcessorServiceClient(client_options=client_options)
-        logging.info("Cliente Document AI criado com sucesso.")
+        logger.info("Cliente Document AI criado com sucesso.")
         return client
     except Exception as e:
-        logging.error(f"Falha ao criar cliente Document AI: {e}", exc_info=True)
+        logger.error(f"Falha ao criar cliente Document AI: {e}", exc_info=True)
         raise
 
-def process_document_ocr(project_id: str, location: str, processor_id: str, gcs_uri: str, mime_type: str = "application/pdf", key_path: str = None) -> documentai.Document | None:
+from typing import Optional
+
+def process_document_ocr(
+    project_id: str,
+    location: str,
+    processor_id: str,
+    gcs_uri: str,
+    mime_type: str = "application/pdf",
+    key_path: Optional[str] = None
+) -> Optional[documentai.Document]:
     docai_client = get_docai_client(key_path)
     resource_name = docai_client.processor_path(project_id, location, processor_id)
-    logging.info(f"Usando processador: {resource_name}")
+    logger.info(f"Usando processador: {resource_name}")
 
-    gcs_document = documentai.GcsDocument(gcs_uri=gcs_uri, mime_type=mime_type)
-    gcs_documents = documentai.GcsDocuments(documents=[gcs_document])
-    input_config = documentai.BatchDocumentsInputConfig(gcs_documents=gcs_documents)
+    # Crie o GcsDocument diretamente para o ProcessRequest
+    gcs_input = documentai.GcsDocument(gcs_uri=gcs_uri, mime_type=mime_type)
 
-    logging.info(f"Processando arquivo do GCS: {gcs_uri}")
+    logger.info(f"Processando arquivo do GCS: {gcs_uri}")
     request = documentai.ProcessRequest(
         name=resource_name,
-        input_documents=input_config
+        gcs_document=gcs_input  # CORRIGIDO: Use gcs_document diretamente
     )
     try:
-        logging.info("Enviando requisição para processar arquivo do GCS...")
+        logger.info("Enviando requisição para processar arquivo do GCS...")
         result = docai_client.process_document(request=request)
-        logging.info("Documento processado com sucesso.")
+        logger.info("Documento processado com sucesso.")
         return result.document
     except Exception as e:
-        logging.error(f"Falha ao processar documento '{gcs_uri}' com Document AI: {e}", exc_info=True)
+        logger.error(f"Falha ao processar documento '{gcs_uri}' com Document AI: {e}", exc_info=True)
         return None
 
 def extract_entities_from_docai_result(document: documentai.Document, filename: str, id_extracao_run: str) -> list[dict]:
     extracted_items = []
     if not document:
-        logging.warning(f"Documento nulo fornecido para extração de entidades (arquivo: {filename}).")
+        logger.warning(f"Documento nulo fornecido para extração de entidades (arquivo: {filename}).")
         return extracted_items
 
-    logging.info(f"Iniciando extração de entidades do arquivo '{filename}'. Texto detectado: {len(document.text)} caracteres.")
-    logging.info(f"Total de entidades encontradas no documento: {len(document.entities)}")
+    logger.info(f"Iniciando extração de entidades do arquivo '{filename}'. Texto detectado: {len(document.text)} caracteres.")
+    logger.info(f"Total de entidades encontradas no documento: {len(document.entities)}")
+
+    current_timestamp = datetime.now(timezone.utc).isoformat()  # Adicionado para timestamp_carga
 
     for entity_num, entity in enumerate(document.entities):
         page_number = None
@@ -120,7 +152,7 @@ def extract_entities_from_docai_result(document: documentai.Document, filename: 
             try:
                 numeric_value = float(cleaned_value_alt)
             except ValueError:
-                logging.warning(f"Campo '{entity.type_}' com valor '{entity.mention_text}' não pôde ser convertido para número no arquivo '{filename}'.")
+                logger.warning(f"Campo '{entity.type_}' com valor '{entity.mention_text}' não pôde ser convertido para número no arquivo '{filename}'.")
 
         item = {
             "id_extracao": id_extracao_run,
@@ -132,46 +164,60 @@ def extract_entities_from_docai_result(document: documentai.Document, filename: 
             "valor_limpo": cleaned_value,
             "valor_numerico": numeric_value,
             "confianca": entity.confidence,
+            "timestamp_carga": current_timestamp  # Adicionado campo timestamp_carga
         }
         extracted_items.append(item)
-    logging.info(f"Extração de entidades do arquivo '{filename}' concluída. {len(extracted_items)} itens extraídos.")
+    logger.info(f"Extração de entidades do arquivo '{filename}' concluída. {len(extracted_items)} itens extraídos.")
     return extracted_items
 
-def list_gcs_pdfs(bucket_name: str, key_path: str = None) -> list[storage.Blob]:
-    """Lista todos os arquivos PDF em um bucket GCS."""
-    blobs = []
+def list_gcs_pdfs(bucket_name, prefix=""):
+    logger.info(f"Entrando em list_gcs_pdfs com bucket: {bucket_name}, prefix: {prefix}")
+    pdf_uris = []
     try:
-        if key_path:
-            logging.info(f"Criando cliente GCS usando chave local: {key_path}")
-            credentials = service_account.Credentials.from_service_account_file(key_path)
-            storage_client = storage.Client(credentials=credentials, project=GCP_PROJECT_ID)
-        else:
-            logging.info("Criando cliente GCS usando Application Default Credentials (ADC).")
-            storage_client = storage.Client(project=GCP_PROJECT_ID)
+        client = storage.Client()
+        logger.info(f"Cliente GCS criado: {type(client)}")
+        
+        logger.info(f"Tentando chamar client.list_blobs com bucket='{bucket_name}', prefix='{prefix}'")
+        blobs = client.list_blobs(bucket_name, prefix=prefix)
+        logger.info(f"client.list_blobs retornou: {type(blobs)}. Conteúdo (primeiros itens): {list(blobs)[:5]}")
 
-        logging.info(f"Listando arquivos PDF no bucket GCS: gs://{bucket_name}")
-        bucket = storage_client.bucket(bucket_name)
-        for blob in bucket.list_blobs():
-            if blob.name.lower().endswith(".pdf"):
-                blobs.append(blob)
-        logging.info(f"Encontrados {len(blobs)} arquivos PDF no bucket.")
+        for blob in blobs:
+            logger.debug(f"Processando blob: name='{blob.name}', content_type='{blob.content_type}'")
+            is_pdf = blob.name.lower().endswith(".pdf")
+            logger.debug(f"  '{blob.name}'.lower().endswith('.pdf') -> {is_pdf}")
+            if is_pdf:
+                uri = f"gs://{bucket_name}/{blob.name}"
+                pdf_uris.append(uri)
+                logger.debug(f"  Adicionado URI: {uri}")
+        logger.info(f"PDFs encontrados: {pdf_uris}")
     except Exception as e:
-        logging.error(f"Erro ao listar arquivos PDF do bucket '{bucket_name}': {e}", exc_info=True)
-    return blobs
+        logger.error(f"Erro em list_gcs_pdfs: {e}", exc_info=True)
+        return []
+    
+    logger.info(f"Saindo de list_gcs_pdfs. Retornando {len(pdf_uris)} URIs.")
+    return pdf_uris
 
-def process_gcs_pdf(bucket_name: str, file_name: str, id_execucao: str | None = None):
+def process_gcs_pdf(bucket_name: str, file_name: str, id_execucao: str | None = None, config_override: dict | None = None):
+    if not bucket_name or not isinstance(bucket_name, str):
+        raise ValueError("bucket_name deve ser uma string não vazia.")
+    config_override = config_override or {}
+    config = get_docai_config(config_override)
     if not id_execucao:
         id_execucao = f"run_{uuid.uuid4()}"
 
     gcs_uri = f"gs://{bucket_name}/{file_name}"
-    logging.info(f"[{id_execucao}] Iniciando processamento para: {gcs_uri}")
+    logger.info(f"[{id_execucao}] Iniciando processamento para: {gcs_uri}")
     items_loaded_count = 0
 
     try:
+        # Verifica se as variáveis de configuração essenciais não são None e são do tipo str
+        if not all(isinstance(x, str) and x for x in [config.get("gcp_project_id"), config.get("gcp_location"), config.get("docai_processor_id")]):
+            raise ValueError("Configuração essencial ausente ou inválida: gcp_project_id, gcp_location ou docai_processor_id está None ou não é string.")
+
         document_result = process_document_ocr(
-            project_id=GCP_PROJECT_ID,
-            location=GCP_LOCATION,
-            processor_id=DOCAI_PROCESSOR_ID,
+            project_id=str(config.get("gcp_project_id")),
+            location=str(config.get("gcp_location")),
+            processor_id=str(config.get("docai_processor_id")),
             gcs_uri=gcs_uri,
             key_path=None
         )
@@ -183,16 +229,16 @@ def process_gcs_pdf(bucket_name: str, file_name: str, id_execucao: str | None = 
                 id_extracao_run=id_execucao
             )
             if extracted_items:
-                logging.info(f"[{id_execucao}] Extraídos {len(extracted_items)} itens de '{file_name}'.")
+                logger.info(f"[{id_execucao}] Extraídos {len(extracted_items)} itens de '{file_name}'.")
                 load_data_to_bigquery(extracted_items, config=config)
                 items_loaded_count = len(extracted_items)
-                logging.info(f"[{id_execucao}] Carregamento de '{file_name}' para BigQuery solicitado com sucesso.")
+                logger.info(f"[{id_execucao}] Carregamento de '{file_name}' para BigQuery solicitado com sucesso.")
             else:
-                logging.warning(f"[{id_execucao}] Nenhum item extraído do arquivo '{file_name}'.")
+                logger.warning(f"[{id_execucao}] Nenhum item extraído do arquivo '{file_name}'.")
         else:
-            logging.error(f"[{id_execucao}] Falha ao processar o documento GCS '{gcs_uri}' com Document AI.")
+            logger.error(f"[{id_execucao}] Falha ao processar o documento GCS '{gcs_uri}' com Document AI.")
     except Exception as e:
-        logging.error(f"[{id_execucao}] Erro inesperado ao processar o arquivo GCS '{gcs_uri}': {e}", exc_info=True)
+        logger.error(f"[{id_execucao}] Erro inesperado ao processar o arquivo GCS '{gcs_uri}': {e}", exc_info=True)
     return items_loaded_count
 
 def cloud_function_entry_point(event, context):
@@ -203,37 +249,65 @@ def cloud_function_entry_point(event, context):
         event_id = context.event_id if context and hasattr(context, 'event_id') else f"cf_run_{uuid.uuid4()}"
 
         if not file_name or not bucket_name:
-            logging.error("Evento GCS inválido: 'name' ou 'bucket' ausente. Evento: %s", event)
+            logger.error("Evento GCS inválido: 'name' ou 'bucket' ausente. Evento: %s", event)
             return
 
         if not file_name.lower().endswith(".pdf"):
-            logging.info(f"Ignorando arquivo não PDF: gs://{bucket_name}/{file_name}")
+            logger.info(f"Ignorando arquivo não PDF: gs://{bucket_name}/{file_name}")
             return
 
-        logging.info(f"Evento GCS recebido (ID: {event_id}): Processando arquivo '{file_name}' do bucket '{bucket_name}'.")
+        logger.info(f"Evento GCS recebido (ID: {event_id}): Processando arquivo '{file_name}' do bucket '{bucket_name}'.")
         items_loaded = process_gcs_pdf(bucket_name, file_name, id_execucao=event_id)
-        logging.info(f"Evento GCS (ID: {event_id}) concluído. Itens carregados: {items_loaded}")
+        logger.info(f"Evento GCS (ID: {event_id}) concluído. Itens carregados: {items_loaded}")
 
     except Exception as e:
-        logging.error(f"Erro fatal no manipulador de eventos GCS (ID: {context.event_id if context else 'N/A'}): {e}. Evento: {event}", exc_info=True)
+        logger.error(f"Erro fatal no manipulador de eventos GCS (ID: {context.event_id if context else 'N/A'}): {e}. Evento: {event}", exc_info=True)
 
 if __name__ == "__main__":
-    logging.info("--- INÍCIO DA EXECUÇÃO LOCAL DO SCRIPT (docai_utils.py) ---")
+    logger.info("--- INÍCIO DA EXECUÇÃO LOCAL DO SCRIPT (docai_utils.py) ---")
     try:
-        if not GCS_INPUT_BUCKET:
-            logging.error("GCS_INPUT_BUCKET não definido na configuração para execução local.")
+        config = get_docai_config()
+        bucket = config.get("gcs_input_bucket")
+        if not bucket or not isinstance(bucket, str):
+            logger.error("gcs_input_bucket não definido ou inválido na configuração para execução local.")
         else:
-            pdf_blobs = list_gcs_pdfs(GCS_INPUT_BUCKET, None)
-            if not pdf_blobs:
-                logging.warning(f"Nenhum arquivo PDF encontrado no bucket GCS para teste local: gs://{GCS_INPUT_BUCKET}")
-            else:
-                logging.info(f"Encontrados {len(pdf_blobs)} arquivos PDF no GCS para processamento local.")
-                total_itens_carregados_local = 0
-                id_execucao_local = f"local_run_{uuid.uuid4()}"
-                for blob in pdf_blobs:
-                    items = process_gcs_pdf(blob.bucket.name, blob.name, id_execucao=id_execucao_local)
+            id_execucao_local = f"local_run_{uuid.uuid4()}"
+            total_itens_carregados_local = 0
+
+            if len(sys.argv) > 1:
+                # Processar um arquivo específico passado como argumento
+                file_to_process = sys.argv[1]
+                logger.info(f"Processando arquivo específico fornecido como argumento: {file_to_process} do bucket {bucket}")
+                # Verifica se o arquivo existe no bucket antes de tentar processar
+                storage_client = storage.Client()
+                bucket_obj = storage_client.bucket(bucket)
+                blob_obj = bucket_obj.blob(file_to_process)
+
+                if blob_obj.exists():
+                    items = process_gcs_pdf(bucket, file_to_process, id_execucao=id_execucao_local, config_override=config)
                     total_itens_carregados_local += items
-                logging.info(f"Total de itens carregados no BigQuery nesta execução local: {total_itens_carregados_local}")
+                else:
+                    logger.error(f"Arquivo '{file_to_process}' não encontrado no bucket '{bucket}'.")
+
+            else:
+                # Comportamento original: processar todos os PDFs no bucket
+                logger.warning("Nenhum arquivo PDF específico fornecido como argumento. Listando todos os PDFs no bucket para processamento.")
+                client = storage.Client()
+                blobs = client.list_blobs(bucket, prefix=None)
+                
+                pdf_files_to_process = [blob for blob in blobs if blob.name.lower().endswith(".pdf")]
+
+                if not pdf_files_to_process:
+                    logger.warning(f"Nenhum arquivo PDF encontrado no bucket GCS para teste local: gs://{bucket}")
+                else:
+                    logger.info(f"Encontrados {len(pdf_files_to_process)} arquivos PDF no GCS para processamento local.")
+                    for blob_item in pdf_files_to_process:
+                        logger.info(f"Processando: {blob_item.name} do bucket {blob_item.bucket.name}")
+                        items = process_gcs_pdf(blob_item.bucket.name, blob_item.name, id_execucao=id_execucao_local, config_override=config)
+                        total_itens_carregados_local += items
+            
+            logger.info(f"Total de itens carregados no BigQuery nesta execução local: {total_itens_carregados_local}")
+
     except Exception as e:
-        logging.critical(f"Erro fatal na execução local do script: {e}", exc_info=True)
-    logging.info("--- FIM DA EXECUÇÃO LOCAL DO SCRIPT (docai_utils.py) ---")
+        logger.critical(f"Erro fatal na execução local do script: {e}", exc_info=True)
+    logger.info("--- FIM DA EXECUÇÃO LOCAL DO SCRIPT (docai_utils.py) ---")

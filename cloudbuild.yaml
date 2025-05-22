@@ -1,5 +1,66 @@
 options:
   logging: CLOUD_LOGGING_ONLY
+  # machineType: 'N1_HIGHCPU_8' # Opcional: Especifique um tipo de máquina maior para builds mais rápidos
+
+substitutions:
+  _SERVICE_NAME: 'controle-folha' # Nome do seu serviço Cloud Run
+  _REGION: 'us-central1' # Região do seu serviço Cloud Run e Artifact Registry
+  _ARTIFACT_REGISTRY_REPO: 'auditoria360-repo' # Nome do seu repositório no Artifact Registry
+  _IMAGE_NAME: 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}' # Para GCR
+  # _IMAGE_NAME: '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}' # Para Artifact Registry
+
 steps:
-  - name: gcr.io/cloud-builders/gcloud
+  # Passo 1: Verificar versão do gcloud (opcional)
+  - name: 'gcr.io/cloud-builders/gcloud'
     args: ['--version']
+    id: 'Check gcloud version'
+
+  # Passo 2: Construir a imagem Docker
+  # Usar a imagem 'latest' como cache para acelerar builds
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+        'build',
+        '--cache-from', '${_IMAGE_NAME}:latest',
+        '-t', '${_IMAGE_NAME}:$COMMIT_SHA',
+        '-t', '${_IMAGE_NAME}:latest',
+        '.'
+      ]
+    id: 'Build Docker image'
+
+  # Passo 3: Fazer push da imagem (implícito se 'images' for definido, mas pode ser explícito)
+  # Este passo é opcional se a seção 'images' for usada, pois o Cloud Build faz o push automaticamente.
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args: ['push', '${_IMAGE_NAME}:$COMMIT_SHA']
+  #   id: 'Push image with COMMIT_SHA tag'
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args: ['push', '${_IMAGE_NAME}:latest']
+  #   id: 'Push image with latest tag'
+
+  # Passo 4: Deploy no Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - '${_IMAGE_NAME}:$COMMIT_SHA'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated' # Ou '--no-allow-unauthenticated' e configure IAM
+      # Adicione outras flags conforme necessário, como variáveis de ambiente, min/max instâncias, etc.
+      # Exemplo de variáveis de ambiente:
+      # - '--set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCS_CONTROL_BUCKET=seu-bucket-de-controle'
+      - '--quiet'
+    id: 'Deploy to Cloud Run'
+
+# Imagens a serem enviadas para o registro (GCR ou Artifact Registry)
+# O Cloud Build fará o push automaticamente dessas imagens.
+images:
+  - '${_IMAGE_NAME}:$COMMIT_SHA'
+  - '${_IMAGE_NAME}:latest'
+
+# Opcional: timeouts para o build
+# timeout: '1200s'
