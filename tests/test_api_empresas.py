@@ -3,10 +3,28 @@ from fastapi.testclient import TestClient
 from src.main import app
 from unittest.mock import patch, MagicMock
 import pandas as pd
+from src.config_manager import get_current_config # Importar get_current_config
+import builtins
+import json
 
 @pytest.fixture
-def client():
-    return TestClient(app)
+def client(mocker): # Removido 'request' não utilizado
+    original_builtins_open = builtins.open
+    original_json_load = json.load
+
+    mocker.patch('builtins.open', new=original_builtins_open, autospec=True)
+    mocker.patch('json.load', new=original_json_load, autospec=True)
+
+    original_config_dependency_override = app.dependency_overrides.pop(get_current_config, None)
+    
+    try:
+        with TestClient(app) as c:
+            yield c
+    finally:
+        if original_config_dependency_override is not None:
+            app.dependency_overrides[get_current_config] = original_config_dependency_override
+        else:
+            app.dependency_overrides.pop(get_current_config, None)
 
 # Mock data para cliente_a
 empresas_cliente_a = [
@@ -77,12 +95,14 @@ def test_empresas_isolamento(mock_get_loader, client):
 def test_empresas_auth_required(client): # Removido mock_get_config
     resp = client.get("/api/v1/empresas/")
     assert resp.status_code == 401
-    assert resp.json()["detail"] == "X-Client-ID header ausente."
+    # A mensagem correta é "X-Client-ID header ausente ou inválido."
+    assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
 
 def test_get_empresa_by_id_auth_required(client):
     resp = client.get("/api/v1/empresas/some_id")
     assert resp.status_code == 401
-    assert resp.json()["detail"] == "X-Client-ID header ausente."
+    # A mensagem correta é "X-Client-ID header ausente ou inválido."
+    assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
 
 # Mock para ControleFolhaLoader.get_empresa_by_id para o teste de acesso indevido
 @patch('src.bq_loader.ControleFolhaLoader.get_empresa_by_id')

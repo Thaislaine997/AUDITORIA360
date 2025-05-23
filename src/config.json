@@ -13,7 +13,6 @@
     "bq_control_sheet_data_table_id": "controle_folha_planilha_raw_data",
     "bq_log_table_id": "registros_log",
 
-    "RECAPTCHA_SITE_KEY": "default-site-key-please-replace",
     "RECAPTCHA_SECRET_KEY": "default-secret-key-please-replace",
 
     "LOG_LEVEL": "INFO",
@@ -23,5 +22,31 @@
     "default_control_bq_dataset_id": "default_controle_folha_dataset",
     "default_processed_bq_dataset_id": "default_folhas_processadas_dataset",
     "default_raw_bq_dataset_id": "default_folhas_brutas_dataset",
-    "default_log_bq_dataset_id": "default_logs_aplicacao_dataset"
-}
+  "default_log_bq_dataset_id": "default_logs_aplicacao_dataset",
+"API_BASE_URL": "http://localhost:8000",
+"CLIENT_DISPLAY_NAME": "Cliente Demonstração AUDITORIA360",
+"BRANDING_LOGO_URL": "https://raw.githubusercontent.com/filipepecanha/auditoria360/main/assets/logo_auditoria360_small.png",
+"RECAPTCHA_SITE_KEY": "CHAVE_PUBLICA_RECAPTCHA_AQUI",
+"fontes_oficiais_parametros": {
+  "INSS": {
+    "nome": "Portaria Interministerial MPS/MF (DOU)",
+    "url": "https://www.in.gov.br/web/dou/-/portaria-interministerial-mps/mf-n-6-de-10-de-janeiro-de-2025-606526848"
+  },
+  "IRRF": {
+    "nome": "Medida Provisória (Planalto)",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/Mpv/mpv1294.htm"
+  },
+  "SALARIO_MINIMO": {
+    "nome": "Decreto Salário Mínimo (Planalto)",
+    "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/d12342.htm"
+  },
+  "FGTS": {
+    "nome": "Caixa Econômica Federal - FGTS",
+    "url": "https://www.caixa.gov.br/beneficios-trabalhador/fgts/Paginas/default.aspx"
+  },
+    "SALARIO_FAMILIA": {
+      "nome": "Portaria Interministerial MPS/MF (DOU)",
+      "url": "https://www.in.gov.br/web/dou/-/portaria-interministerial-mps/mf-n-6-de-10-de-janeiro-de-2025-606526848"
+    }
+  }
+  }

@@ -6,9 +6,49 @@ import os
 import builtins  # Necessário para mockar builtins.open
 import subprocess
 import time
+from e2e_config import e2e_context_instance
 
 # Adiciona o diretório raiz do projeto (onde este conftest.py está) ao sys.path.
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
+# Salva as implementações originais antes de qualquer patch
+_original_builtins_open = builtins.open
+_original_os_path_exists = os.path.exists
+
+# Instância de mock_open para uso seletivo, se necessário para o painel
+_panel_specific_mock_open = mock_open()
+
+# Contexto para testes E2E parametrizados
+class E2EContext:
+    current_username: str | None = None
+    current_password: str | None = None
+
+e2e_context = E2EContext()
+
+def _selective_open_for_panel(filename, mode='r', *args, **kwargs):
+    filename_str = str(filename)
+    # TODO: Adicionar condições aqui se o painel Streamlit (painel.py)
+    # ou suas dependências diretas (não já mockadas de outra forma)
+    # precisarem que 'open' seja mockado para arquivos específicos.
+    # Exemplo:
+    # if "specific_panel_asset.txt" in filename_str:
+    #     print(f"DEBUG: Mocking open for panel asset: {filename_str}")
+    #     return _panel_specific_mock_open(filename, mode, *args, **kwargs)
+    
+    # Por padrão, para todos os outros arquivos (incluindo os JSON de config_manager), usa o open real.
+    return _original_builtins_open(filename, mode, *args, **kwargs)
+
+def _selective_os_path_exists_for_panel(path):
+    path_str = str(path)
+    # TODO: Adicionar condições aqui se o painel Streamlit
+    # precisar que 'os.path.exists' seja mockado para caminhos específicos.
+    # Exemplo:
+    # if "expected_panel_config_dir" in path_str:
+    #     print(f"DEBUG: Mocking os.path.exists for panel path: {path_str} to return True")
+    #     return True
+        
+    # Por padrão, usa o os.path.exists real.
+    return _original_os_path_exists(path_str)
 
 @pytest.fixture(scope="session")
 def streamlit_server(auto_mock_painel_dependencies): # Depende dos mocks para que o painel inicie corretamente
@@ -38,7 +78,7 @@ def streamlit_server(auto_mock_painel_dependencies): # Depende dos mocks para qu
         
         # Aguarda um pouco para o servidor iniciar
         # Idealmente, deveríamos verificar a saída do servidor ou tentar uma conexão.
-        time.sleep(10) # Aumentado para dar mais tempo ao servidor para iniciar
+        time.sleep(15) # Aumentado para dar mais tempo ao servidor para iniciar
         
         # Verifica se o processo iniciou corretamente
         if process.poll() is not None: # Se poll() não for None, o processo terminou
@@ -67,24 +107,28 @@ def streamlit_server(auto_mock_painel_dependencies): # Depende dos mocks para qu
             # print(f"STDOUT do servidor: {stdout.decode('utf-8', errors='ignore')}")
             # print(f"STDERR do servidor: {stderr.decode('utf-8', errors='ignore')}")
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session") # Removido autouse=True
 def auto_mock_painel_dependencies():
     """
     Moka automaticamente as dependências de src.painel em escopo de sessão
     usando unittest.mock.patch.
+    Os mocks para builtins.open e os.path.exists são agora seletivos.
     """
     active_patchers = []
 
     try:
-        # 1. Mockear 'builtins.open'
-        mocked_open_instance = mock_open()
-        p_open = patch("builtins.open", mocked_open_instance)
+        # 1. Mockear 'builtins.open' SELETIVAMENTE
+        p_open = patch("builtins.open", _selective_open_for_panel)
         active_patchers.append(p_open)
         p_open.start()
 
         # 2. Mockear o módulo 'yaml'
         mock_yaml_config_content = {
-            "credentials": {"usernames": {"testuser": {"name": "Test User", "password": "hashed_password"}}},
+            "credentials": {"usernames": {
+                "cliente1": {"name": "Cliente 1 User", "password": "hashed_password_cliente1"},
+                "cliente2": {"name": "Cliente 2 User", "password": "hashed_password_cliente2"},
+                "testuser": {"name": "Test User", "password": "hashed_password"}
+            }},
             "cookie": {"name": "test_cookie", "key": "test_key", "expiry_days": 30},
             "preauthorized": {}
         }
@@ -97,9 +141,29 @@ def auto_mock_painel_dependencies():
 
         # 3. Mockear o módulo 'streamlit_authenticator' e sua classe 'Authenticate'
         mock_auth_instance = MagicMock()
-        mock_auth_instance.login.return_value = ('Test User', True, 'testuser')
+
+        def dynamic_login_implementation(form_name, location='main'):
+            _mock_st = sys.modules.get('streamlit') # Obter o módulo streamlit mockado
+
+            if e2e_context_instance.username and _mock_st:
+                username = e2e_context_instance.username
+                user_config = mock_yaml_config_content["credentials"]["usernames"].get(username)
+                name = user_config["name"] if user_config else username
+
+                _mock_st.session_state['name'] = name
+                _mock_st.session_state['authentication_status'] = True
+                _mock_st.session_state['username'] = username
+                return (name, True, username)
+            elif _mock_st: # Fallback para testuser se e2e_context_instance não estiver preenchido
+                _mock_st.session_state['name'] = 'Test User'
+                _mock_st.session_state['authentication_status'] = True
+                _mock_st.session_state['username'] = 'testuser'
+                return ('Test User', True, 'testuser')
+            return (None, False, None)
+
+        mock_auth_instance.login.side_effect = dynamic_login_implementation
         mock_auth_instance.cookie_manager = MagicMock()
-        mock_auth_instance.credentials = {"usernames": {"testuser_on_instance": {"name": "Test User on Instance"}}}
+        mock_auth_instance.credentials = mock_yaml_config_content["credentials"]
         
         mock_authenticator_class_factory = MagicMock(return_value=mock_auth_instance)
         
@@ -112,12 +176,15 @@ def auto_mock_painel_dependencies():
         # 4. Mockear o módulo 'streamlit' (st)
         mock_st = MagicMock()
         _session_state_dict = {}
+
         def session_state_getitem(key):
             if key in _session_state_dict:
                 return _session_state_dict[key]
             raise KeyError(f"Mocked KeyError for st.session_state: {key}")
+
         def session_state_setitem(key, value):
             _session_state_dict[key] = value
+
         def session_state_contains(key):
             return key in _session_state_dict
         
@@ -126,6 +193,17 @@ def auto_mock_painel_dependencies():
         mock_st.session_state.__setitem__.side_effect = session_state_setitem
         mock_st.session_state.__contains__.side_effect = session_state_contains
         mock_st.session_state.get = MagicMock(side_effect=lambda key, default=None: _session_state_dict.get(key, default))
+
+        def mock_text_input_implementation(label, value="", **kwargs):
+            current_label = str(label).lower()
+
+            if "username" in current_label or (kwargs.get("key") and "username" in str(kwargs.get("key")).lower()):
+                return e2e_context_instance.username if e2e_context_instance.username is not None else "testuser_from_text_input"
+            elif "password" in current_label or (kwargs.get("key") and "password" in str(kwargs.get("key")).lower()):
+                return e2e_context_instance.password if e2e_context_instance.password is not None else "password_from_text_input"
+            return value
+
+        mock_st.text_input = MagicMock(side_effect=mock_text_input_implementation)
 
         mock_st.components = MagicMock()
         mock_st.components.v1 = MagicMock()
@@ -142,7 +220,6 @@ def auto_mock_painel_dependencies():
         mock_st.title = MagicMock()
         mock_st.header = MagicMock()
         mock_st.subheader = MagicMock()
-        mock_st.text_input = MagicMock(return_value="some_input")
         mock_st.button = MagicMock(return_value=False)
         mock_st.selectbox = MagicMock()
         mock_st.multiselect = MagicMock()
@@ -174,8 +251,8 @@ def auto_mock_painel_dependencies():
         active_patchers.append(p_streamlit)
         p_streamlit.start()
 
-        # 5. Mockear 'os.path.exists'
-        p_os_path_exists = patch("os.path.exists", MagicMock(return_value=True))
+        # 5. Mockear 'os.path.exists' SELETIVAMENTE
+        p_os_path_exists = patch("os.path.exists", _selective_os_path_exists_for_panel)
         active_patchers.append(p_os_path_exists)
         p_os_path_exists.start()
 

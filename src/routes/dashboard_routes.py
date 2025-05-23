@@ -77,13 +77,25 @@ async def get_dashboard_by_id(id_dashboard: str, config: dict = Depends(get_curr
 async def get_pendencias_dashboard_route(loader: ControleFolhaLoader = Depends(get_loader)):
     # A dependência get_loader já garante que o config e client_id são válidos.
     try:
-        df_pendencias = loader.buscar_pendencias_dashboard()
-        if df_pendencias.empty:
-            return JSONResponse(content={"status": "success", "message": "Nenhuma pendência encontrada.", "data": []}, status_code=200)
+        resultado_pendencias = loader.buscar_pendencias_dashboard() # Retorna um dict
         
-        pendencias_list = df_pendencias.to_dict(orient='records')
-        return JSONResponse(content={"status": "success", "data": pendencias_list}, status_code=200)
-        
+        # Verifica o status e a presença de 'data' no dicionário retornado
+        if resultado_pendencias.get("status") == "success" and isinstance(resultado_pendencias.get("data"), list):
+            data = resultado_pendencias.get("data")
+            if not data: # Lista de dados está vazia
+                return JSONResponse(content={"status": "success", "message": "Nenhuma pendência encontrada.", "data": []}, status_code=200)
+            return JSONResponse(content={"status": "success", "data": data}, status_code=200)
+        else:
+            # Se o status não for 'success' ou 'data' não for uma lista, trata como erro ou mensagem do loader
+            error_message = resultado_pendencias.get("message", "Erro ao buscar pendências.")
+            logger.warning(f"Problema ao buscar pendências do dashboard para o cliente {loader.client_id if hasattr(loader, 'client_id') else 'desconhecido'}: {error_message}")
+            # Retorna a mensagem do loader se disponível, ou uma genérica.
+            # Pode ser necessário ajustar o status_code dependendo da natureza do erro indicado pelo loader.
+            # Por ora, se o loader indicou 'success' mas os dados estão malformados, ainda é um sucesso parcial com mensagem.
+            # Se o loader indicou 'error', idealmente deveria levantar uma exceção ou ser tratado como tal.
+            # Para simplificar, vamos assumir que se não for uma lista de dados, exibimos a mensagem.
+            return JSONResponse(content={"status": resultado_pendencias.get("status", "error"), "message": error_message, "data": []}, status_code=200 if resultado_pendencias.get("status") == "success" else 500)
+            
     except HTTPException: # Se get_loader levantar HTTPException, ela será propagada
         raise
     except Exception as e:

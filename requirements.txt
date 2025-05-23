@@ -5,3 +5,6 @@ google-cloud-bigquery
 reportlab
 pytest-playwright
 google-generativeai
+SQLAlchemy
+fastapi
+uvicorn[standard]

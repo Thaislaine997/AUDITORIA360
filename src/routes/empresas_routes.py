@@ -57,18 +57,19 @@ async def get_empresas_route(loader: ControleFolhaLoader = Depends(get_loader_em
 @router.get("/{id_empresa}")
 async def get_empresa_route(id_empresa: str, loader: ControleFolhaLoader = Depends(get_loader_empresas)):
     try:
-        df_empresa = loader.get_empresa_by_id(id_empresa)
+        try:
+            empresa_id_int = int(id_empresa)
+        except ValueError:
+            raise HTTPException(status_code=400, detail=f"ID da empresa inválido: {id_empresa}. Deve ser um inteiro.")
+
+        empresa_data = loader.get_empresa_by_id(empresa_id_int)
         
-        if df_empresa is None or df_empresa.empty:
+        if empresa_data is None:
             raise HTTPException(status_code=404, detail=f"Empresa com ID {id_empresa} não encontrada.")
-        
-        empresa_data = df_empresa.to_dict(orient='records')[0]
         
         # Garante que o client_id do loader (solicitante) corresponde ao client_id do registro da empresa
         if hasattr(loader, 'client_id') and empresa_data.get("client_id") != loader.client_id:
             logger.warning(f"Tentativa de acesso indevido à empresa {id_empresa}. Solicitante: {loader.client_id}, Dono do registro: {empresa_data.get('client_id')}.")
-            # Retorna 404 para não vazar informação se a empresa existe mas pertence a outro cliente.
-            # Ou poderia ser 403 se a política for de negar explicitamente.
             raise HTTPException(status_code=404, detail=f"Empresa com ID {id_empresa} não encontrada ou acesso não permitido.")
             
         return JSONResponse(content={"status": "success", "data": empresa_data}, status_code=200)

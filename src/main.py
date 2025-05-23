@@ -9,6 +9,8 @@ from src.routes import relatorio_routes
 from src.routes import controle_folha_routes
 from src.routes import dashboard_routes # Adicionada importação para dashboard_routes
 from src.routes import empresas_routes # Adicionada importação para empresas_routes
+from src.routes import param_legais_routes # Adicionada importação para param_legais_routes
+from src.routes import contabilidade_routes # Nova importação
 from src.config_manager import get_current_config, ConfigManager
 from src.bq_loader import get_bigquery_client
 import logging
@@ -155,3 +157,5 @@ app.include_router(relatorio_routes.router)
 app.include_router(controle_folha_routes.router)
 app.include_router(dashboard_routes.router) # Adicionado router do dashboard
 app.include_router(empresas_routes.router) # Adicionado router de empresas
+app.include_router(param_legais_routes.router, prefix="/api/v1/parametros-legais", tags=["Parâmetros Legais - Tabelas"]) # Adicionado router de parâmetros legais
+app.include_router(contabilidade_routes.router) # Adicionado router de contabilidades
