@@ -5,6 +5,7 @@ from src.main import app # Supondo que seu app FastAPI principal esteja em src.m
 from src.schemas import TabelaSalarioMinimo # Alterado de SalarioMinimo
 from datetime import date, timedelta
 from typing import Optional, Dict
+from starlette import status
 
 # Fixture para o cliente de teste síncrono
 @pytest.fixture(scope="module")

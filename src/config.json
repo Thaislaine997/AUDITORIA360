@@ -13,6 +13,10 @@
     "bq_control_sheet_data_table_id": "controle_folha_planilha_raw_data",
     "bq_log_table_id": "registros_log",
 
+    "SECRET_KEY": "super-secret-key-please-change-in-production",
+    "ALGORITHM": "HS256",
+    "ACCESS_TOKEN_EXPIRE_MINUTES": 30,
+
     "RECAPTCHA_SECRET_KEY": "default-secret-key-please-replace",
 
     "LOG_LEVEL": "INFO",

@@ -40,7 +40,7 @@ def test_load_data_to_bigquery_exige_client_id(config_cliente_a):
     config_sem_id = dict(config_cliente_a)
     config_sem_id.pop("client_id")
     with pytest.raises(ValueError):
-        bq_loader.load_data_to_bigquery(sample_data, config_sem_id)
+        bq_loader.load_data_to_bigquery(bq_loader.get_bigquery_client(config_sem_id), sample_data, config_sem_id)
 
 # Teste de isolamento: simula que cada cliente só vê seus dados
 # (mock do client/query, não faz acesso real ao BigQuery)

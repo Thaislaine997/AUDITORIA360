@@ -29,6 +29,10 @@
 - Testar integração com IA (Vertex, Gemini)
 - Validar automações e dashboards
 - Testar fluxos completos com dados reais
+- [x] Testar integração do checklist inteligente de fechamento da folha (backend e frontend)
+- [x] Validar seleção dinâmica de folha processada no frontend
+- [x] Conferir dicas de IA (Gemini) e alertas de bloqueadores
+- [x] Testar fechamento da folha e gravação no BigQuery
 
 ---
 

@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from src.schemas import TabelaINSS, TabelaIRRF, TabelaSalarioFamilia, TabelaSalarioMinimo, TabelaFGTS
+from src.schemas_models import TabelaINSS, TabelaIRRF, TabelaSalarioFamilia, TabelaSalarioMinimo, TabelaFGTS
 from google.cloud import bigquery
 from datetime import datetime, date, timedelta
 from typing import Optional, List
@@ -1328,6 +1328,7 @@ async def obter_ultimo_log_verificacao(tipo_parametro: str) -> Optional[dict]: #
     client = bigquery.Client(project=PROJECT_ID)
     query = f"""
         SELECT 
+            
             id_log_verificacao,
             tipo_parametro,
             data_verificacao,

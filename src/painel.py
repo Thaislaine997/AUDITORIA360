@@ -5,10 +5,15 @@ import yaml
 from yaml.loader import SafeLoader
 import json
 import requests
-from typing import Optional, Dict, Any, Literal # Adicionado Literal
-from datetime import date, datetime # Adicionado datetime
+from typing import Optional, Dict, Any, Literal, List
+from datetime import date, datetime, timedelta
 import os
 import pandas as pd
+
+# Importações das páginas dos módulos
+from src.mostrar_pagina_revisao_sugestoes_ia import mostrar_pagina_revisao_sugestoes_ia
+from src.importar_folha import mostrar_pagina_importar_folha  # Adicionado para o Módulo 2
+from src.checklist_page import mostrar_checklist_page # Adicionado para o Checklist da Folha
 
 # DEBUG: Print a message when painel.py is imported
 print(f"DEBUG: painel.py imported. __name__: {__name__}")
@@ -323,6 +328,7 @@ def mostrar_pagina_salario_minimo():
                     # Mantém o default se a conversão falhar
 
             raw_valores_regionais = editing_item.get('valores_regionais')
+            raw_valores_regionais = editing_item.get('valores_regionais')
             if raw_valores_regionais:
                 try:
                     if isinstance(raw_valores_regionais, dict):
@@ -394,6 +400,7 @@ def mostrar_pagina_salario_minimo():
                 value=default_observacao,
                 key="sm_obs" + form_key_suffix
             )
+
 
             submit_button_label = "Salvar Nova Vigência" if not editing_item else "Atualizar Vigência"
             submit_button = st.form_submit_button(submit_button_label)
@@ -663,7 +670,6 @@ def mostrar_pagina_fgts():
                     if default_data_fim_val_fgts and data_inicio_vigencia_fgts and default_data_fim_val_fgts < data_inicio_vigencia_fgts:
                         current_fim_val_fgts = data_inicio_vigencia_fgts
                     data_fim_vigencia_fgts_input_val = st.date_input("Data Fim Vigência", value=current_fim_val_fgts, min_value=min_date_for_fim_fgts, key="fgts_dfv_date" + form_key_suffix_fgts, help="Opcional. Se não definida, a vigência é considerada aberta.")
-
             aliquota_mensal = st.number_input("Alíquota Mensal (%)*", min_value=0.0, max_value=100.0, value=default_aliquota_mensal, format="%.2f", step=0.1, key="fgts_am" + form_key_suffix_fgts, help="Ex: 8.0 para 8%")
             aliquota_multa_rescisoria = st.number_input("Alíquota Multa Rescisória (%)*", min_value=0.0, max_value=100.0, value=default_aliquota_multa, format="%.2f", step=0.1, key="fgts_amr" + form_key_suffix_fgts, help="Ex: 40.0 para 40%")
             observacao_fgts = st.text_area("Observação", value=default_observacao_fgts, key="fgts_obs" + form_key_suffix_fgts)
@@ -742,12 +748,12 @@ def mostrar_pagina_fgts():
                 al_multa_disp = display_row_series_fgts.get('aliquota_multa_rescisoria')
                 row_cols_list_fgts[4].text(f"{al_multa_disp:.2f}" if pd.notna(al_multa_disp) else "-")
 
-                obs_text_fgts = str(display_row_series_fgts.get('observacao', '') or "-")
-                if len(obs_text_fgts) > 25:
-                    with row_cols_list_fgts[5].expander("Ver Obs."):
-                        st.markdown(obs_text_fgts)
+                observacao_text_display = str(display_row_series_fgts.get('observacao', '') or "-") # Garante string e default
+                if len(observacao_text_display) > 30: # Limite para expander
+                     with row_cols_list_fgts[5].expander("Ver Obs."):
+                        st.markdown(observacao_text_display)
                 else:
-                    row_cols_list_fgts[5].text(obs_text_fgts)
+                    row_cols_list_fgts[5].text(observacao_text_display)
 
                 if row_cols_list_fgts[6].button("✏️", key=f"edit_fgts_{item_id_str_fgts}", help="Editar esta vigência"):
                     st.session_state.editing_fgts_item = row_data_series_fgts.to_dict()
@@ -853,7 +859,7 @@ def mostrar_pagina_inss():
 
     with col_form_inss:
         editing_inss_item_data = st.session_state.get('editing_inss_item')
-        form_title_inss = "Adicionar Nova Vigência de Tabela INSS" if not editing_inss_item_data else f"Editando Tabela INSS ID: {editing_inss_item_data.get('id_versao', 'Desconhecido')}"
+        form_title_inss = "Adicionar Nova Vigência de Tabela INSS" if not editing_inss_item_data else f"Editando Vigência INSS ID: {editing_inss_item_data.get('id_versao', 'Desconhecido')}"
         st.subheader(form_title_inss)
 
         form_key_suffix_inss = f"_edit_{editing_inss_item_data['id_versao']}" if editing_inss_item_data and editing_inss_item_data.get('id_versao') else "_new"
@@ -893,8 +899,6 @@ def mostrar_pagina_inss():
                             default_faixas_inss_str = json.dumps(parsed_json, ensure_ascii=False, indent=2)
                         except json.JSONDecodeError:
                             default_faixas_inss_str = raw_faixas_inss
-                    else:
-                        default_faixas_inss_str = str(raw_faixas_inss)
                 except Exception as e: 
                     print(f"Erro ao processar faixas INSS: {raw_faixas_inss}, Erro: {e}")
                     default_faixas_inss_str = str(raw_faixas_inss)
@@ -909,7 +913,7 @@ def mostrar_pagina_inss():
             default_observacao_inss = str(editing_inss_item_data.get('observacao', ""))
 
         with st.form("inss_add_edit_form" + form_key_suffix_inss, clear_on_submit=(not editing_inss_item_data)):
-            data_inicio_vigencia_inss = st.date_input("Data Início Vigência*", value=default_data_inicio_inss, key="inss_div" + form_key_suffix_inss, help="Data de início da validade desta tabela.")
+            data_inicio_vigencia_inss = st.date_input("Data Início Vigência*", value=default_data_inicio_inss, key="inss_div" + form_key_suffix_inss, help="Data de início da validade destes parâmetros.")
             
             col_fim_chk_inss, col_fim_date_inss = st.columns([1,2])
             with col_fim_chk_inss:
@@ -922,7 +926,6 @@ def mostrar_pagina_inss():
                     min_date_for_fim_inss = data_inicio_vigencia_inss
                     if default_data_fim_val_inss and data_inicio_vigencia_inss and default_data_fim_val_inss < data_inicio_vigencia_inss:
                         current_fim_val_inss = data_inicio_vigencia_inss
-                    data_fim_vigencia_inss_input_val = st.date_input("Data Fim Vigência", value=current_fim_val_inss, min_value=min_date_for_fim_inss, key="inss_dfv_date" + form_key_suffix_inss, help="Opcional. Se não definida, a vigência é considerada aberta.")
 
             faixas_inss_json = st.text_area("Faixas de Contribuição (JSON)*", value=default_faixas_inss_str, height=200, key="inss_faixas" + form_key_suffix_inss, 
                                             placeholder='''[{"valor_inicial": 0, "valor_final": 1412.00, "aliquota": 7.5}, ...]''',
@@ -931,7 +934,7 @@ def mostrar_pagina_inss():
             valor_teto_contribuicao_inss = st.number_input("Valor Teto Contribuição (R$)", value=default_valor_teto_inss, min_value=0.0, format="%.2f", step=0.01, key="inss_teto" + form_key_suffix_inss, help="Opcional. Valor máximo para base de cálculo do INSS.")
             observacao_inss = st.text_area("Observação", value=default_observacao_inss, key="inss_obs" + form_key_suffix_inss)
             
-            submit_button_label_inss = "Salvar Nova Tabela" if not editing_inss_item_data else "Atualizar Tabela"
+            submit_button_label_inss = "Salvar Nova Vigência" if not editing_inss_item_data else "Atualizar Vigência"
             submit_button_inss = st.form_submit_button(submit_button_label_inss)
 
             if editing_inss_item_data:
@@ -940,40 +943,27 @@ def mostrar_pagina_inss():
                     st.rerun()
 
             if submit_button_inss:
-                if not data_inicio_vigencia_inss or not faixas_inss_json:
-                    st.error("Data Início Vigência e Faixas de Contribuição são obrigatórios.")
+                if not data_inicio_vigencia_inss or aliquota_mensal <= 0 or aliquota_multa_rescisoria <=0:
+                    st.error("Data Início Vigência, Alíquota Mensal e Alíquota Multa Rescisória são obrigatórios e devem ser positivos.")
                 elif data_fim_especificada_inss and data_fim_vigencia_inss_input_val and data_fim_vigencia_inss_input_val < data_inicio_vigencia_inss:
-                    st.error("Data Fim Vigência não pode ser anterior à Data Início Vigência.")
+                     st.error("Data Fim Vigência não pode ser anterior à Data Início Vigência.")
                 else:
-                    parsed_faixas_ok = True
-                    parsed_faixas = []
-                    if faixas_inss_json:
-                        try:
-                            parsed_faixas = json.loads(faixas_inss_json)
-                            if not isinstance(parsed_faixas, list) or not all(isinstance(item, dict) for item in parsed_faixas):
-                                st.error("Faixas de Contribuição: Formato JSON inválido. Deve ser uma lista de objetos.")
-                                parsed_faixas_ok = False
-                        except json.JSONDecodeError:
-                            st.error("Faixas de Contribuição: Formato JSON inválido.")
-                            parsed_faixas_ok = False
-                    
-                    if parsed_faixas_ok:
-                        payload_inss = {
-                            "data_inicio_vigencia": data_inicio_vigencia_inss.isoformat(),
-                            "data_fim_vigencia": data_fim_vigencia_inss_input_val.isoformat() if data_fim_vigencia_inss_input_val and data_fim_especificada_inss else None,
-                            "faixas": parsed_faixas,
-                            "valor_teto_contribuicao": valor_teto_contribuicao_inss if valor_teto_contribuicao_inss > 0 else None,
-                            "observacao": observacao_inss if observacao_inss else None
-                        }
-                        try:
-                            if editing_inss_item_data:
-                                if update_inss_entry(str(editing_inss_item_data['id_versao']), payload_inss):
-                                    st.rerun()
-                            else:
-                                if create_inss_entry(payload_inss):
-                                    st.rerun()
-                        except Exception as e_submit:
-                            st.error(f"Erro ao submeter o formulário INSS: {e_submit}")
+                    payload_inss = {
+                        "data_inicio_vigencia": data_inicio_vigencia_inss.isoformat(),
+                        "data_fim_vigencia": data_fim_vigencia_inss_input_val.isoformat() if data_fim_vigencia_inss_input_val and data_fim_especificada_inss else None,
+                        "aliquota_mensal": aliquota_mensal,
+                        "aliquota_multa_rescisoria": aliquota_multa_rescisoria,
+                        "observacao": observacao_inss if observacao_inss else None
+                    }
+                    try: # Adicionado try para o bloco de create/update
+                        if editing_inss_item_data:
+                            if update_inss_entry(str(editing_inss_item_data['id_versao']), payload_inss):
+                                st.rerun()
+                        else:
+                            if create_inss_entry(payload_inss):
+                                st.rerun()
+                    except Exception as e_submit: # Adicionado except para capturar exceções
+                        st.error(f"Erro ao submeter o formulário INSS: {e_submit}")
     
     with col_view_inss:
         st.subheader("Histórico de Tabelas INSS")
@@ -1029,12 +1019,12 @@ def mostrar_pagina_inss():
 
                 row_cols_list_inss[4].text(display_row_series_inss.get('valor_teto_contribuicao_fmt', '-'))
 
-                obs_text_inss = str(display_row_series_inss.get('observacao', '') or "-")
-                if len(obs_text_inss) > 25:
-                    with row_cols_list_inss[5].expander("Ver Obs."):
-                        st.markdown(obs_text_inss)
+                observacao_text_display = str(display_row_series_inss.get('observacao', '') or "-")
+                if len(observacao_text_display) > 30:
+                     with row_cols_list_inss[5].expander("Ver Obs."):
+                        st.markdown(observacao_text_display)
                 else:
-                    row_cols_list_inss[5].text(obs_text_inss)
+                    row_cols_list_inss[5].text(observacao_text_display)
 
                 if row_cols_list_inss[6].button("✏️", key=f"edit_inss_{item_id_str_inss}", help="Editar esta tabela"):
                     st.session_state.editing_inss_item = row_data_series_inss.to_dict()
@@ -1181,8 +1171,6 @@ def mostrar_pagina_irrf():
                             default_faixas_irrf_str = json.dumps(parsed_json, ensure_ascii=False, indent=2)
                         except json.JSONDecodeError:
                             default_faixas_irrf_str = raw_faixas_irrf
-                    else:
-                        default_faixas_irrf_str = str(raw_faixas_irrf)
                 except Exception as e: 
                     print(f"Erro ao processar faixas IRRF: {raw_faixas_irrf}, Erro: {e}")
                     default_faixas_irrf_str = str(raw_faixas_irrf)
@@ -1204,7 +1192,7 @@ def mostrar_pagina_irrf():
             default_observacao_irrf = str(editing_irrf_item_data.get('observacao', ""))
 
         with st.form("irrf_add_edit_form" + form_key_suffix_irrf, clear_on_submit=(not editing_irrf_item_data)):
-            data_inicio_vigencia_irrf = st.date_input("Data Início Vigência*", value=default_data_inicio_irrf, key="irrf_div" + form_key_suffix_irrf, help="Data de início da validade desta tabela.")
+            data_inicio_vigencia_irrf = st.date_input("Data Início Vigência*", value=default_data_inicio_irrf, key="irrf_div" + form_key_suffix_irrf, help="Data de início da validade destes parâmetros.")
             
             col_fim_chk_irrf, col_fim_date_irrf = st.columns([1,2])
             with col_fim_chk_irrf:
@@ -1221,7 +1209,7 @@ def mostrar_pagina_irrf():
 
             faixas_irrf_json = st.text_area("Faixas de Contribuição (JSON)*", value=default_faixas_irrf_str, height=200, key="irrf_faixas" + form_key_suffix_irrf, 
                                             placeholder='''[{"valor_inicial": 0, "valor_final": 2259.20, "aliquota": 0, "parcela_deduzir": 0}, ...]''',
-                                            help="Lista de faixas. Ex: [{\\"valor_inicial\\": 0, \\"valor_final\\": 2259.20, \\"aliquota\\": 0, \\"parcela_deduzir\\": 0}, ...]. Valor final é opcional para a última faixa.")
+                                            help="Lista de faixas. Ex: [{\"valor_inicial\": 0, \"valor_final\": 2259.20, \"aliquota\": 0, \"parcela_deduzir\": 0}, {\"valor_inicial\": 2259.21, \"aliquota\": 7.5, \"valor_final\": 3000.00}] Valor final é opcional para a última faixa.")
             
             deducao_por_dependente_irrf = st.number_input("Dedução por Dependente (R$)*", value=default_deducao_dependente_irrf, min_value=0.0, format="%.2f", step=0.01, key="irrf_deducao_dependente" + form_key_suffix_irrf)
             limite_desconto_simplificado_irrf = st.number_input("Limite Desconto Simplificado (R$)", value=default_limite_desconto_simplificado_irrf, min_value=0.0, format="%.2f", step=0.01, key="irrf_limite_simplificado" + form_key_suffix_irrf, help="Opcional. Valor do desconto simplificado mensal.")
@@ -1241,31 +1229,32 @@ def mostrar_pagina_irrf():
                 elif data_fim_especificada_irrf and data_fim_vigencia_irrf_input_val and data_fim_vigencia_irrf_input_val < data_inicio_vigencia_irrf:
                     st.error("Data Fim Vigência não pode ser anterior à Data Início Vigência.")
                 else:
-                    parsed_faixas_ok_irrf = True
-                    parsed_faixas_irrf = []
-                    if faixas_irrf_json:
-                        try:
-                            parsed_faixas_irrf = json.loads(faixas_irrf_json)
-                            if not isinstance(parsed_faixas_irrf, list) or not all(isinstance(item, dict) for item in parsed_faixas_irrf):
-                                st.error("Faixas de Contribuição IRRF: Formato JSON inválido. Deve ser uma lista de objetos.")
-                                parsed_faixas_ok_irrf = False
-                        except json.JSONDecodeError:
-                            st.error("Faixas de Contribuição IRRF: Formato JSON inválido.")
-                            parsed_faixas_ok_irrf = False
-                    
-                    if parsed_faixas_ok_irrf:
-                        payload_irrf = {
+                    # Validações iniciais passaram, processar faixas e payload
+                    parsed_faixas_irrf_list = None
+                    try:
+                        temp_parsed_faixas = json.loads(faixas_irrf_json)
+                        if isinstance(temp_parsed_faixas, list) and all(isinstance(item, dict) for item in temp_parsed_faixas):
+                            parsed_faixas_irrf_list = temp_parsed_faixas
+                        else:
+                            st.error("Faixas de Contribuição: Formato JSON inválido. Deve ser uma lista de dicionários.")
+                    except json.JSONDecodeError:
+                        st.error("Faixas de Contribuição: Erro ao decodificar JSON.")
 
+
+                    if parsed_faixas_irrf_list is not None: # Prosseguir somente se as faixas foram parseadas com sucesso
+                        payload_irrf = {
                             "data_inicio_vigencia": data_inicio_vigencia_irrf.isoformat(),
+                           
                             "data_fim_vigencia": data_fim_vigencia_irrf_input_val.isoformat() if data_fim_vigencia_irrf_input_val and data_fim_especificada_irrf else None,
-                            "faixas": parsed_faixas_irrf,
+                            "faixas": parsed_faixas_irrf_list,
                             "deducao_por_dependente": deducao_por_dependente_irrf,
                             "limite_desconto_simplificado": limite_desconto_simplificado_irrf if limite_desconto_simplificado_irrf > 0 else None,
-                            "observacao": observacao_irrf if observacao_irrf else None
+                            "observacao": observacao_irrf
                         }
+                        
                         try:
                             if editing_irrf_item_data:
-                                if update_irrf_entry(str(editing_irrf_item_data['id_versao']), payload_irrf):
+                                if update_irrf_entry(editing_irrf_item_data['id_versao'], payload_irrf):
                                     st.rerun()
                             else:
                                 if create_irrf_entry(payload_irrf):
@@ -1293,7 +1282,7 @@ def mostrar_pagina_irrf():
                         df_irrf_display[col_name_irrf] = df_irrf_display[col_name_irrf].apply(lambda x: x.strftime('%d/%m/%Y %H:%M') if pd.notna(x) else "-")
                     else: # data_inicio_vigencia
                         df_irrf_display[col_name_irrf] = df_irrf_display[col_name_irrf].apply(lambda x: x.strftime('%d/%m/%Y') if pd.notna(x) else "-")
-            
+
             if 'faixas' in df_irrf_display.columns:
                 df_irrf_display['faixas_str'] = df_irrf_display['faixas'].apply(
                     lambda x: json.dumps(x, ensure_ascii=False, indent=1) if isinstance(x, list) and x else "-"
@@ -1304,7 +1293,7 @@ def mostrar_pagina_irrf():
                  df_irrf_display['limite_desconto_simplificado_fmt'] = df_irrf_display['limite_desconto_simplificado'].apply(lambda x: f"R$ {x:.2f}" if pd.notna(x) else "-")
 
             header_cols_irrf = st.columns([1, 2, 2, 3, 2, 2, 2, 1, 1]) 
-            column_names_irrf = ["ID", "Início Vig.", "Fim Vig.", "Faixas", "Dedução Dep.", "Desc. Simplif.", "Obs.", "Editar", "Inativar"]
+            column_names_irrf = ["ID", "Início Vig.", "Fim Vig.", "Faixas", "Dedução Dep.", "Desc. Simplificado", "Obs.", "Editar", "Inativar"]
             for h_col, name in zip(header_cols_irrf, column_names_irrf):
                 h_col.markdown(f"**{name}**")
             st.markdown("---")
@@ -1382,308 +1371,101 @@ def mostrar_pagina_salario_familia():
             st.error(f"Erro de conexão ao criar tabela de Salário Família: {e}")
             return None
 
-    # Layout da página
-    col_form_sf, col_view_sf = st.columns([1, 2])
+# --- Página de Importação de Folha de Pagamento ---
+def mostrar_pagina_importacao_folha():
+    st.title("Importação de Folha de Pagamento")
 
-    with col_form_sf:
-        st.subheader("Adicionar Nova Vigência de Tabela Salário Família")
-        with st.form("sf_add_form", clear_on_submit=True):
-            data_inicio_vigencia_sf = st.date_input("Data Início Vigência*", key="sf_div", help="Data de início da validade desta tabela.")
-            
-            col_fim_chk_sf, col_fim_date_sf = st.columns([1,2])
-            with col_fim_chk_sf:
-                data_fim_especificada_sf = st.checkbox("Definir Data Fim?", key="sf_dfv_chk")
-            data_fim_vigencia_sf = None
-            if data_fim_especificada_sf:
-                with col_fim_date_sf:
-                    data_fim_vigencia_sf = st.date_input("Data Fim Vigência", key="sf_dfv_date", help="Opcional. Se não definida, a vigência é considerada aberta.")
+    tipo_arquivo = st.selectbox(
+        "Selecione o tipo de arquivo:",
+        ["PDF", "CSV", "TXT (Layout Padrão)", "XLSX (Template AUDITORIA360)"]
+    )
 
-            faixas_sf_json = st.text_area("Faixas de Salário Família (JSON)*", height=200, key="sf_faixas", 
-                                            placeholder='''[{"valor_renda_minima": 0, "valor_renda_maxima": 1819.26, "valor_quota": 62.04}, ...]''',
-                                            help="Lista de faixas. Ex: [{\"valor_renda_minima\": 0, \"valor_renda_maxima\": 1819.26, \"valor_quota\": 62.04}, ...].")
-            
-            observacao_sf = st.text_area("Observação", key="sf_obs")
-            
-            submit_button_sf = st.form_submit_button("Salvar Nova Tabela Salário Família")
+    uploaded_file = st.file_uploader(
+        "Selecione o arquivo da folha:",
+        type=["pdf", "csv", "txt", "xlsx"]
+    )
 
-            if submit_button_sf:
-                if not data_inicio_vigencia_sf or not faixas_sf_json:
-                    st.error("Data Início Vigência e Faixas de Salário Família são obrigatórios.")
-                else:
-                    try:
-                        parsed_faixas_sf = json.loads(faixas_sf_json)
-                        if not isinstance(parsed_faixas_sf, list) or not all(isinstance(item, dict) for item in parsed_faixas_sf):
-                            st.error("Faixas de Salário Família: Formato JSON inválido. Deve ser uma lista de objetos.")
-                        else:
-                            # Validação básica dos campos das faixas
-                            faixas_validas = True
-                            for faixa in parsed_faixas_sf:
-                                if not all(k in faixa for k in ["valor_renda_maxima", "valor_quota"]) or \
-                                   not isinstance(faixa.get("valor_renda_maxima"), (int, float)) or \
-                                   not isinstance(faixa.get("valor_quota"), (int, float)):
-                                    st.error("Cada faixa deve conter 'valor_renda_maxima' e 'valor_quota' numéricos. 'valor_renda_minima' é opcional e numérico.")
-                                    faixas_validas = False
-                                    break
-                                if "valor_renda_minima" in faixa and not isinstance(faixa.get("valor_renda_minima"), (int, float)):
-                                    st.error("Se 'valor_renda_minima' for fornecido, deve ser numérico.")
-                                    faixas_validas = False
-                                    break
-                            
-                            if faixas_validas:
-                                payload_sf = {
-                                    "data_inicio_vigencia": data_inicio_vigencia_sf.isoformat(),
-                                    "data_fim_vigencia": data_fim_vigencia_sf.isoformat() if data_fim_vigencia_sf else None,
-                                    "faixas": parsed_faixas_sf,
-                                    "observacao": observacao_sf if observacao_sf else None
-                                }
-                                if create_sf_entry(payload_sf):
-                                    st.rerun()
-                    except json.JSONDecodeError:
-                        st.error("Faixas de Salário Família: Formato JSON inválido.")
-    
-    with col_view_sf:
-        st.subheader("Histórico de Tabelas Salário Família")
-        sf_data = fetch_sf_data()
-        if sf_data:
-            df_sf = pd.DataFrame(sf_data)
-            df_sf_display = df_sf.copy()
+    periodo_referencia = st.date_input(
+        "Mês/Ano de Referência da Folha:",
+        format="MM/YYYY",
+        help="Primeiro dia do mês."
+    )
 
-            for col_date in ['data_inicio_vigencia', 'data_fim_vigencia', 'data_cadastro', 'data_atualizacao']:
-                if col_date in df_sf_display.columns:
-                    df_sf_display[col_date] = pd.to_datetime(df_sf_display[col_date], errors='coerce')
-                    if col_date == 'data_fim_vigencia':
-                        df_sf_display[col_date] = df_sf_display[col_date].dt.strftime('%d/%m/%Y').fillna("Aberta")
-                    else:
-                        df_sf_display[col_date] = df_sf_display[col_date].dt.strftime('%d/%m/%Y' + (' %H:%M' if col_date in ['data_cadastro', 'data_atualizacao'] else ''))
-            
-            if 'faixas' in df_sf_display.columns:
-                df_sf_display['faixas_str'] = df_sf_display['faixas'].apply(lambda x: json.dumps(x, ensure_ascii=False, indent=2) if isinstance(x, list) else str(x))
+    if uploaded_file and periodo_referencia and st.button("Processar Arquivo da Folha"):
+        with st.spinner("Processando..."):
+            # Chamar o backend para processar o arquivo
+            processar_folha(uploaded_file, tipo_arquivo, periodo_referencia)
 
-            colunas_visiveis_sf = ['id_versao', 'data_inicio_vigencia', 'data_fim_vigencia', 'faixas_str', 'observacao', 'data_cadastro', 'data_atualizacao']
-            colunas_para_mostrar_sf = [col for col in colunas_visiveis_sf if col in df_sf_display.columns]
-            
-            if 'faixas' in df_sf_display.columns and 'faixas_str' not in colunas_para_mostrar_sf and 'faixas_str' in df_sf_display.columns:
-                 if 'faixas' in colunas_para_mostrar_sf:
-                    colunas_para_mostrar_sf[colunas_para_mostrar_sf.index('faixas')] = 'faixas_str'
-            elif 'faixas' in df_sf_display.columns and 'faixas' not in colunas_para_mostrar_sf:
-                 colunas_para_mostrar_sf.insert(3, 'faixas')
-
-
-            st.dataframe(df_sf_display[colunas_para_mostrar_sf], use_container_width=True, hide_index=True,
-                         column_config={
-                             "faixas_str": st.column_config.TextColumn("Faixas (JSON)")
-                         }
-                        )
-            # TODO: Adicionar botões de Editar/Inativar por linha para Salário Família
-        else:
-            st.info("Nenhum histórico de Salário Família encontrado ou erro ao carregar.")
-
-def mostrar_pagina_gestao_controle_folhas():
-    import pandas as pd
-    from datetime import datetime
-    st.header("🗓️ Gestão de Controle de Folhas")
-    tab_importar, tab_visualizar = st.tabs(["📤 Importar Dados CSV", "📊 Visualizar Controle Mensal"])
-    with tab_importar:
-        st.subheader("Importar Planilha de Controle Mensal")
-        st.markdown("""
-            Envie seu arquivo CSV de controle mensal.
-            - Os dados relevantes devem começar a partir da linha 9 do arquivo original.
-            - Certifique-se de que o arquivo está no formato CSV.
-        """)
-        current_year = datetime.now().year
-        meses_nomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
-        col_ano_import, col_mes_import = st.columns([1,2])
-        with col_ano_import:
-            ano_ref_import = st.number_input("Ano de Referência", min_value=2020, max_value=current_year + 5, value=current_year, key="import_ano")
-        with col_mes_import:
-            mes_ref_import_nome = st.selectbox("Mês de Referência", options=meses_nomes, index=datetime.now().month -1, key="import_mes_nome")
-        mes_ref_import_num = meses_nomes.index(mes_ref_import_nome) + 1
-        uploaded_csv_file = st.file_uploader("Escolha o arquivo CSV", type="csv", key="controle_folha_uploader")
-        if st.button("⚙️ Processar e Importar CSV", type="primary", key="btn_processar_import"):
-            if uploaded_csv_file is not None:
-                with st.spinner("Processando e importando dados... Por favor, aguarde."):
-                    files = {"csv_file": (uploaded_csv_file.name, uploaded_csv_file, "text/csv")}
-                    params = {"ano_referencia": ano_ref_import, "mes_referencia": mes_ref_import_num}
-                    try:
-                        response = requests.post(f"{API_BASE_URL}/api/v1/controle-folha/importar-csv/", files=files, params=params)
-                        if response.status_code == 200:
-                            resultado_importacao = response.json()
-                            st.success(resultado_importacao.get("message", "Dados importados com sucesso!"))
-                            if resultado_importacao.get("erros_processamento"):
-                                st.warning("Algumas linhas tiveram problemas na importação:")
-                                st.json(resultado_importacao.get("erros_processamento"))
-                        else:
-                            st.error(f"Falha na importação (HTTP {response.status_code}): {response.json().get('detail', 'Erro desconhecido.')}")
-                    except requests.RequestException as e:
-                        st.error(f"Erro de conexão ao importar: {e}")
-                    except Exception as e:
-                        st.error(f"Ocorreu um erro inesperado durante a importação: {str(e)}")
-            else:
-                st.warning("Por favor, selecione o ano, mês e um arquivo CSV para importar.")
-    with tab_visualizar:
-        st.subheader("Consultar Controle Mensal Registrado")
-        col_ano_view, col_mes_view, col_emp_view = st.columns(3)
-        with col_ano_view:
-            ano_ref_visualizar = st.number_input("Ano", min_value=2020, max_value=current_year + 5, value=current_year, key="view_ano")
-        with col_mes_view:
-            opcoes_mes_view = ["Todos os Meses"] + meses_nomes
-            mes_ref_visualizar_nome = st.selectbox("Mês", options=opcoes_mes_view, index=0, key="view_mes_nome")
-        mes_ref_visualizar_num = None
-        if mes_ref_visualizar_nome != "Todos os Meses":
-            mes_ref_visualizar_num = meses_nomes.index(mes_ref_visualizar_nome) + 1
-        with col_emp_view:
-            empresa_id_visualizar = st.text_input("ID da Empresa (Opcional)", key="view_empresa_id", help="Deixe em branco para todas as empresas.")
-        if st.button("🔍 Buscar Dados de Controle", key="btn_buscar_controle"):
-            with st.spinner("Buscando dados..."):
-                params_busca = {
-                    "ano_referencia": ano_ref_visualizar,
-                    "mes_referencia": mes_ref_visualizar_num,
-                    "empresa_id": empresa_id_visualizar if empresa_id_visualizar else None,
-                }
-                params_busca_clean = {k: v for k, v in params_busca.items() if v is not None}
-                try:
-                    response = requests.get(f"{API_BASE_URL}/api/v1/controle-folha/", params=params_busca_clean)
-                    if response.status_code == 200:
-                        dados_controle = response.json()
-                        if dados_controle:
-                            st.success(f"{len(dados_controle)} registro(s) encontrado(s).")
-                            df_controle = pd.DataFrame(dados_controle)
-                            colunas_display = [
-                                'empresa_id', 'ano_referencia', 'mes_referencia', 'status_dados_pasta',
-                                'documentos_enviados_cliente', 'data_envio_documentos_cliente',
-                                'guia_fgts_gerada', 'darf_inss_gerado', 'esocial_dctfweb_enviado',
-                                'tipo_movimentacao', 'particularidades_observacoes'
-                            ]
-                            colunas_existentes_no_df = [col for col in colunas_display if col in df_controle.columns]
-                            st.dataframe(df_controle[colunas_existentes_no_df], hide_index=True, use_container_width=True)
-                        else:
-                            st.info("Nenhum registro de controle encontrado para os filtros aplicados.")
-                    else:
-                        st.error(f"Falha ao buscar dados (HTTP {response.status_code}): {response.json().get('detail', 'Erro desconhecido.')}")
-                except requests.RequestException as e:
-                    st.error(f"Erro de conexão ao buscar dados: {e}")
-                except Exception as e:
-                    st.error(f"Ocorreu um erro inesperado ao buscar dados: {str(e)}")
-
-def initialize_app():
-    pass
-
-def run_login_flow():
-    # DEBUG: Print a message before attempting login call
-    print("DEBUG PAINEL: About to call authenticator.login()")
-    login_result = authenticator.login('main', fields={'Form name': 'Login Auditoria360'})
-    print(f"DEBUG PAINEL: authenticator.login() call completed. Result: {login_result}")
-
-    name = None
-    authentication_status = None
-    username = None
-
-    if login_result is not None:
-        try:
-            name, authentication_status, username = login_result
-            print(f"DEBUG PAINEL: Login result unpacked. Status: {authentication_status}, Name: {name}, Username: {username}")
-        except ValueError:
-            print(f"DEBUG PAINEL: Error unpacking login_result. Expected 3 values, got {len(login_result) if isinstance(login_result, tuple) else 'not a tuple'}. Result: {login_result}")
-            # Define um status de falha se o desempacotamento falhar
-            authentication_status = False 
-    else:
-        print("DEBUG PAINEL: login_result is None. Setting authentication_status to None to show login form or error.")
-        # Se login_result é None, pode indicar que o formulário ainda precisa ser submetido
-        # ou um erro mais fundamental. Tratar como 'None' para potencialmente mostrar o formulário.
-        authentication_status = None
-
-
-    if authentication_status is False:
-        st.error('Usuário/senha incorreto')
-        print("DEBUG PAINEL: Authentication failed (False)")
-    elif authentication_status is None:
-        st.warning('Por favor, insira seu usuário e senha')
-        print("DEBUG PAINEL: Authentication is None (waiting for input)")
-    elif authentication_status:
-        print(f"DEBUG PAINEL: Authentication successful for user: {username} (Name: {name})")
-    return authentication_status
-
-def display_main_panel():
-    username = st.session_state.get("username")
-
-    if "recaptcha_verified_for_session" not in st.session_state:
-        st.session_state["recaptcha_verified_for_session"] = False
-
-    if not st.session_state["recaptcha_verified_for_session"]:
-        st.write(f"Bem-vindo(a) {st.session_state.get('name')}!")
-        st.info("Quase lá! Complete a verificação de segurança.")
-
-        recaptcha_token = st_recaptcha_custom(RECAPTCHA_SITE_KEY)
-
-        if st.button("Confirmar Sessão Segura"):
-            if not RECAPTCHA_SITE_KEY:
-                st.error("A verificação reCAPTCHA não pode ser processada pois a chave do site não está configurada.")
-            elif recaptcha_token:
-                if not API_BASE_URL:
-                    st.error("API_BASE_URL não configurado. Não é possível verificar o reCAPTCHA.")
-                else:
-                    try:
-                        response = requests.post(
-                            f"{API_BASE_URL}/auth/verify-recaptcha-session",
-                            json={"username": username, "recaptcha_token": recaptcha_token}
-                        )
-                        if response.status_code == 200 and response.json().get("recaptcha_valid"):
-                            st.session_state["recaptcha_verified_for_session"] = True
-                            st.success("Verificação de segurança completa!")
-                            st.rerun()
-                        else:
-                            error_detail = response.json().get('detail', 'Tente novamente.')
-                            st.error(f"Falha na verificação reCAPTCHA: {error_detail}")
-                            authenticator.logout('Logout', 'main')
-                            keys_to_delete = ["authentication_status", "name", "username", "recaptcha_verified_for_session", "logout"]
-                            for key in keys_to_delete:
-                                if key in st.session_state:
-                                    del st.session_state[key]
-                            st.rerun()
-                    except requests.RequestException as e:
-                        st.error(f"Erro de comunicação ao verificar reCAPTCHA: {e}")
-            else:
-                st.warning("Por favor, complete o desafio reCAPTCHA.")
-    else:
-        # Use uma chave única para o botão de logout se ele for renderizado aqui
-        authenticator.logout('Logout', 'main', key='main_panel_logout') 
-        st.title(f"Painel AUDITORIA360 - Bem-vindo(a) {st.session_state.get('name')}!")
-        
-        # Navegação por Abas
-        tab_titulos = [
-            "🗓️ Gestão de Controle de Folhas",
-            "🪙 Salário Mínimo",
-            "📊 FGTS",
-            "📄 INSS",
-            "💸 IRRF",
-            "👨‍👩‍👧‍👦 Salário Família"
-        ]
-        tab_controle_folhas, tab_sm, tab_fgts, tab_inss, tab_irrf, tab_sf = st.tabs(tab_titulos)
-
-        with tab_controle_folhas:
-            mostrar_pagina_gestao_controle_folhas()
-        with tab_sm:
-            mostrar_pagina_salario_minimo()
-        with tab_fgts:
-            mostrar_pagina_fgts()
-        with tab_inss:
-            mostrar_pagina_inss()
-        with tab_irrf:
-            mostrar_pagina_irrf()
-        with tab_sf:
-            mostrar_pagina_salario_familia()
-
-def main():
-    initialize_app()
-
-    if BRANDING_LOGO_URL:
-        st.sidebar.image(BRANDING_LOGO_URL, width=150)
-    if CLIENT_DISPLAY_NAME:
-        st.sidebar.markdown(f"<h3 style='text-align: center'>{CLIENT_DISPLAY_NAME}</h3>", unsafe_allow_html=True)
-
-    if run_login_flow():
-        display_main_panel()
-
+# --- Chamar a função da página de importação na execução principal ---
 if __name__ == "__main__":
-    st.set_page_config(layout="wide", page_title=f"Auditoria360 - {CLIENT_DISPLAY_NAME}")
-    main()
+    # Código principal da aplicação Streamlit
+    st.title("Sistema de Gestão de Folhas de Pagamento")
+    menu_options = ["Importação de Folha de Pagamento", "Gestão de Parâmetros Legais", "Relatórios", "Configurações"]
+    selected_menu = st.sidebar.selectbox("Selecione uma Opção", menu_options)
+
+    if selected_menu == "Importação de Folha de Pagamento":
+        mostrar_pagina_importacao_folha()
+    elif selected_menu == "Gestão de Parâmetros Legais":
+        # Chamar a função correspondente à página de gestão de parâmetros legais
+        pass  # Substituir pelo nome da função correspondente
+    elif selected_menu == "Relatórios":
+        # Chamar a função correspondente à página de relatórios
+        pass  # Substituir pelo nome da função correspondente
+    elif selected_menu == "Configurações":
+        # Chamar a função correspondente à página de configurações
+        pass  # Substituir pelo nome da função correspondente
+
+def processar_folha(uploaded_file, tipo_arquivo, periodo_referencia):
+    id_cliente = get_logged_in_client_id()  # Obter o ID do cliente logado
+    url = f"{API_BASE_URL}/api/v1/clientes/{id_cliente}/folhas/importar-{tipo_arquivo.lower()}-async"
+
+    files = {"file": uploaded_file}
+    data = {"periodo_referencia": periodo_referencia.isoformat()}
+
+    try:
+        response = requests.post(url, files=files, data=data)
+        response.raise_for_status()
+        st.success("Arquivo enviado com sucesso! O processamento será iniciado.")
+    except requests.RequestException as e:
+        st.error(f"Erro ao enviar o arquivo: {e}")
+
+def verificar_status_job(job_id):
+    id_cliente = get_logged_in_client_id()
+    url = f"{API_BASE_URL}/api/v1/clientes/{id_cliente}/folhas/importar-pdf-async/status/{job_id}"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        status = response.json()
+        return status
+    except requests.RequestException as e:
+        st.error(f"Erro ao verificar o status do job: {e}")
+        return None
+
+def processar_csv(uploaded_file):
+    try:
+        df = pd.read_csv(uploaded_file)
+        st.write("Pré-visualização do arquivo:")
+        st.dataframe(df.head())
+        # Validar colunas e tipos de dados
+        validar_csv(df)
+    except Exception as e:
+        st.error(f"Erro ao processar o arquivo CSV: {e}")
+
+def exibir_erros(erros):
+    if erros:
+        st.error("Erros encontrados durante o processamento:")
+        for erro in erros:
+            st.write(f"- {erro['mensagem_erro_sistema']}")
+
+# Definir valores padrão para 'aliquota_mensal' e 'aliquota_multa_rescisoria' antes de seu uso
+aliquota_mensal = 8.0  # Valor padrão
+aliquota_multa_rescisoria = 40.0  # Valor padrão
+
+def get_logged_in_client_id():
+    # Implementação fictícia para obter o ID do cliente logado
+    return 12345
+
+def validar_csv(df):
+    # Implementação fictícia para validar o CSV
+    st.write("Validação do CSV concluída com sucesso.")

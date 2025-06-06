@@ -59,6 +59,8 @@ async def login_contabilidade_obter_token(form_data: OAuth2PasswordRequestForm =
             description="Retorna informações detalhadas sobre o usuário da contabilidade atualmente autenticado."
 )
 async def ler_usuario_contabilidade_logado(current_user: TokenData = Depends(get_current_active_user)):
+    if not current_user.id_usuario_contabilidade:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido: usuário não identificado.")
     usuario_completo = get_usuario_contabilidade_completo_por_id(current_user.id_usuario_contabilidade)
     if not usuario_completo:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado no banco de dados")

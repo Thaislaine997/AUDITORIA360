@@ -198,3 +198,54 @@ CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.ContabilidadeEmpre
 OPTIONS(
     description="Tabela de associação entre Contabilidades e as Empresas Clientes que elas atendem."
 );
+
+-- Tabela para sugestões de atualização de parâmetros legais extraídas por IA
+CREATE TABLE IF NOT EXISTS `auditoria-folha.dataset_auditoria.SugestoesAtualizacaoParametros` (
+    id_sugestao STRING NOT NULL,
+    tipo_parametro STRING NOT NULL, -- Ex: INSS, IRRF, FGTS, etc.
+    dados_sugeridos_json STRING NOT NULL, -- JSON com os dados extraídos pela IA
+    nome_documento_fonte STRING,
+    texto_documento_fonte_hash STRING,
+    status_sugestao STRING NOT NULL, -- 'pendente', 'aprovada', 'rejeitada'
+    data_sugestao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    resumo_ia_sugestao STRING,
+    usuario_solicitante STRING,
+    justificativa_rejeicao STRING,
+    data_aprovacao TIMESTAMP,
+    usuario_aprovador STRING,
+    PRIMARY KEY (id_sugestao) NOT ENFORCED
+)
+OPTIONS(
+    description="Sugestões de atualização de parâmetros legais extraídas por IA e aguardando aprovação/revisão."
+);
+
+-- Épico 2.4: Checklist de Fechamento da Folha
+
+CREATE TABLE IF NOT EXISTS auditoria_folha_dataset.ChecklistFechamentoFolha (
+    id_item_checklist STRING NOT NULL OPTIONS(description="ID único do item do checklist para uma folha específica (PK)"),
+    id_folha_processada_fk STRING NOT NULL OPTIONS(description="ID da folha processada à qual este item pertence (FK para FolhasProcessadasHeader)"),
+    id_cliente STRING NOT NULL OPTIONS(description="ID do cliente proprietário da folha"),
+    periodo_referencia DATE NOT NULL OPTIONS(description="Mês/Ano de referência da folha"),
+    item_pai_id STRING OPTIONS(description="ID do item pai, se este for um sub-item"),
+    ordem_item INT64 NOT NULL OPTIONS(description="Ordem de exibição do item no checklist"),
+    categoria_item STRING OPTIONS(description="Categoria do item (Ex: PREPARACAO, ANALISE_DIVERGENCIAS, CONFERENCIA, FINALIZACAO)"),
+    descricao_item_checklist STRING NOT NULL OPTIONS(description="Descrição da tarefa do checklist"),
+    status_item_checklist STRING NOT NULL DEFAULT 'PENDENTE' OPTIONS(description="Status do item: PENDENTE, EM_ANDAMENTO, CONCLUIDO, NAO_APLICAVEL, BLOQUEADO"),
+    data_conclusao_item TIMESTAMP OPTIONS(description="Data e hora em que o item foi marcado como CONCLUIDO"),
+    usuario_responsavel_item STRING OPTIONS(description="Usuário que atualizou o item por último ou é responsável"),
+    notas_observacoes_item STRING OPTIONS(description="Notas ou observações adicionadas pelo usuário ao item"),
+    link_referencia_item STRING OPTIONS(description="URL para uma página relevante no sistema ou externa"),
+    tipo_item STRING NOT NULL DEFAULT 'MANUAL' OPTIONS(description="Tipo de item: MANUAL, AUTOMATICO, BLOQUEADOR"),
+    data_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+    data_ultima_modificacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+    PRIMARY KEY (id_item_checklist) NOT ENFORCED
+    -- FOREIGN KEY (id_folha_processada_fk) REFERENCES auditoria_folha_dataset.FolhasProcessadasHeader(id_folha_processada) NOT ENFORCED
+)
+OPTIONS (
+    description="Armazena os itens do checklist de fechamento para cada folha processada, seu status e notas."
+);
+
+ALTER TABLE auditoria_folha_dataset.FolhasProcessadasHeader
+ADD COLUMN IF NOT EXISTS data_fechamento_cliente TIMESTAMP OPTIONS(description="Data em que o cliente marcou a folha como fechada"),
+ADD COLUMN IF NOT EXISTS usuario_fechamento_cliente STRING OPTIONS(description="Usuário cliente que marcou a folha como fechada"),
+ADD COLUMN IF NOT EXISTS checklist_status STRING OPTIONS(description="Status resumo do checklist. Ex: PENDENTE, EM_PROGRESSO, CONCLUIDO_COM_PENDENCIAS, CONCLUIDO");

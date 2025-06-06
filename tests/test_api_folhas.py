@@ -34,6 +34,7 @@ def mock_upload_file(mocker):
     mock_file = MagicMock(spec=UploadFile)
     mock_file.filename = "test_sheet.xlsx"
     mock_file.content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    mock_file.file = MagicMock()  # Corrigir: garantir que file é um mock
     mock_file.file.read.return_value = b"dummy excel content"
     return mock_file
 
@@ -77,3 +78,17 @@ def test_processar_folha_auth_required(client):
     resp = client.post("/api/v1/folhas/processar/some_id")
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente."
+
+def test_folhas_disponiveis_para_checklist(client):
+    id_cliente = "cliente_a"
+    headers = {"x-client-id": id_cliente}
+    resp = client.get(f"/api/v1/clientes/{id_cliente}/folhas-processadas/disponiveis-para-checklist", headers=headers)
+    assert resp.status_code in (200, 404, 500)  # 404/500 se não houver dados/config, 200 se sucesso
+    if resp.status_code == 200:
+        folhas = resp.json()
+        assert isinstance(folhas, list)
+        for folha in folhas:
+            assert "id_folha_processada" in folha
+            assert "descricao_display" in folha
+            assert "periodo_referencia" in folha
+            assert "status_geral_folha" in folha

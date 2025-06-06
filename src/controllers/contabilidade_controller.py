@@ -9,12 +9,12 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 import uuid
 
-from src.schemas import (
+from src.schemas_models import (
     RegistroContabilidadePayload,
     RegistroContabilidadeResponse,
     ContabilidadeResponse,
     UsuarioContabilidadeResponse,
-    Token, 
+    Token,
     TokenData,
     EmpresaClienteSimplificado
 )

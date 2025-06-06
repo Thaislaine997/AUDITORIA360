@@ -62,16 +62,24 @@ async def get_empresa_route(id_empresa: str, loader: ControleFolhaLoader = Depen
         except ValueError:
             raise HTTPException(status_code=400, detail=f"ID da empresa inválido: {id_empresa}. Deve ser um inteiro.")
 
-        empresa_data = loader.get_empresa_by_id(empresa_id_int)
-        
+        # Substituir chamada para método inexistente por busca por CNPJ ou listar empresas
+        # Aqui, vamos buscar por CNPJ se o id_empresa for um CNPJ válido, senão buscar na lista de empresas
+        empresa_data = None
+        if len(str(empresa_id_int)) == 14:  # CNPJ
+            empresa_data = loader.get_empresa_by_cnpj(str(empresa_id_int))
+        else:
+            # Buscar na lista de empresas
+            df_empresas = loader.listar_todas_as_empresas()
+            if not df_empresas.empty:
+                empresa_data = next((row for row in df_empresas.to_dict(orient='records') if str(row.get('empresa_id')) == str(empresa_id_int)), None)
+
         if empresa_data is None:
             raise HTTPException(status_code=404, detail=f"Empresa com ID {id_empresa} não encontrada.")
-        
-        # Garante que o client_id do loader (solicitante) corresponde ao client_id do registro da empresa
+
         if hasattr(loader, 'client_id') and empresa_data.get("client_id") != loader.client_id:
             logger.warning(f"Tentativa de acesso indevido à empresa {id_empresa}. Solicitante: {loader.client_id}, Dono do registro: {empresa_data.get('client_id')}.")
             raise HTTPException(status_code=404, detail=f"Empresa com ID {id_empresa} não encontrada ou acesso não permitido.")
-            
+
         return JSONResponse(content={"status": "success", "data": empresa_data}, status_code=200)
         
     except HTTPException: # Captura HTTPExceptions levantadas por get_loader_empresas, get_empresa_by_id, ou as próprias verificações

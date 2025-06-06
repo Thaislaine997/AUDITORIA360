@@ -109,7 +109,8 @@ async def update_auditoria(
         if auditoria.id_folha == id_folha:
             # Atualização simples de mock - apenas nome do arquivo como exemplo
             updated_item = auditoria.copy(update={"nome_arquivo": f"{auditoria_data.nome.replace(' ', '_')}_updated.pdf", "status": "Atualizada"})
-            MOCK_AUDITORIAS_DB[client_id][i] = updated_item
+            auditorias_cliente[i] = updated_item
+            MOCK_AUDITORIAS_DB[client_id] = auditorias_cliente
             return updated_item
     raise HTTPException(status_code=404, detail="Auditoria não encontrada ou acesso não permitido")
 

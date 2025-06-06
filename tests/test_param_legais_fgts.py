@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from fastapi.testclient import TestClient
 from src.main import app
-from src.schemas import ParametrosFGTS # Ajustar se o nome do schema for diferente
+from src.schemas_models import TabelaFGTS
 from datetime import date, timedelta
 from typing import Optional
 

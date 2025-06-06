@@ -51,6 +51,122 @@ def test_listar_empresas_isolamento(...):
 - Use variáveis de ambiente para segredos sensíveis.
 - Sempre revise o checklist de QA e deploy antes de liberar para produção.
 
+## 6. Checklist Inteligente de Fechamento da Folha (NOVO)
+
+- O backend expõe endpoints REST para:
+  - Listar folhas processadas disponíveis para checklist (`/clientes/{id_cliente}/folhas-processadas/disponiveis-para-checklist`)
+  - CRUD de itens do checklist, geração dinâmica, dicas de IA (Gemini) e fechamento da folha
+- O frontend (Streamlit) consome esses endpoints e exibe:
+  - Login, seleção de cliente/folha, checklist dinâmico, status/notas, dicas de IA, alerta de bloqueadores e fechamento
+- O checklist é salvo no BigQuery conforme schema em `docs/bigquery_schema.sql`
+- Veja exemplos de integração em `src/checklist_page.py`, `src/controllers/checklist_folha_controller.py` e `src/routes/checklist_folha_routes.py`
+- Para adicionar novos itens dinâmicos ou regras de checklist, edite o controller e o schema correspondente
+- O fluxo completo está documentado no manual do usuário
+
+## 7. Exemplos de Payloads e Respostas de API do Checklist
+
+### Listar folhas processadas disponíveis para checklist
+
+**GET** `/api/v1/clientes/{id_cliente}/folhas-processadas/disponiveis-para-checklist`
+
+**Resposta:**
+
+```json
+[
+  {
+    "id_folha_processada": "folha2025-05-01",
+    "descricao": "Folha Maio/2025",
+    "status": "EM_ABERTO"
+  },
+  {
+    "id_folha_processada": "folha2025-04-01",
+    "descricao": "Folha Abril/2025",
+    "status": "EM_ABERTO"
+  }
+]
+```
+
+### Buscar checklist de uma folha
+
+**GET** `/api/v1/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist`
+
+**Resposta:**
+
+```json
+[
+  {
+    "id_item_checklist": "item1",
+    "descricao": "Conferir INSS",
+    "categoria": "Tributos",
+    "status": "PENDENTE",
+    "criticidade": "BLOQUEADOR",
+    "notas": "",
+    "responsavel": "Maria"
+  },
+  {
+    "id_item_checklist": "item2",
+    "descricao": "Validar FGTS",
+    "categoria": "Tributos",
+    "status": "CONCLUIDO",
+    "criticidade": "ALTA",
+    "notas": "OK",
+    "responsavel": "João"
+  }
+]
+```
+
+### Atualizar item do checklist
+
+**PUT** `/api/v1/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist/{id_item_checklist}`
+
+**Payload:**
+
+```json
+{
+  "status": "CONCLUIDO",
+  "notas": "Conferido e validado."
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id_item_checklist": "item1",
+  "descricao": "Conferir INSS",
+  "categoria": "Tributos",
+  "status": "CONCLUIDO",
+  "criticidade": "BLOQUEADOR",
+  "notas": "Conferido e validado.",
+  "responsavel": "Maria"
+}
+```
+
+### Obter dica de IA para um item
+
+**GET** `/api/v1/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist/dica-ia?id_item_checklist=item1&descricao_item=Conferir%20INSS`
+
+**Resposta:**
+
+```json
+{
+  "dica": "Verifique se o valor do INSS está compatível com a tabela vigente e se não há descontos duplicados."
+}
+```
+
+### Marcar folha como fechada
+
+**POST** `/api/v1/clientes/{id_cliente}/folhas/{id_folha_processada}/marcar-fechada`
+
+**Resposta:**
+
+```json
+{
+  "status_folha": "FECHADA_CLIENTE",
+  "message": "Folha marcada como fechada com sucesso."
+}
+```
+
 ---
 
 > Consulte também os arquivos `onboarding_white_label.md`, `qa_checklist.md` e `deploy_checklist.md` para garantir qualidade e segurança no ciclo de vida do projeto.

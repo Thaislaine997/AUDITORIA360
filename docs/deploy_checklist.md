@@ -23,6 +23,9 @@
 - [ ] Deploy em ambiente de staging/teste
 - [ ] Validação do ambiente de staging (login, filtros, PDF, branding)
 - [ ] Deploy em produção
+- [x] Checklist inteligente de fechamento da folha testado em staging
+- [x] Deploy do backend e frontend com endpoints do checklist
+- [x] Validação do fluxo de seleção de folha e fechamento
 
 ## 5. Pós-Deploy
 

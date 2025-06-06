@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from src.main import app
-from src.schemas import TabelaINSS, FaixaINSS # Ajustar se os nomes dos schemas forem diferentes
+from src.schemas_models import TabelaINSS, FaixaINSS
 from datetime import date, timedelta
 from typing import List, Optional
 

@@ -12,8 +12,8 @@ def client(mocker): # Removido 'request' não utilizado
     original_builtins_open = builtins.open
     original_json_load = json.load
 
-    mocker.patch('builtins.open', new=original_builtins_open, autospec=True)
-    mocker.patch('json.load', new=original_json_load, autospec=True)
+    mocker.patch('builtins.open', new=original_builtins_open)
+    mocker.patch('json.load', new=original_json_load)
 
     original_config_dependency_override = app.dependency_overrides.pop(get_current_config, None)
     
