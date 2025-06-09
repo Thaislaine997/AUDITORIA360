@@ -1,4 +1,4 @@
-from src.schemas_models import (
+from src.schemas.schemas_models import (
     ControleMensalEmpresaSchema,
     ChatMessagePart,
     ChatMessage,

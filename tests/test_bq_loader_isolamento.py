@@ -1,5 +1,5 @@
 import pytest
-from src import bq_loader
+from src.utils.bq_loader import get_bigquery_client, ControleFolhaLoader, load_data_to_bigquery
 
 @pytest.fixture
 def config_cliente_a():
@@ -25,14 +25,14 @@ def config_cliente_b():
 
 def test_loader_exige_client_id(config_cliente_a):
     # Deve inicializar corretamente com client_id
-    loader = bq_loader.ControleFolhaLoader(config_cliente_a)
+    loader = ControleFolhaLoader(config_cliente_a)
     assert loader.client_id == "cliente_a"
 
     # Se faltar client_id, deve lançar erro
     config_sem_id = dict(config_cliente_a)
     config_sem_id.pop("client_id")
     with pytest.raises(ValueError):
-        bq_loader.ControleFolhaLoader(config_sem_id)
+        ControleFolhaLoader(config_sem_id)
 
 def test_load_data_to_bigquery_exige_client_id(config_cliente_a):
     # Se faltar client_id, deve lançar erro
@@ -40,7 +40,7 @@ def test_load_data_to_bigquery_exige_client_id(config_cliente_a):
     config_sem_id = dict(config_cliente_a)
     config_sem_id.pop("client_id")
     with pytest.raises(ValueError):
-        bq_loader.load_data_to_bigquery(bq_loader.get_bigquery_client(config_sem_id), sample_data, config_sem_id)
+        load_data_to_bigquery(get_bigquery_client(config_sem_id), sample_data, config_sem_id)
 
 # Teste de isolamento: simula que cada cliente só vê seus dados
 # (mock do client/query, não faz acesso real ao BigQuery)
@@ -58,8 +58,8 @@ def test_listar_empresas_isolamento(monkeypatch, config_cliente_a, config_client
             return FakeResult()
     monkeypatch.setattr(bq_loader, "get_bigquery_client", lambda config: FakeClient())
     
-    loader_a = bq_loader.ControleFolhaLoader(config_cliente_a)
-    loader_b = bq_loader.ControleFolhaLoader(config_cliente_b)
+    loader_a = ControleFolhaLoader(config_cliente_a)
+    loader_b = ControleFolhaLoader(config_cliente_b)
     
     # Cada loader só "vê" seu próprio client_id
     result_a = loader_a.listar_todas_as_empresas()

@@ -5,14 +5,14 @@ import csv
 import logging # Para spec=logging.Logger
 
 # Importar funções e constantes do módulo sob teste
-from src.log_utils import registrar_log, LOG_FILE, demonstrar_logs
-import src.log_utils # Para inspecionar src.log_utils.logger se necessário para debug
+from utils.log_utils import registrar_log, LOG_FILE, demonstrar_logs
+import utils.log_utils # Para inspecionar utils.log_utils.logger se necessário para debug
 
-@patch('src.log_utils.datetime')
-@patch('src.log_utils.csv.DictWriter')
+@patch('utils.log_utils.datetime')
+@patch('utils.log_utils.csv.DictWriter')
+@patch('utils.log_utils.os.path.exists')
 @patch('builtins.open', new_callable=mock_open)
-@patch('src.log_utils.os.path.exists')
-def test_registrar_log_arquivo_nao_existe(mock_exists, mock_file_open, mock_csv_writer, mock_dt):
+def test_registrar_log_arquivo_nao_existe(mock_file_open, mock_exists, mock_csv_writer, mock_dt):
     """
     Testa registrar_log quando o arquivo de log não existe (deve escrever o cabeçalho).
     """
@@ -49,11 +49,11 @@ def test_registrar_log_arquivo_nao_existe(mock_exists, mock_file_open, mock_csv_
     mock_writer_instance.writeheader.assert_called_once()
     mock_writer_instance.writerow.assert_called_once_with(log_data_esperado)
 
-@patch('src.log_utils.datetime')
-@patch('src.log_utils.csv.DictWriter')
+@patch('utils.log_utils.datetime')
+@patch('utils.log_utils.csv.DictWriter')
+@patch('utils.log_utils.os.path.exists')
 @patch('builtins.open', new_callable=mock_open)
-@patch('src.log_utils.os.path.exists')
-def test_registrar_log_arquivo_existe(mock_exists, mock_file_open, mock_csv_writer, mock_dt):
+def test_registrar_log_arquivo_existe(mock_file_open, mock_exists, mock_csv_writer, mock_dt):
     """
     Testa registrar_log quando o arquivo de log já existe (não deve escrever o cabeçalho).
     """
@@ -90,8 +90,8 @@ def test_registrar_log_arquivo_existe(mock_exists, mock_file_open, mock_csv_writ
     mock_writer_instance.writeheader.assert_not_called() # Não deve chamar writeheader
     mock_writer_instance.writerow.assert_called_once_with(log_data_esperado)
 
-@patch('src.log_utils.logging.basicConfig')  # Patch mais externo, mock_basic_config_injected será o último argumento
-@patch('src.log_utils.logger', spec=logging.Logger) # Patch mais interno, mock_logger_injected será o primeiro argumento
+@patch('utils.log_utils.logging.basicConfig')
+@patch('utils.log_utils.logger', spec=logging.Logger)
 def test_demonstrar_logs(mock_logger_injected, mock_basic_config_injected):
     """
     Testa a função demonstrar_logs.

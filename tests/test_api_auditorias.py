@@ -1,10 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
-from src.main import app
+from src.api.main import app
 from src.config_manager import get_current_config
 from src.models import Auditoria, Empresa, Usuario 
-from src.database import SessionLocal, get_db_session_context
+from core.database import SessionLocal, get_db_session_context
 import builtins 
 import json     
 

@@ -1,2 +1,7 @@
 [theme]
-base='light'
+base = "dark"
+primaryColor = "#1e2327"  # tom escuro da logo
+backgroundColor = "#111315"  # fundo preto
+secondaryBackgroundColor = "#23272b"  # cinza escuro
+textColor = "#f5f5f5"  # branco suave
+font = "sans serif"

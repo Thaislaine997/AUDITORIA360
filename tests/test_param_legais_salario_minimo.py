@@ -1,7 +1,7 @@
 import pytest
 from httpx import AsyncClient
 from fastapi.testclient import TestClient
-from src.main import app # Supondo que seu app FastAPI principal esteja em src.main
+from src.api.main import app # Supondo que seu app FastAPI principal esteja em src.api.main
 from src.schemas import TabelaSalarioMinimo # Alterado de SalarioMinimo
 from datetime import date, timedelta
 from typing import Optional, Dict

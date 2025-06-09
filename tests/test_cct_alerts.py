@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from datetime import datetime
-from src.main import app
+from src.api.main import app
 
 client = TestClient(app)
 

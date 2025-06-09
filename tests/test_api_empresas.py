@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.main import app
+from src.api.main import app
 from unittest.mock import patch, MagicMock
 import pandas as pd
 from src.config_manager import get_current_config # Importar get_current_config

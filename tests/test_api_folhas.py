@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from fastapi import UploadFile
-from src.main import app
+from src.api.main import app
 from src.config_manager import get_current_config
 import builtins
 import json

@@ -4,7 +4,7 @@ from google.cloud import bigquery  # Mantido para SchemaField, Table, mas o Clie
 from datetime import datetime, date, timezone
 from unittest.mock import MagicMock, patch
 
-from src.bq_loader import ControleFolhaLoader
+from src.utils.bq_loader import ControleFolhaLoader
 
 TEST_PROJECT_ID = "mock-auditoria-folha"
 TEST_DATASET_ID = "mock_controle_folha_test_dataset"

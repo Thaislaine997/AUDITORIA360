@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 import json
 
 # Importar a instância 'app' do FastAPI de src.main
-from src.main import app # Sua instância FastAPI
+from src.api.main import app # Sua instância FastAPI
 
 from fastapi.testclient import TestClient
 from src.config_manager import get_current_config # A dependência original

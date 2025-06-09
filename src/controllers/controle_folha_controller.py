@@ -14,8 +14,8 @@ from concurrent.futures import ThreadPoolExecutor
 from src.schemas import ControleMensalEmpresaSchema
 from ..bq_loader import ControleFolhaLoader
 from ..config_manager import config_manager
-from ..vertex_utils import prever_rubrica_com_vertex
-from src.gemini_utils import gerar_dica_checklist_com_gemini  # Corrigido: não existe gerar_descricao_da_clausula_com_gemini
+from src.utils.vertex_utils import prever_rubrica_com_vertex
+from src.utils.gemini_utils import gerar_dica_checklist_com_gemini  # Corrigido: não existe gerar_descricao_da_clausula_com_gemini
 from ..motor_calculo_folha_service import MotorCalculoFolhaService # Adicionado
 from ..config_manager import get_background_task_config # Adicionado para obter config sem request
 from ..utils_predicao_risco import chamar_predicao_risco_folha
@@ -566,7 +566,7 @@ async def buscar_controles_mensais(
     table_id = f"{loader.project_id}.{loader.dataset_id}.{table_name}"
     
     query_parts: List[str] = []
-    query_params: List[bigquery.ScalarQueryParameter] = []
+    query_params: list[bigquery.ScalarQueryParameter] = []
 
     query_parts.append("client_id = @client_id")
     query_params.append(bigquery.ScalarQueryParameter("client_id", "STRING", loader.client_id))

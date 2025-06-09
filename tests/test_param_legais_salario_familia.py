@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.main import app
+from src.api.main import app
 from src.schemas_models import TabelaSalarioFamilia, TabelaFGTS
 from datetime import date, timedelta
 from typing import List, Optional

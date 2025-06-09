@@ -18,7 +18,7 @@ from src.schemas_models import (
     TokenData,
     EmpresaClienteSimplificado
 )
-from src.config import settings
+from configs.config import settings
 from google.cloud import bigquery
 
 # Configuração de Autenticação

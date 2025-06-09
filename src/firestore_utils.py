@@ -1,1 +1,0 @@
-# operações com Firestore

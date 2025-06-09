@@ -1,7 +1,7 @@
 import pytest
 from httpx import AsyncClient
 from fastapi.testclient import TestClient
-from src.main import app
+from src.api.main import app
 from src.schemas_models import TabelaFGTS
 from datetime import date, timedelta
 from typing import Optional
