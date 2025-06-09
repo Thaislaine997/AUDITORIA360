@@ -1,3 +1,13 @@
+import streamlit as st
+import sys # Add sys
+import os # Add os
+
+# --- Path Setup ---
+_project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) # Adjusted for pages subdir
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
+# --- End Path Setup ---
+
 # src/dashboard_folha_page.py
 
 import streamlit as st
@@ -9,30 +19,22 @@ import logging
 from typing import Optional, Any, Dict, List
 import re
 
-from schemas import (
+# 1. Atualizar Imports de Schemas
+from src.data_models.schemas import (
     PredicaoRiscoDashboardResponse,
     DetalhePredicaoRiscoResponse,
     RiscoPrevistoDetalheSchema,
     FatorContribuinteTecnicoSchema,
-    DadosSuporteVisualizacaoSchema
+    DadosSuporteVisualizacaoSchema # Corrigido o local do import para src.data_models.schemas
 )
+
+from src.core.config import settings # 2. Usar settings.API_BASE_URL
 
 logger = logging.getLogger(__name__)
 
-APP_ROOT_URL = st.secrets.get("APP_ROOT_URL", "http://localhost:8000")
-API_BASE_URL_V1 = f"{APP_ROOT_URL}/api/v1"
-AUTH_API_BASE_URL = f"{APP_ROOT_URL}/auth"
-
-
 def initialize_session_state():
-    if 'api_token' not in st.session_state:
-        st.session_state.api_token = None
-    if 'logged_in_client_id' not in st.session_state:
-        st.session_state.logged_in_client_id = None
-    if 'logged_in_username' not in st.session_state:
-        st.session_state.logged_in_username = None
-    if 'client_id_simulated' not in st.session_state:
-        st.session_state.client_id_simulated = None
+    # Mantido para inicializar estados específicos da página, se necessário,
+    # mas token e client_id virão do painel.py
     if 'predicao_risco_data' not in st.session_state:
         st.session_state.predicao_risco_data = None
     if 'detalhe_risco_selecionado_id' not in st.session_state:
@@ -45,71 +47,36 @@ def initialize_session_state():
         st.session_state.risco_em_foco_para_consultor = None
     if 'id_folha_ativa_contexto_chat' not in st.session_state:
         st.session_state.id_folha_ativa_contexto_chat = None
+    # Remover estados de login duplicados
+    # if 'api_token' not in st.session_state:
+    #     st.session_state.api_token = None
+    # if 'logged_in_client_id' not in st.session_state:
+    #     st.session_state.logged_in_client_id = None
+    # if 'logged_in_username' not in st.session_state:
+    #     st.session_state.logged_in_username = None
+    # if 'client_id_simulated' not in st.session_state: # Removido
+    #     st.session_state.client_id_simulated = None
 
-def login_user(username, password) -> bool:
-    try:
-        response = requests.post(
-            f"{AUTH_API_BASE_URL}/token",
-            data={"username": username, "password": password}
-        )
-        response.raise_for_status()
-        token_data = response.json()
-        st.session_state.api_token = token_data["access_token"]
-
-        headers = {"Authorization": f"Bearer {st.session_state.api_token}"}
-        user_info_response = requests.get(f"{AUTH_API_BASE_URL}/users/me/", headers=headers)
-        user_info_response.raise_for_status()
-        user_info = user_info_response.json()
-        
-        st.session_state.logged_in_username = user_info.get("username")
-        st.session_state.logged_in_client_id = user_info.get("id_contabilidade") 
-        
-        st.session_state.client_id_simulated = None 
-        logger.info(f"Usuário {username} logado com sucesso. Client ID: {st.session_state.logged_in_client_id}")
-        return True
-    except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 401:
-            st.error("Login falhou: Usuário ou senha incorretos.")
-        else:
-            st.error(f"Erro de login: {e.response.status_code} - {e.response.text}")
-        logger.error(f"Falha no login para {username}: {e}")
-    except requests.exceptions.RequestException as e:
-        st.error(f"Erro de conexão durante o login: {e}")
-        logger.error(f"Erro de conexão no login para {username}: {e}")
-    except Exception as e_gen:
-        st.error(f"Ocorreu um erro inesperado durante o login: {e_gen}")
-        logger.error(f"Erro inesperado no login para {username}: {e_gen}", exc_info=True)
-    return False
-
-def logout_user():
-    st.session_state.api_token = None
-    st.session_state.logged_in_client_id = None
-    st.session_state.logged_in_username = None
-    st.success("Logout realizado com sucesso!")
-    st.rerun()
+# 4. Remover login_user e logout_user duplicados
+# def login_user(username, password) -> bool: ... (Removido)
+# def logout_user(): ... (Removido - será tratado pelo painel.py ou navegação)
 
 def get_current_client_id() -> Optional[str]:
-    if st.session_state.get("logged_in_client_id"):
-        return st.session_state.logged_in_client_id
-    if st.session_state.get("client_id_simulated"):
-        return st.session_state.client_id_simulated
-    
-    query_params = st.query_params
-    client_id_param = query_params.get("client_id")
-    if client_id_param:
-        actual_client_id = client_id_param[0] if isinstance(client_id_param, list) else client_id_param
-        return actual_client_id
-    return None
+    # Deve buscar o id_cliente definido pelo painel.py
+    return st.session_state.get("id_cliente") # Assumindo que painel.py usa 'id_cliente'
 
 def get_api_token() -> Optional[str]:
-    return st.session_state.get("api_token")
+    # Deve buscar o token definido pelo painel.py
+    return st.session_state.get("token") # Assumindo que painel.py usa 'token'
 
 def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> list:
     headers: Dict[str, str] = {}
     if token:
         headers["Authorization"] = f"Bearer {token}"
     
-    api_url = f"{API_BASE_URL_V1}/clientes/{id_cliente}/folhas-processadas"
+    # 3. Ajustar Endpoints - Assumindo prefixo /clientes para esta rota
+    # O prefixo exato dependerá de como as rotas de cliente/folhas são adicionadas no main.py da API
+    api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas-processadas"
     logger.info(f"Buscando folhas processadas: {api_url} com token: {'Sim' if token else 'Não'}")
 
     try:
@@ -152,86 +119,64 @@ def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> 
         detail = "Erro desconhecido"
         try:
             detail = e_http.response.json().get("detail", e_http.response.text)
-        except requests.exceptions.JSONDecodeError:
+        except requests.exceptions.JSONDecodeError: # Corrigido para requests.exceptions.JSONDecodeError
             detail = e_http.response.text
         if e_http.response.status_code == 401:
-            st.warning("Sessão expirada ou inválida. Por favor, faça login novamente.")
-            logout_user()
+            st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
+            # logout_user() # Removido, painel.py gerencia o estado de login
+            st.session_state.clear() # Limpa o estado da sessão para forçar o retorno ao painel
+            st.rerun()
         else:
             st.error(f"Erro ao buscar folhas processadas ({e_http.response.status_code}): {detail}")
         return []
     except requests.exceptions.RequestException as e:
         st.error(f"Erro de conexão ao buscar folhas processadas: {e}")
         return []
-    except Exception as e_json:
+    except Exception as e_json: # Renomeado para e_gen para clareza
         st.error(f"Erro ao processar resposta das folhas: {e_json}")
         return []
 
 def mostrar_dashboard_saude_folha():
     st.title("🏥 Dashboard de Saúde da Folha Mensal")
     
+    initialize_session_state() # Inicializa estados da página
+
     api_token = get_api_token()
     id_cliente_atual = get_current_client_id()
 
-    # Configurações da Sidebar
-    if api_token and st.session_state.get("logged_in_username"):
-        st.sidebar.success(f"Logado como: {st.session_state.logged_in_username}")
-        st.sidebar.caption(f"Cliente ID: {st.session_state.logged_in_client_id}")
-        if st.sidebar.button("Logout"):
-            logout_user()
-        st.sidebar.markdown("---")
-        st.sidebar.subheader("Configurações de Desenvolvedor")
-        st.sidebar.text_input(
-            "Simular Client ID:", 
-            value=st.session_state.get("client_id_simulated", ""),
-            disabled=True,
-            help="Faça logout para simular um Client ID.",
-            key="dev_client_id_input_disabled"
-        )
-        st.sidebar.button("Aplicar Client ID Simulado", disabled=True, key="dev_apply_sim_id_disabled")
-
-    else: 
-        st.sidebar.markdown("---")
-        st.sidebar.subheader("Configurações de Desenvolvedor")
-        dev_client_id_input = st.sidebar.text_input(
-            "Simular Client ID (apenas se não logado):", 
-            value=st.session_state.get("client_id_simulated", ""),
-            disabled=False,
-            key="dev_client_id_input_enabled"
-        )
-        if st.sidebar.button("Aplicar Client ID Simulado", disabled=False, key="dev_apply_sim_id_enabled"):
-            st.session_state.client_id_simulated = dev_client_id_input
-            st.session_state.logged_in_client_id = None 
-            st.session_state.api_token = None
-            st.session_state.logged_in_username = None
-            st.rerun()
-
-    # Conteúdo Principal
-    if not api_token:
-        st.subheader("Login Necessário")
-        with st.form("login_form_main"):
-            username = st.text_input("Usuário")
-            password = st.text_input("Senha", type="password")
-            submitted = st.form_submit_button("Login")
-            if submitted:
-                if login_user(username, password):
-                    st.rerun() 
-        
-        if not id_cliente_atual:
-            st.info("Por favor, faça login para acessar o dashboard ou simule um Client ID usando as Configurações de Desenvolvedor na barra lateral.")
-        else: 
-            st.info(f"Visualizando com Client ID simulado: {id_cliente_atual}. Faça login para acesso completo.")
-        return 
-
-    if not st.session_state.get("logged_in_client_id"):
-        st.error("Erro: Logado mas Client ID não encontrado. Tente fazer login novamente.")
-        logout_user()
+    # 4. Remover lógica de login/logout duplicada e simulação de client_id
+    if not api_token or not id_cliente_atual:
+        st.warning("Você precisa estar logado para acessar esta página. Por favor, retorne à página inicial para fazer login.")
+        if st.button("Retornar ao Login"):
+            # Assumindo que o painel principal está em ../painel.py em relação a este arquivo em pages/
+            # Se painel.py estiver na raiz de frontend, o Streamlit o trata como a página principal.
+            # A navegação para a página principal (app root) pode ser feita com st.switch_page("painel.py")
+            # ou simplesmente deixando o usuário clicar no nome do app na sidebar se for multipage app.
+            # Para ser explícito e considerando que painel.py é o entrypoint:
+            try:
+                st.switch_page("painel.py")
+            except Exception as e:
+                # Fallback se switch_page der erro (ex: se já estiver no painel ou estrutura diferente)
+                st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+                logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}")
         return
 
-    id_cliente_para_api = st.session_state.logged_in_client_id
+    # Sidebar não precisa mais de lógica de login/logout ou simulação de client_id
+    # Pode exibir informações do usuário se desejado, obtidas de st.session_state
+    if st.session_state.get("username"): # Assumindo que painel.py armazena 'username'
+         st.sidebar.success(f"Logado como: {st.session_state.get('username')}")
+         st.sidebar.caption(f"Cliente ID: {id_cliente_atual}")
+    st.sidebar.markdown("---")
+
+
+    # Conteúdo Principal - agora assume que o usuário está logado
+    st.info(f"Exibindo dados para o cliente ID: {id_cliente_atual}")
+
+    id_cliente_para_api = id_cliente_atual # Usar o ID do cliente da sessão
 
     folhas_disponiveis = buscar_folhas_processadas_cliente(id_cliente_para_api, api_token)
     if not folhas_disponiveis:
+        st.info("Nenhuma folha processada encontrada para este cliente ou ocorreu um erro ao buscá-las.")
         return
 
     map_label_to_id = {f["selectbox_label"]: f["id_folha_processada"] for f in folhas_disponiveis}
@@ -250,7 +195,8 @@ def mostrar_dashboard_saude_folha():
         st.session_state.predicao_risco_data = None 
         try:
             headers = {"Authorization": f"Bearer {api_token}"}
-            api_url = f"{API_BASE_URL_V1}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/dashboard-saude"
+            # 3. Ajustar Endpoints
+            api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/dashboard-saude"
             logger.info(f"Chamando API do dashboard: {api_url} com token: Sim")
             response = requests.get(api_url, headers=headers)
             response.raise_for_status()
@@ -261,11 +207,12 @@ def mostrar_dashboard_saude_folha():
             detail = "Erro desconhecido"
             try:
                 detail = e_http.response.json().get("detail", e_http.response.text)
-            except requests.exceptions.JSONDecodeError:
+            except requests.exceptions.JSONDecodeError: # Corrigido
                 detail = e_http.response.text
             if e_http.response.status_code == 401:
-                st.warning("Sessão expirada ou inválida. Por favor, faça login novamente.")
-                logout_user()
+                st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
+                st.session_state.clear()
+                st.rerun()
             else:
                 st.error(f"Erro ao buscar dados do dashboard ({e_http.response.status_code}): {detail}")
             st.session_state.dashboard_data = None
@@ -341,7 +288,8 @@ def mostrar_dashboard_saude_folha():
                st.session_state.predicao_risco_data.id_folha_processada != id_folha_selecionada:
                 try:
                     headers_pred = {"Authorization": f"Bearer {api_token}"}
-                    api_url_pred = f"{API_BASE_URL_V1}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/predicao-risco"
+                    # 3. Ajustar Endpoints
+                    api_url_pred = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/predicao-risco"
                     logger.info(f"Buscando dados de predição de risco: {api_url_pred}")
                     response_pred = requests.get(api_url_pred, headers=headers_pred)
                     response_pred.raise_for_status()
@@ -352,6 +300,10 @@ def mostrar_dashboard_saude_folha():
                     logger.error(f"Erro HTTP ao buscar dados de predição: {e_http_pred.response.status_code} - {e_http_pred.response.text}")
                     if e_http_pred.response.status_code == 404:
                         st.info("Análise preditiva de riscos ainda não disponível para esta folha.")
+                    elif e_http_pred.response.status_code == 401:
+                        st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
+                        st.session_state.clear()
+                        st.rerun()
                     else:
                         st.error(f"Erro ao carregar análise preditiva ({e_http_pred.response.status_code}). Tente novamente.")
                     st.session_state.predicao_risco_data = None 
@@ -391,7 +343,6 @@ def mostrar_dashboard_saude_folha():
 
                 st.subheader("Principais Riscos Previstos pela IA")
                 if dados_predicao_obj.principais_riscos_previstos:
-                    # Iterar sobre os objetos RiscoPrevistoDetalheSchema já desserializados
                     for risco in dados_predicao_obj.principais_riscos_previstos:
                         container_risco = st.container(border=True)
                         container_risco.markdown(f"**🚨 {risco.descricao_risco}**")
@@ -409,11 +360,14 @@ def mostrar_dashboard_saude_folha():
                         if container_risco.button("Analisar Risco com Consultor IA", key=f"consult_risk_{risco.id_risco_detalhe}_{id_folha_selecionada}"):
                             st.session_state.risco_em_foco_para_consultor = risco.model_dump() 
                             st.session_state.id_folha_ativa_contexto_chat = id_folha_selecionada
-                            st.info(f"Simulando navegação para Consultor IA com foco em: {risco.descricao_risco}")
+                            try:
+                                st.switch_page("pages/2_🤖_Consultor_de_Riscos_IA.py")
+                            except Exception as e_switch:
+                                logger.warning(f"Falha ao usar st.switch_page para Consultor IA: {e_switch}")
+                                st.page_link("pages/2_🤖_Consultor_de_Riscos_IA.py", label="Analisar com Consultor IA", icon="🤖")
                 else:
                     st.success("🎉 Nenhuma predição de risco significativa encontrada pela IA para esta folha!")
             
-                # Lógica para exibir detalhes SE um risco ou score geral foi selecionado para detalhamento
                 if 'tipo_detalhe_predicao' in st.session_state and st.session_state.tipo_detalhe_predicao and \
                    st.session_state.get('id_folha_contexto_detalhe') == id_folha_selecionada: 
 
@@ -427,18 +381,23 @@ def mostrar_dashboard_saude_folha():
                         if tipo_detalhe_foco == "risco_especifico":
                             params_det["id_risco_detalhe"] = id_risco_foco_detalhe
                         
-                        api_url_det = f"{API_BASE_URL_V1}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/predicao-risco/detalhes"
+                        # 3. Ajustar Endpoints
+                        api_url_det = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/predicao-risco/detalhes"
                         logger.info(f"Buscando detalhes da predição: {api_url_det} com params: {params_det}")
                         
                         response_detalhes = requests.get(api_url_det, headers=headers_det, params=params_det)
                         response_detalhes.raise_for_status()
                         dados_detalhe_api = response_detalhes.json()
-                        # Correção: Assegurar que os sub-objetos também sejam desserializados
                         dados_detalhe_obj = DetalhePredicaoRiscoResponse(**dados_detalhe_api)
                     
                     except requests.exceptions.HTTPError as e_http_det:
                         logger.error(f"Erro HTTP ao buscar detalhes da predição: {e_http_det.response.status_code} - {e_http_det.response.text}")
-                        st.error(f"Não foi possível carregar os detalhes da predição ({e_http_det.response.status_code}).")
+                        if e_http_det.response.status_code == 401:
+                            st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
+                            st.session_state.clear()
+                            st.rerun()
+                        else:
+                            st.error(f"Não foi possível carregar os detalhes da predição ({e_http_det.response.status_code}).")
                     except requests.exceptions.RequestException as e_req_det:
                         logger.error(f"Erro de conexão ao buscar detalhes da predição: {e_req_det}")
                         st.error("Erro de conexão ao buscar detalhes da predição.")
@@ -474,9 +433,23 @@ def mostrar_dashboard_saude_folha():
                                 for visualizacao in dados_detalhe_obj.dados_suporte_visualizacao:
                                     st.caption(visualizacao.titulo_grafico or "Visualização de Dados")
                                     if visualizacao.tipo_grafico == "SERIE_TEMPORAL" and isinstance(visualizacao.dados, list):
-                                        st.line_chart(visualizacao.dados)
+                                        # Assegurar que os dados são formatados corretamente para st.line_chart
+                                        # Exemplo: se visualizacao.dados for uma lista de dicts [{'x': val, 'y': val}]
+                                        # ou um DataFrame pandas.
+                                        try:
+                                            df_chart = pd.DataFrame(visualizacao.dados)
+                                            if not df_chart.empty and 'x' in df_chart.columns and 'y' in df_chart.columns:
+                                                st.line_chart(df_chart.set_index('x')['y'])
+                                            elif not df_chart.empty: # Tenta plotar a primeira coluna numérica se x,y não presentes
+                                                st.line_chart(df_chart)
+                                            else:
+                                                st.caption("Dados de série temporal vazios ou malformados.")
+                                        except Exception as e_chart:
+                                            logger.error(f"Erro ao renderizar gráfico de série temporal: {e_chart}")
+                                            st.caption("Não foi possível renderizar os dados da série temporal.")
                                     elif visualizacao.tipo_grafico == "VALOR_SIMPLES" and isinstance(visualizacao.dados, dict):
                                         st.metric(label=visualizacao.dados.get("label","Valor"), value=str(visualizacao.dados.get("valor", "N/A")))
+                                    # Adicionar outros tipos de gráficos conforme necessário
 
                             if dados_detalhe_obj.recomendacoes_ia:
                                 st.markdown("**Recomendações da IA:**")
@@ -489,7 +462,6 @@ def mostrar_dashboard_saude_folha():
                                 st.session_state.id_folha_contexto_detalhe = None
                                 st.rerun()
                 
-                # Botão para ver detalhes do Score Geral (colocado após a lista de riscos)
                 if dados_predicao_obj and dados_predicao_obj.score_saude_folha is not None:
                     if st.button("Entender o Score de Saúde Geral", key=f"detail_score_geral_{id_folha_selecionada}"):
                         st.session_state.detalhe_risco_selecionado_id = "score_geral" 
@@ -499,67 +471,79 @@ def mostrar_dashboard_saude_folha():
         
         st.subheader("📊 Gerar Relatórios Exportáveis")
         opcoes_relatorio = {
-            "Relatório de Divergências Completo": "divergencias_completo",
-            "Relatório de Conferência de Encargos": "conferencia_encargos",
-            "Relatório de Composição de Bases (Sistema)": "composicao_bases_sistema",
+            "Resumo da Saúde da Folha": "resumo_saude",
+            "Detalhamento de Divergências": "detalhe_divergencias",
+            "Análise Preditiva de Riscos (IA)": "predicao_riscos_ia"
         }
-        nome_relatorio_display = st.selectbox("Selecione o Relatório:", list(opcoes_relatorio.keys()))
-        col_formato1, col_formato2 = st.columns(2)
-        formato_selecionado = col_formato1.radio("Formato:", ["CSV", "XLSX"], horizontal=True, index=0)
-        nome_relatorio_api = opcoes_relatorio[nome_relatorio_display]
-        formato_api = formato_selecionado.lower()
+        tipo_relatorio_selecionado = st.selectbox(
+            "Selecione o tipo de relatório para gerar:",
+            options=list(opcoes_relatorio.keys())
+        )
 
-        if col_formato2.button(f"Gerar e Baixar {formato_selecionado}", key=f"btn_gerar_{nome_relatorio_api}_{formato_api}"):
-            with st.spinner(f"Gerando relatório '{nome_relatorio_display}' em {formato_selecionado}..."):
+        if st.button("Gerar e Baixar Relatório"):
+            if tipo_relatorio_selecionado and id_folha_selecionada:
+                codigo_relatorio = opcoes_relatorio[tipo_relatorio_selecionado]
                 try:
-                    headers_rel = {}
-                    if api_token:
-                        headers_rel["Authorization"] = f"Bearer {api_token}"
+                    headers_rel = {"Authorization": f"Bearer {api_token}"}
+                    # 3. Ajustar Endpoints
+                    api_url_rel = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/relatorios/{codigo_relatorio}"
+                    logger.info(f"Solicitando relatório: {api_url_rel}")
                     
-                    api_url_rel = f"{API_BASE_URL_V1}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/relatorios/{nome_relatorio_api}?formato={formato_api}"
-                    logger.info(f"Chamando API de relatório: {api_url_rel} com token: Sim")
-                    response_rel = requests.get(api_url_rel, headers=headers_rel, stream=True)
+                    response_rel = requests.get(api_url_rel, headers=headers_rel, stream=True) # stream=True para download
                     response_rel.raise_for_status()
 
+                    # Tentar obter o nome do arquivo do header Content-Disposition
                     content_disposition = response_rel.headers.get('content-disposition')
-                    filename_from_header = f"relatorio_{nome_relatorio_api}_{id_folha_selecionada}.{formato_api}" 
+                    filename = "relatorio.pdf" # Default
                     if content_disposition:
-                        fn_match = re.search(r'filename=([^;]+)', content_disposition, flags=re.IGNORECASE)
-                        if fn_match:
-                            filename_from_header = fn_match.group(1).strip(' \'"')
+                        match = re.search(r'filename="?([^"]+)"?', content_disposition)
+                        if match:
+                            filename = match.group(1)
                     
-                    dados_arquivo_bytes = response_rel.content
+                    # Corrigido para usar response_rel.content diretamente para bytes
                     st.download_button(
-                        label=f"Clique para baixar {filename_from_header}",
-                        data=dados_arquivo_bytes,
-                        file_name=filename_from_header,
-                        mime=response_rel.headers.get('content-type', "application/octet-stream"),
-                        key=f"download_{nome_relatorio_api}_{formato_api}_{id_folha_selecionada}"
+                        label="Clique para baixar o relatório",
+                        data=response_rel.content, # .content para obter bytes
+                        file_name=filename,
+                        mime=response_rel.headers.get("content-type", "application/octet-stream") # Usar content-type do header se disponível
                     )
-                    st.success(f"Relatório '{nome_relatorio_display}' ({formato_selecionado}) gerado. Use o botão acima para baixar.")
+                    # st.success(f"Relatório '{tipo_relatorio_selecionado}' gerado. Clique no botão acima para baixar.") # Removido pois o botão de download já é a ação
+
                 except requests.exceptions.HTTPError as e_http_rel:
-                    logger.error(f"Erro HTTP ao gerar relatório: {e_http_rel.response.status_code} - {e_http_rel.response.text}", exc_info=True)
-                    detail_rel = "Erro desconhecido"
-                    try:
-                        detail_rel = e_http_rel.response.json().get("detail", e_http_rel.response.text)
-                    except requests.exceptions.JSONDecodeError:
-                        detail_rel = e_http_rel.response.text
+                    logger.error(f"Erro HTTP ao gerar relatório: {e_http_rel.response.status_code} - {e_http_rel.response.text}")
                     if e_http_rel.response.status_code == 401:
-                        st.warning("Sessão expirada ou inválida. Por favor, faça login novamente.")
-                        logout_user()
+                        st.warning("Sessão expirada. Faça login novamente.")
+                        st.session_state.clear()
+                        st.rerun()
                     else:
-                        st.error(f"Erro ao gerar relatório ({e_http_rel.response.status_code}): {detail_rel}")
+                        st.error(f"Erro ao gerar relatório ({e_http_rel.response.status_code}).")
                 except requests.exceptions.RequestException as e_req_rel:
-                    logger.error(f"Erro de requisição ao gerar relatório: {e_req_rel}", exc_info=True)
-                    st.error(f"Erro de conexão ao gerar relatório: {e_req_rel}")
+                    logger.error(f"Erro de conexão ao gerar relatório: {e_req_rel}")
+                    st.error("Erro de conexão ao gerar relatório.")
                 except Exception as e_gen_rel:
                     logger.error(f"Erro inesperado ao gerar relatório: {e_gen_rel}", exc_info=True)
-                    st.error(f"Ocorreu um erro inesperado ao gerar o relatório: {e_gen_rel}")
+                    st.error("Ocorreu um erro inesperado ao gerar o relatório.")
+            else:
+                st.warning("Selecione um tipo de relatório e uma folha válida.")
+
+    else: # Se não houver dashboard_data (após tentativa de carregar ou se não clicou em carregar)
+        if id_cliente_atual and api_token and label_selecionada: # Se tudo estiver pronto para carregar
+             st.info("Clique em 'Carregar Dashboard' para visualizar os dados da folha selecionada.")
+        elif not label_selecionada and folhas_disponiveis:
+             st.info("Selecione um período da folha para começar.")
+
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    st.set_page_config(layout="wide", page_title="Dashboard Folha")
+    # Esta verificação de login deve acontecer idealmente no painel.py ou em um wrapper
+    # Aqui, vamos simular que o token e client_id já podem estar na sessão
+    # Se não estiverem, a página mostrará a mensagem para retornar ao login.
     
-    initialize_session_state()
-    
+    # Simulação de estado de login para teste local direto desta página (REMOVER EM PRODUÇÃO OU QUANDO INTEGRADO)
+    # if 'token' not in st.session_state:
+    #     st.session_state.token = "fake_token_for_direct_run" # Simule um token
+    # if 'id_cliente' not in st.session_state:
+    #    st.session_state.id_cliente = "client_test_001" # Simule um client_id
+    # if 'username' not in st.session_state:
+    #    st.session_state.username = "testuser"
+
     mostrar_dashboard_saude_folha()

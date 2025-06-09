@@ -1,4 +1,31 @@
 # login.yaml
-USUARIOS_VALIDOS:
-  admin: "1234"
-  user: "senha"
+credentials:
+  usernames:
+    admin:
+      email: admin@example.com # Substitua pelo email real
+      name: Admin User
+      password: '''HASHED_PASSWORD_FOR_ADMIN''' # Substitua pela senha hasheada para '1234'
+    user:
+      email: user@example.com # Substitua pelo email real
+      name: Regular User
+      password: '''HASHED_PASSWORD_FOR_USER''' # Substitua pela senha hasheada para 'senha'
+    dpeixer_master:
+      email: CONTATO@DPEIXERASSESSORIA.COM.BR
+      name: DPEIXER ASSESSORIA
+      password: '$2b$12$PrIVMKyLwu59bOmafn7g/.lYsS2AUDwJm2MGLZYIXby/CdOX395u2'
+cookie:
+  expiry_days: 30
+  key: '''uma_chave_secreta_aleatoria_muito_longa''' # Substitua por uma chave forte e aleatória
+  name: '''auditoria360_cookie'''
+preauthorized:
+  emails: # Adicione e-mails pré-autorizados se necessário, ou deixe uma lista vazia []
+    - user_preautorizado@example.com
+
+# A seção USUARIOS_VALIDOS abaixo não é usada pelo streamlit-authenticator diretamente
+# e pode causar confusão ou precisar de lógica customizada adicional se mantida.
+# Se a intenção era usar esta seção para alguma lógica de client_id,
+# ela precisará ser integrada cuidadosamente com a configuração do authenticator.
+# Por ora, vou comentá-la para evitar conflitos com a estrutura esperada.
+# USUARIOS_VALIDOS:
+#   admin: "1234"
+#   user: "senha"

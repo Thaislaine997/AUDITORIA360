@@ -16,3 +16,5 @@ SQLAlchemy
 google-generativeai
 beautifulsoup4
 flask
+pydantic[email]
+email-validator

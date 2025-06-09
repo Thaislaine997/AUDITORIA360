@@ -17,6 +17,9 @@ class Settings:
     # Esta parte é mais para o param_legais_controller, mas centralizar aqui pode ser útil
     FONTES_OFICIAIS_CONFIG_FILE: str = "src/config.json"
 
+    # URL base da API para comunicação frontend-backend
+    API_BASE_URL: str = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+
     # Outras configurações globais
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
