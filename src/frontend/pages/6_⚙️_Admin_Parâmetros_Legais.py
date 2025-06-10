@@ -13,42 +13,66 @@ from datetime import date
 import pandas as pd
 
 from src.core.config import settings
-from src.frontend.utils import get_auth_headers, get_api_token, get_current_client_id, handle_api_error, display_user_info_sidebar
+# Ajustar import para usar os utilitários globais de forma consistente
+from src.frontend.utils import (
+    display_user_info_sidebar as global_display_user_info_sidebar, 
+    handle_api_error, 
+    get_api_token as get_global_api_token, 
+    get_current_client_id as get_global_current_client_id, # Mantido para consistência, embora possa não ser usado diretamente
+    get_auth_headers as get_global_auth_headers # Importar get_auth_headers global
+)
+from src.core.log_utils import logger # Adicionar import do logger
+
+# Funções wrapper locais para consistência
+def get_api_token() -> str | None:
+    return get_global_api_token()
+
+def get_current_client_id() -> str | None: # Admin pode não operar no contexto de um cliente específico
+    return get_global_current_client_id()
+
+def display_user_info_sidebar():
+    global_display_user_info_sidebar()
+
+def get_auth_headers_admin_params(): # Wrapper local para headers
+    token = get_api_token()
+    return get_global_auth_headers(token) # Chama o global com o token
 
 def mostrar_pagina_admin_parametros_legais():
-    st.set_page_config(page_title="Administração de Parâmetros Legais", layout="wide")
+    st.set_page_config(page_title="Administração de Parâmetros Legais - AUDITORIA360", layout="wide") # Nome da página atualizado
     
-    # --- Logo ---
-    logo_path = "assets/logo.png"
-    try:
-        st.logo(logo_path, link="https://auditoria360.com.br")
-    except Exception as e:
-        try:
-            st.sidebar.image(logo_path, use_column_width=True)
-            st.sidebar.markdown("[AUDITORIA360](https://auditoria360.com.br)")
-        except Exception:
-            st.sidebar.warning(f"Não foi possível carregar o logo: {logo_path}")
-        st.sidebar.warning(f"Não foi possível carregar o logo principal: {e}. Usando fallback na sidebar.")
-    st.sidebar.markdown("---")
+    # --- Logo --- (Removido, display_user_info_sidebar cuida disso)
+    # st.sidebar.markdown(\"---\") # Removido
 
     api_token = get_api_token()
-    id_cliente_atual = get_current_client_id() # Pode ser usado para auditoria ou se parâmetros forem por cliente
+    # id_cliente_atual = get_current_client_id() # Removido ou comentado, pois admin pode não ter cliente específico
 
-    if not api_token: # Acesso a esta página geralmente requer privilégios de administrador
+    # Verificação de autenticação
+    if not api_token: 
         st.warning("Acesso restrito. Por favor, faça login com uma conta administrativa.")
-        st.link_button("Ir para Login", "/")
+        if st.button("Retornar ao Login"):
+            try:
+                st.switch_page("painel.py")
+            except AttributeError:
+                st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+            except Exception as e:
+                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
         st.stop()
     
     # Adicionar verificação de perfil/role se disponível em st.session_state.user_info
-    # user_roles = st.session_state.get("user_info", {}).get("roles", [])
-    # if "admin" not in user_roles:
-    #     st.error("Você não tem permissão para acessar esta página.")
+    user_info = st.session_state.get("user_info", {})
+    user_roles = user_info.get("roles", []) # Supondo que 'roles' seja uma lista de strings
+    # Idealmente, o backend protegeria essas rotas, mas uma verificação no frontend é uma boa prática adicional.
+    # if "admin" not in user_roles: # Descomentar e ajustar se a role 'admin' for usada
+    #     st.error("Você não tem permissão para acessar esta página. Contate o administrador.")
+    #     logger.warning(f"Usuário {user_info.get(\'username\', \'desconhecido\')} sem role \'admin\' tentou acessar Admin Parâmetros.")
     #     st.stop()
 
     display_user_info_sidebar()
 
     st.title("⚙️ Administração de Parâmetros Legais")
     st.caption("Gestão de tabelas de INSS, IRRF, Salário Família, Salário Mínimo, FGTS e outros.")
+    # st.caption(f"Cliente ID: {id_cliente_atual}") # Removido ou comentado
 
     PARAMETROS_CONFIG = {
         "INSS": {"endpoint": "inss", "form_fields": {"id_parametro_inss": "ID (Opcional, deixe em branco para auto)", "data_inicio_vigencia": "Data Início Vigência", "faixa_salarial_de": "Faixa Salarial De (R$)", "faixa_salarial_ate": "Faixa Salarial Até (R$)", "aliquota_efetiva_percentual": "Alíquota Efetiva (%)", "parcela_a_deduzir": "Parcela a Deduzir (R$)", "descricao": "Descrição (Opcional)"}, "list_columns": ["id_parametro_inss", "data_inicio_vigencia", "faixa_salarial_de", "faixa_salarial_ate", "aliquota_efetiva_percentual", "parcela_a_deduzir", "descricao"]},
@@ -64,7 +88,7 @@ def mostrar_pagina_admin_parametros_legais():
     if aba_selecionada:
         config = PARAMETROS_CONFIG[aba_selecionada]
         endpoint_url = f"{settings.API_BASE_URL}/api/v1/parametros-legais-admin/{config['endpoint']}"
-        headers = get_auth_headers(api_token)
+        headers = get_auth_headers_admin_params() # Usar a função wrapper
 
         st.header(f"Histórico de Parâmetros {aba_selecionada}")
         
@@ -75,17 +99,33 @@ def mostrar_pagina_admin_parametros_legais():
         # Carregar e exibir dados
         if f"data_{config['endpoint']}" not in st.session_state or st.session_state[f"data_{config['endpoint']}"] is None:
             try:
+                logger.info(f"Buscando parâmetros para {aba_selecionada} em {endpoint_url}") # Logger
                 r = requests.get(endpoint_url, headers=headers)
                 if r.status_code == 401:
-                    handle_api_error(r.status_code)
+                    handle_api_error(r.status_code) # Chama o handler global
                     st.rerun()
-                    return # Adicionado para evitar processamento adicional
+                    return 
                 r.raise_for_status()
                 st.session_state[f"data_{config['endpoint']}"] = r.json()
-            except requests.exceptions.RequestException as e:
-                st.error(f"Erro ao buscar parâmetros {aba_selecionada}: {e}")
+            except requests.exceptions.HTTPError as http_err: # Tratamento de erro HTTP mais específico
+                logger.error(f"Erro HTTP ao buscar parâmetros {aba_selecionada}: {http_err.response.status_code} - {http_err.response.text}")
+                error_detail = http_err.response.text
+                try:
+                    error_detail = http_err.response.json().get("detail", error_detail)
+                except ValueError: # json.JSONDecodeError é um subtipo de ValueError
+                    pass
+                st.error(f"Erro ao buscar parâmetros {aba_selecionada} (HTTP {http_err.response.status_code}): {error_detail}")
                 st.session_state[f"data_{config['endpoint']}"] = []
-            except Exception as e:
+            except requests.exceptions.RequestException as e:
+                logger.error(f"Erro de conexão ao buscar parâmetros {aba_selecionada}: {e}", exc_info=True)
+                st.error(f"Erro de conexão ao buscar parâmetros {aba_selecionada}: {e}")
+                st.session_state[f"data_{config['endpoint']}"] = []
+            except ValueError: # Tratar JSONDecodeError
+                logger.error(f"Erro ao decodificar JSON da busca de parâmetros {aba_selecionada}: {r.text if 'r' in locals() else 'Resposta não disponível'}")
+                st.error(f"Erro ao processar a resposta do servidor (parâmetros {aba_selecionada}).")
+                st.session_state[f"data_{config['endpoint']}"] = []
+            except Exception as e: # Captura genérica
+                logger.error(f"Erro inesperado ao processar parâmetros {aba_selecionada}: {e}", exc_info=True)
                 st.error(f"Erro inesperado ao processar parâmetros {aba_selecionada}: {e}")
                 st.session_state[f"data_{config['endpoint']}"] = []
         
@@ -145,29 +185,41 @@ def mostrar_pagina_admin_parametros_legais():
                     # Por simplicidade, vamos assumir que o ID pode estar no payload para PUT também, ou a API o ignora se estiver no path.
 
                 try:
+                    logger.info(f"Salvando parâmetro {aba_selecionada}. Método: {'PUT' if param_id_for_edit else 'POST'}, URL: {url_to_call}, Payload: {final_payload}") # Logger
                     r = request_method(url_to_call, json=final_payload, headers=headers)
                     if r.status_code == 401:
                         handle_api_error(r.status_code)
-                        st.rerun()
-                        # Não retorna aqui para que a mensagem de erro seja exibida no formulário
-                    elif r.status_code in [200, 201]: # 200 para OK/Update, 201 para Created
+                        st.rerun() 
+                        # Não retorna para exibir erro no form
+                    elif r.status_code in [200, 201]: 
                         st.success(success_message)
-                        st.session_state[f"data_{config['endpoint']}"] = None # Forçar recarga da lista
+                        logger.info(success_message) # Logger
+                        st.session_state[f"data_{config['endpoint']}"] = None 
                         st.rerun()
                     else:
-                        st.error(f"Erro ao salvar parâmetro {aba_selecionada} (Cód: {r.status_code}): {r.text}")
+                        error_text = r.text
+                        try:
+                            error_text = r.json().get("detail", error_text)
+                        except ValueError:
+                            pass
+                        st.error(f"Erro ao salvar parâmetro {aba_selecionada} (Cód: {r.status_code}): {error_text}")
+                        logger.error(f"Erro HTTP ao salvar parâmetro {aba_selecionada} ({r.status_code}): {r.text}") # Logger
                 except requests.exceptions.RequestException as e:
                     st.error(f"Erro de conexão ao salvar parâmetro: {e}")
+                    logger.error(f"Erro de conexão ao salvar parâmetro {aba_selecionada}: {e}", exc_info=True) # Logger
                 except Exception as e:
                     st.error(f"Erro inesperado ao salvar parâmetro: {e}")
+                    logger.error(f"Erro inesperado ao salvar parâmetro {aba_selecionada}: {e}", exc_info=True) # Logger
 
 if __name__ == "__main__":
     # Simulação do st.session_state para fins de teste local
-    if "api_token" not in st.session_state:
-        st.session_state.api_token = "token_simulado_admin_params" 
-    if "id_cliente" not in st.session_state:
-        st.session_state.id_cliente = "cliente_simulado_admin_000" # Admin pode não ter cliente específico
-    if "user_info" not in st.session_state:
-        st.session_state.user_info = {"nome": "Admin Teste", "empresa": "Sistema", "roles": ["admin"]}
+    if 'token' not in st.session_state: # Alterado de api_token para token
+        st.session_state.token = "token_simulado_admin_params" 
+    # client_id pode não ser relevante para admin global, mas mantido para consistência se utils depender dele
+    if 'client_id' not in st.session_state: # Alterado de id_cliente para client_id
+        st.session_state.client_id = "admin_sem_cliente_especifico" 
+    if 'user_info' not in st.session_state:
+        # Adicionar 'roles' para simular verificação de admin, se implementada
+        st.session_state.user_info = {"name": "Admin Teste", "username": "superadmin", "roles": ["admin"]}
     
     mostrar_pagina_admin_parametros_legais()

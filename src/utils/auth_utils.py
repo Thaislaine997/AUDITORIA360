@@ -7,10 +7,9 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from src.utils.config_manager import ConfigManager
+from src.utils.config_manager import config_manager # Importar a instância global
 
-config_manager_instance = ConfigManager()
-base_app_config = config_manager_instance.base_config
+base_app_config = config_manager.config 
 
 SECRET_KEY = base_app_config.get("SECRET_KEY", "super-secret-key-please-change-in-production")
 ALGORITHM = base_app_config.get("ALGORITHM", "HS256")

@@ -1,6 +1,9 @@
-import streamlit as st
-import sys # Add sys
-import os # Add os
+import streamlit as st # Import principal do Streamlit
+# Mover st.set_page_config para o topo absoluto
+st.set_page_config(page_title="Dashboard Folha - Auditoria360", layout="wide")
+
+import sys 
+import os 
 
 # --- Path Setup ---
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) # Adjusted for pages subdir
@@ -10,7 +13,7 @@ if _project_root not in sys.path:
 
 # src/dashboard_folha_page.py
 
-import streamlit as st
+# import streamlit as st # Removido import duplicado
 import pandas as pd
 import requests
 from datetime import date
@@ -29,6 +32,8 @@ from src.data_models.schemas import (
 )
 
 from src.core.config import settings # 2. Usar settings.API_BASE_URL
+# Importar utilitários do frontend
+from src.frontend.utils import display_user_info_sidebar, handle_api_error 
 
 logger = logging.getLogger(__name__)
 
@@ -74,13 +79,15 @@ def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> 
     if token:
         headers["Authorization"] = f"Bearer {token}"
     
-    # 3. Ajustar Endpoints - Assumindo prefixo /clientes para esta rota
-    # O prefixo exato dependerá de como as rotas de cliente/folhas são adicionadas no main.py da API
     api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas-processadas"
     logger.info(f"Buscando folhas processadas: {api_url} com token: {'Sim' if token else 'Não'}")
 
     try:
         response = requests.get(api_url, headers=headers)
+        if response.status_code == 401: # Adicionado tratamento com handle_api_error
+            handle_api_error(response.status_code)
+            st.rerun() # st.rerun() pode ser útil após handle_api_error se ele não parar a execução
+            return [] # Retorna lista vazia em caso de erro de autenticação
         response.raise_for_status()
         folhas_raw = response.json().get("folhas", [])
         folhas_formatadas = []
@@ -119,15 +126,10 @@ def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> 
         detail = "Erro desconhecido"
         try:
             detail = e_http.response.json().get("detail", e_http.response.text)
-        except requests.exceptions.JSONDecodeError: # Corrigido para requests.exceptions.JSONDecodeError
+        except requests.exceptions.JSONDecodeError: 
             detail = e_http.response.text
-        if e_http.response.status_code == 401:
-            st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
-            # logout_user() # Removido, painel.py gerencia o estado de login
-            st.session_state.clear() # Limpa o estado da sessão para forçar o retorno ao painel
-            st.rerun()
-        else:
-            st.error(f"Erro ao buscar folhas processadas ({e_http.response.status_code}): {detail}")
+        # O tratamento de 401 foi movido para cima. Outros erros HTTP são tratados aqui.
+        st.error(f"Erro ao buscar folhas processadas ({e_http.response.status_code}): {detail}")
         return []
     except requests.exceptions.RequestException as e:
         st.error(f"Erro de conexão ao buscar folhas processadas: {e}")
@@ -137,6 +139,7 @@ def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> 
         return []
 
 def mostrar_dashboard_saude_folha():
+    # st.set_page_config já foi chamado no topo do script
     st.title("🏥 Dashboard de Saúde da Folha Mensal")
     
     initialize_session_state() # Inicializa estados da página
@@ -144,29 +147,27 @@ def mostrar_dashboard_saude_folha():
     api_token = get_api_token()
     id_cliente_atual = get_current_client_id()
 
-    # 4. Remover lógica de login/logout duplicada e simulação de client_id
     if not api_token or not id_cliente_atual:
         st.warning("Você precisa estar logado para acessar esta página. Por favor, retorne à página inicial para fazer login.")
         if st.button("Retornar ao Login"):
-            # Assumindo que o painel principal está em ../painel.py em relação a este arquivo em pages/
-            # Se painel.py estiver na raiz de frontend, o Streamlit o trata como a página principal.
-            # A navegação para a página principal (app root) pode ser feita com st.switch_page("painel.py")
-            # ou simplesmente deixando o usuário clicar no nome do app na sidebar se for multipage app.
-            # Para ser explícito e considerando que painel.py é o entrypoint:
             try:
+                # Tenta usar st.switch_page se disponível (Streamlit >= 1.27)
                 st.switch_page("painel.py")
-            except Exception as e:
-                # Fallback se switch_page der erro (ex: se já estiver no painel ou estrutura diferente)
+            except AttributeError:
+                # Fallback para st.page_link para compatibilidade ou se switch_page falhar
                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
-                logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}")
-        return
+            except Exception as e:
+                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
+        st.stop() # Parar a execução se não estiver logado
 
-    # Sidebar não precisa mais de lógica de login/logout ou simulação de client_id
-    # Pode exibir informações do usuário se desejado, obtidas de st.session_state
-    if st.session_state.get("username"): # Assumindo que painel.py armazena 'username'
-         st.sidebar.success(f"Logado como: {st.session_state.get('username')}")
-         st.sidebar.caption(f"Cliente ID: {id_cliente_atual}")
-    st.sidebar.markdown("---")
+    # Exibir informações do usuário na sidebar usando a função utilitária
+    display_user_info_sidebar()
+    # Remover a lógica antiga da sidebar:
+    # if st.session_state.get("username"): 
+    #      st.sidebar.success(f"Logado como: {st.session_state.get('username')}")
+    #      st.sidebar.caption(f"Cliente ID: {id_cliente_atual}")
+    # st.sidebar.markdown("---")
 
 
     # Conteúdo Principal - agora assume que o usuário está logado
@@ -195,10 +196,13 @@ def mostrar_dashboard_saude_folha():
         st.session_state.predicao_risco_data = None 
         try:
             headers = {"Authorization": f"Bearer {api_token}"}
-            # 3. Ajustar Endpoints
             api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/dashboard-saude"
             logger.info(f"Chamando API do dashboard: {api_url} com token: Sim")
             response = requests.get(api_url, headers=headers)
+            if response.status_code == 401: # Adicionado tratamento com handle_api_error
+                handle_api_error(response.status_code)
+                st.rerun()
+                return # Parar execução aqui
             response.raise_for_status()
             st.session_state.dashboard_data = response.json()
             st.success("Dados do dashboard carregados com sucesso!")
@@ -207,14 +211,10 @@ def mostrar_dashboard_saude_folha():
             detail = "Erro desconhecido"
             try:
                 detail = e_http.response.json().get("detail", e_http.response.text)
-            except requests.exceptions.JSONDecodeError: # Corrigido
+            except requests.exceptions.JSONDecodeError: 
                 detail = e_http.response.text
-            if e_http.response.status_code == 401:
-                st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
-                st.session_state.clear()
-                st.rerun()
-            else:
-                st.error(f"Erro ao buscar dados do dashboard ({e_http.response.status_code}): {detail}")
+            # O tratamento de 401 foi movido para cima.
+            st.error(f"Erro ao buscar dados do dashboard ({e_http.response.status_code}): {detail}")
             st.session_state.dashboard_data = None
         except requests.exceptions.RequestException as e_req:
             logger.error(f"Erro de requisição ao buscar dados do dashboard: {e_req}", exc_info=True)
@@ -288,10 +288,13 @@ def mostrar_dashboard_saude_folha():
                st.session_state.predicao_risco_data.id_folha_processada != id_folha_selecionada:
                 try:
                     headers_pred = {"Authorization": f"Bearer {api_token}"}
-                    # 3. Ajustar Endpoints
                     api_url_pred = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/predicao-risco"
                     logger.info(f"Buscando dados de predição de risco: {api_url_pred}")
                     response_pred = requests.get(api_url_pred, headers=headers_pred)
+                    if response_pred.status_code == 401: # Adicionado tratamento com handle_api_error
+                        handle_api_error(response_pred.status_code)
+                        st.rerun()
+                        return # Parar execução aqui
                     response_pred.raise_for_status()
                     dados_predicao_api = response_pred.json()
                     dados_predicao_obj = PredicaoRiscoDashboardResponse(**dados_predicao_api)
@@ -300,10 +303,7 @@ def mostrar_dashboard_saude_folha():
                     logger.error(f"Erro HTTP ao buscar dados de predição: {e_http_pred.response.status_code} - {e_http_pred.response.text}")
                     if e_http_pred.response.status_code == 404:
                         st.info("Análise preditiva de riscos ainda não disponível para esta folha.")
-                    elif e_http_pred.response.status_code == 401:
-                        st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
-                        st.session_state.clear()
-                        st.rerun()
+                    # O tratamento de 401 foi movido para cima.
                     else:
                         st.error(f"Erro ao carregar análise preditiva ({e_http_pred.response.status_code}). Tente novamente.")
                     st.session_state.predicao_risco_data = None 
@@ -381,23 +381,22 @@ def mostrar_dashboard_saude_folha():
                         if tipo_detalhe_foco == "risco_especifico":
                             params_det["id_risco_detalhe"] = id_risco_foco_detalhe
                         
-                        # 3. Ajustar Endpoints
                         api_url_det = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/predicao-risco/detalhes"
                         logger.info(f"Buscando detalhes da predição: {api_url_det} com params: {params_det}")
                         
                         response_detalhes = requests.get(api_url_det, headers=headers_det, params=params_det)
+                        if response_detalhes.status_code == 401: # Adicionado tratamento com handle_api_error
+                            handle_api_error(response_detalhes.status_code)
+                            st.rerun()
+                            return # Parar execução aqui
                         response_detalhes.raise_for_status()
                         dados_detalhe_api = response_detalhes.json()
                         dados_detalhe_obj = DetalhePredicaoRiscoResponse(**dados_detalhe_api)
                     
                     except requests.exceptions.HTTPError as e_http_det:
                         logger.error(f"Erro HTTP ao buscar detalhes da predição: {e_http_det.response.status_code} - {e_http_det.response.text}")
-                        if e_http_det.response.status_code == 401:
-                            st.warning("Sessão expirada ou inválida. Por favor, retorne à página de login.")
-                            st.session_state.clear()
-                            st.rerun()
-                        else:
-                            st.error(f"Não foi possível carregar os detalhes da predição ({e_http_det.response.status_code}).")
+                        # O tratamento de 401 foi movido para cima.
+                        st.error(f"Não foi possível carregar os detalhes da predição ({e_http_det.response.status_code}).")
                     except requests.exceptions.RequestException as e_req_det:
                         logger.error(f"Erro de conexão ao buscar detalhes da predição: {e_req_det}")
                         st.error("Erro de conexão ao buscar detalhes da predição.")
@@ -485,11 +484,14 @@ def mostrar_dashboard_saude_folha():
                 codigo_relatorio = opcoes_relatorio[tipo_relatorio_selecionado]
                 try:
                     headers_rel = {"Authorization": f"Bearer {api_token}"}
-                    # 3. Ajustar Endpoints
                     api_url_rel = f"{settings.API_BASE_URL}/clientes/{id_cliente_para_api}/folhas/{id_folha_selecionada}/relatorios/{codigo_relatorio}"
                     logger.info(f"Solicitando relatório: {api_url_rel}")
                     
                     response_rel = requests.get(api_url_rel, headers=headers_rel, stream=True) # stream=True para download
+                    if response_rel.status_code == 401: # Adicionado tratamento com handle_api_error
+                        handle_api_error(response_rel.status_code)
+                        st.rerun()
+                        return # Parar execução aqui
                     response_rel.raise_for_status()
 
                     # Tentar obter o nome do arquivo do header Content-Disposition

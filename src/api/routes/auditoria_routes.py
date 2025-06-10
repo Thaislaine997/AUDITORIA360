@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict
-from src.config_manager import get_current_config
+from src.utils.config_manager import get_current_config # Corrigido o caminho do import
 
 router = APIRouter(
     prefix="/api/v1/auditorias",

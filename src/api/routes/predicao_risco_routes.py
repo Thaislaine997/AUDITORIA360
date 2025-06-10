@@ -2,9 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from typing import Optional
 from datetime import date # Para o valor default de periodo_referencia no fallback
 
-from src.controllers.predicao_risco_controller import predicao_risco_controller
-from src.schemas import PredicaoRiscoDashboardResponse, DetalhePredicaoRiscoResponse
-# from src.auth_utils import get_current_active_user # Para autenticação futura
+from src.controllers.predicao_risco_controller import PredicaoRiscoDashboardResponse, DetalhePredicaoRiscoResponse, predicao_risco_controller
+# from src.utils.auth_utils import get_current_active_user # Para autenticação futura
 # from src.models import User # Para tipagem do usuário autenticado
 
 router = APIRouter(

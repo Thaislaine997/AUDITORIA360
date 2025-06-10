@@ -1,6 +1,13 @@
 import streamlit as st
-import sys # Add sys
-import os # Add os
+st.set_page_config(page_title="Checklist de Fechamento - Auditoria360", layout="wide")
+
+import sys
+import os
+import requests
+import logging
+import json # Adicionado import json
+from datetime import datetime # datetime já estava importado
+from typing import Optional, List, Dict, Any
 
 # --- Path Setup ---
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) # Adjusted for pages subdir
@@ -8,44 +15,32 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
 
-# src/checklist_page.py
-import streamlit as st
-import requests
-from datetime import datetime
-from typing import Optional, List, Dict, Any
-import logging
-import os
-
-# 1. Importar settings para API_BASE_URL e remover constante local
 from src.core.config import settings
+# Importar utilitários do frontend
+from src.frontend.utils import (
+    display_user_info_sidebar, 
+    handle_api_error, 
+    get_api_token as get_global_api_token, # Renomeado para evitar conflito se houver um local
+    get_current_client_id as get_global_current_client_id # Renomeado
+)
 
-# Configuração básica de logging
 logger = logging.getLogger(__name__)
 
-# Funções de utilidade da sessão (podem ser movidas para um utils_streamlit.py comum)
 def initialize_session_state_checklist():
-    """Inicializa o estado da sessão para a página de checklist."""
-    # Remover estados de autenticação locais
-    # if "authenticated_checklist" not in st.session_state:
-    #     st.session_state.authenticated_checklist = False
-    # if "user_checklist" not in st.session_state:
-    #     st.session_state.user_checklist = None 
     if "checklist_items" not in st.session_state:
-        st.session_state.checklist_items = []
-    if "id_folha_processada_checklist" not in st.session_state:
-        st.session_state.id_folha_processada_checklist = ""
-    # Remover checklist_client_id local, usaremos o da sessão principal
-    # if "checklist_client_id" not in st.session_state: 
-    #     st.session_state.checklist_client_id = ""
+        st.session_state.checklist_items = [] # Inicializado como lista vazia
+    if "current_folha_id_for_checklist" not in st.session_state: # Renomeado de id_folha_processada_checklist
+        st.session_state.current_folha_id_for_checklist = None
     if "dica_ia_cache" not in st.session_state:
-        st.session_state.dica_ia_cache = {} 
+         st.session_state.dica_ia_cache = {} # Inicializado como dict vazio
 
-# 2. Funções para obter token e client_id da sessão principal (st.session_state)
+# Funções para obter token e client_id da sessão principal (st.session_state)
+# Usando os globais importados e renomeados para clareza
 def get_api_token() -> Optional[str]:
-    return st.session_state.get("token") # Usar "token" conforme definido em painel.py
+    return get_global_api_token()
 
 def get_current_client_id() -> Optional[str]:
-    return st.session_state.get("id_cliente") # Usar "id_cliente" conforme definido em painel.py
+    return get_global_current_client_id()
 
 def get_current_folha_id_for_checklist() -> Optional[str]:
     return st.session_state.get("current_folha_id_for_checklist")
@@ -53,483 +48,276 @@ def get_current_folha_id_for_checklist() -> Optional[str]:
 def set_current_folha_id_for_checklist(folha_id: Optional[str]):
     st.session_state.current_folha_id_for_checklist = folha_id
 
-# 3. Ajustar get_auth_headers para usar get_api_token()
-def get_auth_headers():
-    token = get_api_token() # Usar a função centralizada
+def get_auth_headers_checklist(): # Renomeado para evitar conflito com utils global se existir
+    token = get_api_token()
     headers = {}
     if token:
-        headers['Authorization'] = f"Bearer {token}"
+        headers["Authorization"] = f"Bearer {token}"
     return headers
 
 # Funções de interação com a API do Checklist
 def fetch_checklist_items(id_cliente: str, id_folha_processada: str):
-    """Busca os itens do checklist da API."""
+    api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist-fechamento"
+    logger.info(f"Buscando itens do checklist: {api_url}")
     try:
-        response = requests.get(
-            f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist", # Usar settings.API_BASE_URL
-            headers=get_auth_headers() 
-        )
+        response = requests.get(api_url, headers=get_auth_headers_checklist())
+        if response.status_code == 401:
+            handle_api_error(response.status_code)
+            st.rerun()
+            return []
         response.raise_for_status()
-        return response.json()
+        return response.json().get("itens_checklist", [])
     except requests.exceptions.RequestException as e:
-        st.error(f"Erro ao buscar checklist: {e}")
-        if hasattr(e, 'response') and e.response is not None:
-            try:
-                detail = e.response.json().get("detail", e.response.text)
-            except requests.exceptions.JSONDecodeError:
-                detail = e.response.text
-            st.error(f"Detalhes: {detail}")
-            if e.response.status_code == 401:
-                st.warning("Sessão expirada ou token inválido. Por favor, retorne ao login.")
-                #logout_user_checklist() # Não existe mais, o painel gerencia
-                st.session_state.clear()
-                st.rerun()
-        return None
+        st.error(f"Erro de conexão ao buscar itens do checklist: {e}")
+        logger.error(f"Erro de conexão ao buscar itens do checklist: {e}", exc_info=True)
+        return []
+    except json.JSONDecodeError:
+        st.error("Erro ao decodificar a resposta da API (itens do checklist).")
+        logger.error("Erro ao decodificar a resposta da API (itens do checklist).", exc_info=True)
+        return []
+
 
 def update_checklist_item_api(id_cliente: str, id_folha_processada: str, id_item_checklist: str, updates: dict):
-    """Atualiza um item do checklist via API."""
+    api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist-fechamento/{id_item_checklist}"
+    logger.info(f"Atualizando item do checklist: {api_url} com dados: {updates}")
     try:
-        response = requests.put(
-            f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist/{id_item_checklist}", # Usar settings.API_BASE_URL
-            json=updates,
-            headers=get_auth_headers() 
-        )
+        response = requests.put(api_url, json=updates, headers=get_auth_headers_checklist())
+        if response.status_code == 401:
+            handle_api_error(response.status_code)
+            st.rerun()
+            return False # Indicar falha
         response.raise_for_status()
-        return response.json()
+        st.success("Item do checklist atualizado com sucesso!")
+        return True # Indicar sucesso
     except requests.exceptions.RequestException as e:
-        st.error(f"Erro ao atualizar item do checklist: {e}")
-        if hasattr(e, 'response') and e.response is not None:
-            try:
-                detail = e.response.json().get("detail", e.response.text)
-            except requests.exceptions.JSONDecodeError:
-                detail = e.response.text
-            st.error(f"Detalhes: {detail}")
-            if e.response.status_code == 401:
-                st.warning("Sessão expirada ou token inválido. Por favor, retorne ao login.")
-                st.session_state.clear()
-                st.rerun()
-        return None
+        st.error(f"Erro de conexão ao atualizar item do checklist: {e}")
+        logger.error(f"Erro de conexão ao atualizar item do checklist: {e}", exc_info=True)
+        return False
+    except json.JSONDecodeError: # Embora PUT não espere JSON de volta tipicamente, pode haver erro com JSON
+        st.error("Erro ao processar a resposta da API (atualização do item).")
+        logger.error("Erro ao processar a resposta da API (atualização do item).", exc_info=True)
+        return False
 
 def mark_sheet_as_closed_api(id_cliente: str, id_folha_processada: str):
-    """Marca a folha como fechada via API."""
+    api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/marcar-fechada"
+    logger.info(f"Marcando folha como fechada: {api_url}")
     try:
-        response = requests.post(
-            f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/marcar-fechada", # Usar settings.API_BASE_URL
-            headers=get_auth_headers() 
-        )
+        response = requests.post(api_url, headers=get_auth_headers_checklist())
+        if response.status_code == 401:
+            handle_api_error(response.status_code)
+            st.rerun()
+            return False
         response.raise_for_status()
-        return response.json()
+        st.success("Folha marcada como fechada com sucesso!")
+        return True
     except requests.exceptions.RequestException as e:
-        st.error(f"Erro ao marcar folha como fechada: {e}")
-        if hasattr(e, 'response') and e.response is not None:
-            try:
-                detail = e.response.json().get("detail", e.response.text)
-            except requests.exceptions.JSONDecodeError:
-                detail = e.response.text
-            st.error(f"Detalhes: {detail}")
-            if e.response.status_code == 401:
-                st.warning("Sessão expirada ou token inválido. Por favor, retorne ao login.")
-                st.session_state.clear()
-                st.rerun()
-        return None
+        st.error(f"Erro de conexão ao marcar folha como fechada: {e}")
+        logger.error(f"Erro de conexão ao marcar folha como fechada: {e}", exc_info=True)
+        return False
 
 def get_dica_ia_api(id_cliente: str, id_folha_processada: str, id_item_checklist: str, descricao_item: str):
-    """Busca dica de IA para um item do checklist."""
+    api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist-fechamento/{id_item_checklist}/dica-ia"
+    payload = {"descricao_item": descricao_item}
+    logger.info(f"Buscando dica IA: {api_url} para item: {descricao_item}")
     try:
-        response = requests.get(
-            f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist/dica-ia", # Usar settings.API_BASE_URL
-            params={"id_item_checklist": id_item_checklist, "descricao_item": descricao_item},
-            headers=get_auth_headers() 
-        )
+        response = requests.post(api_url, json=payload, headers=get_auth_headers_checklist())
+        if response.status_code == 401:
+            handle_api_error(response.status_code)
+            st.rerun()
+            return None
         response.raise_for_status()
-        return response.json()
+        return response.json().get("dica")
     except requests.exceptions.RequestException as e:
-        st.error(f"Erro ao buscar dica de IA: {e}")
-        if hasattr(e, 'response') and e.response is not None:
-            try:
-                detail = e.response.json().get("detail", e.response.text)
-            except requests.exceptions.JSONDecodeError:
-                detail = e.response.text
-            st.error(f"Detalhes: {detail}")
-            if e.response.status_code == 401:
-                st.warning("Sessão expirada ou token inválido. Por favor, retorne ao login.")
-                st.session_state.clear()
-                st.rerun()
+        st.error(f"Erro de conexão ao buscar dica da IA: {e}")
+        logger.error(f"Erro de conexão ao buscar dica da IA: {e}", exc_info=True)
+        return None
+    except json.JSONDecodeError:
+        st.error("Erro ao decodificar a resposta da API (dica IA).")
+        logger.error("Erro ao decodificar a resposta da API (dica IA).", exc_info=True)
         return None
 
 def fetch_folhas_disponiveis_para_checklist(id_cliente: str):
-    """Busca as folhas processadas disponíveis para checklist para o cliente."""
+    api_url = f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas-processadas?status_checklist=pendente" # Exemplo de filtro
+    logger.info(f"Buscando folhas disponíveis para checklist: {api_url}")
     try:
-        response = requests.get(
-            f"{settings.API_BASE_URL}/clientes/{id_cliente}/folhas-processadas/disponiveis-para-checklist", # Usar settings.API_BASE_URL
-            headers=get_auth_headers()
-        )
+        response = requests.get(api_url, headers=get_auth_headers_checklist())
+        if response.status_code == 401:
+            handle_api_error(response.status_code)
+            st.rerun()
+            return []
         response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        st.error(f"Erro ao buscar folhas disponíveis: {e}")
-        if hasattr(e, 'response') and e.response is not None:
+        # Supondo que a resposta seja similar à de buscar_folhas_processadas_cliente em dashboard_folha
+        folhas_raw = response.json().get("folhas", [])
+        folhas_formatadas = []
+        for folha_data in folhas_raw:
             try:
-                detail = e.response.json().get("detail", e.response.text)
-            except requests.exceptions.JSONDecodeError:
-                detail = e.response.text
-            st.error(f"Detalhes: {detail}")
-            if e.response.status_code == 401:
-                st.warning("Sessão expirada ou token inválido. Por favor, retorne ao login.")
-                st.session_state.clear()
-                st.rerun()
+                dt_str = folha_data.get("periodo_referencia")
+                if isinstance(dt_str, str):
+                    dt_obj = datetime.strptime(dt_str.split('T')[0], "%Y-%m-%d").date() if 'T' in dt_str else datetime.strptime(dt_str, "%Y-%m-%d").date()
+                    folha_data["periodo_referencia_display"] = dt_obj.strftime("%B/%Y")
+                else: # Se já for um objeto date (improvável vindo de JSON puro)
+                     folha_data["periodo_referencia_display"] = "Data Inválida"
+
+                folha_data["selectbox_label"] = f'{folha_data["periodo_referencia_display"]} (ID: {folha_data["id_folha_processada"][:8]}...)'
+                folhas_formatadas.append(folha_data)
+            except ValueError as ve:
+                logger.error(f"Erro ao formatar data para folha {folha_data.get('id_folha_processada')}: {ve}")
+                folha_data["periodo_referencia_display"] = "Data Inconsistente"
+                folha_data["selectbox_label"] = f'Data Inconsistente (ID: {folha_data.get("id_folha_processada","ERRO")[:8]}...)'
+                folhas_formatadas.append(folha_data)
+        
+        # Ordenar por data, se necessário (exemplo: mais recentes primeiro)
+        # folhas_formatadas.sort(key=lambda x: x.get("periodo_referencia_date_obj", date.min), reverse=True)
+        return folhas_formatadas
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erro de conexão ao buscar folhas disponíveis: {e}")
+        logger.error(f"Erro de conexão ao buscar folhas disponíveis: {e}", exc_info=True)
+        return []
+    except json.JSONDecodeError:
+        st.error("Erro ao decodificar a resposta da API (folhas disponíveis).")
+        logger.error("Erro ao decodificar a resposta da API (folhas disponíveis).", exc_info=True)
         return []
 
-# Função principal para exibir a página do checklist
 def mostrar_checklist_page():
-    """Renderiza a página de checklist de fechamento da folha."""
-    initialize_session_state_checklist() # Mantido para estados específicos da página
+    initialize_session_state_checklist()
     
-    # Usar logo da pasta assets na raiz do projeto
-    # O Streamlit geralmente serve a pasta 'assets' se estiver na raiz do diretório da aplicação.
-    # Se o script está em src/frontend/pages, e assets está na raiz do projeto (AUDITORIA360/assets),
-    # o caminho relativo direto 'assets/logo.png' pode não funcionar como esperado sem configuração adicional
-    # do servidor de media do Streamlit ou se o ponto de execução do Streamlit não for a raiz do projeto.
-    # No entanto, é comum o Streamlit conseguir encontrar 'assets/logo.png' se a pasta 'assets' 
-    # estiver no mesmo nível do script principal que inicia o app (ex: painel.py, se estiver na raiz de src/frontend ou src)
-    # ou se o app for executado da raiz do projeto.
-    # Para maior robustez em diferentes cenários de execução, um caminho absoluto ou relativo à raiz do projeto é melhor.
-    # Mas para o comportamento padrão do Streamlit, vamos tentar o caminho relativo simples primeiro.
-    logo_path = "assets/logo.png" # Simplificado - Streamlit tentará encontrar a partir do diretório de execução
-    try:
-        # Tentativa de carregar a imagem. Se falhar, o logger avisará.
-        # Não é estritamente necessário verificar os.path.exists aqui se o Streamlit lida com isso.
-        st.image(logo_path, width=200)
-    except Exception as e:
-        logger.warning(f"Falha ao carregar logo de '{logo_path}': {e}. Tentando caminho alternativo.")
-        # Fallback para um caminho que assume que 'assets' está na raiz do projeto
-        # e o script está alguns níveis abaixo.
-        project_root_assets_logo = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'assets', 'logo.png')
-        if os.path.exists(project_root_assets_logo):
-            st.image(project_root_assets_logo, width=200)
-        else:
-            logger.error(f"Logo também não encontrado em: {project_root_assets_logo}")
-            st.warning("Logo da aplicação não encontrado.")
-
-    st.title("📝 Checklist de Fechamento da Folha")
-
-    # 5. Verificar autenticação centralizada
     api_token = get_api_token()
     id_cliente_atual = get_current_client_id()
 
     if not api_token or not id_cliente_atual:
-        st.warning("Você precisa estar logado e ter um cliente associado para acessar esta página.")
-        st.info("Por favor, retorne à página inicial para fazer login.")
+        st.warning("Você precisa estar logado para acessar esta página.")
         if st.button("Retornar ao Login"):
             try:
-                # Assumindo que painel.py é o entrypoint principal do app Streamlit
                 st.switch_page("painel.py")
-            except Exception as e:
+            except AttributeError:
                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
-                logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}")
-        return
+            except Exception as e:
+                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
+        st.stop()
 
-    # Exibir informações do usuário logado (obtidas do painel.py via st.session_state)
-    if st.session_state.get("name"): # 'name' é o nome de exibição do streamlit-authenticator
-         st.sidebar.success(f"Logado como: {st.session_state.get('name')}")
-    if id_cliente_atual:
-         st.sidebar.caption(f"Cliente ID: {id_cliente_atual}")
-    # O botão de logout é gerenciado pelo painel.py e streamlit-authenticator,
-    # não precisa ser recriado aqui se o painel já o adiciona globalmente.
-    # Se precisar de um logout específico nesta página que limpe estados locais:
-    # if st.sidebar.button("Logout Desta Sessão de Checklist"):
-    #     # Limpar estados específicos do checklist se necessário
-    #     st.session_state.checklist_items = []
-    #     st.session_state.id_folha_processada_checklist = ""
-    #     # ... outros estados locais ...
-    #     # Idealmente, o logout global do painel.py cuidaria de limpar st.session_state("token"), etc.
-    #     st.success("Sessão do checklist encerrada. Para logout completo, use o menu principal.")
-    #     st.rerun()
+    display_user_info_sidebar()
+    
+    st.title("📝 Checklist de Fechamento da Folha")
 
+    # Seleção da Folha de Pagamento
+    folhas_disponiveis = fetch_folhas_disponiveis_para_checklist(id_cliente_atual)
+    
+    if not folhas_disponiveis:
+        st.info("Nenhuma folha de pagamento com checklist pendente encontrada para este cliente.")
+        st.stop()
 
-    # Seleção de Cliente e Folha
-    # Usar o id_cliente_atual da sessão. A lógica de admin para selecionar cliente foi removida para simplificar.
-    # Se essa funcionalidade for crucial, precisará ser reimplementada baseada em roles/claims do token JWT.
-    client_id_input = id_cliente_atual 
-    st.info(f"Exibindo checklist para o Cliente ID: {client_id_input}")
+    map_label_to_id_folha = {f["selectbox_label"]: f["id_folha_processada"] for f in folhas_disponiveis}
+    
+    # Usar o ID da folha armazenado na sessão se existir, ou o primeiro da lista
+    id_folha_selecionada_sessao = get_current_folha_id_for_checklist()
+    
+    # Encontrar o label correspondente ao ID da sessão, se existir na lista atual
+    label_selecionada_default = None
+    if id_folha_selecionada_sessao:
+        for label, id_f in map_label_to_id_folha.items():
+            if id_f == id_folha_selecionada_sessao:
+                label_selecionada_default = label
+                break
+    
+    # Se não houver default ou o default não estiver mais na lista, usa o primeiro item
+    if not label_selecionada_default and map_label_to_id_folha:
+        label_selecionada_default = list(map_label_to_id_folha.keys())[0]
 
+    label_folha_selecionada = st.selectbox(
+        "Selecione a Folha de Pagamento para o Checklist:",
+        options=list(map_label_to_id_folha.keys()),
+        index=list(map_label_to_id_folha.keys()).index(label_selecionada_default) if label_selecionada_default else 0,
+        key="select_folha_checklist"
+    )
 
-    folhas_disponiveis = fetch_folhas_disponiveis_para_checklist(client_id_input)
-    folha_options = folhas_disponiveis if isinstance(folhas_disponiveis, list) else []
-    folha_id_selecionada_obj = None # Alterado para armazenar o objeto completo
-    if folha_options:
-        def folha_format_func(folha_obj): # Alterado para receber o objeto
-            return str(folha_obj.get("descricao", folha_obj.get("id_folha_processada", "Folha sem nome")))
-        
-        folha_id_selecionada_obj = st.selectbox( # Alterado para armazenar o objeto
-            "Selecione a Folha Processada",
-            options=folha_options,
-            format_func=folha_format_func,
-            key="selectbox_folha_checklist"
-        )
-        if folha_id_selecionada_obj: # Verificar se um objeto foi selecionado
-            id_folha_input = folha_id_selecionada_obj.get("id_folha_processada")
-            st.session_state.id_folha_processada_checklist = id_folha_input
-        else: # Caso nenhuma folha seja selecionada (ex: lista vazia ou usuário desmarcou)
-            st.session_state.id_folha_processada_checklist = "" # Limpa o ID da folha
-            # st.info("Nenhuma folha selecionada.") # Opcional: feedback ao usuário
-    else:
-        # Mantém a entrada manual se não houver opções, mas isso pode ser menos comum agora
-        id_folha_input_manual = st.text_input(
-            "ID da Folha Processada (manual)",
-            value=st.session_state.get("id_folha_processada_checklist", ""), # Usar .get para segurança
-            key="id_folha_input_checklist_manual"
-        )
-        st.session_state.id_folha_processada_checklist = id_folha_input_manual
-        if not folha_options and not id_folha_input_manual: # Adicionado para clareza
-            st.info("Nenhuma folha disponível para seleção automática. Informe o ID manualmente se necessário.")
-        elif not folha_options and id_folha_input_manual:
-            st.info("ID da folha informado manualmente.")
+    if not label_folha_selecionada:
+        st.info("Por favor, selecione uma folha de pagamento.")
+        st.stop()
 
+    id_folha_escolhida = map_label_to_id_folha[label_folha_selecionada]
+    set_current_folha_id_for_checklist(id_folha_escolhida) # Atualiza na sessão
 
-    if st.button("Carregar Checklist", key="load_checklist_btn"):
-        if not client_id_input: # client_id_input agora é id_cliente_atual que já foi validado
-            st.error("ID do Cliente é obrigatório. Problema de sessão.") # Mensagem improvável agora
-        elif not st.session_state.id_folha_processada_checklist:
-            st.error("ID da Folha Processada é obrigatório. Selecione ou informe uma folha.")
-        else:
-            # st.session_state.checklist_client_id = client_id_input # Não é mais necessário, usamos id_cliente_atual
-            with st.spinner("Carregando itens do checklist..."):
-                items = fetch_checklist_items(client_id_input, st.session_state.id_folha_processada_checklist)
-            if items is not None:
-                # Ordenar por categoria e depois por descrição
-                st.session_state.checklist_items = sorted(
-                    items, 
-                    key=lambda x: (str(x.get("categoria", "")).lower(), str(x.get("descricao", "")).lower())
-                )
-                st.success(f"Checklist para a folha {st.session_state.id_folha_processada_checklist} carregado.")
-            else:
-                st.session_state.checklist_items = [] # Limpa em caso de erro
-                # A função fetch_checklist_items já mostra o erro
+    st.markdown(f"### Checklist para a Folha: **{label_folha_selecionada}**")
+
+    # Carregar itens do checklist
+    if st.button("Carregar Itens do Checklist") or (id_folha_escolhida and not st.session_state.checklist_items):
+        st.session_state.checklist_items = fetch_checklist_items(id_cliente_atual, id_folha_escolhida)
 
     if not st.session_state.checklist_items:
-        # Ajustar mensagem para quando o botão "Carregar Checklist" ainda não foi pressionado
-        if 'load_checklist_btn' not in st.session_state or not st.session_state.load_checklist_btn:
-            st.info("Selecione uma folha e clique em 'Carregar Checklist' para visualizar os itens.")
-        else: # Se o botão foi pressionado e ainda não há itens
-            st.write("Nenhum item de checklist carregado ou encontrado para a folha selecionada.")
-        return
-
-    # Métricas de Progresso
-    # Exemplo de payload de resposta do checklist para desenvolvedores:
-    # [
-    #   {
-    #     "id_item_checklist": "item1",
-    #     "descricao": "Conferir INSS",
-    #     "categoria": "Tributos",
-    #     "status": "PENDENTE",
-    #     "criticidade": "BLOQUEADOR",
-    #     "notas": "",
-    #     "responsavel": "Maria"
-    #   },
-    #   ...
-    # ]
-    total_items = len(st.session_state.checklist_items)
-    concluidos = sum(1 for item in st.session_state.checklist_items if item.get("status") == "CONCLUIDO")
-    pendentes = total_items - concluidos
-    bloqueadores_pendentes = sum(1 for item in st.session_state.checklist_items if item.get("criticidade") == "BLOQUEADOR" and item.get("status") != "CONCLUIDO")
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Total de Itens", total_items)
-    with col2:
-        st.metric("Concluídos", concluidos)
-    with col3:
-        st.metric("Pendentes", pendentes)
-
-    if bloqueadores_pendentes > 0:
-        st.warning(f"⚠️ Atenção: Existem {bloqueadores_pendentes} item(ns) bloqueador(es) pendente(s)!")
-
-    # Abas para visualização dos itens
-    tab_pendentes, tab_concluidos, tab_bloqueadores = st.tabs(["Pendentes", "Concluídos", "Bloqueadores Pendentes"])
-
-    status_options = ["PENDENTE", "EM ANDAMENTO", "CONCLUIDO", "NAO_APLICAVEL"]
-    status_map_display = {
-        "PENDENTE": "🔴 Pendente",
-        "EM ANDAMENTO": "🟡 Em Andamento",
-        "CONCLUIDO": "🟢 Concluído",
-        "NAO_APLICAVEL": "⚪ Não Aplicável"
-    }
-    criticidade_map_display = {
-        "BAIXA": "Baixa",
-        "MEDIA": "Média",
-        "ALTA": "Alta",
-        "BLOQUEADOR": "🚫 BLOQUEADOR"
-    }
-
-    def render_item_expander(item, item_key_prefix):
-        expander_title = f"{item.get('descricao', 'Item sem descrição')} ({status_map_display.get(item.get('status'), item.get('status'))})"
-        if item.get('criticidade') == "BLOQUEADOR":
-            expander_title = f"🚫 {expander_title}"
-
-        # Remover a chave do expander, pois não é um parâmetro válido.
-        # A unicidade dos controles internos será garantida pelas chaves dos widgets (selectbox, text_area, button)
-        with st.expander(expander_title):
-            st.markdown(f"**ID:** `{item.get('id_item_checklist', 'N/A')}`") # Mostrar ID do item
-            st.markdown(f"**Categoria:** {item.get('categoria', 'N/A')}")
-            st.markdown(f"**Responsável:** {item.get('responsavel', 'N/A')}")
-            st.markdown(f"**Criticidade:** {criticidade_map_display.get(item.get('criticidade'), item.get('criticidade'))}")
-
-            # Encontrar o índice do status atual para o selectbox
-            current_status_index = status_options.index(item.get("status")) if item.get("status") in status_options else 0
-
-            new_status = st.selectbox(
-                "Status",
-                options=status_options,
-                index=current_status_index,
-                format_func=lambda x: str(status_map_display.get(x, x)),
-                key=f"{item_key_prefix}_status_{item.get('id_item_checklist')}"
-            )
-            new_notas = st.text_area(
-                "Notas",
-                value=item.get("notas", ""),
-                key=f"{item_key_prefix}_notas_{item.get('id_item_checklist')}"
-            )
-
-            col_b1, col_b2 = st.columns(2)
-            with col_b1:
-                if st.button("Salvar Alterações", key=f"{item_key_prefix}_save_{item.get('id_item_checklist')}"):
-                    updates = {"status": new_status, "notas": new_notas}
-                    with st.spinner("Salvando..."):
-                        updated_item = update_checklist_item_api(
-                            id_cliente_atual, # Usar id_cliente_atual
-                            st.session_state.id_folha_processada_checklist,
-                            item.get("id_item_checklist"),
-                            updates
-                        )
-                    if updated_item:
-                        # Atualizar o item na lista da sessão
-                        for i, chk_item in enumerate(st.session_state.checklist_items):
-                            if chk_item.get("id_item_checklist") == item.get("id_item_checklist"):
-                                st.session_state.checklist_items[i] = updated_item
-                                break
-                        st.success(f"Item '{item.get('descricao')}' atualizado!")
-                        st.rerun() # Recarrega para refletir o status no título do expander e nas métricas
-                    else:
-                        st.error(f"Falha ao atualizar o item '{item.get('descricao')}'.")
-            with col_b2:
-                if st.button("💡 Obter Dica IA", key=f"{item_key_prefix}_dica_{item.get('id_item_checklist')}"):
-                    item_id = item.get("id_item_checklist")
-                    if item_id in st.session_state.dica_ia_cache:
-                        st.info(f"Dica (cache): {st.session_state.dica_ia_cache[item_id]}")
-                    else:
-                        with st.spinner("Buscando dica da IA..."):
-                            dica_response = get_dica_ia_api( # Renomeado para dica_response
-                                id_cliente_atual, # Usar id_cliente_atual
-                                st.session_state.id_folha_processada_checklist,
-                                item_id,
-                                item.get("descricao")
-                            )
-                        if dica_response and "dica" in dica_response: # Checar dica_response
-                            st.session_state.dica_ia_cache[item_id] = dica_response["dica"]
-                            st.info(f"Dica: {dica_response['dica']}") # Usar dica_response
-                        else:
-                            st.warning("Não foi possível obter a dica da IA.")
-            
-            if item.get('id_item_checklist') in st.session_state.dica_ia_cache:
-                 st.caption(f"Dica IA: {st.session_state.dica_ia_cache[item.get('id_item_checklist')]}")
-
-
-    with tab_pendentes:
-        st.subheader("Itens Pendentes ou Em Andamento")
-        pendentes_list = [item for item in st.session_state.checklist_items if item.get("status") in ["PENDENTE", "EM ANDAMENTO"]]
-        if not pendentes_list:
-            st.info("Nenhum item pendente ou em andamento.")
-        else:
-            for item in sorted(pendentes_list, key=lambda x: (x.get("criticidade") != "BLOQUEADOR", x.get("categoria", ""), x.get("descricao", ""))): # Bloqueadores primeiro
-                render_item_expander(item, "pend")
-
-    with tab_concluidos:
-        st.subheader("Itens Concluídos ou Não Aplicáveis")
-        concluidos_list = [item for item in st.session_state.checklist_items if item.get("status") in ["CONCLUIDO", "NAO_APLICAVEL"]]
-        if not concluidos_list:
-            st.info("Nenhum item concluído ou não aplicável.")
-        else:
-            for item in sorted(concluidos_list, key=lambda x: (x.get("categoria", ""), x.get("descricao", ""))):
-                render_item_expander(item, "conc")
-    
-    with tab_bloqueadores:
-        st.subheader("Itens Bloqueadores Pendentes")
-        bloqueadores_pendentes_list = [
-            item for item in st.session_state.checklist_items 
-            if item.get("criticidade") == "BLOQUEADOR" and item.get("status") not in ["CONCLUIDO", "NAO_APLICAVEL"]
-        ]
-        if not bloqueadores_pendentes_list:
-            st.info("Nenhum item bloqueador pendente. Ótimo!")
-        else:
-            for item in sorted(bloqueadores_pendentes_list, key=lambda x: (x.get("categoria", ""), x.get("descricao", ""))):
-                 render_item_expander(item, "bloq")
-
-
-    st.divider()
-    st.subheader("Finalizar Fechamento da Folha")
-
-    if bloqueadores_pendentes > 0:
-        st.error(f"Existem {bloqueadores_pendentes} itens bloqueadores que precisam ser concluídos antes de fechar a folha.")
-    
-    confirm_close = st.checkbox("Confirmo que revisei todos os itens e desejo marcar esta folha como fechada.", key="confirm_close_sheet_cb")
-
-    if st.button("Marcar Folha como Fechada", key="mark_closed_btn", disabled=(bloqueadores_pendentes > 0 or not confirm_close)):
-        if not id_cliente_atual or not st.session_state.id_folha_processada_checklist: # Usar id_cliente_atual
-            st.error("ID do Cliente e ID da Folha Processada são necessários.")
-        else:
-            if bloqueadores_pendentes > 0:
-                st.error("Não é possível fechar a folha. Existem itens bloqueadores pendentes.")
-            elif not confirm_close:
-                st.warning("Você precisa confirmar a revisão dos itens para fechar a folha.")
-            else:
-                with st.spinner("Marcando folha como fechada..."):
-                    response = mark_sheet_as_closed_api(id_cliente_atual, st.session_state.id_folha_processada_checklist) # Usar id_cliente_atual
-                if response and response.get("status_folha") == "FECHADA_CLIENTE":
-                    st.success(f"Folha {st.session_state.id_folha_processada_checklist} marcada como fechada com sucesso!")
-                    # Atualizar o status da folha localmente ou recarregar tudo se necessário
-                    # Idealmente, a API retornaria os itens atualizados ou um status geral
-                    # Por simplicidade, vamos apenas mostrar a mensagem.
-                    # Poderia-se desabilitar mais interações ou recarregar os dados.
-                    st.balloons()
-                elif response:
-                    st.warning(f"A folha foi processada, mas o status é: {response.get('message', 'Status desconhecido')}. Detalhes: {response.get('detail', '')}")
-                else:
-                    st.error("Falha ao marcar a folha como fechada.")
-    elif (bloqueadores_pendentes > 0 or not confirm_close) and st.session_state.get("mark_closed_btn_clicked", False): # Para dar feedback se o botão estava desabilitado e foi clicado
-         if bloqueadores_pendentes > 0:
-            st.error("Ação bloqueada: Existem itens bloqueadores pendentes.")
-         elif not confirm_close:
-            st.warning("Ação bloqueada: Confirme a revisão dos itens.")
-    
-    # Guardar o estado do clique para feedback
-    if "mark_closed_btn" in st.session_state and st.session_state.mark_closed_btn:
-        st.session_state.mark_closed_btn_clicked = True
+        st.info("Nenhum item de checklist encontrado para esta folha ou checklist ainda não carregado.")
     else:
-        st.session_state.mark_closed_btn_clicked = False
+        for index, item in enumerate(st.session_state.checklist_items):
+            item_id = item.get("id_item_checklist_fechamento") # Ajustar conforme o schema da API
+            descricao = item.get("descricao_item", "Item sem descrição")
+            status_atual = item.get("status_item", "PENDENTE") # PENDENTE, CONCLUIDO, NAO_APLICAVEL
+            observacoes = item.get("observacoes_usuario", "")
+
+            with st.container(border=True):
+                st.markdown(f"**{index + 1}. {descricao}**")
+                
+                cols_status_obs = st.columns([2,3])
+                with cols_status_obs[0]:
+                    novo_status = st.radio(
+                        "Status:", 
+                        options=["PENDENTE", "CONCLUIDO", "NAO_APLICAVEL"], 
+                        index=["PENDENTE", "CONCLUIDO", "NAO_APLICAVEL"].index(status_atual) if status_atual in ["PENDENTE", "CONCLUIDO", "NAO_APLICAVEL"] else 0,
+                        key=f"status_{item_id}",
+                        horizontal=True
+                    )
+                with cols_status_obs[1]:
+                    novas_observacoes = st.text_area("Observações:", value=observacoes, key=f"obs_{item_id}", height=75)
+
+                cols_acao_dica = st.columns([1,3])
+                with cols_acao_dica[0]:
+                    if st.button("Salvar Item", key=f"save_{item_id}"):
+                        updates = {"status_item": novo_status, "observacoes_usuario": novas_observacoes}
+                        if update_checklist_item_api(id_cliente_atual, id_folha_escolhida, item_id, updates):
+                            # Atualizar localmente para refletir mudança imediatamente (opcional, API deve ser fonte da verdade)
+                            item["status_item"] = novo_status
+                            item["observacoes_usuario"] = novas_observacoes
+                            st.rerun() # Para recarregar e mostrar o estado atualizado
+                
+                with cols_acao_dica[1]:
+                    # Cache simples para dicas de IA
+                    dica_cache_key = f"{id_folha_escolhida}_{item_id}"
+                    if dica_cache_key not in st.session_state.dica_ia_cache:
+                        if st.button("💡 Obter Dica da IA", key=f"dica_{item_id}"):
+                            dica = get_dica_ia_api(id_cliente_atual, id_folha_escolhida, item_id, descricao)
+                            if dica:
+                                st.session_state.dica_ia_cache[dica_cache_key] = dica
+                                st.info(f"**Dica da IA:** {dica}")
+                            else:
+                                st.warning("Não foi possível obter a dica da IA no momento.")
+                    else:
+                        st.info(f"**Dica da IA (cache):** {st.session_state.dica_ia_cache[dica_cache_key]}")
+                        if st.button("Limpar Dica", key=f"clear_dica_{item_id}"):
+                             del st.session_state.dica_ia_cache[dica_cache_key]
+                             st.rerun()
+                st.markdown("---")
+
+
+        # Botão para fechar o checklist da folha
+        if all(it.get("status_item") in ["CONCLUIDO", "NAO_APLICAVEL"] for it in st.session_state.checklist_items) and st.session_state.checklist_items:
+            if st.button("🏁 Marcar Folha como Fechada (Checklist Concluído)", type="primary"):
+                if mark_sheet_as_closed_api(id_cliente_atual, id_folha_escolhida):
+                    st.balloons()
+                    # Limpar o checklist da sessão e buscar novas folhas pendentes
+                    st.session_state.checklist_items = []
+                    set_current_folha_id_for_checklist(None)
+                    st.rerun()
+        elif st.session_state.checklist_items:
+            st.warning("Ainda existem itens pendentes no checklist. Conclua todos os itens para fechar a folha.")
 
 
 if __name__ == "__main__":
-    # Adicionar import de os para __main__ se for executar standalone e o logo path precisar dele
-    import os 
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    
-    # Configuração da página Streamlit
-    st.set_page_config(
-        layout="wide", 
-        page_title="Checklist de Fechamento",
-        page_icon="📝" # Adicionado ícone
-    )
-    
-    # Simulação de st.session_state para execução standalone (REMOVER EM PRODUÇÃO OU QUANDO INTEGRADO)
-    # Isso é apenas para permitir que a página seja executada diretamente para desenvolvimento.
-    # Em um ambiente integrado, painel.py populacional esses valores.
+    # Simulação do st.session_state para fins de teste local
+    # Comente ou remova estas linhas quando integrado ao painel.py
     if 'token' not in st.session_state:
-        st.session_state.token = "fake_dev_token" # Simule um token
+        st.session_state.token = "token_simulado_checklist" # Adicione um token válido se sua API exigir
     if 'id_cliente' not in st.session_state:
-       st.session_state.id_cliente = "cliente_dev_001" # Simule um client_id
-    if 'name' not in st.session_state:
-       st.session_state.name = "Usuário Dev"
+        st.session_state.id_cliente = "cliente_simulado_checklist_123" # ID de cliente para teste
+    if 'user_info' not in st.session_state: # user_info é usado por display_user_info_sidebar
+        st.session_state.user_info = {"name": "Usuário Teste Checklist", "username": "testuser_checklist"}
 
-    initialize_session_state_checklist() # Ainda necessário para estados locais da página
     mostrar_checklist_page()

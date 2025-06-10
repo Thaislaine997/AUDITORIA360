@@ -7,7 +7,7 @@ from src.schemas.checklist_schemas import (
     ChecklistItemResponseSchema,
     ChecklistItemUpdateSchema,
 )
-from src.auth_utils import User, get_current_active_user
+from src.utils.auth_utils import User, get_current_active_user
 
 router = APIRouter(
     prefix="/api/v1/clientes/{id_cliente}/folhas/{id_folha_processada}/checklist",

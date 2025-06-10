@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Any
 
-from src.auth_utils import (
+from src.utils.auth_utils import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     User,
     create_access_token,

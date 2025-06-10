@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
 from typing import List
-from src.schemas import FolhaProcessadaSelecaoSchema
+from src.schemas.folha_processada_schemas import FolhaProcessadaSelecaoSchema
 from google.cloud import bigquery
-from src.auth_utils import get_current_active_user, User
+from src.utils.auth_utils import get_current_active_user, User
 from src.utils.bq_executor import BQExecutor
-from src.config_manager import ConfigManager
+from src.utils.config_manager import config_manager # Importar a instância global
 from datetime import datetime
 
 router = APIRouter(
@@ -20,9 +20,8 @@ async def listar_folhas_disponiveis_para_checklist(
     if not current_user.is_admin and current_user.client_id != id_cliente:
         raise HTTPException(status_code=403, detail="Acesso não autorizado ao cliente.")
 
-    # Corrigido: usa get_config_for_client_id para obter config sem Request
-    config_manager = ConfigManager()
-    client_config = config_manager.get_config_for_client_id(id_cliente)
+    # Corrigido: usa get_client_config para obter config sem Request e a instância global
+    client_config = config_manager.get_client_config(id_cliente) # Usar o método correto e a instância global
 
     # Garante que os campos obrigatórios existem
     project_id = client_config.get("gcp_project_id")

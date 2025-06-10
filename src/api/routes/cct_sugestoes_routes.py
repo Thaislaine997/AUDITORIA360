@@ -3,7 +3,7 @@ Rotas para revisão, aprovação e rejeição de sugestões de impacto de CCTs.
 """
 from fastapi import APIRouter, HTTPException
 from src.controllers import cct_sugestoes_controller
-from src.schemas_cct import ProcessarSugestaoCCTRequest
+from src.schemas.cct_schemas import ProcessarSugestaoCCTRequest
 
 router = APIRouter(prefix="/api/v1/ccts/sugestoes-impacto", tags=["Sugestões de Impacto CCT"])
 

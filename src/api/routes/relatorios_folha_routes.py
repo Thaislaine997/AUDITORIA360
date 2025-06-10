@@ -1,8 +1,8 @@
 # src/routes/relatorios_folha_routes.py
 from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.responses import StreamingResponse
-from src.controllers import relatorios_folha_controller
-from src.auth_utils import get_current_active_user, User # Importar User e get_current_active_user
+from src.controllers.relatorios_folha_controller import exemplo_controller
+from src.utils.auth_utils import get_current_active_user, User # Importar User e get_current_active_user
 import io
 
 router = APIRouter(

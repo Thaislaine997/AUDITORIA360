@@ -87,8 +87,9 @@ app.include_router(rubricas_routes.router, prefix="/rubricas", tags=["Rubricas"]
 async def read_root():
     return {"message": "Bem-vindo à API Auditoria360"}
 
-# Se você estiver usando uvicorn para rodar localmente, pode adicionar isso (opcional):
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+# Seção para execução direta via python -m src.api.main
+if __name__ == "__main__":
+    import uvicorn
+    print("Iniciando servidor FastAPI da Auditoria360...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 

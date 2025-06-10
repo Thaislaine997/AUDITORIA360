@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from typing import List, Optional
 from datetime import date
-from src.schemas_cct import (
+from src.schemas.cct_schemas import (
     CCTDocumentoCreateRequest,
     CCTDocumentoResponse,
     AlertaCCTResponse,
@@ -15,7 +15,7 @@ from src.controllers.cct_controller import (
     listar_alertas,
     atualizar_status_alerta
 )
-from src.auth_utils import get_current_active_user, User
+from src.utils.auth_utils import get_current_active_user, User
 
 router = APIRouter(prefix="/api/v1/ccts", tags=["CCTs"])
 

@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import JSONResponse
-from src.bq_loader import ControleFolhaLoader
-from src.config_manager import get_current_config
+from src.utils.bq_loader import ControleFolhaLoader
+from src.utils.config_manager import get_current_config # Corrigido o caminho do import
+from src.utils import bq_loader
 import logging
 import pandas as pd
 

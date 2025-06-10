@@ -9,7 +9,11 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from reportlab.lib import colors
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
-from src.config_manager import config_manager
+from src.utils.config_manager import config_manager # Corrigido o caminho do import
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+import bq_loader
 
 def get_current_config(request: Request):
     return config_manager.get_config(request)
@@ -133,12 +137,11 @@ async def gerar_relatorio_pdf(
     id_folha: str = Path(..., title="ID da Folha", description="O ID da folha para gerar o relatório."),
     config: dict = Depends(get_current_config)
 ):
-    from ..bq_loader import get_bigquery_client
     project_id = config.get("gcp_project_id")
     bq_dataset_id = config.get("control_bq_dataset_id")
     if not project_id or not bq_dataset_id:
         raise HTTPException(status_code=500, detail="Configuração do projeto BigQuery ausente.")
-    client = get_bigquery_client(config)
+    client = src.bq_loader.get_bigquery_client(config)
 
     query = f"""
     WITH ErrosAgregados AS (

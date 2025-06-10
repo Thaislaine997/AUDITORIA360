@@ -1,6 +1,11 @@
 import streamlit as st
-import sys # Add sys
-import os # Add os
+st.set_page_config(layout="wide", page_title="Consultor de Riscos - AUDITORIA360")
+
+import sys
+import os
+import requests # Adicionado import
+import json # Adicionado import
+from typing import Optional # Adicionado Optional
 
 # --- Path Setup ---
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) # Adjusted for pages subdir
@@ -8,51 +13,78 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
 
-# src/pages/consultor_riscos_page.py
-import requests
 from src.core.config import settings
-from src.frontend.utils import get_auth_headers, get_api_token, get_current_client_id, handle_api_error
+from src.frontend.utils import (
+    get_api_token as get_global_api_token, 
+    get_current_client_id as get_global_current_client_id, 
+    handle_api_error,
+    display_user_info_sidebar as global_display_user_info_sidebar # Renomeado para evitar conflito
+)
+from src.core.log_utils import logger # Adicionado import do logger
+
+# Usar as funções globais diretamente ou redefinir localmente se precisar de comportamento específico
+def get_api_token() -> Optional[str]:
+    return get_global_api_token()
+
+def get_current_client_id() -> Optional[str]:
+    return get_global_current_client_id()
 
 def display_user_info_sidebar():
-    """Exibe informações do usuário na barra lateral."""
-    if "user_info" in st.session_state and st.session_state.user_info:
-        user_info = st.session_state.user_info
-        st.sidebar.markdown("---")
-        st.sidebar.subheader(f"Usuário: {user_info.get('nome', 'N/A')}")
-        st.sidebar.caption(f"Empresa: {user_info.get('empresa', 'N/A')}")
-        st.sidebar.caption(f"ID Cliente: {st.session_state.get('id_cliente', 'N/A')}")
-    else:
-        st.sidebar.markdown("---")
-        st.sidebar.caption("Informações do usuário não disponíveis.")
+    global_display_user_info_sidebar() # Chama a função global
+
+def get_auth_headers_consultor(): # Função específica para headers desta página
+    token = get_api_token()
+    headers = {"Content-Type": "application/json"} # Chat geralmente usa JSON
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    return headers
 
 def consultor_riscos_page():
-    st.set_page_config(layout="wide", page_title="Consultor de Riscos - AUDITORIA360")
+    # st.set_page_config já foi chamado no topo
 
-    # --- Logo ---
-    logo_path = "assets/logo.png" # Caminho simplificado
-    try:
-        st.logo(logo_path, link="https://auditoria360.com.br")
-    except Exception as e:
-        st.sidebar.image(logo_path, use_column_width=True)
-        st.sidebar.markdown("[AUDITORIA360](https://auditoria360.com.br)")
-        st.sidebar.warning(f"Não foi possível carregar o logo principal: {e}. Usando fallback na sidebar.")
-    st.sidebar.markdown("---")
+    # --- Logo --- (Removido, pois display_user_info_sidebar já deve cuidar disso ou ser padronizado no utils)
+    # Se o logo for específico desta página e não gerenciado por display_user_info_sidebar, pode ser adicionado aqui.
+    # Exemplo: st.sidebar.image(os.path.join(_project_root, "assets", "logo.png"), use_column_width=True)
+    # st.sidebar.markdown("---")
 
     api_token = get_api_token()
     id_cliente_atual = get_current_client_id()
 
     if not api_token or not id_cliente_atual:
         st.warning("Por favor, faça login para acessar esta página.")
-        st.link_button("Ir para Login", "/") # Assumindo que a página de login é a raiz
+        # Usar st.page_link ou st.switch_page para voltar ao painel
+        if st.button("Retornar ao Login"):
+            try:
+                st.switch_page("painel.py")
+            except AttributeError:
+                st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+            except Exception as e:
+                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
         st.stop()
 
-    display_user_info_sidebar()
+    display_user_info_sidebar() # Exibe informações do usuário e logo padronizado
 
-    st.title("Consultor de Riscos Interativo 💬")
+    st.title("🤖 Consultor de Riscos Interativo")
+    st.caption(f"Conectado como Cliente ID: {id_cliente_atual}")
 
     # Inicializa o histórico do chat no session_state se não existir
-    if "risks_messages" not in st.session_state: # Usar uma chave específica para esta página
+    if "risks_messages" not in st.session_state: 
         st.session_state.risks_messages = []
+        # Adicionar mensagem inicial do assistente, se houver contexto do dashboard
+        risco_foco = st.session_state.get('risco_em_foco_para_consultor')
+        id_folha_contexto = st.session_state.get('id_folha_ativa_contexto_chat')
+        if risco_foco and id_folha_contexto:
+            st.session_state.risks_messages.append({
+                "role": "assistant", 
+                "content": f"Olá! Vejo que você selecionou o risco '**{risco_foco.get('descricao_risco', 'N/A')}**' (Severidade: {risco_foco.get('severidade_estimada', 'N/A')}, Probabilidade: {risco_foco.get('probabilidade_estimada',0)*100:.0f}%) referente à folha ID '{id_folha_contexto[:8]}...'. Como posso ajudar a analisar ou mitigar este risco?"
+            })
+            # Limpar o contexto para não persistir entre sessões de chat independentes
+            del st.session_state['risco_em_foco_para_consultor']
+            del st.session_state['id_folha_ativa_contexto_chat']
+        else:
+            st.session_state.risks_messages.append({"role": "assistant", "content": "Olá! Sou seu consultor de riscos IA. Como posso ajudar você hoje?"})
+
 
     # Exibe as mensagens do histórico
     for message in st.session_state.risks_messages:
@@ -61,59 +93,71 @@ def consultor_riscos_page():
 
     # Input do usuário
     if prompt := st.chat_input("Faça sua pergunta sobre riscos trabalhistas..."):
-        # Adiciona a mensagem do usuário ao histórico e exibe
         st.session_state.risks_messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Lógica para chamar o backend e obter a resposta da IA
         with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
             try:
                 payload = {
                     "query": prompt,
-                    "client_id": id_cliente_atual
+                    "client_id": id_cliente_atual,
+                    "conversation_history": [ # Enviar histórico para contexto
+                        {"role": msg["role"], "content": msg["content"]}
+                        for msg in st.session_state.risks_messages[:-1] # Exclui a última (prompt atual)
+                    ]
                 }
-                # Endpoint da API para o consultor de riscos (ajustar conforme necessário)
-                api_url = f"{settings.API_BASE_URL}/api/v1/risks/consult" # Exemplo de endpoint
+                api_url = f"{settings.API_BASE_URL}/chat/riscos" # Endpoint ajustado para /chat/riscos
+                logger.info(f"Enviando para API do consultor de riscos: {api_url} com payload: {payload.get('query')}")
                 
-                headers = get_auth_headers(api_token)
-                response = requests.post(api_url, json=payload, headers=headers)
+                response = requests.post(api_url, json=payload, headers=get_auth_headers_consultor(), stream=False) # stream=False para resposta completa
                 
-                if response.status_code == 200:
-                    api_response_data = response.json()
-                    # Ajuste a chave conforme a resposta real da sua API
-                    assistant_response = api_response_data.get("response", "Não foi possível obter uma resposta do consultor.") 
-                elif response.status_code == 401:
-                    handle_api_error(response.status_code)
+                if response.status_code == 401:
+                    handle_api_error(response.status_code) # Limpa sessão e avisa
                     st.rerun()
-                    return # Adicionado para evitar processamento adicional
-                else:
-                    assistant_response = f"Erro ao contatar o consultor: {response.status_code} - {response.text}"
+                    return # Para a execução
                 
-                st.markdown(assistant_response)
-                # Adiciona a resposta do assistente ao histórico
-                st.session_state.risks_messages.append({"role": "assistant", "content": assistant_response})
+                response.raise_for_status() # Levanta erro para outros códigos HTTP ruins
+                
+                api_response_data = response.json()
+                assistant_response = api_response_data.get("response", "Desculpe, não consegui processar sua pergunta.")
+                full_response = assistant_response
+                message_placeholder.markdown(full_response)
 
+            except requests.exceptions.HTTPError as http_err:
+                logger.error(f"Erro HTTP na API do consultor: {http_err.response.status_code} - {http_err.response.text}")
+                error_detail = http_err.response.text
+                try: # Tenta pegar o detalhe do JSON se houver
+                    error_detail = http_err.response.json().get("detail", error_detail)
+                except json.JSONDecodeError:
+                    pass
+                full_response = f"Erro ao contatar o serviço de consultoria (HTTP {http_err.response.status_code}): {error_detail}"
+                message_placeholder.error(full_response)
             except requests.exceptions.RequestException as e:
-                st.error(f"Erro de conexão ao tentar contatar o consultor: {e}")
-                assistant_response = "Desculpe, não consegui me conectar ao serviço de consultoria."
-                # Não adiciona ao histórico de mensagens se houve erro de conexão
+                logger.error(f"Erro de conexão com API do consultor: {e}", exc_info=True)
+                full_response = f"Erro de conexão ao tentar falar com o consultor IA: {e}"
+                message_placeholder.error(full_response)
+            except json.JSONDecodeError:
+                logger.error(f"Erro ao decodificar JSON da API do consultor: {response.text if 'response' in locals() else 'Resposta não disponível'}")
+                full_response = "Erro ao processar a resposta do consultor (formato inválido)."
+                message_placeholder.error(full_response)
             except Exception as e:
-                st.error(f"Ocorreu um erro inesperado: {e}")
-                assistant_response = "Ocorreu um erro inesperado ao processar sua solicitação."
-                # Não adiciona ao histórico de mensagens se houve erro inesperado
+                logger.error(f"Erro inesperado no consultor de riscos: {e}", exc_info=True)
+                full_response = f"Ocorreu um erro inesperado: {e}"
+                message_placeholder.error(full_response)
+            
+        st.session_state.risks_messages.append({"role": "assistant", "content": full_response})
 
 if __name__ == "__main__":
-    # Simulação do st.session_state para fins de teste local
-    # Remova ou comente estas linhas em produção ou quando integrado
-    if "api_token" not in st.session_state:
-        st.session_state.api_token = "token_simulado_para_teste" 
-    if "id_cliente" not in st.session_state:
-        st.session_state.id_cliente = "cliente_simulado_123"
-    if "user_info" not in st.session_state:
-        st.session_state.user_info = {"nome": "Usuário Teste", "empresa": "Empresa Teste"}
-    # Inicializa 'risks_messages' também para o teste standalone
-    if "risks_messages" not in st.session_state:
-        st.session_state.risks_messages = []
+    if 'token' not in st.session_state:
+        st.session_state.token = "token_simulado_consultor"
+    if 'id_cliente' not in st.session_state:
+        st.session_state.id_cliente = "cliente_simulado_consultor_123"
+    if 'user_info' not in st.session_state:
+        st.session_state.user_info = {"name": "Usuário Consultor", "username": "consultor_user"}
+    # if "risks_messages" not in st.session_state: # Já tratado dentro da função principal
+    #     st.session_state.risks_messages = []
 
     consultor_riscos_page()

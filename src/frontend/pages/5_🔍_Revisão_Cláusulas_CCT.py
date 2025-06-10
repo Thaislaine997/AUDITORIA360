@@ -14,35 +14,56 @@ import pandas as pd
 from datetime import date 
 
 from src.core.config import settings 
-from src.frontend.utils import get_auth_headers, get_api_token, get_current_client_id, handle_api_error, display_user_info_sidebar
+# Ajustar import para usar os utilitários globais de forma consistente
+from src.frontend.utils import (
+    display_user_info_sidebar as global_display_user_info_sidebar, 
+    handle_api_error, 
+    get_api_token as get_global_api_token, 
+    get_current_client_id as get_global_current_client_id,
+    get_auth_headers as get_global_auth_headers # Importar get_auth_headers global
+)
+from src.core.log_utils import logger # Adicionar import do logger
+
+# Funções wrapper locais para consistência, se necessário, ou usar globais diretamente
+def get_api_token() -> str | None:
+    return get_global_api_token()
+
+def get_current_client_id() -> str | None:
+    return get_global_current_client_id()
+
+def display_user_info_sidebar():
+    global_display_user_info_sidebar()
+
+def get_auth_headers_revisao(): # Wrapper local para headers
+    token = get_api_token()
+    return get_global_auth_headers(token) # Chama o global com o token
 
 def mostrar_pagina_revisao_clausulas(): 
     st.set_page_config(layout="wide", page_title="Revisão de Cláusulas CCT - AUDITORIA360")
 
-    # --- Logo ---
-    logo_path = "assets/logo.png"
-    try:
-        st.logo(logo_path, link="https://auditoria360.com.br")
-    except Exception as e:
-        try:
-            st.sidebar.image(logo_path, use_column_width=True)
-            st.sidebar.markdown("[AUDITORIA360](https://auditoria360.com.br)")
-        except Exception:
-            st.sidebar.warning(f"Não foi possível carregar o logo: {logo_path}")
-        st.sidebar.warning(f"Não foi possível carregar o logo principal: {e}. Usando fallback na sidebar.")
-    st.sidebar.markdown("---")
+    # --- Logo --- (Removido, display_user_info_sidebar cuida disso)
+    # st.sidebar.markdown("---") # Removido
 
     api_token = get_api_token()
     id_cliente_atual = get_current_client_id() 
 
-    if not api_token: 
+    if not api_token or not id_cliente_atual: # Adicionado id_cliente_atual na verificação
         st.warning("Por favor, faça login para acessar esta página.")
-        st.link_button("Ir para Login", "/")
+        if st.button("Retornar ao Login"):
+            try:
+                st.switch_page("painel.py")
+            except AttributeError: # Para versões mais antigas do Streamlit ou se painel.py não for a página principal
+                st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+            except Exception as e: # Fallback genérico
+                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
+                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
         st.stop()
 
     display_user_info_sidebar()
 
     st.title("🔍 Revisão de Cláusulas Extraídas de CCTs")
+    st.caption(f"Cliente ID: {id_cliente_atual}")
+
 
     st.sidebar.header("Filtros avançados")
     tipo_clausula = st.sidebar.text_input("Tipo de cláusula", key="rev_tipo_clausula")
@@ -65,7 +86,8 @@ def mostrar_pagina_revisao_clausulas():
     
     clausulas = []
     try:
-        resp = requests.get(f"{settings.API_BASE_URL}/api/v1/clausulas/revisao", headers=get_auth_headers(api_token), params=params)
+        # Usar get_auth_headers_revisao()
+        resp = requests.get(f"{settings.API_BASE_URL}/api/v1/clausulas/revisao", headers=get_auth_headers_revisao(), params=params)
         if resp.status_code == 401:
             handle_api_error(resp.status_code)
             st.rerun()
@@ -74,12 +96,15 @@ def mostrar_pagina_revisao_clausulas():
         clausulas = resp.json()
     except requests.exceptions.RequestException as e:
         st.error(f"Erro ao buscar cláusulas para revisão: {e}")
+        logger.error(f"Erro ao buscar cláusulas para revisão: {e}", exc_info=True) # Adicionado logger
     except json.JSONDecodeError:
         st.error("Erro ao decodificar a resposta da API (não é um JSON válido).")
+        logger.error(f"Erro ao decodificar JSON da busca de cláusulas: {resp.text if 'resp' in locals() else 'Resposta não disponível'}", exc_info=True) # Adicionado logger
         if hasattr(resp, 'text'):
             st.code(resp.text) 
     except Exception as e:
         st.error(f"Ocorreu um erro inesperado ao buscar cláusulas: {e}")
+        logger.error(f"Erro inesperado na busca de cláusulas: {e}", exc_info=True) # Adicionado logger
 
     if not clausulas:
         st.info("Nenhuma cláusula encontrada com os filtros aplicados ou pendente de revisão.")
@@ -153,27 +178,32 @@ def mostrar_pagina_revisao_clausulas():
                         put_resp = requests.put(
                             f"{settings.API_BASE_URL}/api/v1/clausulas/{clausula.get('id_clausula_extraida')}", 
                             json=payload,
-                            headers=get_auth_headers(api_token)
+                            headers=get_auth_headers_revisao() # Usar get_auth_headers_revisao()
                         )
                         if put_resp.status_code == 401:
                             handle_api_error(put_resp.status_code)
                             st.rerun() 
                         elif put_resp.status_code == 200: 
                             st.success(f"Revisão da cláusula {clausula.get('id_clausula_extraida')} salva com sucesso!")
+                            logger.info(f"Revisão da cláusula {clausula.get('id_clausula_extraida')} salva.") # Adicionado logger
                             st.rerun() 
                         else:
                             st.error(f"Erro ao salvar revisão (Cód: {put_resp.status_code}): {put_resp.text}")
+                            logger.error(f"Erro HTTP ao salvar revisão cláusula {clausula.get('id_clausula_extraida')}: {put_resp.status_code} - {put_resp.text}") # Adicionado logger
                     except requests.exceptions.RequestException as e_put:
                         st.error(f"Erro de conexão ao salvar revisão: {e_put}")
+                        logger.error(f"Erro de conexão ao salvar revisão cláusula {clausula.get('id_clausula_extraida')}: {e_put}", exc_info=True) # Adicionado logger
                     except Exception as e_put_general:
                         st.error(f"Erro inesperado ao salvar revisão: {e_put_general}")
+                        logger.error(f"Erro inesperado ao salvar revisão cláusula {clausula.get('id_clausula_extraida')}: {e_put_general}", exc_info=True) # Adicionado logger
 
 if __name__ == "__main__":
-    if "api_token" not in st.session_state:
-        st.session_state.api_token = "token_simulado_revisao_clausulas" 
-    if "id_cliente" not in st.session_state: 
-        st.session_state.id_cliente = "cliente_simulado_revisao_123"
-    if "user_info" not in st.session_state:
-        st.session_state.user_info = {"nome": "Revisor Teste", "empresa": "Empresa Teste", "username": "revisor_teste"}
+    # Simulação do st.session_state para fins de teste local
+    if 'token' not in st.session_state: # Alterado de api_token para token
+        st.session_state.token = "token_simulado_revisao_clausulas" 
+    if 'client_id' not in st.session_state: # Alterado de id_cliente para client_id
+        st.session_state.client_id = "cliente_simulado_revisao_123"
+    if 'user_info' not in st.session_state:
+        st.session_state.user_info = {"name": "Revisor Teste", "username": "revisor_teste"}
     
     mostrar_pagina_revisao_clausulas()

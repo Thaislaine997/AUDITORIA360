@@ -58,121 +58,142 @@ def autenticar_api(username, password):
         st.error(f"Ocorreu um erro inesperado durante a autenticação na API.")
         return None
 
-if config and 'credentials' in config and 'cookie' in config and 'preauthorized' in config:
+if config and 'credentials' in config and 'cookie' in config: # Removido 'preauthorized' da verificação
     authenticator = Authenticate(
         config['credentials'],
         config['cookie']['name'],
         config['cookie']['key'],
-        config['cookie']['expiry_days'],
-        config['preauthorized']
+        config['cookie']['expiry_days']
+        # config['preauthorized'] # Removido parâmetro obsoleto
     )
 else:
-    st.error("Erro crítico: Arquivo de configuração de autenticação (login.yaml) está incompleto ou corrompido. Verifique as chaves 'credentials', 'cookie' e 'preauthorized'.")
+    st.error("Erro crítico: Arquivo de configuração de autenticação (login.yaml) está incompleto ou corrompido. Verifique as chaves 'credentials' e 'cookie'.") # Mensagem de erro atualizada
     logger.error("Erro crítico: Arquivo de configuração de autenticação (login.yaml) está incompleto ou corrompido.")
     st.stop()
 
 # --- Página de Login ---
-st.title("Bem-vindo ao Auditoria360")
-st.subheader("Por favor, faça o login para continuar.")
+# Renderiza o formulário de login ou o estado de autenticado/erro
+# A função login() precisa ser chamada em cada script/página onde a autenticação é necessária
+# se você não estiver usando um gerenciamento de estado de sessão mais centralizado que persista entre "páginas"
+# de forma que o authenticator saiba o estado.
+# No modelo multipage do Streamlit, o st.session_state é compartilhado.
 
-# (Opcional) Exibe o logo se existir
+# Exibe o título e o logo ANTES de chamar authenticator.login()
+# para que apareçam mesmo se o usuário ainda não estiver logado.
+st.title("Bem-vindo ao Auditoria360")
+
 logo_path = os.path.join('assets', 'logo.png')
 if os.path.exists(logo_path):
     st.image(logo_path, width=180)
 
-login_result = authenticator.login('main')
-if login_result is not None:
-    name, authentication_status, username = login_result
-else:
-    name = authentication_status = username = None
+# A chamada login() irá exibir o formulário ou, se já logado e o cookie for válido,
+# irá pular o formulário e definir st.session_state.authentication_status = True.
+authenticator.login('main', fields={'Form name': 'Login Auditoria360'})
 
-if st.session_state["authentication_status"]:
-    # --- NOVO: Autenticação na API para obter o token JWT ---
-    if "token" not in st.session_state or st.session_state["token"] is None: # Adicionado check para token None
-        # O campo 'password' pode não estar disponível diretamente, então peça ao usuário novamente se necessário
-        # Esta é uma limitação de como o streamlit-authenticator lida com senhas após o login.
-        # Idealmente, o próprio authenticator poderia lidar com a obtenção do token da API.
-        # Por enquanto, pedimos a senha novamente de forma segura.
 
-        # Tentativa de usar a senha do formulário de login se disponível (improvável com streamlit-authenticator)
-        # O streamlit-authenticator não armazena a senha em st.session_state por segurança.
-        # Portanto, a única forma segura é pedir novamente ou usar um fluxo OAuth mais complexo.
-
-        # Para simplificar e manter a segurança, vamos assumir que o usuário precisa digitar a senha novamente
-        # apenas para esta etapa de obtenção do token da API, se não for encontrado.
-        # O username é st.session_state["username"]
-
-        if 'provided_password_for_api' not in st.session_state:
-            st.session_state['provided_password_for_api'] = ""
-
-        # Usar o username já autenticado pelo streamlit-authenticator
+if st.session_state.get("authentication_status"):
+    # Usuário autenticado com sucesso pelo streamlit-authenticator
+    
+    # Etapa 1: Obter/Confirmar token da API
+    if "token" not in st.session_state or st.session_state["token"] is None:
+        st.subheader("Confirmação de Segurança Adicional")
         current_username = st.session_state.get("username")
         
-        # Solicitar a senha novamente para a chamada da API
-        # Isso é feito aqui porque o streamlit-authenticator não expõe a senha após o login bem-sucedido.
+        if not current_username:
+            st.error("Nome de usuário não encontrado na sessão. Por favor, faça logout e login novamente.")
+            authenticator.logout("Logout", "main", key="logout_error_username") # Fornece uma opção de logout
+            st.stop()
+            
         api_password = st.text_input(
-            f"Olá {st.session_state['name']}, por favor, insira sua senha novamente para finalizar o login seguro:", 
+            f"Olá {st.session_state.get('name', 'usuário')}, por favor, insira sua senha novamente para finalizar o login seguro:", 
             type="password", 
-            key="api_password_input"
+            key="api_password_input_main_panel"
         )
         
-        if st.button("Confirmar Senha e Acessar API"):
-            if api_password and current_username:
-                st.session_state['provided_password_for_api'] = api_password
-                token = autenticar_api(current_username, st.session_state['provided_password_for_api'])
+        if st.button("Confirmar Senha e Acessar API", key="confirm_api_password_main_panel"):
+            if api_password: # current_username já verificado
+                token = autenticar_api(current_username, api_password)
                 if token:
                     st.session_state["token"] = token
-                    st.success("Token da API obtido com sucesso!")
-                    # Força o rerun para remover o campo de senha e prosseguir
-                    st.rerun() # Corrigido de st.experimental_rerun para st.rerun
+                    # Não precisa de st.success aqui, o rerun vai mostrar a interface logada.
+                    st.rerun() 
                 else:
-                    st.error("Falha ao obter o token da API. Verifique suas credenciais ou tente novamente.")
-                    # Não parar, permitir nova tentativa
+                    st.error("Falha ao obter o token da API. Verifique sua senha ou tente novamente.")
+                    # Não parar aqui, permite nova tentativa de senha.
             else:
                 st.warning("Senha é necessária para autenticação na API.")
         else:
-            # Se o botão não foi clicado, e não há token, parar para aguardar a senha.
             st.info("É necessário confirmar sua senha para acessar os recursos da aplicação.")
-            st.stop() 
+            st.stop() # Aguarda a entrada da senha e o clique no botão.
     
-    # Se o token foi obtido (ou já existia), prossegue normalmente
+    # Etapa 2: Token da API obtido, configurar sessão e interface de usuário logado
+    # Esta parte só executa se st.session_state.token existir (após o rerun da etapa anterior)
     if "token" in st.session_state and st.session_state["token"] is not None:
-        # Adicionar lógica para obter e armazenar id_cliente
-        if 'id_cliente' not in st.session_state:
-            current_username = st.session_state.get("username")
+        # Obter id_cliente (client_id)
+        if 'client_id' not in st.session_state or st.session_state.get('client_id') is None: # Alterado para client_id
+            current_username = st.session_state.get("username") # Já deve estar definido
             if current_username and config:
                 user_credentials = config.get('credentials', {}).get('usernames', {}).get(current_username, {})
                 client_id = user_credentials.get('client_id')
                 if client_id:
-                    st.session_state['id_cliente'] = client_id # Correção: atribuir client_id
+                    st.session_state['client_id'] = client_id # Alterado para client_id
+                    # Manter id_cliente para compatibilidade com código legado temporariamente
+                    st.session_state['id_cliente'] = client_id
                     logger.info(f"ID do Cliente '{client_id}' armazenado na sessão para o usuário '{current_username}'.")
                 else:
-                    st.error(f"ID do Cliente (client_id) não encontrado na configuração para o usuário '{current_username}' em auth/login.yaml.")
-                    st.warning("Algumas funcionalidades podem não operar corretamente sem o ID do Cliente.")
-                    # Considere st.stop() aqui se o client_id for estritamente necessário para prosseguir
-            elif not config:
+                    logger.warning(f"ID do Cliente (client_id) não encontrado na configuração para o usuário '{current_username}'.")
+                    st.session_state['client_id'] = "N/A" # Alterado para client_id 
+                    st.session_state['id_cliente'] = "N/A" # Manter id_cliente para compatibilidade
+                    st.warning(f"Atenção: ID do Cliente (client_id) não configurado para o usuário '{current_username}' no arquivo auth/login.yaml. Algumas funcionalidades podem ser limitadas.")
+            elif not config: # Deve ser pego antes, mas como fallback
                 st.error("Configuração de autenticação (login.yaml) não carregada. Não é possível obter client_id.")
+                st.session_state['client_id'] = "ERRO_CONFIG" # Alterado para client_id
+                st.session_state['id_cliente'] = "ERRO_CONFIG" # Manter id_cliente para compatibilidade
+
+        # Configurar informações do usuário para utilização em utils.py display_user_info_sidebar
+        if 'user_info' not in st.session_state: 
+            st.session_state.user_info = {
+                "name": st.session_state.get('name', 'Usuário'),
+                "username": st.session_state.get('username', ''),
+                # Outros campos podem ser adicionados conforme necessário
+            }
+
+        # Configurar a interface de usuário logado (sidebar e corpo da página)
+        authenticator.logout('Logout', 'sidebar', key='logout_sidebar_button') 
+        st.sidebar.title(f"Bem-vindo(a)")
+        st.sidebar.markdown(f"**{st.session_state.get('name')}**") # Nome em negrito
         
-        authenticator.logout('Logout', 'sidebar')
-        st.sidebar.title(f"Bem-vindo(a) *{st.session_state['name']}*")
-        # Exibir client_id na sidebar se disponível
-        if 'id_cliente' in st.session_state:
-            st.sidebar.caption(f"Cliente ID: {st.session_state['id_cliente']}")
+        if st.session_state.get('client_id') and st.session_state.get('client_id') not in ["N/A", "ERRO_CONFIG"]: # Alterado para client_id
+            st.sidebar.caption(f"Cliente ID: {st.session_state['client_id']}") # Alterado para client_id
+        elif st.session_state.get('client_id') == "N/A": # Alterado para client_id
+             st.sidebar.warning("Cliente ID não definido.")
         else:
-            st.sidebar.caption("Cliente ID: Não definido")
+            st.sidebar.error("Erro ao obter Cliente ID.")
         
+        st.sidebar.markdown("---") # Linha divisória na sidebar
         st.header("Login realizado com sucesso! ✅")
-        st.info("Selecione uma página no menu à esquerda para começar.")
-    else:
-        # Caso onde o token não foi obtido e o usuário não forneceu a senha ainda, ou falhou.
-        # A lógica acima com st.stop() e o botão deve cobrir isso.
-        # Se chegar aqui, é um estado inesperado ou o usuário não interagiu com o formulário de senha.
-        if not st.session_state.get("token"):
-             st.warning("Autenticação com a API pendente. Por favor, forneça sua senha quando solicitado.")
-             st.stop()
-elif st.session_state["authentication_status"] is False:
-    st.error('Usuário/senha está incorreto')
-elif st.session_state["authentication_status"] is None:
-    st.warning('Por favor, insira seu usuário e senha')
-else:
-    st.error("A aplicação não pôde ser inicializada devido a um erro na configuração de autenticação.")
+        st.info("Selecione uma página no menu à esquerda para começar a utilizar o sistema.")
+        st.balloons() # Celebração!
+
+elif st.session_state.get("authentication_status") is False:
+    st.error('Usuário ou senha incorreto. Por favor, tente novamente.')
+    # Nenhuma informação de usuário ou logout na sidebar deve aparecer aqui.
+
+elif st.session_state.get("authentication_status") is None:
+    st.subheader("Por favor, faça o login para continuar.")
+    # O formulário de login é renderizado por authenticator.login() acima.
+    # Nenhuma informação de usuário ou logout na sidebar deve aparecer aqui.
+    # As páginas na pasta `pages/` ainda serão listadas pelo Streamlit,
+    # mas o acesso ao conteúdo delas deve ser bloqueado pela verificação no topo de cada página.
+    pass 
+
+else: 
+    # Este caso não deveria ser alcançado se as verificações acima estiverem corretas.
+    st.error("A aplicação não pôde ser inicializada devido a um erro inesperado na autenticação.")
+    logger.error("Estado de autenticação inválido ou inesperado.")
+    st.stop()
+
+# Adicionar uma verificação final: se o usuário não está autenticado (status não é True),
+# e estamos em painel.py, não devemos mostrar nada além do formulário de login ou erros.
+# Se o status é None ou False, a lógica acima já trata de exibir o formulário ou erro.
+# O principal é que o conteúdo "logado" (logout na sidebar, etc.) só aparece se status for True E token existir.
