@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, Query, Depends, HTTPException
-from src.controllers import controle_folha_controller
+from src.backend.controllers import controle_folha_controller
 import pandas as pd
 from typing import List, Dict
 from src.utils.config_manager import get_current_config # Corrigido o caminho do import

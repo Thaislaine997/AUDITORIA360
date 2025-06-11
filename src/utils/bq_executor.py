@@ -1,5 +1,7 @@
 # src/utils/bq_executor.py
 from google.cloud import bigquery
+from google.oauth2 import service_account
+import os
 import pandas as pd
 from typing import List, Any, Optional
 import logging
@@ -7,8 +9,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BQExecutor:
-    def __init__(self, bq_client: bigquery.Client, project_id: str, dataset_id: str):
-        self.client = bq_client
+    def __init__(self, credentials_path: Optional[str] = None, project_id: Optional[str] = None, dataset_id: str):
+        credentials_path = credentials_path or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        project_id = project_id or os.getenv("BIGQUERY_PROJECT_ID")
+        if not project_id:
+            raise ValueError("BIGQUERY_PROJECT_ID não definido nas variáveis de ambiente ou no construtor.")
+        if credentials_path:
+            credentials = service_account.Credentials.from_service_account_file(credentials_path)
+            self.client = bigquery.Client(credentials=credentials, project=project_id)
+        else:
+            self.client = bigquery.Client(project=project_id)
         self.project_id = project_id
         self.dataset_id = dataset_id # Este é o dataset específico para as tabelas de auditoria da folha
 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Body, Path, status
+from fastapi import APIRouter, HTTPException, Body, Path, status, Depends
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 import os
@@ -6,6 +6,8 @@ import logging
 from datetime import date # Mantido caso mes_ano ou outras datas precisem ser validadas como date
 
 from src.utils.bq_loader import ControleFolhaLoader # Caminho de importação corrigido
+from src.api.auth import get_current_user
+from src.schemas.rbac_schemas import TokenData
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -139,7 +141,8 @@ async def update_folha_status_route(
     novo_status = status_update.status
     
     try:
-        errors = loader.atualizar_status_folha(id_folha=id_folha, status=novo_status)
+        # Correção do parâmetro para atualizar_status_folha
+        errors = loader.atualizar_status_folha(id_folha=id_folha, novo_status=novo_status)
         if not errors:
             return SuccessResponse(message=f"Status da folha '{id_folha}' atualizado para '{novo_status}'.")
         else:
@@ -159,3 +162,12 @@ async def update_folha_status_route(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=ErrorResponsePayload(message=f"Erro inesperado: {str(e)}").model_dump()
         )
+
+@router.get("/minhas-folhas")
+async def listar_minhas_folhas(current_user: TokenData = Depends(get_current_user)):
+    id_cliente_logado = current_user.id_cliente
+    papeis = current_user.roles
+    if "CLIENTE_VISUALIZADOR" not in papeis and "DPEIXER_ADMIN" not in papeis:
+        raise HTTPException(status_code=403, detail="Permissão negada.")
+    # Aqui você chamaria o serviço real de folhas, filtrando por id_cliente_logado
+    return [{"id_folha": 1, "id_cliente": id_cliente_logado, "status": "ok"}]

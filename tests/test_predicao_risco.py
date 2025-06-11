@@ -6,11 +6,27 @@ AUDITORIA360 – Módulo 3
 - Valida resposta do endpoint
 - (Opcional) Valida persistência no BigQuery
 """
+import pytest
+from src.services.predicao_risco_service import gerar_predicoes_risco_folha
 import requests
 import os
-import pytest
 
-# Ajuste a URL conforme ambiente de testes
+# --- Teste unitário do serviço ---
+def test_gerar_predicoes_risco_folha():
+    id_folha_processada = "test_folha_123"
+    id_cliente = "test_cliente_456"
+    resultado = gerar_predicoes_risco_folha(id_folha_processada, id_cliente)
+    assert resultado is not None
+    assert "id_predicao_risco" in resultado
+    assert resultado["id_folha_processada_fk"] == id_folha_processada
+    assert resultado["id_cliente"] == id_cliente
+    assert "probabilidade_risco_alta_severidade" in resultado
+    assert "classe_risco_predita" in resultado
+    assert "score_saude_folha_calculado" in resultado
+    assert isinstance(resultado["probabilidade_risco_alta_severidade"], float)
+    assert isinstance(resultado["score_saude_folha_calculado"], (int, float))
+
+# --- Teste de integração do endpoint ---
 PREDICAO_URL = os.getenv("PREDICAO_URL", "http://localhost:8000/predicao/risco-folha")
 
 @pytest.fixture
@@ -23,7 +39,6 @@ def folha_payload():
         "total_descontos": 2500.0,
         "valor_liquido": 7500.0,
         "proporcao_descontos": 0.25
-        # ...adicione outras features se necessário...
     }
 
 def test_predicao_risco_folha(folha_payload):

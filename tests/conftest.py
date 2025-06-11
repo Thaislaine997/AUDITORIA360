@@ -3,9 +3,11 @@ import pytest
 from unittest.mock import MagicMock, mock_open, patch
 import sys
 import os
-import builtins  # Necessário para mockar builtins.open
+import builtins
 import subprocess
 import time
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from e2e_config import e2e_context_instance
 
 # Adiciona o diretório raiz do projeto (onde este conftest.py está) ao sys.path.

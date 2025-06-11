@@ -1,29 +1,12 @@
-"""
-Script manual para testar o fluxo de extração de texto de uma CCT real:
-- Busca um registro de CCT no BigQuery com status 'PENDENTE_EXTRACAO'
-- Executa o worker de extração de texto (OCR)
-- Salva o texto no GCS e atualiza o status/URI no BigQuery
-
-Requisitos:
-- Variáveis de ambiente GCP configuradas
-- Permissões de acesso ao BigQuery, GCS e Document AI
-- Instale dependências: pip install google-cloud-bigquery google-cloud-storage google-cloud-documentai
-"""
-import os
-import asyncio
 from google.cloud import bigquery
 from src.workers.cct_processing_worker import processar_extracao_texto_cct
-
-PROJECT_ID = os.getenv("GCP_PROJECT_ID", "seu-projeto-gcp")
-BQ_DATASET_ID = os.getenv("BQ_DATASET_ID", "auditoria_folha_dataset")
-
-bq_client = bigquery.Client(project=PROJECT_ID)
+import asyncio
 
 async def main():
     # 1. Buscar uma CCT com status 'PENDENTE_EXTRACAO'
     query = f"""
         SELECT id_cct_documento, gcs_uri_documento, id_cliente_principal_associado, data_inicio_vigencia
-        FROM `{PROJECT_ID}.{BQ_DATASET_ID}.CCTsDocumentos`
+        FROM `seu-projeto-gcp.auditoria_folha_dataset.CCTsDocumentos`
         WHERE status_processamento_ia = 'PENDENTE_EXTRACAO'
         LIMIT 1
     """

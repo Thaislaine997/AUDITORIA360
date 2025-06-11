@@ -43,3 +43,19 @@ def classificar_clausula_com_gemini(texto_clausula: str) -> dict:
         return {"erro": f"Falha ao decodificar JSON da resposta do modelo: {json_e}", "resposta_bruta": resposta.text if hasattr(resposta, 'text') else str(resposta)}
     except Exception as e:
         return {"erro": str(e)}
+
+def gerar_dica_checklist_com_gemini(prompt: str, categoria_item: Optional[str] = None) -> str:
+    """
+    Gera uma dica de checklist usando o modelo Gemini.
+    """
+    model = GenerativeModel("gemini-pro")
+    prompt_final = prompt
+    if categoria_item:
+        prompt_final += f"\nCategoria: {categoria_item}"
+    try:
+        resposta = model.generate_content(prompt_final)
+        if resposta is None or not hasattr(resposta, 'text') or resposta.text is None:
+            return "Dica não disponível."
+        return resposta.text.strip()
+    except Exception as e:
+        return f"Erro ao gerar dica com Gemini: {e}"

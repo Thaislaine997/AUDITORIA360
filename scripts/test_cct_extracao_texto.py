@@ -12,7 +12,7 @@ Requisitos:
 import os
 import asyncio
 from google.cloud import bigquery
-from src.workers.cct_processing_worker import processar_extracao_texto_cct
+from src.processamento_cct import processar_extracao_texto_cct
 
 PROJECT_ID = os.getenv("GCP_PROJECT_ID", "seu-projeto-gcp")
 BQ_DATASET_ID = os.getenv("BQ_DATASET_ID", "auditoria_folha_dataset")
