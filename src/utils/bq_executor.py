@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BQExecutor:
-    def __init__(self, credentials_path: Optional[str] = None, project_id: Optional[str] = None, dataset_id: str):
+    def __init__(self, dataset_id: str, credentials_path: Optional[str] = None, project_id: Optional[str] = None):
         credentials_path = credentials_path or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
         project_id = project_id or os.getenv("BIGQUERY_PROJECT_ID")
         if not project_id:

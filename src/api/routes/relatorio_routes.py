@@ -9,15 +9,14 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from reportlab.lib import colors
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
-from src.utils.config_manager import config_manager # Corrigido o caminho do import
+from src.utils.config_manager import get_current_config
+from src.utils import bq_loader
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
-import bq_loader
+from src.api.routes.relatorio_routes import AuditoriaDetalhe, AuditoriaErroDetalhe
 
-def get_current_config(request: Request):
-    return config_manager.get_config(request)
-
+# Modelos Pydantic devem ser definidos antes do uso em funções e rotas
 class AuditoriaErroDetalhe(BaseModel):
     id_erro: Optional[str]
     nome_clausula_auditada: Optional[str]
@@ -141,7 +140,7 @@ async def gerar_relatorio_pdf(
     bq_dataset_id = config.get("control_bq_dataset_id")
     if not project_id or not bq_dataset_id:
         raise HTTPException(status_code=500, detail="Configuração do projeto BigQuery ausente.")
-    client = src.bq_loader.get_bigquery_client(config)
+    client = bq_loader.get_bigquery_client(config)
 
     query = f"""
     WITH ErrosAgregados AS (
@@ -193,6 +192,8 @@ async def gerar_relatorio_pdf(
     )
 
     try:
+        if client is None:
+            raise HTTPException(status_code=500, detail="Não foi possível inicializar o cliente BigQuery.")
         query_job = client.query(query, job_config=job_config)
         results = query_job.result()
         

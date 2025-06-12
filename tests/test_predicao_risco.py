@@ -7,15 +7,16 @@ AUDITORIA360 – Módulo 3
 - (Opcional) Valida persistência no BigQuery
 """
 import pytest
-from src.services.predicao_risco_service import gerar_predicoes_risco_folha
+from src.backend.services.predicao_risco_service import *
 import requests
 import os
+import asyncio
 
 # --- Teste unitário do serviço ---
 def test_gerar_predicoes_risco_folha():
     id_folha_processada = "test_folha_123"
     id_cliente = "test_cliente_456"
-    resultado = gerar_predicoes_risco_folha(id_folha_processada, id_cliente)
+    resultado = asyncio.run(gerar_predicoes_risco_folha(id_folha_processada, id_cliente))
     assert resultado is not None
     assert "id_predicao_risco" in resultado
     assert resultado["id_folha_processada_fk"] == id_folha_processada

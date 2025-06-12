@@ -6,7 +6,7 @@ import uuid # Para gerar UUIDs, se necessário
 # Supondo que google.cloud.bigquery será instalada e configurada
 from google.cloud import bigquery
 
-from src.schemas import (
+from src.schemas.predicao_risco_schemas import (
     PredicaoRiscoDashboardResponse,
     RiscoPrevistoDetalheSchema,
     DetalhePredicaoRiscoResponse,

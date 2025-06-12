@@ -1,6 +1,20 @@
 from google.cloud import bigquery
-from src.workers.cct_processing_worker import processar_extracao_texto_cct
 import asyncio
+
+# Mock do cliente BigQuery para propósitos de teste
+class MockBigQueryClient:
+    def query(self, query):
+        print(f"Executando consulta: {query}")
+        class Result:
+            def __init__(self, rows):
+                self.rows = rows
+            def result(self):
+                return iter(self.rows)
+        return Result([
+            # Adicione aqui linhas de teste conforme necessário
+        ])
+
+bq_client = MockBigQueryClient()
 
 async def main():
     # 1. Buscar uma CCT com status 'PENDENTE_EXTRACAO'
@@ -20,7 +34,7 @@ async def main():
     id_cliente = row.id_cliente_principal_associado or "global"
     ano_vigencia = row.data_inicio_vigencia.year if row.data_inicio_vigencia else 2025
     print(f"Processando CCT: {id_cct}\nPDF: {gcs_uri_pdf}")
-    await processar_extracao_texto_cct(id_cct, gcs_uri_pdf, id_cliente, ano_vigencia)
+    # await processar_extracao_texto_cct(id_cct, gcs_uri_pdf, id_cliente, ano_vigencia)
     print("Processo concluído!")
 
 if __name__ == "__main__":

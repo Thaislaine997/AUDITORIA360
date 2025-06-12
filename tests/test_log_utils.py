@@ -5,7 +5,7 @@ import csv
 import logging # Para spec=logging.Logger
 
 # Importar funções e constantes do módulo sob teste
-from utils.log_utils import registrar_log, LOG_FILE, demonstrar_logs
+from src.utils.log_utils import registrar_log, LOG_FILE, demonstrar_logs
 import utils.log_utils # Para inspecionar utils.log_utils.logger se necessário para debug
 
 @patch('utils.log_utils.datetime')
@@ -113,3 +113,7 @@ def test_demonstrar_logs(mock_logger_injected, mock_basic_config_injected):
 
     # Asserção secundária: verifica se *apenas* as chamadas esperadas foram feitas
     assert len(mock_logger_injected.method_calls) == len(expected_calls)
+
+# Corrigir chamadas para registrar_log() para sempre passar uma string como argumento
+# Exemplo:
+# registrar_log("mensagem de teste")

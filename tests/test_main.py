@@ -6,8 +6,8 @@ import json
 from src.api.main import app # Sua instância FastAPI
 
 from fastapi.testclient import TestClient
-from src.config_manager import get_current_config # A dependência original
-from src.bq_loader import get_bigquery_client # A dependência original
+from src.utils.config_manager import get_current_config # A dependência original
+from src.utils.bq_loader import get_bigquery_client # A dependência original
 from google.cloud import bigquery # Para mock do tipo de retorno
 from typing import Dict, Any, Generator
 

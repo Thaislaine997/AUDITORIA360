@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from src.api.main import app
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from src.config_manager import get_current_config
+from src.utils.config_manager import get_current_config
 import builtins
 import json
 
@@ -24,7 +24,7 @@ df_empresas_b = pd.DataFrame(empresas_cliente_b)
 import pytest
 from fastapi.testclient import TestClient
 from src.api.main import app
-from src.config_manager import get_current_config
+from src.utils.config_manager import get_current_config
 import builtins
 import json
 from unittest.mock import patch as mock_patch
@@ -55,7 +55,7 @@ from unittest.mock import MagicMock, patch
     ("/api/v1/auditorias/", "items", [{"id_folha": "folha1", "client_id": "cliente_a"}], [{"id_folha": "folha2", "client_id": "cliente_b"}], "id_folha"),
 ])
 def test_isolamento_multi_cliente(client, endpoint, key, mock_data_a, mock_data_b, id_field):
-    with patch(f'src.routes.{endpoint.split("/")[3]}_routes.get_loader_{endpoint.split("/")[3]}", MagicMock()) as mock_loader:
+    with patch(f'src.routes.{endpoint.split("/")[3]}_routes.get_loader_{endpoint.split("/")[3]}', MagicMock()) as mock_loader:
         mock_loader.return_value.listar_todas_as_empresas.return_value = pd.DataFrame(mock_data_a)
         headers_a = {"x-client-id": "cliente_a"}
         resp_a = client.get(endpoint, headers=headers_a)
@@ -68,5 +68,12 @@ def test_isolamento_multi_cliente(client, endpoint, key, mock_data_a, mock_data_
         assert resp_b.status_code == 200
         for item in resp_b.json().get(key, []):
             assert item["client_id"] == "cliente_b"
-
-# ...existing code...
+    headers_a = {"x-client-id": "cliente_a"}
+    resp_a = client.get("/api/v1/dashboard/", headers=headers_a)
+    assert resp_a.status_code == 200
+    for item in resp_a.json().get("items", []):
+        assert item["client_id"] == "cliente_a"
+    resp_b = client.get("/api/v1/dashboard/", headers=headers_b)
+    assert resp_b.status_code == 200
+    for item in resp_b.json().get("items", []):
+        assert item["client_id"] == "cliente_b"

@@ -1,5 +1,5 @@
 import pytest
-from src.utils.bq_loader import get_bigquery_client, ControleFolhaLoader, load_data_to_bigquery
+from src.utils.bq_loader import get_bigquery_client, ControleFolhaLoader, load_data_to_bq
 import pandas as pd
 from google.cloud import bigquery
 from datetime import datetime, date, timezone
@@ -41,8 +41,11 @@ def test_load_data_to_bigquery_exige_client_id(config_cliente_a):
     sample_data = [{"id_extracao": "1", "id_item": "1"}]
     config_sem_id = dict(config_cliente_a)
     config_sem_id.pop("client_id")
+    full_table_id = f"{config_sem_id['gcp_project_id']}.{config_sem_id['bq_dataset_id']}.{config_sem_id['bq_table_id']}"
+    from unittest.mock import MagicMock
+    client = MagicMock()
     with pytest.raises(ValueError):
-        load_data_to_bigquery(get_bigquery_client(config_sem_id), sample_data, config_sem_id)
+        load_data_to_bq(sample_data, full_table_id, client)
 
 def test_listar_empresas_isolamento(monkeypatch, config_cliente_a, config_cliente_b):
     class FakeClient:

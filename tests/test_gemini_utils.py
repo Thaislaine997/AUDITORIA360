@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import json # Para construir a string JSON esperada e para o caso de erro
 
 # Importa a função que queremos testar
-from src.gemini_utils import classificar_clausula_com_gemini
+from src.utils.gemini_utils import classificar_clausula_com_gemini
 
 # Helper class para simular a resposta do Gemini
 class MockGeminiResponse:
@@ -26,7 +26,7 @@ def test_classificar_clausula_resposta_json_simples(mocker): # mocker é forneci
     # Patch para a CLASSE GenerativeModel DENTRO DE src.gemini_utils.
     # Quando GenerativeModel(...) é chamado em src.gemini_utils,
     # esta classe mockada (mock_generative_model_class) será usada.
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     # Configura a classe mockada para retornar nossa mock_model_instance quando instanciada
     mock_generative_model_class.return_value = mock_model_instance
 
@@ -59,7 +59,7 @@ def test_classificar_clausula_resposta_json_com_markdown(mocker):
     mock_model_instance = MagicMock()
     mock_model_instance.generate_content.return_value = mock_resposta_gemini
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)
@@ -81,7 +81,7 @@ def test_classificar_clausula_resposta_json_decode_error(mocker):
     mock_model_instance = MagicMock()
     mock_model_instance.generate_content.return_value = mock_resposta_gemini
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)
@@ -99,7 +99,7 @@ def test_classificar_clausula_erro_na_chamada_gemini(mocker):
     erro_simulado = Exception("Erro de conexão com API Gemini")
     mock_model_instance.generate_content.side_effect = erro_simulado
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)
@@ -117,7 +117,7 @@ def test_classificar_clausula_resposta_json_com_markdown_simples(mocker):
     mock_model_instance = MagicMock()
     mock_model_instance.generate_content.return_value = mock_resposta_gemini
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)
@@ -139,7 +139,7 @@ def test_classificar_clausula_resposta_json_extraido_vazio(mocker):
     mock_model_instance = MagicMock()
     mock_model_instance.generate_content.return_value = mock_resposta_gemini
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)
@@ -160,7 +160,7 @@ def test_classificar_clausula_resposta_sem_atributo_text(mocker):
     mock_resposta_gemini_text_none = MockGeminiResponse(None)
     mock_model_instance.generate_content.return_value = mock_resposta_gemini_text_none
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)
@@ -179,7 +179,7 @@ def test_classificar_clausula_resposta_modelo_retorna_none(mocker):
     mock_model_instance = MagicMock()
     mock_model_instance.generate_content.return_value = None # Gemini retorna None
     
-    mock_generative_model_class = mocker.patch('src.gemini_utils.GenerativeModel', autospec=True)
+    mock_generative_model_class = mocker.patch('src.utils.gemini_utils.GenerativeModel', autospec=True)
     mock_generative_model_class.return_value = mock_model_instance
 
     resultado = classificar_clausula_com_gemini(texto_clausula_input)

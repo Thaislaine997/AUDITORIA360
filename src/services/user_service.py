@@ -2,11 +2,12 @@
 Serviço para interagir com as tabelas de usuários no BigQuery.
 """
 from typing import Optional
-from src.utils.bq_executor import BigQueryExecutor
+from src.utils.bq_executor import BQExecutor
 from src.schemas.rbac_schemas import UserInDB
+from google.cloud import bigquery
 
 def get_user_by_email(email: str) -> Optional[UserInDB]:
-    executor = BigQueryExecutor()
+    executor = BQExecutor(dataset_id="Clientes_dataset")
     query = f"""
         SELECT
             u.id_usuario,
@@ -27,11 +28,19 @@ def get_user_by_email(email: str) -> Optional[UserInDB]:
         GROUP BY 1, 2, 3, 4, 5, 6
         LIMIT 1
     """
-    params = [("email", "STRING", email)]
-    results = executor.execute_query(query, params)
-    if not results:
+    params = [bigquery.ScalarQueryParameter("email", "STRING", email)]
+    results_df = executor.execute_query_to_dataframe(query, params)
+    if results_df.empty:
         return None
-    user_data = dict(results[0])
-    if not user_data.get("papeis"):
-        user_data["papeis"] = []
+    row = results_df.iloc[0].to_dict()
+    # Garante tipos corretos para o UserInDB
+    user_data = {
+        "id_usuario": str(row.get("id_usuario", "")),
+        "id_cliente": str(row.get("id_cliente", "")),
+        "nome": str(row.get("nome", "")),
+        "email": str(row.get("email", "")),
+        "hashed_password": str(row.get("hashed_password", "")),
+        "ativo": bool(row.get("ativo", True)),
+        "papeis": [str(p) for p in (row.get("papeis") or []) if p]
+    }
     return UserInDB(**user_data)

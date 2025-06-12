@@ -41,9 +41,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
     )
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
+        user_id_from_payload = payload.get("sub")
+        if user_id_from_payload is None:
             raise credentials_exception
+        user_id: str = str(user_id_from_payload) # Ensure user_id is a string
         token_data = TokenData(
             sub=user_id,
             id_cliente=payload.get("id_cliente"),

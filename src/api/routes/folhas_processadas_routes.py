@@ -31,7 +31,6 @@ async def listar_folhas_disponiveis_para_checklist(
 
     bq_client = bigquery.Client(project=project_id)
     bq_executor = BQExecutor(
-        bq_client=bq_client,
         project_id=project_id,
         dataset_id=dataset_id
     )

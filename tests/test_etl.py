@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
-from src.etl.extracao_bigquery import extrair_dados_treinamento
-from src.etl.transformacao_features import transformar_features
-from src.etl.anonimiza import anonimiza_dataframe
+from src.backend.etl.extracao_bigquery import extrair_dados_treinamento
+from src.backend.etl.transformacao_features import transformar_features
+from src.backend.etl.anonimiza import anonimiza_dataframe
 
 def test_extracao_dados():
     # Teste de extração de dados do BigQuery (mock/fake)

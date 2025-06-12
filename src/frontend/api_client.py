@@ -133,11 +133,10 @@ def get_parametros_legais_tipo(tipo: str, token: str) -> pd.DataFrame:
 
 # Função genérica para requisições GET autenticadas
 
-def api_get(endpoint: str, token: str, params: dict = None) -> dict | list | None:
+def api_get(endpoint: str, token: str, params: dict | None = None) -> dict | list | None:
     url = f"{API_BASE_URL}{endpoint}"
     headers = {"Authorization": f"Bearer {token}"}
-    if params is None:
-        params = {}
+    params = params or {}
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
         response.raise_for_status()

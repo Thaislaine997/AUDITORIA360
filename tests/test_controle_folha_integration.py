@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 
-from src.controllers.controle_folha_controller import processar_e_salvar_csv_controle_folha, buscar_controles_mensais
-from src.config_manager import get_current_config
+from src.backend.controllers import controle_folha_controller
+from src.utils.config_manager import get_current_config
 from fastapi import Request
 
 @pytest.fixture
