@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(layout="wide", page_title="Admin Parâmetros Legais - AUDITORIA360")
+
 import sys # Add sys
 import os # Add os
 
@@ -7,6 +9,14 @@ _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
+
+# --- Carregamento do CSS para Design System ---
+def load_css():
+    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+load_css()  # Carrega os estilos do Design System
+# --- Fim do Carregamento do CSS ---
 
 import requests
 from datetime import date
@@ -21,6 +31,7 @@ from src.frontend.utils import (
     get_current_client_id as get_global_current_client_id, # Mantido para consistência, embora possa não ser usado diretamente
     get_auth_headers as get_global_auth_headers # Importar get_auth_headers global
 )
+from src.frontend.auth_verify import verify_session # Importar verificação de sessão
 from src.core.log_utils import logger # Adicionar import do logger
 
 # Funções wrapper locais para consistência
@@ -34,39 +45,31 @@ def display_user_info_sidebar():
     global_display_user_info_sidebar()
 
 def get_auth_headers_admin_params(): # Wrapper local para headers
-    token = get_api_token()
-    return get_global_auth_headers(token) # Chama o global com o token
+    token = st.session_state.get("api_token")
+    return {"Authorization": f"Bearer {token}"} if token else {}
 
 def mostrar_pagina_admin_parametros_legais():
-    st.set_page_config(page_title="Administração de Parâmetros Legais - AUDITORIA360", layout="wide") # Nome da página atualizado
+    st.set_page_config(page_title="Administração de Parâmetros Legais - AUDITORIA360", layout="wide")
     
-    # --- Logo --- (Removido, display_user_info_sidebar cuida disso)
-    # st.sidebar.markdown(\"---\") # Removido
-
-    api_token = get_api_token()
-    # id_cliente_atual = get_current_client_id() # Removido ou comentado, pois admin pode não ter cliente específico
-
-    # Verificação de autenticação
-    if not api_token: 
-        st.warning("Acesso restrito. Por favor, faça login com uma conta administrativa.")
-        if st.button("Retornar ao Login"):
+    # Verifica sessão e obtém dados do usuário
+    user_details = verify_session()
+    
+    # Obtém papéis do usuário
+    user_roles = user_details.get("roles", [])
+    
+    # Verifica se o usuário tem permissão para acessar esta página
+    if "admin" not in user_roles:
+        st.error("Esta página é restrita a usuários com papel de administrador.")
+        st.warning("Você não tem permissão para acessar esta página.")
+        if st.button("Retornar à Página Inicial"):
             try:
                 st.switch_page("painel.py")
-            except AttributeError:
-                st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
-            except Exception as e:
-                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
-                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
+            except Exception:
+                st.page_link("painel.py", label="Retornar à Página Inicial", icon="🏠")
         st.stop()
     
-    # Adicionar verificação de perfil/role se disponível em st.session_state.user_info
-    user_info = st.session_state.get("user_info", {})
-    user_roles = user_info.get("roles", []) # Supondo que 'roles' seja uma lista de strings
-    # Idealmente, o backend protegeria essas rotas, mas uma verificação no frontend é uma boa prática adicional.
-    # if "admin" not in user_roles: # Descomentar e ajustar se a role 'admin' for usada
-    #     st.error("Você não tem permissão para acessar esta página. Contate o administrador.")
-    #     logger.warning(f"Usuário {user_info.get(\'username\', \'desconhecido\')} sem role \'admin\' tentou acessar Admin Parâmetros.")
-    #     st.stop()
+    # Obtém token da sessão autenticada
+    api_token = st.session_state.get("api_token")
 
     display_user_info_sidebar()
 

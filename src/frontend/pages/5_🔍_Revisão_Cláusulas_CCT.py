@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(layout="wide", page_title="Revisão de Cláusulas CCT - AUDITORIA360")
+
 import sys # Add sys
 import os # Add os
 
@@ -7,6 +9,14 @@ _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
+
+# --- Carregamento do CSS para Design System ---
+def load_css():
+    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+load_css()  # Carrega os estilos do Design System
+# --- Fim do Carregamento do CSS ---
 
 import requests
 import json
@@ -39,8 +49,6 @@ def get_auth_headers_revisao(): # Wrapper local para headers
     return get_global_auth_headers(token) # Chama o global com o token
 
 def mostrar_pagina_revisao_clausulas(): 
-    st.set_page_config(layout="wide", page_title="Revisão de Cláusulas CCT - AUDITORIA360")
-
     # --- Logo --- (Removido, display_user_info_sidebar cuida disso)
     # st.sidebar.markdown("---") # Removido
 

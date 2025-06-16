@@ -11,6 +11,14 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
 
+# --- Carregamento do CSS para Design System ---
+def load_css():
+    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+load_css()  # Carrega os estilos do Design System
+# --- Fim do Carregamento do CSS ---
+
 # src/dashboard_folha_page.py
 
 # import streamlit as st # Removido import duplicado
@@ -33,7 +41,9 @@ from src.data_models.schemas import (
 
 from src.core.config import settings # 2. Usar settings.API_BASE_URL
 # Importar utilitários do frontend
-from src.frontend.utils import display_user_info_sidebar, handle_api_error 
+from src.frontend.utils import display_user_info_sidebar, handle_api_error
+# Importar verificação de sessão
+from src.frontend.auth_verify import verify_session
 
 logger = logging.getLogger(__name__)
 
@@ -67,12 +77,14 @@ def initialize_session_state():
 # def logout_user(): ... (Removido - será tratado pelo painel.py ou navegação)
 
 def get_current_client_id() -> Optional[str]:
-    # Deve buscar o id_cliente definido pelo painel.py
-    return st.session_state.get("id_cliente") # Assumindo que painel.py usa 'id_cliente'
+    # Usa a função verify_session para obter cliente do usuário autenticado
+    if "user_details" in st.session_state:
+        return st.session_state["user_details"].get("cliente_id")
+    return None
 
 def get_api_token() -> Optional[str]:
-    # Deve buscar o token definido pelo painel.py
-    return st.session_state.get("token") # Assumindo que painel.py usa 'token'
+    # Usa a sessão autenticada
+    return st.session_state.get("api_token")
 
 def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> list:
     headers: Dict[str, str] = {}
@@ -144,36 +156,71 @@ def mostrar_dashboard_saude_folha():
     
     initialize_session_state() # Inicializa estados da página
 
-    api_token = get_api_token()
-    id_cliente_atual = get_current_client_id()
-
-    if not api_token or not id_cliente_atual:
-        st.warning("Você precisa estar logado para acessar esta página. Por favor, retorne à página inicial para fazer login.")
-        if st.button("Retornar ao Login"):
-            try:
-                # Tenta usar st.switch_page se disponível (Streamlit >= 1.27)
-                st.switch_page("painel.py")
-            except AttributeError:
-                # Fallback para st.page_link para compatibilidade ou se switch_page falhar
-                st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
-            except Exception as e:
-                 st.page_link("painel.py", label="Retornar ao Login", icon="🏠")
-                 logger.warning(f"Falha ao usar st.switch_page para painel.py: {e}, usando page_link.")
-        st.stop() # Parar a execução se não estiver logado
-
-    # Exibir informações do usuário na sidebar usando a função utilitária
+    # Verifica a sessão e obtém dados do usuário usando o novo módulo auth_verify
+    user_details = verify_session()
+    
+    # Extrai o token, id_cliente e papéis do usuário
+    api_token = st.session_state.get("api_token")
+    id_cliente_atual = user_details.get("cliente_id")
+    user_roles = user_details.get("roles", [])
+      # Verifica se o usuário tem um cliente associado
+    if not id_cliente_atual and "admin" not in user_roles:
+        st.warning("Você precisa estar associado a um cliente para acessar esta página.")
+        st.stop()
+    
+    # O código abaixo estava mal alinhado e foi removido pois já é tratado pelo verify_session:    # Exibir informações do usuário na sidebar usando a função utilitária
     display_user_info_sidebar()
+    
+    # Renderização condicional baseada nos papéis do usuário
+    with st.sidebar:
+        st.subheader("Seu Acesso")
+        
+        # Exibir os papéis do usuário
+        st.write("**Papéis de Usuário:**")
+        for role in user_roles:
+            st.write(f"- {role}")
+            
+        # Adicionar informações específicas do cliente se não for admin
+        if "admin" not in user_roles and id_cliente_atual:
+            st.write(f"**Cliente ID:** {id_cliente_atual}")
+            
+        # Mostrar acesso especial para administradores
+        if "admin" in user_roles:
+            st.success("🔑 Acesso Administrativo")
+            
+            # Opção para simular visualização como cliente específico
+            with st.expander("Simular Acesso de Cliente"):
+                cliente_simulado = st.text_input("ID do Cliente a simular:", key="admin_simular_cliente")
+                if st.button("Aplicar Simulação", key="btn_simular_cliente"):
+                    if cliente_simulado:
+                        st.session_state["cliente_simulado"] = cliente_simulado
+                        st.experimental_rerun()
+                    else:
+                        st.warning("Informe um ID de cliente válido")
+            
+            # Opção para resetar simulação
+            if "cliente_simulado" in st.session_state and st.session_state["cliente_simulado"]:
+                if st.button("Resetar Simulação de Cliente", key="btn_reset_simular"):
+                    if "cliente_simulado" in st.session_state:
+                        del st.session_state["cliente_simulado"]
+                    st.experimental_rerun()
+            
+        st.markdown("---")
     # Remover a lógica antiga da sidebar:
     # if st.session_state.get("username"): 
     #      st.sidebar.success(f"Logado como: {st.session_state.get('username')}")
     #      st.sidebar.caption(f"Cliente ID: {id_cliente_atual}")
     # st.sidebar.markdown("---")
-
-
     # Conteúdo Principal - agora assume que o usuário está logado
-    st.info(f"Exibindo dados para o cliente ID: {id_cliente_atual}")
-
-    id_cliente_para_api = id_cliente_atual # Usar o ID do cliente da sessão
+    
+    # Determina se estamos usando um cliente simulado (apenas para admins)
+    id_cliente_para_api = id_cliente_atual
+    
+    if "admin" in user_roles and "cliente_simulado" in st.session_state and st.session_state["cliente_simulado"]:
+        id_cliente_para_api = st.session_state["cliente_simulado"]
+        st.warning(f"🔄 Visualizando dados como cliente ID: {id_cliente_para_api} (Modo Simulação)")
+    else:
+        st.info(f"Exibindo dados para o cliente ID: {id_cliente_para_api}")
 
     folhas_disponiveis = buscar_folhas_processadas_cliente(id_cliente_para_api, api_token)
     if not folhas_disponiveis:
@@ -462,8 +509,7 @@ def mostrar_dashboard_saude_folha():
                                 st.rerun()
                 
                 if dados_predicao_obj and dados_predicao_obj.score_saude_folha is not None:
-                    if st.button("Entender o Score de Saúde Geral", key=f"detail_score_geral_{id_folha_selecionada}"):
-                        st.session_state.detalhe_risco_selecionado_id = "score_geral" 
+                    if st.button("Entender o Score de Saúde Geral", key=f"detail_score_geral_{id_folha_selecionada}"):                        st.session_state.detalhe_risco_selecionado_id = "score_geral" 
                         st.session_state.tipo_detalhe_predicao = "score_geral"
                         st.session_state.id_folha_contexto_detalhe = id_folha_selecionada
                         st.rerun()
@@ -474,6 +520,20 @@ def mostrar_dashboard_saude_folha():
             "Detalhamento de Divergências": "detalhe_divergencias",
             "Análise Preditiva de Riscos (IA)": "predicao_riscos_ia"
         }
+        
+        # Adiciona opções de relatórios para usuários com papéis específicos
+        if any(role in user_roles for role in ["admin", "auditor", "gerente"]):
+            opcoes_relatorio.update({
+                "Relatório Técnico Detalhado": "relatorio_tecnico_detalhado",
+                "Análise de Tendência Histórica": "tendencia_historica"
+            })
+            
+        # Opções exclusivas para administradores
+        if "admin" in user_roles:
+            opcoes_relatorio.update({
+                "Auditoria Completa (Técnico)": "auditoria_tecnica_completa",
+                "Relatório Gerencial Executivo": "relatorio_gerencial_executivo"
+            })
         tipo_relatorio_selecionado = st.selectbox(
             "Selecione o tipo de relatório para gerar:",
             options=list(opcoes_relatorio.keys())

@@ -1,1 +1,110 @@
-body { font-family: Arial; }
+/*
+ * ===================================================================
+ * DESIGN SYSTEM AUDITORIA 360 - v2.0 (Oficial)
+ * ===================================================================
+ * Descrição: Folha de estilos para a plataforma Auditoria 360.
+ * Foco: Design futurista, limpo e consistente com base na logo.
+ * ===================================================================
+ */
+
+/* -------------------------------------------------------------------
+ * 1. Definição das Variáveis de Cor (Extraídas da Logo)
+ * ------------------------------------------------------------------- */
+:root {
+    --primary-color: #00D4FF; /* Ciano vibrante da logo */
+    --background-color: #0A0D1F; /* Azul escuro da logo (fundo) */
+    --secondary-background-color: #1E2242; /* Azul médio da logo (cards/sidebar) */
+    --text-color: #FFFFFF; /* Branco, do texto "AUDITORIA" */
+    --secondary-text-color: #A0A5C7; /* Tom de cinza azulado claro para apoio */
+    --success-color: #00FF85; /* Verde complementar */
+    --error-color: #FF4D4D; /* Vermelho para alertas */
+    --font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+/* -------------------------------------------------------------------
+ * 2. Estilos Globais e Centralização do Conteúdo
+ * ------------------------------------------------------------------- */
+body {
+    font-family: var(--font-family);
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+/* Regra para centralizar o container principal em todas as páginas */
+.block-container {
+    max-width: 1300px; /* Define uma largura máxima para o conteúdo */
+    margin: 0 auto;    /* Aplica margens automáticas para centralizar */
+    padding-top: 2rem; /* Adiciona um espaço no topo */
+}
+
+/* -------------------------------------------------------------------
+ * 3. Barra Lateral (Sidebar)
+ * ------------------------------------------------------------------- */
+[data-testid="stSidebar"] {
+    background-color: var(--secondary-background-color);
+    border-right: 1px solid #30363d;
+}
+
+[data-testid="stSidebar"] .st-emotion-cache-16txtl3 {
+    color: var(--text-color);
+}
+
+/* -------------------------------------------------------------------
+ * 4. Botões
+ * ------------------------------------------------------------------- */
+.stButton>button {
+    background-color: var(--primary-color);
+    color: #0A0D1F; /* Texto escuro para melhor contraste no botão ciano */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.stButton>button:hover {
+    background-color: #FFFFFF;
+    color: var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+/* -------------------------------------------------------------------
+ * 5. Gráficos (Ex: Streamlit, Plotly)
+ * ------------------------------------------------------------------- */
+.stPlotlyChart {
+    background-color: transparent;
+}
+
+/* -------------------------------------------------------------------
+ * 6. Títulos e Texto
+ * ------------------------------------------------------------------- */
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+/* -------------------------------------------------------------------
+ * 7. Métricas e KPIs (st.metric)
+ * ------------------------------------------------------------------- */
+[data-testid="stMetric"] {
+    background-color: var(--secondary-background-color);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+[data-testid="stMetricLabel"] {
+    color: var(--secondary-text-color);
+}
+
+[data-testid="stMetricValue"] {
+    color: var(--text-color);
+    font-size: 2.2rem;
+}
+
+/* -------------------------------------------------------------------
+ * 8. Tabelas e DataFrames (st.dataframe)
+ * ------------------------------------------------------------------- */
+.stDataFrame {
+    background-color: var(--secondary-background-color);
+    color: var(--text-color);
+}

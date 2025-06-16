@@ -16,6 +16,14 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
 
+# --- Carregamento do CSS para Design System ---
+def load_css():
+    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+load_css()  # Carrega os estilos do Design System
+# --- Fim do Carregamento do CSS ---
+
 # src/pages/gestao_cct_page.py
 """
 Página Streamlit para Gestão de Convenções Coletivas de Trabalho (CCTs)
