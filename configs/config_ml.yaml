@@ -1,0 +1,7 @@
+ml:
+  training_data_table: "{{ project_id }}.{{ bq_dataset }}.docai_extracted_data"
+  model_name: "anomaly_detector_v1"
+  bias_threshold: 0.1
+  explainability:
+    method: "shap"
+    num_samples: 100

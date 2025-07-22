@@ -5,4 +5,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 8501
-CMD ["streamlit", "run", "src/pages/gestao_cct_page.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "dashboards/pages/4_📊_Gestão_de_CCTs.py", "--server.port=8501", "--server.address=0.0.0.0"]

@@ -3,7 +3,7 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 # Importa a instância 'app' do seu módulo
-from src.app_api_vertex import app
+from services.api.main import app
 
 # Cria um cliente de teste para a sua aplicação FastAPI
 client = TestClient(app)

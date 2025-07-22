@@ -1,6 +1,7 @@
 fastapi
 uvicorn[standard]
 streamlit
+google-cloud-documentai
 google-cloud-bigquery
 google-cloud-storage
 google-cloud-aiplatform
@@ -18,3 +19,14 @@ beautifulsoup4
 flask
 pydantic[email]
 email-validator
+PyYAML
+shap
+lime
+prometheus_client
+plotly
+scikit-learn
+tensorflow
+scipy
+weasyprint
+jinja2
+pytest-mock

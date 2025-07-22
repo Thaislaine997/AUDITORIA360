@@ -79,7 +79,7 @@ class TestAuthFlow(unittest.TestCase):
     @patch('src.frontend.utils.get_current_client_id')
     def test_utils_functions(self, mock_get_client_id, mock_get_token):
         """Testa as funções utilitárias do frontend"""
-        from src.frontend.utils import get_auth_headers, display_user_info_sidebar, handle_api_error
+        from dashboards.utils import get_auth_headers, display_user_info_sidebar, handle_api_error
         
         # Configurar mocks
         mock_get_token.return_value = "mocked_jwt_token"
@@ -115,7 +115,7 @@ class TestAuthFlow(unittest.TestCase):
     @patch('requests.post')
     def test_api_authentication(self, mock_post):
         """Testa a função de autenticação na API"""
-        from src.frontend.painel import autenticar_api
+        from dashboards.painel import autenticar_api
         
         # Configurar mock para simular uma resposta bem-sucedida da API
         mock_response = MagicMock()
@@ -150,7 +150,7 @@ class TestAuthFlow(unittest.TestCase):
     def test_session_state_consistency(self):
         """Testa a consistência entre os nomes de variáveis usados em diferentes partes do código"""
         # Importar os módulos que usam st.session_state
-        from src.frontend import utils
+        from dashboards import utils
         import importlib
         
         # Simular login bem-sucedido

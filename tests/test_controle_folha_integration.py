@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 
-from src.backend.controllers import controle_folha_controller
-from src.utils.config_manager import get_current_config
+from services.api.controllers import controle_folha_controller
+from services.core.config_manager import get_current_config
 from fastapi import Request
 
 @pytest.fixture

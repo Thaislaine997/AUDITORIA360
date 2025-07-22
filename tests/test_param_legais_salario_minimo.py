@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from fastapi.testclient import TestClient
 from src.api.main import app # Supondo que seu app FastAPI principal esteja em src.api.main
-from src.schemas.parametros_legais_schemas import TabelaSalarioMinimo
+from services.core.parametros_legais_schemas import TabelaSalarioMinimo
 from datetime import date, timedelta
 from typing import Optional, Dict
 from starlette import status
@@ -209,8 +209,8 @@ def test_inativar_salario_minimo_nao_encontrado(client):
 # Placeholder para teste de consulta de vigente (precisa de mais cenários)
 def test_obter_salario_minimo_vigente_em_data_especifica(client):
     # Setup: Criar algumas vigências
-    client.post("/param-legais/salario-minimo/", json=get_sm_payload(date(2023, 1, 1), 1300, data_fim_vigencia=date(2023,12,31)))
-    client.post("/param-legais/salario-minimo/", json=get_sm_payload(date(2024, 1, 1), 1400, data_fim_vigencia=date(2024,12,31)))
+    client.post("/param-legais/salario-minimo/", json=get_sm_payload(date(2023, 1, 1), 1300, data_fim_vigencia=date(2023, 12, 31)))
+    client.post("/param-legais/salario-minimo/", json=get_sm_payload(date(2024, 1, 1), 1400, data_fim_vigencia=date(2024, 12, 31)))
     client.post("/param-legais/salario-minimo/", json=get_sm_payload(date(2025, 1, 1), 1500)) # Vigente atualmente
 
     response = client.get("/param-legais/salario-minimo/vigente?data_referencia=2024-07-15")

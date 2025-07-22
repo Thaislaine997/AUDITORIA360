@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch, ANY
 
 # Importar as funções do módulo que queremos testar
-from src.utils.vertex_utils import inicializar_vertex, prever_rubrica_com_vertex, PROJECT_ID, LOCATION, ENDPOINT_ID
+from services.ml.components.vertex_utils import inicializar_vertex, prever_rubrica_com_vertex, PROJECT_ID, LOCATION, ENDPOINT_ID
 
 # Testes para inicializar_vertex
 def test_inicializar_vertex_chama_aiplatform_init(mocker):

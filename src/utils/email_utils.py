@@ -1,3 +1,0 @@
-# Arquivo movido de src/email_utils.py
-# envio por e-mail automático
-# ...existing code...

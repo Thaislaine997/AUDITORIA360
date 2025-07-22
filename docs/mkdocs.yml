@@ -1,0 +1,5 @@
+site_name: Auditoria360
+nav:
+  - Home: index.md
+  - Guia de Dev: dev_guide.md
+  - Manual do Usuário: manual_usuario.md

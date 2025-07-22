@@ -12,7 +12,7 @@ if (!(Test-Path $BackupDir)) {
 
 # Lista os arquivos e pastas a serem incluídos
 $Itens = @(
-    "src/client_configs",
+    "configs/client_configs",
     "auth/login.yaml"
 )
 

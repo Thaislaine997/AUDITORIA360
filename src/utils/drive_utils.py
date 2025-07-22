@@ -1,3 +1,0 @@
-# Arquivo movido de src/drive_utils.py
-# upload para Google Drive
-# ...código original será movido para cá...

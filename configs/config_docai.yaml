@@ -1,0 +1,5 @@
+docai:
+  processor_id: "1234567890abcdef"
+  location: "us"
+  mime_type: "application/pdf"
+  timeout_seconds: 60

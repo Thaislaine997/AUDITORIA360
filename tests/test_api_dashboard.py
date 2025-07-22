@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.api.main import app
-from src.utils.config_manager import get_current_config # Importar get_current_config
+from services.api.main import app
+# from src.utils.config_manager import get_current_config # Importar get_current_config
 import builtins
 import json
 from unittest.mock import patch as mock_patch # Renomear para evitar conflito
@@ -16,16 +16,13 @@ def client(mocker): # Removido 'request' não utilizado
     mocker.patch('builtins.open', new=original_builtins_open)
     mocker.patch('json.load', new=original_json_load)
 
-    original_config_dependency_override = app.dependency_overrides.pop(get_current_config, None)
+    # original_config_dependency_override = app.dependency_overrides.pop(get_current_config, None)
     
     try:
         with TestClient(app) as c:
             yield c
     finally:
-        if original_config_dependency_override is not None:
-            app.dependency_overrides[get_current_config] = original_config_dependency_override
-        else:
-            app.dependency_overrides.pop(get_current_config, None)
+        pass  # Removido manipulação de dependency_overrides para get_current_config
 
 def test_dashboard_isolamento(client):
     headers_a = {"x-client-id": "cliente_a"}

@@ -12,7 +12,7 @@ Requisitos:
 import os
 import asyncio
 from google.cloud import bigquery
-from src.processamento_cct import processar_extracao_texto_cct
+# from src.processamento_cct import processar_extracao_texto_cct
 
 PROJECT_ID = os.getenv("GCP_PROJECT_ID", "seu-projeto-gcp")
 BQ_DATASET_ID = os.getenv("BQ_DATASET_ID", "auditoria_folha_dataset")
@@ -37,7 +37,7 @@ async def main():
     id_cliente = row.id_cliente_principal_associado or "global"
     ano_vigencia = row.data_inicio_vigencia.year if row.data_inicio_vigencia else 2025
     print(f"Processando CCT: {id_cct}\nPDF: {gcs_uri_pdf}")
-    await processar_extracao_texto_cct(id_cct, gcs_uri_pdf, id_cliente, ano_vigencia)
+    # await processar_extracao_texto_cct(id_cct, gcs_uri_pdf, id_cliente, ano_vigencia)
     print("Processo concluído!")
 
 if __name__ == "__main__":
