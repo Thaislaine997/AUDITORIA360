@@ -1,17 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Importar os roteadores
+# Importar os roteadores disponíveis
 from .explainability_routes import router as explainability_router
+from .auth_routes import router as auth_router
 
 app = FastAPI(
     title="Auditoria360 API",
     description="API para o sistema Auditoria360, fornecendo endpoints para frontend e outros serviços.",
-    version="0.1.0"
+    version="0.2.0"
 )
-
-# Incluir o router de explainability
-app.include_router(explainability_router, prefix="/explainability", tags=["Explainability"])
 
 # Configuração do CORS
 # ATENÇÃO: Para produção, restrinja os origins permitidos.
@@ -32,6 +30,10 @@ app.add_middleware(
 )
 
 # Incluir os roteadores disponíveis na aplicação
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(explainability_router, prefix="/explainability", tags=["Explainability"])
+
+# Incluir os roteadores disponíveis na aplicação
 app.include_router(explainability_router, prefix="/explainability", tags=["Explainability"])
 
 # TODO: Re-implementar rotas do legacy backup conforme necessário
@@ -41,11 +43,29 @@ app.include_router(explainability_router, prefix="/explainability", tags=["Expla
 
 @app.get("/", tags=["Root"])
 async def read_root():
-    return {"message": "Bem-vindo à API Auditoria360 - Versão Refatorada"}
+    return {
+        "message": "Bem-vindo à API Auditoria360 - Versão Refatorada",
+        "version": "0.2.0",
+        "features": [
+            "Authentication system",
+            "ML explainability pipeline", 
+            "Document processing (coming soon)",
+            "Multi-client support (coming soon)"
+        ]
+    }
 
 @app.get("/health", tags=["Health"])
 async def health_check():
-    return {"status": "healthy", "version": "0.1.0"}
+    return {
+        "status": "healthy",
+        "version": "0.2.0", 
+        "services": {
+            "auth": "available",
+            "explainability": "available",
+            "ingestion": "available",
+            "ml": "available"
+        }
+    }
 
 # Seção para execução direta via python -m src.api.main
 if __name__ == "__main__":

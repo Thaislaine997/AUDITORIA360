@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **🔐 MAJOR FEATURE**: Complete authentication system with JWT tokens
+- **🧪 COMPREHENSIVE TESTS**: Full authentication test suite (11/11 tests passing)
+- **⚙️ CONFIG SYSTEM**: YAML-based configuration management for services
+- **🛡️ SECURITY**: Bcrypt password hashing, JWT token validation
+- **📊 API HEALTH**: Health check endpoints for all services
+- **🌐 CORS SUPPORT**: Cross-origin request handling for frontend integration
 - Comprehensive project analysis and documentation
 - Modern test infrastructure with pytest, coverage reporting
 - Structured services architecture (api, core, ingestion, ml)
@@ -17,27 +23,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project analysis documentation in `/docs/`
 
 ### Fixed
-- ✅ Fixed all core test imports and dependencies
+- ✅ Fixed all core test imports and dependencies (12/12 core + 11/11 auth tests passing)
 - ✅ Fixed Pydantic deprecation warnings (v1 → v2 validators)
 - ✅ Fixed missing functions in bq_loader and docai_utils modules
 - ✅ Fixed API main.py import errors by removing non-existent routes
 - ✅ Fixed ML pipeline definition syntax errors
 - ✅ Fixed CPF validation and normalization in entity schema
+- ✅ Fixed JWT error handling (PyJWTError vs JWTError)
+- ✅ Fixed datetime deprecation warnings (UTC timezone support)
+
+### Security
+- 🔐 JWT-based authentication with configurable expiration
+- 🔒 Bcrypt password hashing for user credentials
+- 🛡️ Token validation middleware for protected endpoints
+- 📋 User registration and management system
+- 🏢 Multi-client/empresa support in authentication
+- ⚠️ **Production Note**: Change JWT secret key from development default
+
+### API Endpoints Added
+- `POST /auth/login` - User authentication
+- `POST /auth/register` - User registration  
+- `GET /auth/me` - Current user information
+- `POST /auth/logout` - User logout
+- `GET /auth/health` - Authentication service health
+- `GET /health` - Overall API health check
+- `POST /explainability/executar-pipeline` - ML pipeline execution
+
+### Testing
+- ✅ 23/23 total tests passing (12 core + 11 auth)
+- 🧪 Authentication test coverage: login, registration, token validation
+- 🔍 API integration tests for all endpoints
+- 📊 Test coverage reporting with pytest-cov
 
 ### Changed
 - Migrated from legacy `src/` structure to `services/` architecture
 - Updated entity validation to use Pydantic v2 field validators
-- Simplified API structure to only include existing routes
+- Enhanced API structure with authentication and health monitoring
 - Added mock implementations for external dependencies (Kubeflow)
+- API version bumped to 0.2.0
 
-### Removed
-- Temporarily removed legacy API routes (available in `src_legacy_backup/`)
-- Cleaned up broken import statements from legacy restructuring
-
-### Test Coverage
-- ✅ 12/12 core tests passing (ingestion, ml modules)
-- ⚠️ 29 legacy test files need import fixes
-- 🎯 Test coverage focus: services/ingestion, services/ml
+### Configuration
+- Added YAML configuration system in `services/configs/`
+- Environment-based JWT secret configuration
+- Service-specific configuration files (DocAI, common settings)
+- Development and production configuration support
 
 ## Historical Context
 

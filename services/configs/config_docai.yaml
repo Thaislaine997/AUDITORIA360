@@ -1,0 +1,15 @@
+# Document AI specific configuration
+docai_project_id: "auditoria360-project"
+docai_location: "us"
+docai_processor_id: "mock-processor-for-testing"
+docai_timeout: 60
+
+# Processing settings
+max_pages_per_document: 100
+confidence_threshold: 0.8
+retry_attempts: 3
+
+# Output settings
+output_format: "json"
+include_raw_text: true
+include_confidence_scores: true

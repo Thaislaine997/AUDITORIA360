@@ -1,0 +1,23 @@
+# Configuration common for all services
+gcp_project_id: "auditoria360-project"
+gcp_location: "us-central1"
+bq_dataset_id: "auditoria_folha_dataset"
+bq_table_id: "docai_extracted_data"
+gcs_input_bucket: "auditoria-folha-input-pdfs"
+
+# Document AI Configuration
+docai_processor_id: "mock-processor-id"
+
+# ML Configuration
+ml_model_endpoint: "mock-endpoint"
+bias_threshold: 0.1
+contamination_level: 0.05
+
+# Logging
+log_level: "INFO"
+log_format: "json"
+
+# Feature flags
+enable_ml_pipeline: false
+enable_bias_detection: true
+enable_explainability: true
