@@ -31,37 +31,21 @@ app.add_middleware(
     allow_headers=["*"],  # Permitir todos os headers
 )
 
-# Incluir os roteadores na aplicação
-app.include_router(auth_routes.router, prefix="/auth", tags=["Autenticação"])
-app.include_router(pdf_processor_routes.router, prefix="/pdf", tags=["Processador PDF"])
-app.include_router(auditoria_routes.router, prefix="/auditoria", tags=["Auditoria"])
-app.include_router(cct_clausulas_routes.router, prefix="/cct-clausulas", tags=["CCT Cláusulas"])
-app.include_router(cct_routes.router, prefix="/ccts", tags=["CCTs"])
-app.include_router(cct_sugestoes_routes.router, prefix="/cct-sugestoes", tags=["CCT Sugestões"])
-app.include_router(checklist_folha_routes.router, prefix="/checklist-folha", tags=["Checklist Folha"])
-app.include_router(consultor_riscos_routes.router, prefix="/consultor-riscos", tags=["Consultor de Riscos"])
-app.include_router(contabilidade_routes.router, prefix="/contabilidade", tags=["Contabilidade"])
-app.include_router(controle_folha_routes.router, prefix="/controle-folha", tags=["Controle Folha"])
-app.include_router(dashboard_folha_routes.router, prefix="/dashboard-folha", tags=["Dashboard Folha"])
-app.include_router(dashboard_routes.router, prefix="/dashboard", tags=["Dashboard"])
-app.include_router(empresas_routes.router, prefix="/empresas", tags=["Empresas"])
-app.include_router(folhas_processadas_routes.router, prefix="/folhas-processadas", tags=["Folhas Processadas"])
-app.include_router(folhas_routes.router, prefix="/folhas", tags=["Folhas"]) # Reativado
-app.include_router(parametros_fgts_admin_routes.router, prefix="/admin/parametros/fgts", tags=["Admin - Parâmetros FGTS"])
-app.include_router(parametros_irrf_admin_routes.router, prefix="/admin/parametros/irrf", tags=["Admin - Parâmetros IRRF"])
-app.include_router(parametros_legais_admin_routes.router, prefix="/admin/parametros/legais", tags=["Admin - Parâmetros Legais"])
-app.include_router(parametros_salario_familia_admin_routes.router, prefix="/admin/parametros/salario-familia", tags=["Admin - Parâmetros Salário Família"])
-app.include_router(parametros_salario_minimo_admin_routes.router, prefix="/admin/parametros/salario-minimo", tags=["Admin - Parâmetros Salário Mínimo"])
-app.include_router(param_legais_assistente_routes.router, prefix="/param-legais-assistente", tags=["Assistente de Parâmetros Legais"])
-app.include_router(param_legais_routes.router, prefix="/param-legais", tags=["Parâmetros Legais"])
-app.include_router(predicao_risco_routes.router, prefix="/predicao-risco", tags=["Predição de Risco"])
-app.include_router(relatorios_folha_routes.router, prefix="/relatorios-folha", tags=["Relatórios Folha"])
-app.include_router(relatorio_routes.router, prefix="/relatorios", tags=["Relatórios"])
-app.include_router(rubricas_routes.router, prefix="/rubricas", tags=["Rubricas"])
+# Incluir os roteadores disponíveis na aplicação
+app.include_router(explainability_router, prefix="/explainability", tags=["Explainability"])
+
+# TODO: Re-implementar rotas do legacy backup conforme necessário
+# As seguintes rotas foram removidas porque os módulos não existem no diretório atual:
+# - auth_routes, pdf_processor_routes, auditoria_routes, etc.
+# Elas estão disponíveis em src_legacy_backup/ para restauração futura
 
 @app.get("/", tags=["Root"])
 async def read_root():
-    return {"message": "Bem-vindo à API Auditoria360"}
+    return {"message": "Bem-vindo à API Auditoria360 - Versão Refatorada"}
+
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "healthy", "version": "0.1.0"}
 
 # Seção para execução direta via python -m src.api.main
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ def test_docai_process_document(mock_docai_client):
     mock_instance.process_document.return_value = MagicMock(entities=[{'type': 'CPF', 'text': '123.456.789-00'}])
     from services.ingestion import docai_utils
     result = docai_utils.process_document('fake_path')
-    assert hasattr(result, 'entities')
+    assert 'entities' in result
 
 # Exemplo de mock para BigQuery
 @patch('google.cloud.bigquery.Client')
