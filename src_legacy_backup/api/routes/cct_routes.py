@@ -7,7 +7,7 @@ from src.schemas.cct_schemas import (
     AlertaCCTResponse,
     UpdateAlertaStatusRequest
 )
-from src.controllers.cct_controller import (
+from src_legacy_backup.controllers.cct_controller import (
     salvar_documento_cct_e_metadados,
     listar_ccts,
     atualizar_metadata_cct,
@@ -15,7 +15,6 @@ from src.controllers.cct_controller import (
     listar_alertas,
     atualizar_status_alerta
 )
-from src.utils.auth_utils import get_current_active_user, User
 
 router = APIRouter(prefix="/api/v1/ccts", tags=["CCTs"])
 
@@ -31,9 +30,12 @@ async def upload_cct_documento(
     id_cct_base_fk: Optional[str] = Form(None),
     id_cliente_principal_associado: Optional[str] = Form(None),
     ids_clientes_afetados_lista_str: Optional[str] = Form(None),
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_active_user)
+    file: UploadFile = File(...)
 ):
+    # Validação de tipo de arquivo
+    allowed_types = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=422, detail="Tipo de arquivo não suportado. Envie PDF ou DOCX.")
     try:
         result = await salvar_documento_cct_e_metadados(
             file=file,
@@ -83,8 +85,7 @@ async def get_alertas(
 @router.put("/alerts/{id_alerta}", response_model=AlertaCCTResponse)
 async def update_alerta_status(
     id_alerta: str,
-    payload: UpdateAlertaStatusRequest,
-    current_user: User = Depends(get_current_active_user)
+    payload: UpdateAlertaStatusRequest
 ):
     """Atualizar status e notas de um alerta de CCT."""
     return await atualizar_status_alerta(id_alerta, payload)

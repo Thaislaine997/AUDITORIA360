@@ -1,4 +1,49 @@
-# filepath: C:\Users\55479\Documents\AUDITORIA360\conftest.py
+
+import sys
+import types
+import pytest
+from unittest.mock import MagicMock, mock_open, patch
+import os
+import builtins
+import subprocess
+import time
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+from e2e_config import e2e_context_instance
+
+# Adiciona o diretório raiz do projeto (onde este conftest.py está) ao sys.path.
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
+# Mock Google Cloud dependencies globalmente para todos os testes
+google_cloud = types.ModuleType("google.cloud")
+google_cloud_bigquery = types.ModuleType("google.cloud.bigquery")
+google_cloud_storage = types.ModuleType("google.cloud.storage")
+google_cloud_exceptions = types.ModuleType("google.cloud.exceptions")
+
+# Adiciona mocks dos atributos esperados
+
+google_cloud_bigquery.Client = MagicMock()
+google_cloud_bigquery.SchemaField = MagicMock()
+google_cloud.SchemaField = google_cloud_bigquery.SchemaField
+google_cloud.exceptions = google_cloud_exceptions
+google_cloud_bigquery.exceptions = google_cloud_exceptions
+
+sys.modules["google.cloud"] = google_cloud
+sys.modules["google.cloud.bigquery"] = google_cloud_bigquery
+sys.modules["google.cloud.storage"] = google_cloud_storage
+sys.modules["google.cloud.exceptions"] = google_cloud_exceptions
+sys.modules["google.auth"] = MagicMock()
+_panel_specific_mock_open = mock_open()
+
+# Mock google.oauth2
+google_oauth2 = types.ModuleType("google.oauth2")
+google_oauth2_service_account = types.ModuleType("google.oauth2.service_account")
+google_oauth2.service_account = google_oauth2_service_account
+sys.modules["google.oauth2"] = google_oauth2
+sys.modules["google.oauth2.service_account"] = google_oauth2_service_account
+sys.modules["google.auth"] = MagicMock()
+_panel_specific_mock_open = mock_open()
+
 import pytest
 from unittest.mock import MagicMock, mock_open, patch
 import sys
@@ -13,11 +58,23 @@ from e2e_config import e2e_context_instance
 # Adiciona o diretório raiz do projeto (onde este conftest.py está) ao sys.path.
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-# Salva as implementações originais antes de qualquer patch
-_original_builtins_open = builtins.open
-_original_os_path_exists = os.path.exists
+# Mock Google Cloud dependencies globalmente para todos os testes
+import types
+google_cloud = types.ModuleType("google.cloud")
+google_cloud_bigquery = types.ModuleType("google.cloud.bigquery")
+google_cloud_storage = types.ModuleType("google.cloud.storage")
+google_cloud_exceptions = types.ModuleType("google.cloud.exceptions")
 
-# Instância de mock_open para uso seletivo, se necessário para o painel
+# Adiciona mocks dos atributos esperados
+google_cloud_bigquery.Client = MagicMock()
+google_cloud.exceptions = google_cloud_exceptions
+google_cloud_bigquery.exceptions = google_cloud_exceptions
+
+sys.modules["google.cloud"] = google_cloud
+sys.modules["google.cloud.bigquery"] = google_cloud_bigquery
+sys.modules["google.cloud.storage"] = google_cloud_storage
+sys.modules["google.cloud.exceptions"] = google_cloud_exceptions
+sys.modules["google.auth"] = MagicMock()
 _panel_specific_mock_open = mock_open()
 
 # Contexto para testes E2E parametrizados
@@ -280,6 +337,20 @@ def auto_mock_painel_dependencies():
         p_requests = patch.dict(sys.modules, {'requests': mock_requests_module})
         active_patchers.append(p_requests)
         p_requests.start()
+
+        # 8. Mockear módulos do Google Cloud (BigQuery, Storage, etc.)
+        mock_bigquery_module = MagicMock()
+        mock_bigquery_module.Client = MagicMock()
+        mock_storage_module = MagicMock()
+        mock_storage_module.Client = MagicMock()
+        p_gcloud = patch.dict(sys.modules, {
+            'google.cloud.bigquery': mock_bigquery_module,
+            'google.cloud.storage': mock_storage_module,
+            'google.cloud': MagicMock(bigquery=mock_bigquery_module, storage=mock_storage_module),
+            'google.auth': MagicMock(),
+        })
+        active_patchers.append(p_gcloud)
+        p_gcloud.start()
 
         yield
 

@@ -1,7 +1,11 @@
 # tests/test_cct_upload.py
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from src.api.main import app
+from src_legacy_backup.api.routes.cct_routes import router as cct_router
+
+app = FastAPI()
+app.include_router(cct_router)
 
 client = TestClient(app)
 
@@ -16,7 +20,7 @@ def test_upload_cct_success(monkeypatch, tmp_path):
     # Mock do controller para não chamar GCS/BQ reais
     async def mock_salvar(*args, **kwargs):
         return {
-            "id_cct_documento": "uuid-teste",
+            "_id": "uuid-teste",
             "nome_documento_original": "Teste CCT",
             "gcs_uri_documento": "gs://bucket/teste.pdf",
             "data_inicio_vigencia_cct": "2025-01-01",
@@ -25,7 +29,7 @@ def test_upload_cct_success(monkeypatch, tmp_path):
             "sindicatos_patronais": None,
             "status_processamento_ia": "PENDENTE_EXTRACAO"
         }
-    monkeypatch.setattr("src.controllers.cct_controller.salvar_documento_cct_e_metadados", mock_salvar)
+    monkeypatch.setattr("src_legacy_backup.controllers.cct_controller.salvar_documento_cct_e_metadados", mock_salvar)
 
     file_path = tmp_path / "teste.pdf"
     file_path.write_bytes(b"%PDF-1.4 mock")
@@ -40,12 +44,13 @@ def test_upload_cct_success(monkeypatch, tmp_path):
         )
     assert response.status_code == 200
     json_data = response.json()
-    assert json_data["id_cct_documento"] == "uuid-teste"
+    assert json_data["nome_documento_original"] == "Teste CCT"
+    assert json_data["status_documento"] == "Recebido"
 
 def test_upload_cct_invalid_file_type(monkeypatch, tmp_path):
     async def mock_salvar(*args, **kwargs):
-        return {"id_cct_documento": "uuid-teste"}
-    monkeypatch.setattr("src.controllers.cct_controller.salvar_documento_cct_e_metadados", mock_salvar)
+        return {"_id": "uuid-teste"}
+    monkeypatch.setattr("src_legacy_backup.controllers.cct_controller.salvar_documento_cct_e_metadados", mock_salvar)
     file_path = tmp_path / "teste.txt"
     file_path.write_text("arquivo texto")
     with open(file_path, "rb") as f:

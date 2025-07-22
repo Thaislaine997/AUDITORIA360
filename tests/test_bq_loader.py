@@ -1,5 +1,5 @@
 import pytest
-from src.utils.bq_loader import get_bigquery_client, ControleFolhaLoader, load_data_to_bq
+from services.ingestion.bq_loader import get_bigquery_client, ControleFolhaLoader, load_data_to_bq
 import pandas as pd
 from google.cloud import bigquery
 from datetime import datetime, date, timezone
@@ -57,7 +57,7 @@ def test_listar_empresas_isolamento(monkeypatch, config_cliente_a, config_client
                 def to_dataframe(self):
                     return [param.value]
             return FakeResult()
-    monkeypatch.setattr('src.utils.bq_loader.get_bigquery_client', lambda config: FakeClient())
+    monkeypatch.setattr('services.ingestion.bq_loader.get_bigquery_client', lambda config: FakeClient())
     loader_a = ControleFolhaLoader(config_cliente_a)
     loader_b = ControleFolhaLoader(config_cliente_b)
     result_a = loader_a.listar_todas_as_empresas()

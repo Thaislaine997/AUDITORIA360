@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from src.utils.bq_loader import ControleFolhaLoader, load_data_to_bq
+from services.ingestion.bq_loader import ControleFolhaLoader, load_data_to_bq
 
 @pytest.fixture
 def config_cliente_a():
@@ -65,7 +65,7 @@ def test_listar_empresas_isolamento(monkeypatch, config_cliente_a, config_client
                 def to_dataframe(self):
                     return [param.value]  # Retorna o client_id para checagem
             return FakeResult()
-    monkeypatch.setattr("src.utils.bq_loader.get_bigquery_client", lambda config: FakeClient())
+    monkeypatch.setattr("services.ingestion.bq_loader.get_bigquery_client", lambda config: FakeClient())
     
     loader_a = ControleFolhaLoader(config_cliente_a)
     loader_b = ControleFolhaLoader(config_cliente_b)

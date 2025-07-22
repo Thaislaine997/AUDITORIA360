@@ -1,40 +1,6 @@
 
 ==================================== ERRORS ====================================
-_____________ ERROR collecting scripts/test_cct_extracao_texto.py ______________
-scripts/test_cct_extracao_texto.py:20: in <module>
-    bq_client = bigquery.Client(project=PROJECT_ID)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.venv/lib/python3.12/site-packages/google/cloud/bigquery/client.py:259: in __init__
-    super(Client, self).__init__(
-.venv/lib/python3.12/site-packages/google/cloud/client/__init__.py:339: in __init__
-    Client.__init__(
-.venv/lib/python3.12/site-packages/google/cloud/client/__init__.py:196: in __init__
-    credentials, _ = google.auth.default(scopes=scopes)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.venv/lib/python3.12/site-packages/google/auth/_default.py:685: in default
-    raise exceptions.DefaultCredentialsError(_CLOUD_SDK_MISSING_CREDENTIALS)
-E   google.auth.exceptions.DefaultCredentialsError: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
-_________ ERROR collecting scripts/test_cct_sumarizacao_comparacao.py __________
-scripts/test_cct_sumarizacao_comparacao.py:23: in <module>
-    bq_client = bigquery.Client(project=PROJECT_ID)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.venv/lib/python3.12/site-packages/google/cloud/bigquery/client.py:259: in __init__
-    super(Client, self).__init__(
-.venv/lib/python3.12/site-packages/google/cloud/client/__init__.py:339: in __init__
-    Client.__init__(
-.venv/lib/python3.12/site-packages/google/cloud/client/__init__.py:196: in __init__
-    credentials, _ = google.auth.default(scopes=scopes)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.venv/lib/python3.12/site-packages/google/auth/_default.py:685: in default
-    raise exceptions.DefaultCredentialsError(_CLOUD_SDK_MISSING_CREDENTIALS)
-E   google.auth.exceptions.DefaultCredentialsError: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
 ________________ ERROR collecting tests/test_api_auditorias.py _________________
-ImportError while importing test module '/workspaces/AUDITORIA360/tests/test_api_auditorias.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/lib/python3.12/importlib/__init__.py:90: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 tests/test_api_auditorias.py:4: in <module>
     from services.api.main import app
 services/api/main.py:5: in <module>
@@ -43,16 +9,15 @@ services/api/explainability_routes.py:2: in <module>
     from services.orchestrator import run_full_pipeline
 services/orchestrator.py:1: in <module>
     from services.ingestion.main import main as ingestion_main
-services/ingestion/main.py:2: in <module>
-    from google.cloud.functions_v1.context import Context
-E   ModuleNotFoundError: No module named 'google.cloud.functions_v1.context'
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
 _________________ ERROR collecting tests/test_api_dashboard.py _________________
-ImportError while importing test module '/workspaces/AUDITORIA360/tests/test_api_dashboard.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/lib/python3.12/importlib/__init__.py:90: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 tests/test_api_dashboard.py:3: in <module>
     from services.api.main import app
 services/api/main.py:5: in <module>
@@ -61,16 +26,15 @@ services/api/explainability_routes.py:2: in <module>
     from services.orchestrator import run_full_pipeline
 services/orchestrator.py:1: in <module>
     from services.ingestion.main import main as ingestion_main
-services/ingestion/main.py:2: in <module>
-    from google.cloud.functions_v1.context import Context
-E   ModuleNotFoundError: No module named 'google.cloud.functions_v1.context'
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
 _________________ ERROR collecting tests/test_api_empresas.py __________________
-ImportError while importing test module '/workspaces/AUDITORIA360/tests/test_api_empresas.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/lib/python3.12/importlib/__init__.py:90: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 tests/test_api_empresas.py:3: in <module>
     from services.api.main import app
 services/api/main.py:5: in <module>
@@ -79,14 +43,127 @@ services/api/explainability_routes.py:2: in <module>
     from services.orchestrator import run_full_pipeline
 services/orchestrator.py:1: in <module>
     from services.ingestion.main import main as ingestion_main
-services/ingestion/main.py:2: in <module>
-    from google.cloud.functions_v1.context import Context
-E   ModuleNotFoundError: No module named 'google.cloud.functions_v1.context'
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+__________________ ERROR collecting tests/test_api_folhas.py ___________________
+tests/test_api_folhas.py:4: in <module>
+    from services.api.main import app
+services/api/main.py:5: in <module>
+    from .explainability_routes import router as explainability_router
+services/api/explainability_routes.py:2: in <module>
+    from services.orchestrator import run_full_pipeline
+services/orchestrator.py:1: in <module>
+    from services.ingestion.main import main as ingestion_main
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+_______________ ERROR collecting tests/test_api_multi_cliente.py _______________
+tests/test_api_multi_cliente.py:4: in <module>
+    from services.api.main import app
+services/api/main.py:5: in <module>
+    from .explainability_routes import router as explainability_router
+services/api/explainability_routes.py:2: in <module>
+    from services.orchestrator import run_full_pipeline
+services/orchestrator.py:1: in <module>
+    from services.ingestion.main import main as ingestion_main
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+________________ ERROR collecting tests/test_app_api_vertex.py _________________
+tests/test_app_api_vertex.py:6: in <module>
+    from services.api.main import app
+services/api/main.py:5: in <module>
+    from .explainability_routes import router as explainability_router
+services/api/explainability_routes.py:2: in <module>
+    from services.orchestrator import run_full_pipeline
+services/orchestrator.py:1: in <module>
+    from services.ingestion.main import main as ingestion_main
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+___________________ ERROR collecting tests/test_bq_loader.py ___________________
+tests/test_bq_loader.py:2: in <module>
+    from services.ingestion.bq_loader import get_bigquery_client, ControleFolhaLoader, load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+_____________ ERROR collecting tests/test_bq_loader_isolamento.py ______________
+tests/test_bq_loader_isolamento.py:3: in <module>
+    from services.ingestion.bq_loader import ControleFolhaLoader, load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+__________________ ERROR collecting tests/test_cct_alerts.py ___________________
+tests/test_cct_alerts.py:4: in <module>
+    from services.api.main import app
+services/api/main.py:5: in <module>
+    from .explainability_routes import router as explainability_router
+services/api/explainability_routes.py:2: in <module>
+    from services.orchestrator import run_full_pipeline
+services/orchestrator.py:1: in <module>
+    from services.ingestion.main import main as ingestion_main
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
+___________________ ERROR collecting tests/test_cct_list.py ____________________
+tests/test_cct_list.py:4: in <module>
+    from services.api.main import app
+services/api/main.py:5: in <module>
+    from .explainability_routes import router as explainability_router
+services/api/explainability_routes.py:2: in <module>
+    from services.orchestrator import run_full_pipeline
+services/orchestrator.py:1: in <module>
+    from services.ingestion.main import main as ingestion_main
+services/ingestion/main.py:8: in <module>
+    from services.ingestion.bq_loader import load_data_to_bq
+services/ingestion/bq_loader.py:74: in <module>
+    class ControleFolhaLoader:
+services/ingestion/bq_loader.py:125: in ControleFolhaLoader
+    def _get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
+                                                 ^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'google.cloud.bigquery' has no attribute 'SchemaField'
 =========================== short test summary info ============================
-ERROR scripts/test_cct_extracao_texto.py - google.auth.exceptions.DefaultCred...
-ERROR scripts/test_cct_sumarizacao_comparacao.py - google.auth.exceptions.Def...
-ERROR tests/test_api_auditorias.py
-ERROR tests/test_api_dashboard.py
-ERROR tests/test_api_empresas.py
-!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
-2 warnings, 5 errors in 2.08s
+ERROR tests/test_api_auditorias.py - AttributeError: module 'google.cloud.big...
+ERROR tests/test_api_dashboard.py - AttributeError: module 'google.cloud.bigq...
+ERROR tests/test_api_empresas.py - AttributeError: module 'google.cloud.bigqu...
+ERROR tests/test_api_folhas.py - AttributeError: module 'google.cloud.bigquer...
+ERROR tests/test_api_multi_cliente.py - AttributeError: module 'google.cloud....
+ERROR tests/test_app_api_vertex.py - AttributeError: module 'google.cloud.big...
+ERROR tests/test_bq_loader.py - AttributeError: module 'google.cloud.bigquery...
+ERROR tests/test_bq_loader_isolamento.py - AttributeError: module 'google.clo...
+ERROR tests/test_cct_alerts.py - AttributeError: module 'google.cloud.bigquer...
+ERROR tests/test_cct_list.py - AttributeError: module 'google.cloud.bigquery'...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+2 warnings, 10 errors in 1.87s
