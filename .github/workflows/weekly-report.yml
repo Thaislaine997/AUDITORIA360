@@ -1,0 +1,169 @@
+name: Weekly Health Report
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  health-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50  # Fetch more history for git analysis
+          
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --timeout=300 --retries=3
+          pip install safety
+        timeout-minutes: 15
+        
+      - name: Configurar variáveis de ambiente
+        run: |
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/fake-credentials.json" >> $GITHUB_ENV
+          echo "GOOGLE_CLOUD_PROJECT=test-project" >> $GITHUB_ENV
+          echo "GCP_PROJECT_ID=test-project" >> $GITHUB_ENV
+          
+      - name: Gerar relatório de saúde
+        run: |
+          python scripts/health_reporter.py
+          
+      - name: Upload relatórios
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-reports-${{ github.run_number }}
+          path: |
+            health_report_*.json
+            health_summary_*.md
+            coverage.xml
+            htmlcov/
+            test-results.xml
+            
+      - name: Comentar no PR (se existir)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find the latest health summary file
+            const files = fs.readdirSync('.');
+            const summaryFile = files.find(f => f.startsWith('health_summary_') && f.endsWith('.md'));
+            
+            if (summaryFile) {
+              const summary = fs.readFileSync(summaryFile, 'utf8');
+              
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## 📊 Weekly Health Report\n\n${summary}`
+              });
+            }
+            
+      - name: Criar issue se problemas críticos forem encontrados
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find the latest health report JSON
+            const files = fs.readdirSync('.');
+            const reportFile = files.find(f => f.startsWith('health_report_') && f.endsWith('.json'));
+            
+            if (reportFile) {
+              const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
+              
+              const criticalIssues = [];
+              
+              // Check for critical issues
+              if (report.coverage.total_coverage < 40) {
+                criticalIssues.push('Test coverage below 40%');
+              }
+              
+              if (report.tests.success_rate < 70) {
+                criticalIssues.push('Test success rate below 70%');
+              }
+              
+              if (report.dependencies.vulnerabilities > 5) {
+                criticalIssues.push('More than 5 security vulnerabilities found');
+              }
+              
+              const highSeverityIssues = report.issues.filter(i => i.severity === 'high');
+              if (highSeverityIssues.length > 0) {
+                criticalIssues.push(`${highSeverityIssues.length} high severity issues found`);
+              }
+              
+              // Create issue if critical problems found
+              if (criticalIssues.length > 0) {
+                const issueBody = `# 🚨 Critical Health Issues Detected
+                
+**Date:** ${report.date}
+
+## Critical Issues:
+${criticalIssues.map(issue => `- ❌ ${issue}`).join('\n')}
+
+## Summary:
+- **Test Coverage:** ${report.coverage.total_coverage}%
+- **Test Success Rate:** ${report.tests.success_rate}%
+- **Security Vulnerabilities:** ${report.dependencies.vulnerabilities}
+- **High Severity Issues:** ${highSeverityIssues.length}
+
+This issue was automatically created by the weekly health check. Please review and address these critical issues.
+
+See the [health report artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed information.`;
+
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: `🚨 Critical Health Issues - ${new Date().toISOString().split('T')[0]}`,
+                  body: issueBody,
+                  labels: ['bug', 'priority-high', 'health-check']
+                });
+              }
+            }
+
+  notification:
+    runs-on: ubuntu-latest
+    needs: health-report
+    if: always()
+    
+    steps:
+      - name: Download health reports
+        uses: actions/download-artifact@v4
+        with:
+          name: health-reports-${{ github.run_number }}
+          path: ./reports
+          
+      - name: Send notification summary
+        run: |
+          echo "## 📊 Weekly Health Report Completed"
+          echo "**Date:** $(date)"
+          echo "**Status:** ${{ needs.health-report.result }}"
+          echo ""
+          echo "The weekly health report has been generated and is available in the workflow artifacts."
+          echo ""
+          if [ -f "reports/health_summary_*.md" ]; then
+            echo "### Summary Available:"
+            ls reports/health_summary_*.md
+          fi

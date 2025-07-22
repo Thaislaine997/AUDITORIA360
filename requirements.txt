@@ -5,6 +5,7 @@ google-cloud-documentai
 google-cloud-bigquery
 google-cloud-storage
 google-cloud-aiplatform
+functions-framework
 python-jose[cryptography]
 passlib[bcrypt]
 pandas
@@ -29,4 +30,6 @@ tensorflow
 scipy
 weasyprint
 jinja2
+pytest
 pytest-mock
+pytest-cov
