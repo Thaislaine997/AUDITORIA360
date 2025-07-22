@@ -13,7 +13,7 @@ tenacity
 streamlit-authenticator
 reportlab
 pytest-playwright
-SQLAlchemy
+SQLAlchemy>=1.4
 google-generativeai
 beautifulsoup4
 flask
