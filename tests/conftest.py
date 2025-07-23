@@ -1,3 +1,4 @@
+google_cloud_bigquery.TimePartitioning = MagicMock()
 
 import sys
 import types
@@ -21,57 +22,24 @@ google_cloud_storage = types.ModuleType("google.cloud.storage")
 google_cloud_exceptions = types.ModuleType("google.cloud.exceptions")
 
 # Adiciona mocks dos atributos esperados
-
 google_cloud_bigquery.Client = MagicMock()
 google_cloud_bigquery.SchemaField = MagicMock()
-google_cloud.SchemaField = google_cloud_bigquery.SchemaField
+google_cloud_bigquery.Dataset = MagicMock()
+google_cloud_bigquery.Table = MagicMock()
+google_cloud_bigquery.Row = MagicMock()
+google_cloud_bigquery.TimePartitioning = MagicMock()
 google_cloud.exceptions = google_cloud_exceptions
 google_cloud_bigquery.exceptions = google_cloud_exceptions
-
 sys.modules["google.cloud"] = google_cloud
 sys.modules["google.cloud.bigquery"] = google_cloud_bigquery
 sys.modules["google.cloud.storage"] = google_cloud_storage
 sys.modules["google.cloud.exceptions"] = google_cloud_exceptions
 sys.modules["google.auth"] = MagicMock()
-_panel_specific_mock_open = mock_open()
-
-# Mock google.oauth2
 google_oauth2 = types.ModuleType("google.oauth2")
 google_oauth2_service_account = types.ModuleType("google.oauth2.service_account")
 google_oauth2.service_account = google_oauth2_service_account
 sys.modules["google.oauth2"] = google_oauth2
 sys.modules["google.oauth2.service_account"] = google_oauth2_service_account
-sys.modules["google.auth"] = MagicMock()
-_panel_specific_mock_open = mock_open()
-
-import pytest
-from unittest.mock import MagicMock, mock_open, patch
-import sys
-import os
-import builtins
-import subprocess
-import time
-
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-from e2e_config import e2e_context_instance
-
-# Adiciona o diretório raiz do projeto (onde este conftest.py está) ao sys.path.
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-
-# Mock Google Cloud dependencies globalmente para todos os testes
-import types
-google_cloud = types.ModuleType("google.cloud")
-google_cloud_bigquery = types.ModuleType("google.cloud.bigquery")
-google_cloud_storage = types.ModuleType("google.cloud.storage")
-google_cloud_exceptions = types.ModuleType("google.cloud.exceptions")
-
-# Adiciona mocks dos atributos esperados
-google_cloud_bigquery.Client = MagicMock()
-google_cloud.exceptions = google_cloud_exceptions
-google_cloud_bigquery.exceptions = google_cloud_exceptions
-
-sys.modules["google.cloud"] = google_cloud
-sys.modules["google.cloud.bigquery"] = google_cloud_bigquery
 sys.modules["google.cloud.storage"] = google_cloud_storage
 sys.modules["google.cloud.exceptions"] = google_cloud_exceptions
 sys.modules["google.auth"] = MagicMock()

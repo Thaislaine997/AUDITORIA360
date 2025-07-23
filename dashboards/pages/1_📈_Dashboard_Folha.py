@@ -31,12 +31,12 @@ from typing import Optional, Any, Dict, List
 import re
 
 # 1. Atualizar Imports de Schemas
-from src.data_models.schemas import (
+from src.schemas.predicao_risco_schemas import (
     PredicaoRiscoDashboardResponse,
     DetalhePredicaoRiscoResponse,
     RiscoPrevistoDetalheSchema,
     FatorContribuinteTecnicoSchema,
-    DadosSuporteVisualizacaoSchema # Corrigido o local do import para src.data_models.schemas
+    DadosSuporteVisualizacaoSchema
 )
 
 from src.core.config import settings # 2. Usar settings.API_BASE_URL

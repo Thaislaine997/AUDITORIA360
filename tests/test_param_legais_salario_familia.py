@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from services.api.main import app
-from services.core.parametros_legais_schemas import TabelaSalarioFamilia, TabelaFGTS
+from src.schemas.parametros_legais_schemas import TabelaSalarioFamilia, TabelaFGTS
 from datetime import date, timedelta
 from typing import List, Optional
 
