@@ -14,6 +14,25 @@ CLOUD_SQL_DB_PORT=5432
 SERVICE_ACCOUNT=333253866645-compute@developer.gserviceaccount.com
 ```
 
+## 1.1 Rede VPC, Sub-redes e Firewall
+
+- **Rede VPC:** `datastream-vpc`
+- **Sub-redes:**
+    - `subnet-us-central1` (us-central1) — 10.128.0.0/24
+    - `psc-range` (us-central1) — 10.200.0.0/22
+    - Conector VPC Serverless: `connector-auditoria360` (10.8.0.0/28, f1-micro, us-central1)
+
+- **Regra de firewall:**
+    - Nome: `allow-datastream-postgres`
+    - Prioridade: 1000
+    - Direção: Entrada
+    - Destino: Tag `postgres-source`
+    - Origem: 10.8.0.0/28
+    - Porta: tcp:5432
+    - Aplicação: Ativado
+
+**Observação:** O conector VPC Serverless permite que o Cloud Run acesse o banco PostgreSQL via IP privado, respeitando as regras de firewall da VPC.
+
 ## 2. Usos e Integrações
 
 - **Backend/API:** Armazenamento e consulta de dados, autenticação, auditorias, logs, integrações, relatórios.
