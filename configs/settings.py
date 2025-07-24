@@ -11,10 +11,26 @@ class Settings:
         self.ml = yaml.safe_load((base / 'config_ml.yaml').read_text()) if (base / 'config_ml.yaml').exists() else {}
         # Mescla configs
         self.config = {**self.common, **self.docai, **self.ml}
+        # Carrega variáveis do .env.cloudsql se existir
+        env_path = base.parent / '.env.cloudsql'
+        if env_path.exists():
+            for line in env_path.read_text().splitlines():
+                if line.strip() and not line.strip().startswith('#'):
+                    k, v = line.split('=', 1)
+                    os.environ[k.strip()] = v.strip()
         # Variáveis de ambiente
         self.config['google_application_credentials'] = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', self.config.get('google_application_credentials'))
         self.config['environment'] = os.getenv('ENVIRONMENT', self.config.get('environment'))
         self.config['log_level'] = os.getenv('LOG_LEVEL', self.config.get('log_level', 'INFO'))
+        self.config['database_url'] = os.getenv('DATABASE_URL')
+        self.config['cloud_sql_instance'] = os.getenv('CLOUD_SQL_INSTANCE')
+        self.config['cloud_sql_internal_ip'] = os.getenv('CLOUD_SQL_INTERNAL_IP')
+        self.config['cloud_sql_external_ip'] = os.getenv('CLOUD_SQL_EXTERNAL_IP')
+        self.config['cloud_sql_db_name'] = os.getenv('CLOUD_SQL_DB_NAME')
+        self.config['cloud_sql_db_user'] = os.getenv('CLOUD_SQL_DB_USER')
+        self.config['cloud_sql_db_password'] = os.getenv('CLOUD_SQL_DB_PASSWORD')
+        self.config['cloud_sql_db_port'] = os.getenv('CLOUD_SQL_DB_PORT')
+        self.config['service_account'] = os.getenv('SERVICE_ACCOUNT')
         # Parâmetros específicos
         self.SECRET_KEY_CONTABILIDADE = os.getenv('SECRET_KEY_CONTABILIDADE', 'sua-chave-secreta')
         self.ACCESS_TOKEN_EXPIRE_MINUTES_CONTABILIDADE = int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES_CONTABILIDADE', '60'))
