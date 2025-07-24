@@ -208,6 +208,44 @@ def mostrar_pagina_revisao_clausulas():
                         st.error(f"Erro inesperado ao salvar revisão: {e_put_general}")
                         logger.error(f"Erro inesperado ao salvar revisão cláusula {clausula.get('id_clausula_extraida')}: {e_put_general}", exc_info=True) # Adicionado logger
 
+    # --- Código de exemplo para integração backend via API ---
+    st.title("Revisão de Cláusulas CCT")
+
+    def obter_token():
+        return st.text_input("Token JWT", type="password")
+
+    def get_clausulas(token):
+        url = "http://localhost:8000/api/clausulas"
+        headers = {"Authorization": f"Bearer {token}"}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json(), url, headers
+        except Exception as e:
+            st.error(f"Erro ao buscar cláusulas: {e}")
+            return [], url, headers
+
+    token = obter_token()
+    if token:
+        clausulas, url, headers = get_clausulas(token)
+        filtro = st.text_input("Buscar por cláusula")
+        clausulas_filtradas = [c for c in clausulas if filtro.lower() in c.get("descricao", "").lower()]
+        st.write(clausulas_filtradas)
+        with st.form("Adicionar Cláusula"):
+            descricao = st.text_input("Descrição")
+            tipo = st.text_input("Tipo")
+            submitted = st.form_submit_button("Adicionar")
+            if submitted:
+                payload = {"descricao": descricao, "tipo": tipo}
+                resp = requests.post(url, json=payload, headers=headers)
+                if resp.status_code == 201:
+                    st.success("Cláusula adicionada com sucesso!")
+                else:
+                    st.error(f"Erro ao adicionar cláusula: {resp.text}")
+    else:
+        st.warning("Informe o token JWT para acessar os dados.")
+    # --- Fim do Código de exemplo ---
+
 if __name__ == "__main__":
     # Simulação do st.session_state para fins de teste local
     if 'token' not in st.session_state: # Alterado de api_token para token

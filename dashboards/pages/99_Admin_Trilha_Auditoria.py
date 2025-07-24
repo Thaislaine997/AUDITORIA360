@@ -32,6 +32,10 @@ load_css()  # Carrega os estilos do Design System
 
 from src.frontend.utils.auth import verificar_autenticacao, obter_token
 from src.frontend.components.layout import criar_sidebar_admin
+from src.frontend.utils.admin import verificar_admin
+from src.frontend.utils.config import get_config
+
+config = get_config()
 
 # Configuração da página
 st.set_page_config(
@@ -436,3 +440,52 @@ with tab_seguranca:
 # Rodapé
 st.divider()
 st.caption("Trilha de Auditoria | AUDITORIA360 | Acesso exclusivo Dpeixer Admin")
+
+import streamlit as st
+import requests
+
+st.title("Admin Trilha Auditoria")
+
+def obter_token():
+    return st.text_input("Token JWT", type="password")
+
+def get_trilha(token):
+    url = "http://localhost:8000/api/trilha"
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json(), url, headers
+    except Exception as e:
+        st.error(f"Erro ao buscar trilha de auditoria: {e}")
+        return [], url, headers
+
+token = obter_token()
+if token:
+    trilha, url, headers = get_trilha(token)
+    filtro = st.text_input("Buscar por ação")
+    trilha_filtrada = [t for t in trilha if filtro.lower() in t.get("acao", "").lower()]
+    st.write(trilha_filtrada)
+    with st.form("Adicionar Ação"):
+        acao = st.text_input("Ação")
+        usuario = st.text_input("Usuário")
+        submitted = st.form_submit_button("Adicionar")
+        if submitted:
+            payload = {"acao": acao, "usuario": usuario}
+            resp = requests.post(url, json=payload, headers=headers)
+            if resp.status_code == 201:
+                st.success("Ação adicionada com sucesso!")
+            else:
+                st.error(f"Erro ao adicionar ação: {resp.text}")
+else:
+    st.warning("Informe o token JWT para acessar os dados.")
+
+# Definições necessárias para evitar warnings
+
+def verificar_admin(token):
+    # Exemplo: considera admin se token contém 'admin'
+    return token and 'admin' in token
+
+config = {
+    "api_url": "http://localhost:8000/api/trilha"
+}

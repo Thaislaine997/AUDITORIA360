@@ -275,6 +275,44 @@ def mostrar_pagina_sugestoes_cct(): # Renomeado para seguir padrão
                              logger.error(f"Erro inesperado ao processar rejeição da sugestão {sugestao_id}: {e_gen_rej}", exc_info=True)
                              st.error(f"Erro inesperado ao processar rejeição: {e_gen_rej}")
 
+    # --- Integração Exemplo Backend API ---
+    st.title("Sugestões CCT")
+
+    def obter_token():
+        return st.text_input("Token JWT", type="password")
+
+    def get_sugestoes(token):
+        url = "http://localhost:8000/api/sugestoes"
+        headers = {"Authorization": f"Bearer {token}"}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json(), url, headers
+        except Exception as e:
+            st.error(f"Erro ao buscar sugestões: {e}")
+            return [], url, headers
+
+    token = obter_token()
+    if token:
+        sugestoes, url, headers = get_sugestoes(token)
+        filtro = st.text_input("Buscar por sugestão")
+        sugestoes_filtradas = [s for s in sugestoes if filtro.lower() in s.get("descricao", "").lower()]
+        st.write(sugestoes_filtradas)
+        with st.form("Adicionar Sugestão"):
+            descricao = st.text_input("Descrição")
+            tipo = st.text_input("Tipo")
+            submitted = st.form_submit_button("Adicionar")
+            if submitted:
+                payload = {"descricao": descricao, "tipo": tipo}
+                resp = requests.post(url, json=payload, headers=headers)
+                if resp.status_code == 201:
+                    st.success("Sugestão adicionada com sucesso!")
+                else:
+                    st.error(f"Erro ao adicionar sugestão: {resp.text}")
+    else:
+        st.warning("Informe o token JWT para acessar os dados.")
+    # --- Fim Integração Exemplo Backend API ---
+
 if __name__ == "__main__":
     # Simula o estado da sessão para teste local
     if 'token' not in st.session_state: # Usar 'token' para consistência com utils

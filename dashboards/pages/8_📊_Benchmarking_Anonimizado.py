@@ -14,6 +14,7 @@ import plotly.graph_objects as go
 from datetime import datetime, date, timedelta
 import json
 from typing import Dict, List, Any, Optional, Union
+import requests
 
 import sys
 import os
@@ -638,3 +639,39 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+st.title("Benchmarking Anonimizado")
+
+def obter_token():
+    return st.text_input("Token JWT", type="password")
+
+def get_benchmarking(token):
+    url = "http://localhost:8000/api/benchmarking"
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json(), url, headers
+    except Exception as e:
+        st.error(f"Erro ao buscar benchmarking: {e}")
+        return [], url, headers
+
+token = obter_token()
+if token:
+    benchmarking, url, headers = get_benchmarking(token)
+    filtro = st.text_input("Buscar por empresa")
+    benchmarking_filtrado = [b for b in benchmarking if filtro.lower() in b.get("empresa", "").lower()]
+    st.write(benchmarking_filtrado)
+    with st.form("Adicionar Benchmark"):
+        empresa = st.text_input("Empresa")
+        valor = st.text_input("Valor")
+        submitted = st.form_submit_button("Adicionar")
+        if submitted:
+            payload = {"empresa": empresa, "valor": valor}
+            resp = requests.post(url, json=payload, headers=headers)
+            if resp.status_code == 201:
+                st.success("Benchmark adicionado com sucesso!")
+            else:
+                st.error(f"Erro ao adicionar benchmark: {resp.text}")
+else:
+    st.warning("Informe o token JWT para acessar os dados.")

@@ -209,5 +209,39 @@ def mostrar_pagina_gerenciamento_usuarios():
     st.markdown("---")
     st.caption(f"AUDITORIA360 - Acessado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
 
+    def obter_token():
+        return st.text_input("Token JWT", type="password")
+
+    def get_usuarios(token):
+        url = "http://localhost:8000/api/usuarios"
+        headers = {"Authorization": f"Bearer {token}"}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json(), url, headers
+        except Exception as e:
+            st.error(f"Erro ao buscar usuários: {e}")
+            return [], url, headers
+
+    token = obter_token()
+    if token:
+        usuarios, url, headers = get_usuarios(token)
+        filtro = st.text_input("Buscar por nome")
+        usuarios_filtrados = [u for u in usuarios if filtro.lower() in u.get("nome", "").lower()]
+        st.write(usuarios_filtrados)
+        with st.form("Adicionar Usuário"):
+            nome = st.text_input("Nome")
+            email = st.text_input("Email")
+            submitted = st.form_submit_button("Adicionar")
+            if submitted:
+                payload = {"nome": nome, "email": email}
+                resp = requests.post(url, json=payload, headers=headers)
+                if resp.status_code == 201:
+                    st.success("Usuário adicionado com sucesso!")
+                else:
+                    st.error(f"Erro ao adicionar usuário: {resp.text}")
+    else:
+        st.warning("Informe o token JWT para acessar os dados.")
+
 if __name__ == "__main__":
     mostrar_pagina_gerenciamento_usuarios()

@@ -217,6 +217,43 @@ def mostrar_pagina_admin_parametros_legais():
                     st.error(f"Erro inesperado ao salvar parâmetro: {e}")
                     logger.error(f"Erro inesperado ao salvar parâmetro {aba_selecionada}: {e}", exc_info=True) # Logger
 
+    # Novo código para integração backend via API
+    st.title("Admin Parâmetros Legais")
+
+    def obter_token():
+        return st.text_input("Token JWT", type="password")
+
+    def get_parametros_legais(token):
+        url = "http://localhost:8000/api/parametros_legais"
+        headers = {"Authorization": f"Bearer {token}"}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json(), url, headers
+        except Exception as e:
+            st.error(f"Erro ao buscar parâmetros legais: {e}")
+            return [], url, headers
+
+    token = obter_token()
+    if token:
+        parametros, url, headers = get_parametros_legais(token)
+        filtro = st.text_input("Buscar por parâmetro")
+        parametros_filtrados = [p for p in parametros if filtro.lower() in p.get("nome", "").lower()]
+        st.write(parametros_filtrados)
+        with st.form("Adicionar Parâmetro"):
+            nome = st.text_input("Nome")
+            valor = st.text_input("Valor")
+            submitted = st.form_submit_button("Adicionar")
+            if submitted:
+                payload = {"nome": nome, "valor": valor}
+                resp = requests.post(url, json=payload, headers=headers)
+                if resp.status_code == 201:
+                    st.success("Parâmetro adicionado com sucesso!")
+                else:
+                    st.error(f"Erro ao adicionar parâmetro: {resp.text}")
+    else:
+        st.warning("Informe o token JWT para acessar os dados.")
+
 if __name__ == "__main__":
     # Simulação do st.session_state para fins de teste local
     if 'token' not in st.session_state: # Alterado de api_token para token

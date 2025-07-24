@@ -345,3 +345,42 @@ if __name__ == "__main__":
         st.session_state.user_info = {"name": "Usuário Teste Checklist", "username": "testuser_checklist"}
 
     mostrar_checklist_page()
+
+import streamlit as st
+import requests
+
+st.title("Checklist")
+
+def obter_token():
+    return st.text_input("Token JWT", type="password")
+
+def get_checklist(token):
+    url = "http://localhost:8000/api/checklist"
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json(), url, headers
+    except Exception as e:
+        st.error(f"Erro ao buscar checklist: {e}")
+        return [], url, headers
+
+token = obter_token()
+if token:
+    checklist, url, headers = get_checklist(token)
+    filtro = st.text_input("Buscar por item")
+    checklist_filtrado = [c for c in checklist if filtro.lower() in c.get("item", "").lower()]
+    st.write(checklist_filtrado)
+    with st.form("Adicionar Item"):
+        item = st.text_input("Item")
+        status = st.text_input("Status")
+        submitted = st.form_submit_button("Adicionar")
+        if submitted:
+            payload = {"item": item, "status": status}
+            resp = requests.post(url, json=payload, headers=headers)
+            if resp.status_code == 201:
+                st.success("Item adicionado com sucesso!")
+            else:
+                st.error(f"Erro ao adicionar item: {resp.text}")
+else:
+    st.warning("Informe o token JWT para acessar os dados.")

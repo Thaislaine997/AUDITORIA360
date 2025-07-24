@@ -600,18 +600,25 @@ def mostrar_dashboard_saude_folha():
         elif not label_selecionada and folhas_disponiveis:
              st.info("Selecione um período da folha para começar.")
 
+    # --- EXEMPLO DE INTEGRAÇÃO BACKEND VIA API ---
+    st.markdown("---")
+    st.title("Exemplo de Integração Backend via API")
 
-if __name__ == "__main__":
-    # Esta verificação de login deve acontecer idealmente no painel.py ou em um wrapper
-    # Aqui, vamos simular que o token e client_id já podem estar na sessão
-    # Se não estiverem, a página mostrará a mensagem para retornar ao login.
-    
-    # Simulação de estado de login para teste local direto desta página (REMOVER EM PRODUÇÃO OU QUANDO INTEGRADO)
-    # if 'token' not in st.session_state:
-    #     st.session_state.token = "fake_token_for_direct_run" # Simule um token
-    # if 'id_cliente' not in st.session_state:
-    #    st.session_state.id_cliente = "client_test_001" # Simule um client_id
-    # if 'username' not in st.session_state:
-    #    st.session_state.username = "testuser"
+    def get_folha_data():
+        url = "http://localhost:8000/api/folha"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            st.error(f"Erro ao buscar dados da folha: {e}")
+            return {}
 
-    mostrar_dashboard_saude_folha()
+    if st.button("Carregar Dados do Exemplo"):
+        with st.spinner("Buscando dados do exemplo..."):
+            dados_exemplo = get_folha_data()
+            if dados_exemplo:
+                st.success("Dados do exemplo carregados com sucesso!")
+                st.json(dados_exemplo)  # Exibe os dados em formato JSON
+            else:
+                st.warning("Nenhum dado encontrado no exemplo.")

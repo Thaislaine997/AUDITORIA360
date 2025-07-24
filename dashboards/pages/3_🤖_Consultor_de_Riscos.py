@@ -161,6 +161,43 @@ def consultor_riscos_page():
             
         st.session_state.risks_messages.append({"role": "assistant", "content": full_response})
 
+    # --- Exemplo completo: endpoint, autenticação JWT, filtro e formulário para Consultor de Riscos ---
+    st.title("Consultor de Riscos")
+
+    def obter_token():
+        return st.text_input("Token JWT", type="password")
+
+    def get_riscos(token):
+        url = "http://localhost:8000/api/riscos"
+        headers = {"Authorization": f"Bearer {token}"}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json(), url, headers
+        except Exception as e:
+            st.error(f"Erro ao buscar riscos: {e}")
+            return [], url, headers
+
+    token = obter_token()
+    if token:
+        riscos, url, headers = get_riscos(token)
+        filtro = st.text_input("Buscar por risco")
+        riscos_filtrados = [r for r in riscos if filtro.lower() in r.get("descricao", "").lower()]
+        st.write(riscos_filtrados)
+        with st.form("Adicionar Risco"):
+            descricao = st.text_input("Descrição")
+            nivel = st.text_input("Nível")
+            submitted = st.form_submit_button("Adicionar")
+            if submitted:
+                payload = {"descricao": descricao, "nivel": nivel}
+                resp = requests.post(url, json=payload, headers=headers)
+                if resp.status_code == 201:
+                    st.success("Risco adicionado com sucesso!")
+                else:
+                    st.error(f"Erro ao adicionar risco: {resp.text}")
+    else:
+        st.warning("Informe o token JWT para acessar os dados.")
+
 if __name__ == "__main__":
     if 'token' not in st.session_state:
         st.session_state.token = "token_simulado_consultor"

@@ -505,6 +505,14 @@ def configurar_dashboard(auth_data):
                         st.error(f"Erro ao salvar o layout: {str(e)}")
 
 
+def exibir_editor_dashboard(dados=None):
+    import streamlit as st
+    st.subheader("Editor de Dashboard")
+    st.write("Edite seu dashboard aqui.")
+    if dados:
+        st.json(dados)
+
+
 def renderizar_editor_layout():
     """
     Renderiza o layout atual no editor com controles interativos.

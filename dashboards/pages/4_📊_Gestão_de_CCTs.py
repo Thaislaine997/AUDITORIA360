@@ -1,10 +1,11 @@
 # filepath: c:\\Users\\55479\\Documents\\AUDITORIA360\\src\\frontend\\pages\\4_📊_Gestão_de_CCTs.py
 import streamlit as st
+import requests
+
 st.set_page_config(layout="wide", page_title="Gestão de CCTs - AUDITORIA360") 
 
 import sys 
 import os 
-import requests # Adicionado import
 import json # Adicionado import
 import pandas as pd # Adicionado import
 from datetime import date
@@ -349,6 +350,19 @@ def mostrar_pagina_gestao_cct():
                             logger.error(f"Erro inesperado ao atualizar alerta CCT: {e_gen_put}", exc_info=True)
                             st.error(f"Erro inesperado ao processar a atualização do alerta: {e_gen_put}")
                             
+    def get_ccts():
+        url = "http://localhost:8000/api/ccts"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            st.error(f"Erro ao buscar CCTs: {e}")
+            return []
+
+    ccts = get_ccts()
+    st.write(ccts)
+    
 if __name__ == "__main__":
     # Ensure session_state keys used by the page are present for standalone testing
     if "token" not in st.session_state: 
