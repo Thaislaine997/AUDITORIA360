@@ -1,3 +1,18 @@
+# Modelos para integração consultor de riscos
+from typing import Optional, List
+from pydantic import BaseModel
+
+class ConsultorRiscosRequest(BaseModel):
+    empresa_id: str
+    periodo: str
+    parametros_legais: Optional[dict] = None
+    folha_processada: Optional[dict] = None
+
+class ConsultorRiscosResponse(BaseModel):
+    risco_id: str
+    descricao: str
+    nivel: str
+    recomendacoes: Optional[List[str]] = None
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict, Any
 from datetime import datetime, date

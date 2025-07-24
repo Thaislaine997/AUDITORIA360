@@ -12,7 +12,10 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
-    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+    css_path = os.path.join(_project_root, "assets", "style.css")
+    if not os.path.exists(css_path):
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
+    with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 load_css()  # Carrega os estilos do Design System
@@ -23,16 +26,16 @@ import json
 import pandas as pd
 from datetime import date 
 
-from src.core.config import settings 
+from configs.settings import settings
 # Ajustar import para usar os utilitários globais de forma consistente
-from src.frontend.utils import (
+from dashboards.utils import (
     display_user_info_sidebar as global_display_user_info_sidebar, 
     handle_api_error, 
     get_api_token as get_global_api_token, 
     get_current_client_id as get_global_current_client_id,
     get_auth_headers as get_global_auth_headers # Importar get_auth_headers global
 )
-from src.core.log_utils import logger # Adicionar import do logger
+from services.core.log_utils import logger # Corrigido caminho do logger
 
 # Funções wrapper locais para consistência, se necessário, ou usar globais diretamente
 def get_api_token() -> str | None:

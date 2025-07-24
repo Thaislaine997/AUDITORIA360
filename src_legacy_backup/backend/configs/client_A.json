@@ -1,9 +1,0 @@
-{
-  "gcp_project_id": "outro-gcp-project-id",
-  "control_bq_dataset_id": "client_A_controle_folhas",
-  "processed_bq_dataset_id": "client_A_folhas_processadas",
-  "raw_bq_dataset_id": "client_A_folhas_brutas",
-  "log_bq_dataset_id": "client_A_logs",
-  "log_bq_table_id": "client_A_registros_log",
-  "RECAPTCHA_SECRET_KEY": "chave-secreta-recaptcha-client-A"
-}

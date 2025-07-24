@@ -7,8 +7,8 @@ AUDITORIA360 – Módulo 3
 - (Opcional) Valida persistência no BigQuery
 """
 import pytest
-from src.backend.services.predicao_risco_service import *
-import requests
+# Removido import inexistente
+from services.api.main import app
 import os
 import asyncio
 

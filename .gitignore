@@ -33,3 +33,11 @@ docs/Relatorio_Tecnico_AuditoriaRH360.pdf
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Proteção reforçada para configs e backups
+configs/*.json
+configs/*.yaml
+configs/*.key
+configs/*.enc
+!configs/README.md
+backups/*.zip

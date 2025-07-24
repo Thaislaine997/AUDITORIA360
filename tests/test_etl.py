@@ -1,8 +1,7 @@
 import pandas as pd
 import pytest
-from src.backend.etl.extracao_bigquery import extrair_dados_treinamento
-from src.backend.etl.transformacao_features import transformar_features
-from src.backend.etl.anonimiza import anonimiza_dataframe
+from services.ingestion.bq_loader import load_data_to_bq
+# Adapte para funções equivalentes de transformação e anonimização se existirem
 
 def test_extracao_dados():
     # Teste de extração de dados do BigQuery (mock/fake)

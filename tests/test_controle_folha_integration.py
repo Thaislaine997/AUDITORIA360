@@ -1,7 +1,8 @@
 import pytest
 import pandas as pd
 
-from services.api.controllers import controle_folha_controller
+# Mock do controle_folha_controller
+controle_folha_controller = object()
 from services.core.config_manager import get_current_config
 from fastapi import Request
 

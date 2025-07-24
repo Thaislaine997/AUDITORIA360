@@ -8,7 +8,7 @@ def run_full_pipeline(event, context):
     """
     # 1. Ingestão
     ingestion_main(event, context)
-    # 2. Pipeline ML
+    # 2. Pipeline ML via Prefect
     run_pipeline()
     # 3. Explainability (mock)
     explain_model(model=None, data=None)

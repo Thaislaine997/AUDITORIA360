@@ -157,3 +157,13 @@ def api_post(endpoint: str, token: str, payload: dict) -> dict | None:
     except requests.exceptions.RequestException as e:
         st.error(f"Erro ao acessar {endpoint}: {e}")
         return None
+
+"""
+Cliente para consumir APIs backend (ex: portal_demandas) no dashboard Streamlit.
+"""
+
+def get_tickets():
+    resp = requests.get(f"{API_URL}/tickets/")
+    if resp.status_code == 200:
+        return resp.json()
+    return []

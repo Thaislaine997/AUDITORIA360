@@ -2,7 +2,7 @@ import streamlit as st
 import sys
 import os
 from typing import Optional
-from src.core.log_utils import logger # Adicionado logger para registro de ações
+from services.core.log_utils import logger # Corrigido caminho do logger
 
 # --- Path Setup ---
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))

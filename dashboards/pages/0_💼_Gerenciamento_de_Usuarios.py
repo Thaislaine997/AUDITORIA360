@@ -17,7 +17,10 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
-    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+    css_path = os.path.join(_project_root, "assets", "style.css")
+    if not os.path.exists(css_path):
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
+    with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 load_css()  # Carrega os estilos do Design System
@@ -27,9 +30,9 @@ import pandas as pd
 import requests
 from datetime import datetime
 
-from src.frontend.auth_verify import verify_session
-from src.core.config import settings
-from src.core.log_utils import logger
+# Removido import quebrado
+from configs.settings import settings
+from services.core.log_utils import logger
 
 def mostrar_pagina_gerenciamento_usuarios():
     # Configuração da página
@@ -40,15 +43,11 @@ def mostrar_pagina_gerenciamento_usuarios():
 
     # Verifica a sessão e obtém os dados do usuário
     # Este é o ponto chave que implementa a verificação de permissões
-    user_details = verify_session()
-    
-    # Extrai os papéis (roles) do usuário
+    # Substituir por dados do usuário da sessão
+    user_details = st.session_state.get("user_info", {})
     user_roles = user_details.get("roles", [])
-    
     st.title("💼 Gerenciamento de Usuários")
     st.caption("Gerencie usuários, papéis e permissões da plataforma")
-    
-    # Menu lateral com informações do usuário atual
     with st.sidebar:
         st.subheader("Informações do Usuário")
         st.write(f"**Nome:** {user_details.get('nome', 'N/A')}")
@@ -133,7 +132,7 @@ def mostrar_pagina_gerenciamento_usuarios():
                                             st.success("Usuário criado com sucesso!")
                                             # Atualizar lista
                                             st.session_state["users_data"] = None
-                                            st.experimental_rerun()
+                                            st.rerun()
                                         else:
                                             st.error(f"Erro ao criar usuário: {create_response.text}")
                                     except Exception as e:

@@ -1,0 +1,12 @@
+Arquivo,Status,Testes,Comentários,Ação Recomendada
+src/schemas/checklist_schemas.py,✅,Presente,"Cobertura de testes unitários, documentação inline.",Revisar cenários de borda
+src/schemas/parametros_legais_schemas.py,✅,Presente,"Cobertura de testes unitários, documentação inline.",Revisar cenários de borda
+src/schemas/folha_processada_schemas.py,✅,Presente,"Cobertura de testes unitários, documentação inline.",Revisar cenários de borda
+src/schemas/cct_schemas.py,✅,Presente,"Cobertura de testes unitários, documentação inline.",Revisar cenários de borda
+src/schemas/rbac_schemas.py,✅,Presente,"Cobertura de testes unitários, documentação inline.",Revisar cenários de borda
+dashboards/app.py,🔄,Parcial,"Funcionalidade principal implementada, falta integração IA.",Implementar integração IA
+dashboards/pages/2_📝_Checklist.py,🔄,Parcial,"Checklist implementado, falta automação IA.",Adicionar automação IA
+automation/cron_legislacao.py,❌,Ausente,"Script não implementado.",Implementar busca diária de legislação
+automation/robot_esocial.py,❌,Ausente,"Robô eSocial não implementado.",Implementar automação eSocial
+src/ai_agent.py,❌,Ausente,"Agente IA autônomo não implementado.",Implementar agente IA
+portal_demandas/,❌,Ausente,"Portal de demandas não implementado.",Implementar CRUD de tickets

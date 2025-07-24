@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.api.main import app
+from services.api.main import app
 from src.schemas.parametros_legais_schemas import TabelaINSS, FaixaINSS
 from datetime import date, timedelta
 from typing import List, Optional

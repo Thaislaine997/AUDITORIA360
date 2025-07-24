@@ -1,33 +1,33 @@
-# Pipeline definition stub
 
-from kfp import dsl
+from prefect import task
 
-@dsl.pipeline(
-    name='Auditoria Folha ML Pipeline',
-    description='Pipeline de treinamento, bias e explainability.'
-)
-def auditoria_folha_pipeline(
-    training_data: str = '',
-    contamination: float = 0.05,
-    bias_threshold: float = 0.1
-):
+@task
+def train_model(training_data: str = '', contamination: float = 0.05):
+    print(f"Treinando modelo... Dados: {training_data}, Contamination: {contamination}")
+    # Simulação de treino
+    return "modelo_treinado"
+
+@task
+def detect_bias(model, bias_threshold: float = 0.1):
+    print(f"Detectando viés... Modelo: {model}, Threshold: {bias_threshold}")
+    # Simulação de detecção de viés
+    return "bias_detectado"
+
+@task
+def explainability(model, bias):
+    print(f"Gerando explicações... Modelo: {model}, Bias: {bias}")
+    # Simulação de explicabilidade
+    return "explicacoes_geradas"
+
+def auditoria_folha_pipeline(training_data: str = '', contamination: float = 0.05, bias_threshold: float = 0.1):
     """
-    Define pipeline ML: treino, bias, explainability.
+    Pipeline ML: treino, bias, explainability usando Prefect.
     """
-    train = dsl.ContainerOp(
-        name='Train Model',
-        image='python:3.9',
-        command=['python', '-c', 'print("Treinando modelo...")']
-    )
-    bias = dsl.ContainerOp(
-        name='Bias Detection',
-        image='python:3.9',
-        command=['python', '-c', 'print("Detectando viés...")']
-    )
-    explain = dsl.ContainerOp(
-        name='Explainability',
-        image='python:3.9',
-        command=['python', '-c', 'print("Gerando explicações...")']
-    )
-    bias.after(train)
-    explain.after(bias)
+    model = train_model(training_data, contamination)
+    bias = detect_bias(model, bias_threshold)
+    explicacoes = explainability(model, bias)
+    return {
+        "model": model,
+        "bias": bias,
+        "explicacoes": explicacoes
+    }

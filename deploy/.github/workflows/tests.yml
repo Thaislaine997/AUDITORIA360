@@ -1,0 +1,64 @@
+name: CI - Testes & Correção Contínua
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 4 * * 1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: auditoria
+          POSTGRES_PASSWORD: auditoria
+          POSTGRES_DB: auditoria360_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U auditoria" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt || true
+      - name: Lint
+        run: |
+          flake8 src dashboards tests
+          black --check src dashboards tests
+      - name: Testes unitários
+        run: pytest --maxfail=1 --disable-warnings -q --cov=src --cov=dashboards --cov-report=xml
+      - name: Testes de integração
+        run: pytest -m integration --disable-warnings -q
+      - name: Cobertura
+        run: |
+          coverage xml
+          coverage html
+      - name: Quality Gate
+        run: |
+          coverage report --fail-under=85
+      - name: Correção automática
+        run: |
+          black .
+          isort .
+      - name: Badge de cobertura
+        uses: tj-actions/coverage-badge-py@v2
+        with:
+          coverage-file: coverage.xml
+      - name: Relatório no PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Testes & Cobertura
+          message: |
+            ${{ steps.coverage.outputs.coverage }}

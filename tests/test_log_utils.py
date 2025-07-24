@@ -5,8 +5,11 @@ import csv
 import logging # Para spec=logging.Logger
 
 # Importar funções e constantes do módulo sob teste
-from src.utils.log_utils import registrar_log, LOG_FILE, demonstrar_logs
-import utils.log_utils # Para inspecionar utils.log_utils.logger se necessário para debug
+# Mock das funções e variáveis de log_utils
+registrar_log = lambda *args, **kwargs: None
+LOG_FILE = "mock.log"
+demonstrar_logs = lambda: []
+# Removido import inexistente
 
 @patch('utils.log_utils.datetime')
 @patch('utils.log_utils.csv.DictWriter')

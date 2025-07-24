@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.api.main import app
+from services.api.main import app
 
 client = TestClient(app)
 
@@ -8,7 +8,7 @@ def test_processar_sugestao_rejeitar(monkeypatch):
     # Mock do controller para simular resposta
     async def mock_processar_sugestao_usuario(id_sugestao_impacto, payload):
         return {"message": "Sugestão rejeitada com sucesso."}
-    import src.controllers.cct_sugestoes_controller as controller
+    from src_legacy_backup.backend.controllers import cct_sugestoes_controller as controller
     monkeypatch.setattr(controller, "processar_sugestao_usuario", mock_processar_sugestao_usuario)
 
     payload = {

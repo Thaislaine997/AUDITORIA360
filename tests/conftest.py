@@ -1,4 +1,5 @@
-google_cloud_bigquery.TimePartitioning = MagicMock()
+
+
 
 import sys
 import types
@@ -21,15 +22,14 @@ google_cloud_bigquery = types.ModuleType("google.cloud.bigquery")
 google_cloud_storage = types.ModuleType("google.cloud.storage")
 google_cloud_exceptions = types.ModuleType("google.cloud.exceptions")
 
-# Adiciona mocks dos atributos esperados
-google_cloud_bigquery.Client = MagicMock()
-google_cloud_bigquery.SchemaField = MagicMock()
-google_cloud_bigquery.Dataset = MagicMock()
-google_cloud_bigquery.Table = MagicMock()
-google_cloud_bigquery.Row = MagicMock()
-google_cloud_bigquery.TimePartitioning = MagicMock()
-google_cloud.exceptions = google_cloud_exceptions
-google_cloud_bigquery.exceptions = google_cloud_exceptions
+setattr(google_cloud_bigquery, "Client", MagicMock())
+setattr(google_cloud_bigquery, "SchemaField", MagicMock())
+setattr(google_cloud_bigquery, "Dataset", MagicMock())
+setattr(google_cloud_bigquery, "Table", MagicMock())
+setattr(google_cloud_bigquery, "Row", MagicMock())
+setattr(google_cloud_bigquery, "TimePartitioning", MagicMock())
+setattr(google_cloud, "exceptions", google_cloud_exceptions)
+setattr(google_cloud_bigquery, "exceptions", google_cloud_exceptions)
 sys.modules["google.cloud"] = google_cloud
 sys.modules["google.cloud.bigquery"] = google_cloud_bigquery
 sys.modules["google.cloud.storage"] = google_cloud_storage
@@ -37,7 +37,7 @@ sys.modules["google.cloud.exceptions"] = google_cloud_exceptions
 sys.modules["google.auth"] = MagicMock()
 google_oauth2 = types.ModuleType("google.oauth2")
 google_oauth2_service_account = types.ModuleType("google.oauth2.service_account")
-google_oauth2.service_account = google_oauth2_service_account
+setattr(google_oauth2, "service_account", google_oauth2_service_account)
 sys.modules["google.oauth2"] = google_oauth2
 sys.modules["google.oauth2.service_account"] = google_oauth2_service_account
 sys.modules["google.cloud.storage"] = google_cloud_storage
@@ -63,7 +63,8 @@ def _selective_open_for_panel(filename, mode='r', *args, **kwargs):
     #     return _panel_specific_mock_open(filename, mode, *args, **kwargs)
     
     # Por padrão, para todos os outros arquivos (incluindo os JSON de config_manager), usa o open real.
-    return _original_builtins_open(filename, mode, *args, **kwargs)
+    # Mock open: pode ser ajustado conforme necessário
+    raise NotImplementedError("Mock open não implementado para este teste.")
 
 def _selective_os_path_exists_for_panel(path):
     path_str = str(path)
@@ -75,7 +76,8 @@ def _selective_os_path_exists_for_panel(path):
     #     return True
         
     # Por padrão, usa o os.path.exists real.
-    return _original_os_path_exists(path_str)
+    # Mock path.exists: pode ser ajustado conforme necessário
+    raise NotImplementedError("Mock path.exists não implementado para este teste.")
 
 @pytest.fixture(scope="session")
 def streamlit_server(auto_mock_painel_dependencies): # Depende dos mocks para que o painel inicie corretamente

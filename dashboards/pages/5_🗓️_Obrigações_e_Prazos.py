@@ -20,6 +20,8 @@ def load_css():
     _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     css_path = os.path.join(_project_root, "assets", "style.css")
     
+    if not os.path.exists(css_path):
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
     with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
@@ -179,30 +181,26 @@ with st.expander("Criar nova obrigação"):
         
         descricao = st.text_input("Descrição", max_chars=200)
         col1, col2 = st.columns(2)
-        
         with col1:
             tipo = st.selectbox(
                 "Tipo", 
                 ["FISCAL", "CONTABIL", "FOLHA", "SOCIETARIO", "LEGAL", "OUTRO"]
             )
             data_venc = st.date_input("Data de vencimento", value=hoje + timedelta(days=30))
-        
         with col2:
             categoria = st.selectbox(
                 "Categoria", 
                 ["TRIBUTOS", "OBRIGACOES_ACESSORIAS", "FOLHA_PGTO", "DOCUMENTACAO", "CONFORMIDADE", "CONTABEIS", "OUTRO"]
             )
             severidade = st.selectbox("Severidade", ["BAIXA", "MEDIA", "ALTA"])
-        
         observacoes = st.text_area("Observações", max_chars=500)
-        
         submitted = st.form_submit_button("Criar obrigação")
-        
         if submitted:
             if not descricao:
                 st.error("A descrição é obrigatória.")
+            elif not tipo or not data_venc or not categoria or not severidade:
+                st.error("Preencha todos os campos obrigatórios.")
             else:
-                # Preparar dados para API
                 dados = {
                     "id_cliente": id_cliente,
                     "tipo_obrigacao": tipo,
@@ -213,8 +211,6 @@ with st.expander("Criar nova obrigação"):
                     "severidade": severidade,
                     "observacoes": observacoes
                 }
-                
-                # Enviar para API
                 try:
                     headers = {"Authorization": f"Bearer {token}"}
                     response = requests.post(
@@ -222,7 +218,6 @@ with st.expander("Criar nova obrigação"):
                         headers=headers,
                         json=dados
                     )
-                    
                     if response.status_code == 200:
                         st.success("Obrigação criada com sucesso!")
                         st.rerun()

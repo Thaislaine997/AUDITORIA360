@@ -22,14 +22,15 @@ def load_css():
     _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     css_path = os.path.join(_project_root, "assets", "style.css")
     
+    if not os.path.exists(css_path):
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
     with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 load_css()  # Carrega os estilos do Design System
 # --- Fim do Carregamento do CSS ---
 
-from src.frontend.utils.auth import verificar_autenticacao, obter_token, verificar_admin
-from src.frontend.utils.config import obter_config
+from src.frontend.utils.auth import verificar_autenticacao, obter_token
 from src.frontend.components.layout import criar_sidebar_admin
 
 # Configuração da página
@@ -51,7 +52,6 @@ if not verificar_admin(usuario):
     st.stop()
 
 # Configurações do sistema
-config = obter_config()
 API_BASE = config.get("API_BASE_URL", "http://localhost:8000")
 
 # Sidebar de navegação admin

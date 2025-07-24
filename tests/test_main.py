@@ -2,12 +2,13 @@ import pytest
 from unittest.mock import patch, MagicMock
 import json
 
-# Importar a instância 'app' do FastAPI de src.main
-from src.api.main import app # Sua instância FastAPI
+# Importar a instância 'app' do FastAPI do local correto
+from services.api.main import app # Sua instância FastAPI
 
 from fastapi.testclient import TestClient
-from src.utils.config_manager import get_current_config # A dependência original
-from src.utils.bq_loader import get_bigquery_client # A dependência original
+# Ajustar os imports das dependências conforme necessário
+from services.ingestion.config_loader import load_config # Função correta para carregar configuração
+from services.ingestion.bq_loader import get_bigquery_client # Exemplo de dependência
 from google.cloud import bigquery # Para mock do tipo de retorno
 from typing import Dict, Any, Generator
 
@@ -51,7 +52,7 @@ def mock_get_bigquery_client() -> MockBigQueryClient:
     return MockBigQueryClient(project="test-project-id-from-mock-bq")
 
 # --- Aplicar os Overrides na sua instância 'app' do FastAPI ---
-app.dependency_overrides[get_current_config] = mock_get_current_config
+app.dependency_overrides[load_config] = mock_get_current_config
 app.dependency_overrides[get_bigquery_client] = mock_get_bigquery_client
 
 # --- Fixture do Pytest para o TestClient ---

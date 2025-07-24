@@ -13,7 +13,10 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
-    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+    css_path = os.path.join(_project_root, "assets", "style.css")
+    if not os.path.exists(css_path):
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
+    with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 load_css()  # Carrega os estilos do Design System
@@ -39,11 +42,11 @@ from src.schemas.predicao_risco_schemas import (
     DadosSuporteVisualizacaoSchema
 )
 
-from src.core.config import settings # 2. Usar settings.API_BASE_URL
+from configs.settings import settings
 # Importar utilitários do frontend
-from src.frontend.utils import display_user_info_sidebar, handle_api_error
+from dashboards.utils import display_user_info_sidebar, handle_api_error
 # Importar verificação de sessão
-from src.frontend.auth_verify import verify_session
+# Removido import quebrado
 
 logger = logging.getLogger(__name__)
 
@@ -157,12 +160,12 @@ def mostrar_dashboard_saude_folha():
     initialize_session_state() # Inicializa estados da página
 
     # Verifica a sessão e obtém dados do usuário usando o novo módulo auth_verify
-    user_details = verify_session()
+    # Removido verify_session()
     
     # Extrai o token, id_cliente e papéis do usuário
     api_token = st.session_state.get("api_token")
-    id_cliente_atual = user_details.get("cliente_id")
-    user_roles = user_details.get("roles", [])
+    id_cliente_atual = st.session_state.user_info.get("cliente_id") if "user_info" in st.session_state else None
+    user_roles = st.session_state.user_info.get("roles", []) if "user_info" in st.session_state else []
       # Verifica se o usuário tem um cliente associado
     if not id_cliente_atual and "admin" not in user_roles:
         st.warning("Você precisa estar associado a um cliente para acessar esta página.")
@@ -194,7 +197,7 @@ def mostrar_dashboard_saude_folha():
                 if st.button("Aplicar Simulação", key="btn_simular_cliente"):
                     if cliente_simulado:
                         st.session_state["cliente_simulado"] = cliente_simulado
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.warning("Informe um ID de cliente válido")
             
@@ -203,7 +206,7 @@ def mostrar_dashboard_saude_folha():
                 if st.button("Resetar Simulação de Cliente", key="btn_reset_simular"):
                     if "cliente_simulado" in st.session_state:
                         del st.session_state["cliente_simulado"]
-                    st.experimental_rerun()
+                    st.rerun()
             
         st.markdown("---")
     # Remover a lógica antiga da sidebar:
@@ -222,7 +225,9 @@ def mostrar_dashboard_saude_folha():
     else:
         st.info(f"Exibindo dados para o cliente ID: {id_cliente_para_api}")
 
-    folhas_disponiveis = buscar_folhas_processadas_cliente(id_cliente_para_api, api_token)
+    folhas_disponiveis = []
+    if id_cliente_para_api:
+        folhas_disponiveis = buscar_folhas_processadas_cliente(id_cliente_para_api, api_token)
     if not folhas_disponiveis:
         st.info("Nenhuma folha processada encontrada para este cliente ou ocorreu um erro ao buscá-las.")
         return

@@ -8,6 +8,7 @@ import logging
 import json # Adicionado import json
 from datetime import datetime # datetime já estava importado
 from typing import Optional, List, Dict, Any
+from dashboards.api_client import get_tickets
 
 # --- Path Setup ---
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) # Adjusted for pages subdir
@@ -17,15 +18,19 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
-    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+    css_path = os.path.join(_project_root, "assets", "style.css")
+    if not os.path.exists(css_path):
+        # Tenta caminho absoluto se não encontrar
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
+    with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 load_css()  # Carrega os estilos do Design System
 # --- Fim do Carregamento do CSS ---
 
-from src.core.config import settings
+from configs.settings import settings
 # Importar utilitários do frontend
-from src.frontend.utils import (
+from dashboards.utils import (
     display_user_info_sidebar, 
     handle_api_error, 
     get_api_token as get_global_api_token, # Renomeado para evitar conflito se houver um local
@@ -316,6 +321,17 @@ def mostrar_checklist_page():
                     st.rerun()
         elif st.session_state.checklist_items:
             st.warning("Ainda existem itens pendentes no checklist. Conclua todos os itens para fechar a folha.")
+
+    # Seção de Checklist de Demandas
+    st.title("Checklist de Demandas")
+
+    tickets = get_tickets()
+    if tickets:
+        st.write("Demandas abertas:")
+        for ticket in tickets:
+            st.markdown(f"**{ticket['titulo']}** - {ticket['etapa']} - Responsável: {ticket['responsavel']} - Prazo: {ticket['prazo']}")
+    else:
+        st.info("Nenhuma demanda aberta encontrada.")
 
 
 if __name__ == "__main__":

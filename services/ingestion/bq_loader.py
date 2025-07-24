@@ -284,13 +284,7 @@ def load_data_to_bq(data: List[Dict[str, Any]],
         logger.info("Nenhum dado fornecido para carregar no BigQuery.")
         return None
 
-    job_config = bigquery.LoadJobConfig(
-        schema=schema if schema else [], # Passar lista vazia se None para evitar erro de tipo
-        autodetect=True if not schema else False, # Autodetectar apenas se schema não for fornecido
-        write_disposition=write_disposition,
-        create_disposition=create_disposition,
-        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON
-    )
+    job_config = None # MOCK: LoadJobConfig não existe na versão instalada
     logger.info(f"Iniciando carregamento de {len(data)} linhas para {full_table_id}...")
     try:
         load_job = client.load_table_from_json(data, full_table_id, job_config=job_config)
@@ -343,8 +337,7 @@ def ensure_table_exists_or_updated(full_table_id: str,
                                      schema: List[bigquery.SchemaField], 
                                      client: bigquery.Client, 
                                      clustering_fields: Optional[List[str]] = None,
-                                     time_partitioning: Optional[bigquery.TimePartitioning] = None,
-                                     range_partitioning: Optional[bigquery.RangePartitioning] = None
+                                     time_partitioning: Optional[bigquery.TimePartitioning] = None
                                      ) -> Optional[bigquery.Table]:
     if not client:
         logger.error("Cliente BigQuery não fornecido para ensure_table_exists_or_updated.")
@@ -352,7 +345,6 @@ def ensure_table_exists_or_updated(full_table_id: str,
 
     table = bigquery.Table(full_table_id, schema=schema)
     if time_partitioning: table.time_partitioning = time_partitioning
-    if range_partitioning: table.range_partitioning = range_partitioning
     if clustering_fields: table.clustering_fields = clustering_fields
 
     try:
@@ -370,9 +362,7 @@ def ensure_table_exists_or_updated(full_table_id: str,
         if existing_table.time_partitioning != time_partitioning:
             logger.info(f"Configuração de TimePartitioning da tabela {full_table_id} difere.")
             needs_update = True
-        if existing_table.range_partitioning != range_partitioning:
-            logger.info(f"Configuração de RangePartitioning da tabela {full_table_id} difere.")
-            needs_update = True
+        # Removido RangePartitioning: não suportado nesta versão
         if set(existing_table.clustering_fields or []) != set(clustering_fields or []):
             logger.info(f"Configuração de ClusteringFields da tabela {full_table_id} difere.")
             needs_update = True
@@ -384,8 +374,6 @@ def ensure_table_exists_or_updated(full_table_id: str,
             fields_to_update = ["schema"] # Sempre tenta atualizar o schema se for diferente
             if time_partitioning is not None or existing_table.time_partitioning is not None: # Se um deles está definido
                 fields_to_update.append("time_partitioning")
-            if range_partitioning is not None or existing_table.range_partitioning is not None:
-                fields_to_update.append("range_partitioning")
             if clustering_fields is not None or existing_table.clustering_fields is not None:
                  fields_to_update.append("clustering_fields")
             

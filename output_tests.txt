@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.1, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspaces/AUDITORIA360
+plugins: asyncio-1.1.0, anyio-4.9.0, playwright-0.7.0, base-url-2.1.0, mock-3.14.1
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 234 items
+
+tests/ingestion/test_bq_loader.py F                                      [  0%]
+tests/ingestion/test_docai_utils.py F                                    [  0%]
+tests/ingestion/test_entity_schema.py F...                               [  2%]
+tests/ingestion/test_ingestion.py .                                      [  2%]
+tests/ingestion/test_mocks_gcp.py FF                                     [  3%]
+tests/ml/test_isolation_forest.py .                                      [  4%]
+tests/ml/test_ml.py .                                                    [  4%]
+tests/ml/test_pipeline_definition.py .                                   [  5%]
+tests/test_api_auditorias.py FFFFFF                                      [  7%]
+tests/test_api_dashboard.py FF                                           [  8%]
+tests/test_api_empresas.py FFFF                                          [ 10%]
+tests/test_api_folhas.py FFF
+>>>>>>>>>>>>>>>>>>> PDB set_trace (IO-capturing turned off) >>>>>>>>>>>>>>>>>>>>
+> /workspaces/AUDITORIA360/tests/test_api_folhas.py(69)test_upload_folha_auth_required()
+-> files = {"file": (mock_upload_file.filename, mock_upload_file.file, mock_upload_file.content_type)}
+(Pdb) 

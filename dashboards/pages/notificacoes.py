@@ -13,7 +13,10 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
-    with open(os.path.join(_project_root, "assets", "style.css")) as f:
+    css_path = os.path.join(_project_root, "assets", "style.css")
+    if not os.path.exists(css_path):
+        css_path = "/workspaces/AUDITORIA360/assets/style.css"
+    with open(css_path) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 load_css()  # Carrega os estilos do Design System

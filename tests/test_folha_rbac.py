@@ -3,7 +3,7 @@ Testes unificados de folha, checklist e RBAC usando JWT
 """
 import pytest
 from fastapi.testclient import TestClient
-from src.api.main import app
+from services.api.main import app
 
 # --- Helpers ---
 def get_jwt_token(client, username, password):

@@ -1,3 +1,0 @@
-from src.controllers.risco_controller import calcular_score_controller, obter_explicacao_controller
-
-# ...existing code...
