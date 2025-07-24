@@ -33,6 +33,25 @@ class ClienteORM(Base):
     ativo = Column(Boolean, default=True)
 ```
 
+## Exemplo de uso
+
+```python
+from .user import User
+usuario = User(nome="João", email="joao@exemplo.com")
+print(usuario)
+```
+
+## Onboarding rápido
+
+1. Instale dependências: `pip install -r requirements.txt`
+2. Importe o model desejado:
+
+```python
+from .user import User
+usuario = User(nome="João", email="joao@exemplo.com")
+print(usuario)
+```
+
 ## Boas práticas
 - Use tipos explícitos e validações automáticas
 - Documente campos obrigatórios e opcionais

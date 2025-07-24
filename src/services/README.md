@@ -23,6 +23,25 @@ def calcular_total_folha(funcionarios):
     return sum(f["salario"] for f in funcionarios)
 ```
 
+## Exemplo de uso
+
+```python
+from .email_service import EmailService
+service = EmailService()
+service.send_email("joao@exemplo.com", "Assunto", "Mensagem")
+```
+
+## Onboarding rápido
+
+1. Instale dependências: `pip install -r requirements.txt`
+2. Importe o serviço desejado:
+
+```python
+from .email_service import EmailService
+service = EmailService()
+service.send_email("joao@exemplo.com", "Assunto", "Mensagem")
+```
+
 ## Boas práticas
 - Separe serviços por domínio (ex: folha, demandas, IA)
 - Documente parâmetros e retornos
