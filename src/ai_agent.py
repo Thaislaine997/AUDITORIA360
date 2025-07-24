@@ -24,12 +24,44 @@ class IAAuditoriaAgent:
             self.model = None
 
     def analisar_pr(self, pr_data):
-        # ...implementação futura...
-        pass
+        """
+        Analisa dados de Pull Request e sugere melhorias via IA Gemini.
+        Args:
+            pr_data (dict): Dados do PR (título, descrição, diffs, comentários)
+        Returns:
+            str: Sugestão de melhoria ou resumo IA
+        """
+        if not self.model:
+            raise RuntimeError("Gemini API não configurada")
+        prompt = f"""
+        Analise o seguinte Pull Request e sugira melhorias, correções ou pontos de atenção:
+        {pr_data}
+        Responda de forma objetiva e técnica.
+        """
+        response = self.model.generate_content([prompt])
+        return getattr(response, 'text', str(response))
 
     def gerar_tarefa(self, demanda):
-        # ...implementação futura...
-        pass
+        """
+        Gera uma tarefa/ticket estruturado a partir de uma demanda via IA Gemini.
+        Args:
+            demanda (str): Descrição da demanda
+        Returns:
+            dict: Tarefa estruturada (título, descrição, prioridade, responsável)
+        """
+        if not self.model:
+            raise RuntimeError("Gemini API não configurada")
+        prompt = f"""
+        Estruture a seguinte demanda em um ticket de tarefa para equipe de desenvolvimento:
+        {demanda}
+        Retorne em formato JSON com campos: titulo, descricao, prioridade, responsavel.
+        """
+        response = self.model.generate_content([prompt])
+        import json
+        try:
+            return json.loads(getattr(response, 'text', str(response)))
+        except Exception:
+            return {"titulo": demanda, "descricao": demanda, "prioridade": "média", "responsavel": "a definir"}
 
     def gerar_comunicado(self, tipo, params):
         """
@@ -60,5 +92,19 @@ class IAAuditoriaAgent:
         return str(response)
 
     def registrar_log(self, log_data):
-        # ...implementação futura...
-        pass
+        """
+        Registra log de auditoria ou ação relevante via IA Gemini.
+        Args:
+            log_data (dict): Dados do log (ação, usuário, timestamp, detalhes)
+        Returns:
+            str: Confirmação ou resumo IA
+        """
+        if not self.model:
+            raise RuntimeError("Gemini API não configurada")
+        prompt = f"""
+        Gere um registro de log para auditoria com os seguintes dados:
+        {log_data}
+        Responda com um texto resumido e formal.
+        """
+        response = self.model.generate_content([prompt])
+        return getattr(response, 'text', str(response))

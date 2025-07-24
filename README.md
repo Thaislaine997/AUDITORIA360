@@ -141,4 +141,48 @@ Nota: Ajuste a coluna "Descrição (Exemplo)" conforme os dados e a lógica de e
 * `cloudbuild.yaml`: Arquivo de configuração do Google Cloud Build. Define os passos para construir a imagem do contêiner e realizar o deploy no Cloud Run.
 * `Dockerfile`: Contém as instruções para construir a imagem do contêiner Docker da aplicação, especificando o ambiente de execução e as dependências.
 
+## Testes Automatizados e Padronização
+
+Todos os testes utilizam mocks globais para dependências externas, garantindo que o projeto pode ser testado localmente ou em CI sem credenciais reais do Google Cloud. Os testes estão em `tests/` e o arquivo `conftest.py` centraliza os mocks para BigQuery, Storage, Document AI e autenticação.
+
+Para rodar os testes:
+
+```bash
+pytest --maxfail=3 --disable-warnings -v
+```
+
+## Relatório de Lacunas
+
+O arquivo `relatorio_lacunas_atualizado.csv` traz o status dos arquivos, cobertura de testes, comentários e recomendações. Use-o para acompanhar o progresso da padronização e identificar pontos de melhoria.
+
+## Contribuição
+
+Contribuições são bem-vindas! Siga as diretrizes:
+- Crie branches a partir de `main`.
+- Faça PRs pequenos e bem documentados.
+- Sempre rode os testes antes de submeter PR.
+- Consulte o roadmap e o relatório de lacunas para priorizar melhorias.
+
+## Roadmap
+
+- [x] Unificação dos schemas em `src/schemas/`
+- [x] Remoção de código legado
+- [x] Mocks globais para testes
+- [x] Cobertura total dos testes CCT
+- [ ] Finalizar padronização global
+- [ ] Enriquecer documentação técnica
+- [ ] Garantir 100% dos testes passando
+- [ ] Automatizar deploy e CI/CD
+
+## Documentação Técnica
+
+Consulte a pasta `docs/` para guias detalhados de integração, autenticação, checklist de auditoria, onboarding e uso dos principais módulos. Recomenda-se gerar a documentação técnica com Sphinx ou ReadTheDocs para facilitar o acesso e manutenção.
+
+## Diagrama de Arquitetura
+
+![Diagrama de Arquitetura](assets/logo.png)
+
+> **Fluxo Resumido:**
+> [Usuário] -> [Upload PDF] -> [GCS Bucket] -> [Eventarc] -> [Cloud Run] -> [Document AI] -> [BigQuery]
+
 ---
