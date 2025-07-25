@@ -24,7 +24,7 @@ jobs:
         id: diff
         continue-on-error: true
         run: |
-          git fetch origin Principal:refs/remotes/origin/Principal || true
+          git fetch origin || true
           git diff origin/Principal -- PLANO_AUDITORIA360_Version3.md > diff.txt || echo "" > diff.txt
           cat diff.txt
 
