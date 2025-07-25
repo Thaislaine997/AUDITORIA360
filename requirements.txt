@@ -30,3 +30,4 @@ scipy
 weasyprint
 jinja2
 pytest-mock
+bcrypt==4.3.0

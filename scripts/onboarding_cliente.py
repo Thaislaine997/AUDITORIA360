@@ -1,5 +1,6 @@
 import os
 import json
+import bcrypt
 import getpass
 
 TEMPLATE_CONFIG = {
@@ -36,9 +37,11 @@ def criar_config_cliente():
 def adicionar_usuario_login_yaml(client_id):
     usuario = input(f"Usuário para o cliente {client_id}: ").strip()
     senha = getpass.getpass(f"Senha para {usuario}: ")
+    # Hash the password using bcrypt
+    hashed_senha = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     # Adiciona ao login.yaml (simples, sem parser yaml avançado)
     with open(LOGIN_YAML, "a", encoding="utf-8") as f:
-        f.write(f"  {usuario}: \"{senha}\"\n")
+        f.write(f"  {usuario}: \"{hashed_senha}\"\n")
     print(f"Usuário {usuario} adicionado ao {LOGIN_YAML}")
 
 def main():
