@@ -4,7 +4,7 @@ import streamlit_authenticator as stauth
 # Senha que você quer hashear
 plain_password = '41283407'
 
-print(f"Tentando hashear a senha: {plain_password}")
+print("Tentando hashear a senha.")
 
 try:
     hashed_password = stauth.Hasher().hash(plain_password)
