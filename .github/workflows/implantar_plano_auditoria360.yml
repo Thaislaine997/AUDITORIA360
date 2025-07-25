@@ -21,8 +21,8 @@ jobs:
       - name: Verificar mudanças no plano
         id: diff
         run: |
-          git fetch origin main
-          git diff origin/main -- PLANO_AUDITORIA360_Version3.md > diff.txt
+          git fetch origin Principal
+          git diff origin/Principal -- PLANO_AUDITORIA360_Version3.md > diff.txt
           cat diff.txt
 
       - name: Criar issue de atualização do plano
@@ -41,8 +41,5 @@ jobs:
           body: |
             Atualização detectada no arquivo PLANO_AUDITORIA360_Version3.md. Por favor, revise e aprove.
           branch: bot/atualizacao-plano-auditoria360
-          base: main
+          base: Principal
           labels: plano, automacao
-
-      - name: Notificar no log
-        run: echo "Plano AUDITORIA360 verificado, issue e PR criados."
