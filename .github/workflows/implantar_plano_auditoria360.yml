@@ -29,6 +29,7 @@ jobs:
       - name: Criar issue de atualização do plano
         uses: peter-evans/create-issue-from-file@v4
         with:
+          token: ${{ secrets.PAT_ISSUE }}
           title: "Atualização do Plano AUDITORIA360 detectada"
           content-filepath: PLANO_AUDITORIA360_Version3.md
           labels: plano, auditoria360, automacao
@@ -36,6 +37,7 @@ jobs:
       - name: Criar Pull Request automático
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.PAT_ISSUE }}
           commit-message: "Atualização automática do Plano AUDITORIA360"
           title: "Atualização automática do Plano AUDITORIA360"
           body: |
