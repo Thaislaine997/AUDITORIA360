@@ -20,20 +20,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Verificar mudanças no plano
-        id: diff
-        continue-on-error: true
-        run: |
-          git fetch origin || true
-          git diff origin/Principal -- PLANO_AUDITORIA360_Version3.md > diff.txt || echo "" > diff.txt
-          cat diff.txt
-
       - name: Criar issue de atualização do plano
-        if: always()
         uses: peter-evans/create-issue-from-file@v4
         with:
           title: "Atualização do Plano AUDITORIA360 detectada"
-          content-filepath: diff.txt
+          content-filepath: PLANO_AUDITORIA360_Version3.md
           labels: plano, auditoria360, automacao
 
       - name: Criar Pull Request automático
