@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar Git
         run: |
@@ -21,8 +23,8 @@ jobs:
       - name: Verificar mudanças no plano
         id: diff
         run: |
-          git fetch origin Principal
-          git diff origin/Principal -- PLANO_AUDITORIA360_Version3.md > diff.txt
+          git fetch origin Principal:refs/remotes/origin/Principal || true
+          git diff origin/Principal -- PLANO_AUDITORIA360_Version3.md > diff.txt || echo "" > diff.txt
           cat diff.txt
 
       - name: Criar issue de atualização do plano
@@ -43,3 +45,6 @@ jobs:
           branch: bot/atualizacao-plano-auditoria360
           base: Principal
           labels: plano, automacao
+
+      - name: Notificar no log
+        run: echo "Plano AUDITORIA360 verificado, issue e PR criados."
