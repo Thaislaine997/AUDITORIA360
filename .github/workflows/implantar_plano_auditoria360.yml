@@ -44,13 +44,5 @@ jobs:
           base: main
           labels: plano, automacao
 
-      - name: Notificar via Slack (opcional)
-        if: always()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: '{"text":"Plano AUDITORIA360 atualizado! Issue e PR criados automaticamente."}'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
       - name: Notificar no log
-        run: echo "Plano AUDITORIA360 verificado, issue e PR criados, notificação enviada."
+        run: echo "Plano AUDITORIA360 verificado, issue e PR criados."
