@@ -1,0 +1,56 @@
+name: Implantar Plano AUDITORIA360
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'PLANO_AUDITORIA360_Version3.md'
+
+jobs:
+  implantar-plano:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Verificar mudanças no plano
+        id: diff
+        run: |
+          git fetch origin main
+          git diff origin/main -- PLANO_AUDITORIA360_Version3.md > diff.txt
+          cat diff.txt
+
+      - name: Criar issue de atualização do plano
+        if: always()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Atualização do Plano AUDITORIA360 detectada"
+          content-filepath: diff.txt
+          labels: plano, auditoria360, automacao
+
+      - name: Criar Pull Request automático
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Atualização automática do Plano AUDITORIA360"
+          title: "Atualização automática do Plano AUDITORIA360"
+          body: |
+            Atualização detectada no arquivo PLANO_AUDITORIA360_Version3.md. Por favor, revise e aprove.
+          branch: bot/atualizacao-plano-auditoria360
+          base: main
+          labels: plano, automacao
+
+      - name: Notificar via Slack (opcional)
+        if: always()
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: '{"text":"Plano AUDITORIA360 atualizado! Issue e PR criados automaticamente."}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notificar no log
+        run: echo "Plano AUDITORIA360 verificado, issue e PR criados, notificação enviada."
