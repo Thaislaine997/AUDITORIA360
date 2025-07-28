@@ -23,3 +23,8 @@ prefect
 python-jose[cryptography]
 passlib[bcrypt]
 pydantic[email]
+
+# Dashboard Frontend
+streamlit
+plotly
+streamlit-authenticator
