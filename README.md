@@ -1,8 +1,41 @@
-# Auditoria de Folha com Document AI e BigQuery
+# AUDITORIA360 – Stack Serverless Moderna
+
+Este projeto utiliza:
+- FastAPI (API principal)
+- Neon (PostgreSQL serverless)
+- Cloudflare R2 (storage)
+- DuckDB (analytics local)
+- PaddleOCR (OCR embarcado)
+
+## Como rodar localmente
+
+1. Copie `.env.example` para `.env` e preencha com seus segredos.
+2. Instale as dependências:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Rode a API:
+   ```bash
+   uvicorn api.index:app --reload
+   ```
+
+## Backups
+- Use os scripts em `scripts/backup_neon_r2.py` e `scripts/restore_neon_r2.py` para backup/restauração automatizada.
+
+## Deploy
+- O deploy é automatizado via Vercel (vercel.json).
+- Variáveis sensíveis devem ser cadastradas no painel da Vercel.
+
+## Documentação
+- Consulte `PLANO_AUDITORIA360.md` para o plano completo e checklist de governança.
+- Veja exemplos de uso de DuckDB em `data/input/README.md`.
+- Para variáveis de ambiente, leia `configs/README_env.md`.
+
+## Auditoria de Folha com Document AI e BigQuery
 
 Este projeto automatiza o processamento de documentos de folha de pagamento em formato PDF. Ele utiliza o Google Cloud Document AI para extrair informações relevantes dos PDFs e armazena os dados estruturados no Google Cloud BigQuery para análises e auditorias futuras.
 
-## Arquitetura e Fluxo de Dados
+### Arquitetura e Fluxo de Dados
 
 O fluxo de processamento é projetado da seguinte forma:
 
@@ -11,9 +44,9 @@ O fluxo de processamento é projetado da seguinte forma:
 3. **Processamento com Document AI:** O serviço Cloud Run, ao ser acionado, recebe o nome do arquivo PDF. Ele então lê o arquivo do GCS e o envia para um processador específico do Google Cloud Document AI. Este processador é treinado ou configurado para extrair entidades relevantes das folhas de pagamento.
 4. **Armazenamento no BigQuery:** Os dados extraídos e estruturados pelo Document AI são então formatados e carregados pelo serviço Cloud Run em uma tabela no Google Cloud BigQuery, especificamente no dataset `auditoria_folha_dataset` e tabela `docai_extracted_data`.
 
-## Configuração
+### Configuração
 
-### Variáveis de Ambiente (Cloud Run)
+#### Variáveis de Ambiente (Cloud Run)
 
 As seguintes variáveis de ambiente são cruciais e devem ser configuradas no serviço Cloud Run:
 
@@ -24,7 +57,7 @@ As seguintes variáveis de ambiente são cruciais e devem ser configuradas no se
 * `BQ_DATASET_ID`: O ID do dataset no BigQuery. Atualmente configurado como `auditoria_folha_dataset`.
 * `BQ_TABLE_ID`: O ID da tabela no BigQuery. Atualmente configurado como `docai_extracted_data`.
 
-### Conta de Serviço (Cloud Run)
+#### Conta de Serviço (Cloud Run)
 
 O serviço Cloud Run `processador-pdf-folha` executa utilizando a Conta de Serviço Padrão do Compute Engine (`333253866645-compute@developer.gserviceaccount.com` neste projeto). Esta conta de serviço deve possuir, no mínimo, os seguintes papéis para o correto funcionamento:
 
@@ -33,7 +66,7 @@ O serviço Cloud Run `processador-pdf-folha` executa utilizando a Conta de Servi
 * `Editor de dados BigQuery` (para inserir dados na tabela do BigQuery).
 * `Gravador de registros` (para escrever logs no Cloud Logging).
 
-### Desenvolvimento Local
+#### Desenvolvimento Local
 
 Para desenvolvimento e testes locais, um arquivo `src/config.json` pode ser utilizado para fornecer as configurações acima. O formato esperado é:
 
@@ -51,7 +84,7 @@ Para desenvolvimento e testes locais, um arquivo `src/config.json` pode ser util
 
 **Nota:** Ao rodar localmente, garanta que seu ambiente está autenticado com o Google Cloud, seja via `gcloud auth application-default login` ou configurando a variável de ambiente `GOOGLE_APPLICATION_CREDENTIALS` para apontar para um arquivo de chave de conta de serviço com as permissões necessárias.
 
-## Como Executar Localmente (Exemplo)
+### Como Executar Localmente (Exemplo)
 
 1. **Clone o repositório:**
 
@@ -97,17 +130,17 @@ Para desenvolvimento e testes locais, um arquivo `src/config.json` pode ser util
    # python main.py
    ```
 
-## Deploy
+### Deploy
 
 O deploy para o Google Cloud Run é automatizado via Google Cloud Build. Qualquer push para o branch `main` acionará o pipeline definido no arquivo `cloudbuild.yaml`. Este pipeline constrói a imagem do contêiner da aplicação e a implanta no serviço Cloud Run `processador-pdf-folha`. O Cloud Build utiliza a conta de serviço `auditoria-folha@appspot.gserviceaccount.com` para suas operações, conforme configurado no gatilho.
 
-## Segurança
+### Segurança
 
 * **Endpoint do Cloud Run:** O serviço Cloud Run `processador-pdf-folha` está configurado para **exigir autenticação**. Isso significa que apenas chamadas autenticadas com uma identidade IAM que possua o papel de `Invocador do Cloud Run` (roles/run.invoker) podem acionar o serviço.
 * **Entrada (Ingress):** Recomenda-se configurar a entrada do serviço Cloud Run para **"Permitir tráfego interno apenas"** se o acionamento vier exclusivamente de fontes internas do GCP (como Eventarc), para maior segurança.
 * **Princípio do Menor Privilégio:** Embora atualmente utilize a conta de serviço padrão do Compute Engine, para ambientes de produção mais robustos, é recomendado criar uma conta de serviço dedicada para o Cloud Run com apenas os papéis estritamente necessários.
 
-## Informações do BigQuery
+### Informações do BigQuery
 
 Os dados extraídos são armazenados na seguinte tabela:
 
@@ -115,7 +148,7 @@ Os dados extraídos são armazenados na seguinte tabela:
 * **Dataset:** `auditoria_folha_dataset` (ou o valor de `BQ_DATASET_ID`)
 * **Tabela:** `docai_extracted_data` (ou o valor de `BQ_TABLE_ID`)
 
-### Schema da Tabela `docai_extracted_data`
+#### Schema da Tabela `docai_extracted_data`
 
 | Nome do campo       | Tipo      | Modo     | Descrição (Exemplo)                     |
 | :------------------ | :-------- | :------- | :-------------------------------------- |

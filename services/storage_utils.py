@@ -1,4 +1,3 @@
-
 import boto3
 import os
 from dotenv import load_dotenv
@@ -20,3 +19,15 @@ def upload_file_to_r2(file_path: str, object_name: str):
     bucket_name = os.getenv('R2_BUCKET_NAME')
     client.upload_file(file_path, bucket_name, object_name)
     print(f"Arquivo '{file_path}' enviado para '{object_name}' no R2.")
+
+def download_file_from_r2(object_name: str, dest_path: str):
+    client = get_r2_client()
+    bucket_name = os.getenv('R2_BUCKET_NAME')
+    client.download_file(bucket_name, object_name, dest_path)
+    print(f"Arquivo '{object_name}' baixado do R2 para '{dest_path}'.")
+
+def delete_file_from_r2(object_name: str):
+    client = get_r2_client()
+    bucket_name = os.getenv('R2_BUCKET_NAME')
+    client.delete_object(Bucket=bucket_name, Key=object_name)
+    print(f"Arquivo '{object_name}' removido do R2.")
