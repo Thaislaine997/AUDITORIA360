@@ -17,26 +17,75 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
+    """Carrega a folha de estilos do Design System AUDITORIA360"""
     css_path = os.path.join(_project_root, "assets", "style.css")
     if os.path.exists(css_path):
         try:
             with open(css_path) as f:
                 st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
         except Exception as e:
-            st.warning(f"Erro ao carregar CSS: {e}")
+            st.warning(f"⚠️ Erro ao carregar CSS: {e}")
     else:
-        st.warning(f"Arquivo CSS não encontrado em {css_path}")
+        st.warning(f"⚠️ Arquivo de estilo não encontrado em {css_path}")
 
+def load_logo():
+    """Carrega e exibe o logotipo da aplicação"""
+    logo_path = os.path.join(_project_root, "assets", "logo.png")
+    if os.path.exists(logo_path):
+        try:
+            with open(logo_path, "rb") as img_file:
+                import base64
+                b64_img = base64.b64encode(img_file.read()).decode()
+            st.markdown(
+                f'''
+                <div class="header">
+                    <img src="data:image/png;base64,{b64_img}" 
+                         alt="Logo AUDITORIA360" 
+                         class="logo"
+                         style="height: 60px; width: auto;"/>
+                    <h1 class="header-title">AUDITORIA360</h1>
+                </div>
+                ''',
+                unsafe_allow_html=True
+            )
+        except Exception as e:
+            st.markdown(
+                '''
+                <div class="header">
+                    <h1 class="header-title">🔍 AUDITORIA360</h1>
+                </div>
+                ''', 
+                unsafe_allow_html=True
+            )
+            st.warning(f"⚠️ Erro ao carregar logo: {e}")
+    else:
+        st.markdown(
+            '''
+            <div class="header">
+                <h1 class="header-title">🔍 AUDITORIA360</h1>
+            </div>
+            ''', 
+            unsafe_allow_html=True
+        )
+
+# Aplicar Design System
 load_css()  # Carrega os estilos do Design System
+load_logo()  # Carrega e exibe o logo
 # --- Fim do Carregamento do CSS ---
 
 # from core.database import * # Comentado ou removido se não usado diretamente aqui
 
 # --- Configuração da Página ---
 st.set_page_config(
-    page_title="Auditoria360 - Login",
-    page_icon="🔐",
-    layout="centered"
+    page_title="AUDITORIA360 - Plataforma de Auditoria Inteligente",
+    page_icon="🔍",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://github.com/Thaislaine997/AUDITORIA360',
+        'Report a bug': 'https://github.com/Thaislaine997/AUDITORIA360/issues',
+        'About': "AUDITORIA360 - Plataforma moderna de auditoria com IA"
+    }
 )
 
 # --- Carregador de Configuração do Autenticador (do arquivo YAML) ---
