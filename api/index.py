@@ -10,7 +10,25 @@ def health_check():
     return {"status": "ok", "message": "AUDITORIA360 API is running!"}
 
 # Inclua suas rotas aqui
-# app.include_router(seu_router.router, prefix="/demandas", tags=["Demandas"])
+
+# --- Endpoints de upload/download para Cloudflare R2 ---
+from fastapi import UploadFile, File, HTTPException
+from services.storage_utils import upload_file_to_r2
+import shutil
+import os
+
+@app.post("/upload-r2/")
+async def upload_r2(file: UploadFile = File(...)):
+    temp_path = f"/tmp/{file.filename}"
+    with open(temp_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    try:
+        upload_file_to_r2(temp_path, file.filename)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        os.remove(temp_path)
+    return {"status": "ok", "filename": file.filename}
 # Arquivo principal da API FastAPI para deploy na Vercel
 from fastapi import FastAPI
 
