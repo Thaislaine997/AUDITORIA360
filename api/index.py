@@ -174,6 +174,18 @@ def event_handler(request_data: dict = None):
         "bucket": request_data.get("bucket", "default") if request_data else "default"
     }
 
+# Include dashboard routes
+try:
+    from api.dashboard import dashboard_app
+    app.mount("/dashboard", dashboard_app)
+    DASHBOARD_AVAILABLE = True
+except ImportError:
+    DASHBOARD_AVAILABLE = False
+    
+    @app.get("/dashboard/health")
+    def dashboard_placeholder():
+        return {"message": "Dashboard module loading...", "status": "placeholder"}
+
 # Include all module routers
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(payroll_router, prefix="/api/v1/payroll", tags=["Payroll Management"])
