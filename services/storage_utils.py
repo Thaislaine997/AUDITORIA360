@@ -1,25 +1,22 @@
-# Utilitário para integração com Cloudflare R2 via boto3
+
 import boto3
 import os
+from dotenv import load_dotenv
 
-R2_ENDPOINT = os.getenv("R2_ENDPOINT")
-R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY")
-R2_SECRET_KEY = os.getenv("R2_SECRET_KEY")
+load_dotenv()
 
-R2_BUCKET = os.getenv("R2_BUCKET")
-if not R2_BUCKET:
-    raise ValueError("A variável de ambiente R2_BUCKET não está definida. Verifique seu .env!")
+def get_r2_client():
+    r2_client = boto3.client(
+        service_name='s3',
+        endpoint_url=f"https://{os.getenv('CLOUDFLARE_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+        aws_access_key_id=os.getenv('R2_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.getenv('R2_SECRET_ACCESS_KEY'),
+        region_name="auto"
+    )
+    return r2_client
 
-session = boto3.session.Session()
-s3 = session.client(
-    service_name='s3',
-    endpoint_url=R2_ENDPOINT,
-    aws_access_key_id=R2_ACCESS_KEY,
-    aws_secret_access_key=R2_SECRET_KEY
-)
-
-def upload_arquivo(nome_arquivo, caminho_local):
-    s3.upload_file(caminho_local, R2_BUCKET, nome_arquivo)
-
-def download_arquivo(nome_arquivo, caminho_destino):
-    s3.download_file(R2_BUCKET, nome_arquivo, caminho_destino)
+def upload_file_to_r2(file_path: str, object_name: str):
+    client = get_r2_client()
+    bucket_name = os.getenv('R2_BUCKET_NAME')
+    client.upload_file(file_path, bucket_name, object_name)
+    print(f"Arquivo '{file_path}' enviado para '{object_name}' no R2.")
