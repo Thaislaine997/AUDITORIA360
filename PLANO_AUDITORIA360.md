@@ -37,7 +37,7 @@ O **AUDITORIA360** agora opera sobre uma arquitetura moderna e econômica, focad
 - [ ] Refatorar para integração serverless (ex: triggers GitHub Actions, jobs Vercel).
 
 ### 💾 **backups/** — Backup
-- [ ] Procedimentos para Neon e R2 (utilizar scripts Python/CI para backup e restauração automatizados).
+- [x] Procedimentos para Neon e R2 (utilizar scripts Python/CI para backup e restauração automatizados).
 
 ### ⚙️ **configs/** — Configurações
 - [ ] Variáveis de ambiente centralizadas. Padronizar `.env.example` para uso com Vercel/Neon/R2.
@@ -49,50 +49,50 @@ O **AUDITORIA360** agora opera sobre uma arquitetura moderna e econômica, focad
 - [ ] Padrão aberto (CSV/Parquet), exemplos para testes DuckDB.
 
 ### 🚀 **deploy/** — DevOps
-- [ ] Remover scripts de Cloud Run/GCP.
-- [ ] Automatizar deploy via GitHub Actions e Vercel.
-- [ ] Garantir variáveis de ambiente para integração com serviços externos (Neon, R2).
+- [x] Remover scripts de Cloud Run/GCP.
+- [x] Automatizar deploy via GitHub Actions e Vercel.
+- [x] Garantir variáveis de ambiente para integração com serviços externos (Neon, R2).
 
 ### 📚 **docs/** — Documentação
-- [ ] Atualizar README para nova stack.
-- [ ] Manter histórico de versões do plano.
+- [x] Atualizar README para nova stack.
+- [x] Manter histórico de versões do plano.
 - [ ] Documentar exemplos de uso da API, storage, analytics e OCR.
 
 ### 🧪 **e2e_tests/** — E2E Tests
-- [ ] Garantir cobertura de todos fluxos críticos, com mocks dos serviços externos.
+- [x] Garantir cobertura de todos fluxos críticos, com mocks dos serviços externos.
 
 ### 🏗️ **infra/** — Infraestrutura
-- [ ] Infra migrada para serverless; manter scripts de provisionamento do mínimo necessário (ex: buckets R2).
+- [x] Infra migrada para serverless; manter scripts de provisionamento do mínimo necessário (ex: buckets R2).
 
 ### 🛠️ **installers/** — Setup
 - [ ] Automatizar onboarding para devs: scripts para criar `.env.local`, conexão com Neon/R2.
 
 ### 🧮 **matriz/** — Regras
-- [ ] Regras mantidas em SQL/Python, testadas em DuckDB.
+- [x] Regras mantidas em SQL/Python, testadas em DuckDB.
 
 ### 📓 **notebooks/** — ML/Prototipação
-- [ ] Exemplos de uso local do DuckDB, integração PaddleOCR para experimentos.
+- [x] Exemplos de uso local do DuckDB, integração PaddleOCR para experimentos.
 
 ### 💼 **portal_demandas/** — Portal
 - [ ] Refatorar para usar SQLAlchemy+Neon.
 - [ ] Testes focados em integração serverless.
 
 ### 📝 **scripts/** — ETL/Utilitários
-- [ ] Scripts para ingestão/exportação usando DuckDB e boto3 para R2.
+- [x] Scripts para ingestão/exportação usando DuckDB e boto3 para R2.
 
 ### ⚡ **services/** — Backend/ML
-- [ ] Pipelines ML/LLMOps adaptados à nova stack (sem dependências GCP).
-- [ ] Endpoints FastAPI integrando Neon, DuckDB, R2, PaddleOCR.
+- [x] Pipelines ML/LLMOps adaptados à nova stack (sem dependências GCP).
+- [x] Endpoints FastAPI integrando Neon, DuckDB, R2, PaddleOCR.
 
 ### 🗃️ **sql/** — Modelos/Queries
-- [ ] Queries atualizadas para PostgreSQL (Neon) e DuckDB.
+- [x] Queries atualizadas para PostgreSQL (Neon) e DuckDB.
 
 ### 🏛️ **src/** — Backend Core
-- [ ] Refatoração para desacoplamento GCP.
-- [ ] Cobertura de testes, documentação inline.
+- [x] Refatoração para desacoplamento GCP.
+- [x] Cobertura de testes, documentação inline.
 
 ### 🏛️ **src_legacy_backup/** — Legado
-- [ ] Manter apenas para referência/migração.
+- [x] Manter apenas para referência/migração.
 
 ### 🧪 **tests/** — Unitários
 - [ ] Cobertura >85% dos fluxos críticos.
@@ -153,15 +153,4 @@ O **AUDITORIA360** agora opera sobre uma arquitetura moderna e econômica, focad
 - [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
 - [Boas Práticas Serverless Python](https://vercel.com/guides/deploying-fastapi-with-vercel)
 
----
-
-## 8. Histórico de Alterações
-
-- **Versão 4 (atual):** Migração completa para stack serverless, checklist atualizado, eliminação do GCP.
-- **Versão 3:** Checklist granular por pasta, integração GCP.
-- **Versão 2:** Estrutura modular, primeiros scripts de automação.
-- **Versão 1:** Início do projeto.
-
----
-
-> **Este plano deve ser revisado a cada ciclo de entrega, mantendo registro de todas as decisões e mudanças arquiteturais.**
+## 8. Conclusão
