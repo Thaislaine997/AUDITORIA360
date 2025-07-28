@@ -44,3 +44,16 @@ configs/*.enc
 !configs/README.md
 backups/*.zip
 .vercel
+
+# Project specific cleanup
+temp_*
+*.tmp
+*.temp
+*backup*
+
+# Analysis reports  
+/tmp/auditoria360_*
+
+# Logs and monitoring
+*.log
+logs/
