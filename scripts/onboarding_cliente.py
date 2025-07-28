@@ -38,19 +38,11 @@ def criar_config_cliente():
 def adicionar_usuario_login_yaml(client_id):
     usuario = input(f"Usuário para o cliente {client_id}: ").strip()
     senha = getpass.getpass(f"Senha para {usuario}: ")
-<<<<<<< HEAD
-    # Hash the password using bcrypt
-    hashed_senha = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    # Adiciona ao login.yaml (simples, sem parser yaml avançado)
-    with open(LOGIN_YAML, "a", encoding="utf-8") as f:
-        f.write(f"  {usuario}: \"{hashed_senha}\"\n")
-=======
     # Hash da senha usando bcrypt
     senha_hashed = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     # Adiciona ao login.yaml (simples, sem parser yaml avançado)
     with open(LOGIN_YAML, "a", encoding="utf-8") as f:
         f.write(f"  {usuario}: \"{senha_hashed}\"\n")
->>>>>>> 5f80f61 (Correções de segurança: senhas agora são hasheadas e não registradas em texto simples)
     print(f"Usuário {usuario} adicionado ao {LOGIN_YAML}")
 
 def main():
