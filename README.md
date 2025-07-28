@@ -203,4 +203,9 @@ Este projeto é proprietário. Todos os direitos reservados.
 Email: support@auditoria360.com
 Documentação: [Portal de Documentação]
 Issues: GitHub Issues para reportar bugs
+
+📚 Documentação Consolidada
+📋 **[RELATÓRIO UNIFICADO](docs/RELATORIO_UNIFICADO_AUDITORIA360.md)** - Status consolidado do projeto, arquitetura e roadmap
+📁 **[Documentação Completa](docs/README.md)** - Índice de todos os documentos técnicos
+
 AUDITORIA360 - Transformando a gestão de folha de pagamento com tecnologia avançada e conformidade total.
