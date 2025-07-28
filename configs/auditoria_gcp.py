@@ -5,8 +5,7 @@ import json
 def audit_gcp_configs():
     report = []
     configs_dir = [
-        'configs',
-        'src_legacy_backup/backend/configs'
+        'configs'
     ]
     keys = [
         'project_id', 'gcp_project_id', 'control_bq_dataset_id', 'processed_bq_dataset_id',
