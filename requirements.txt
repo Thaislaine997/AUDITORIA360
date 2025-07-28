@@ -16,6 +16,9 @@ boto3
 paddleocr
 paddlepaddle
 
+# Orquestração de ML
+prefect
+
 # Autenticação e Utilitários
 python-jose[cryptography]
 passlib[bcrypt]

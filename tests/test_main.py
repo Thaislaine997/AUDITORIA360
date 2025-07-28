@@ -81,7 +81,7 @@ def test_health_check(client: TestClient):
     json_data = response.json()
     assert json_data["status"] == "healthy"  # Alterado de "ok" para "healthy"
 
-@patch('src.main.process_document_ocr')
+@patch('services.api.main.process_document_ocr')
 @patch.dict('os.environ', { 
     'GCS_INPUT_BUCKET': 'meu-bucket-pdf-teste',
     'GCS_CONTROL_BUCKET': 'meu-bucket-planilha-teste'
@@ -105,7 +105,7 @@ def test_gcs_event_handler_pdf(mock_process_ocr, client: TestClient):
     # A chamada mockada deve refletir o nome completo do objeto como passado
     mock_process_ocr.assert_called_once_with(file_name="documentos/documento_teste.pdf", bucket_name="meu-bucket-pdf-teste")
 
-@patch('src.main.process_control_sheet')
+@patch('services.api.main.process_control_sheet')
 @patch.dict('os.environ', { 
     'GCS_INPUT_BUCKET': 'outro-bucket-pdf-teste',
     'GCS_CONTROL_BUCKET': 'meu-bucket-planilha-teste'
