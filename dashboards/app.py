@@ -1,24 +1,117 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
+import sys
 
-st.title('Auditoria de Folha + ML')
-st.write('Dashboard interativo para análise de dados extraídos e resultados de ML.')
+# Configure page
+st.set_page_config(
+    page_title="AUDITORIA360 - Dashboard",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-@st.cache_data
-def get_anomalies():
-    """Função para obter dados simulados de anomalias."""
-    return pd.DataFrame({
-        'CPF': ['12345678909', '98765432100'],
-        'Salário': [10000, 5000],
-        'Score Anomalia': [0.98, 0.85],
-        'Explicação': ['Salário fora do padrão', 'Desconto elevado']
+# Add project root to path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+# Main dashboard
+def main():
+    st.title('🏢 AUDITORIA360 - Dashboard Principal')
+    st.markdown("---")
+    
+    # Sidebar navigation
+    st.sidebar.title("📋 Navegação")
+    
+    # Dashboard overview
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric(
+            label="📊 Documentos Processados",
+            value="1,234",
+            delta="12"
+        )
+    
+    with col2:
+        st.metric(
+            label="⚠️ Anomalias Detectadas", 
+            value="23",
+            delta="-5"
+        )
+    
+    with col3:
+        st.metric(
+            label="✅ Taxa de Conformidade",
+            value="94.2%",
+            delta="2.1%"
+        )
+    
+    with col4:
+        st.metric(
+            label="🕒 Tempo Médio de Análise",
+            value="3.4s",
+            delta="-0.8s"
+        )
+    
+    st.markdown("---")
+    
+    # Sample data visualization
+    st.subheader("📈 Análise de Anomalias")
+    
+    @st.cache_data
+    def get_sample_data():
+        return pd.DataFrame({
+            'Mês': ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+            'Anomalias': [15, 23, 18, 31, 25, 19],
+            'Processados': [1200, 1350, 1180, 1420, 1300, 1250]
+        })
+    
+    data = get_sample_data()
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        fig_anomalies = px.line(
+            data, 
+            x='Mês', 
+            y='Anomalias',
+            title='Anomalias Detectadas por Mês',
+            markers=True
+        )
+        fig_anomalies.update_layout(showlegend=False)
+        st.plotly_chart(fig_anomalies, use_container_width=True)
+    
+    with col2:
+        fig_processed = px.bar(
+            data,
+            x='Mês',
+            y='Processados', 
+            title='Documentos Processados por Mês'
+        )
+        fig_processed.update_layout(showlegend=False)
+        st.plotly_chart(fig_processed, use_container_width=True)
+    
+    # Recent activity
+    st.subheader("🕐 Atividade Recente")
+    
+    recent_data = pd.DataFrame({
+        'Timestamp': ['2025-01-28 14:30', '2025-01-28 14:15', '2025-01-28 14:00'],
+        'Evento': ['Anomalia detectada', 'Documento processado', 'Análise concluída'],
+        'Status': ['⚠️ Atenção', '✅ Sucesso', '✅ Sucesso']
     })
+    
+    st.dataframe(recent_data, use_container_width=True)
+    
+    # Footer
+    st.markdown("---")
+    st.markdown("""
+    <div style='text-align: center; color: #666;'>
+        <p>AUDITORIA360 - Sistema de Auditoria Automatizada | v4.0</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-anomalies = get_anomalies()
-
-st.subheader('Anomalias Detectadas')
-st.dataframe(anomalies)
-
-fig = px.bar(anomalies, x='CPF', y='Score Anomalia', color='Explicação', title='Scores de Anomalia por CPF')
-st.plotly_chart(fig)
+if __name__ == "__main__":
+    main()
