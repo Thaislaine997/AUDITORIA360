@@ -2,16 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
 from portal_demandas.models import Ticket, TicketCreate
-from portal_demandas.db import SessionLocal, TicketDB
+from portal_demandas.db import TicketDB, get_db
 
 app = FastAPI()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @app.post("/tickets/", response_model=Ticket)
 def criar_ticket(ticket: TicketCreate, db: Session = Depends(get_db)):
