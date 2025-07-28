@@ -17,8 +17,15 @@ if _project_root not in sys.path:
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
-    with open(os.path.join(_project_root, "assets", "style.css")) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+    css_path = os.path.join(_project_root, "assets", "style.css")
+    if os.path.exists(css_path):
+        try:
+            with open(css_path) as f:
+                st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+        except Exception as e:
+            st.warning(f"Erro ao carregar CSS: {e}")
+    else:
+        st.warning(f"Arquivo CSS não encontrado em {css_path}")
 
 load_css()  # Carrega os estilos do Design System
 # --- Fim do Carregamento do CSS ---
