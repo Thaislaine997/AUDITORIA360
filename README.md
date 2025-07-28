@@ -1,18 +1,25 @@
 # AUDITORIA360 - Portal de Gestão da Folha, Auditoria 360 e CCT
 
-> **🎯 PROJETO 85% CONCLUÍDO** - Consulte [docs/RELATORIO_UNIFICADO_FINAL.md](docs/RELATORIO_UNIFICADO_FINAL.md) para status detalhado e itens pendentes.
+> **🎯 PROJETO 92% CONCLUÍDO** - Consulte **[docs/RELATORIO_FINAL_UNIFICADO.md](docs/RELATORIO_FINAL_UNIFICADO.md)** para análise consolidada e plano de finalização.
 
 Portal seguro, inteligente e integrado para centralizar, automatizar e auditar todos os processos de folha de pagamento, obrigações sindicais e convenções coletivas.
 
-## 📊 Status Rápido
-- ✅ Migração serverless completa
-- ✅ API e portal demandas funcionais  
-- ⏳ 15% restante: testes, limpeza, otimizações
+## 📊 Status Atual
+- ✅ **Migração serverless**: 100% concluída
+- ✅ **API e portal demandas**: 100% funcionais  
+- ✅ **Dashboards configurados**: Prontos para deploy
+- ⏳ **8% restante**: Testes (75%→85%), limpeza de arquivos, automação final
 
-**Para verificar progresso atual:**
+**📋 Para verificar progresso detalhado:**
 ```bash
+# Status geral do projeto
 python scripts/verificar_progresso.py
+
+# Cobertura de testes
+pytest --cov=src --cov-report=html --cov-fail-under=85
 ```
+
+**📖 Documentação Principal**: [**RELATÓRIO FINAL UNIFICADO**](docs/RELATORIO_FINAL_UNIFICADO.md)
 
 🎯 Objetivo
 Desenvolver um portal completo que elimina processos manuais e riscos de não conformidade através de:

@@ -110,7 +110,8 @@ python -m pytest
 ---
 
 **Atualizado em**: 28 de Janeiro de 2025  
-**Progresso atual**: 85% concluído  
-**Estimativa para 100%**: 4 semanas  
+**Progresso atual**: 92% concluído (conforme [RELATÓRIO FINAL UNIFICADO](docs/RELATORIO_FINAL_UNIFICADO.md))  
+**Estimativa para 100%**: 3-4 semanas  
 
-> Marque os itens concluídos e execute `python scripts/verificar_progresso.py` para verificar o progresso automaticamente.
+> Marque os itens concluídos e execute `python scripts/verificar_progresso.py` para verificar o progresso automaticamente.  
+> **Documento principal**: Consulte [docs/RELATORIO_FINAL_UNIFICADO.md](docs/RELATORIO_FINAL_UNIFICADO.md) para plano completo.

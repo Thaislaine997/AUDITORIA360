@@ -5,10 +5,10 @@ Documentação técnica completa do projeto.
 ## 📋 Documentos Principais
 
 ### 🎯 Relatórios Consolidados
-- **[RELATÓRIO UNIFICADO](RELATORIO_UNIFICADO_AUDITORIA360.md)** ⭐ - Documento mestre com status consolidado do projeto
-- [Análise de Alinhamento](ANALISE_ALINHAMENTO_PROJETO.md) - Análise retrospectiva das correções implementadas  
-- [Plano de Ação Detalhado](PLANO_DE_AÇÃO_DETALHADO.md) - Ações táticas e cronograma
-- [Plano Auditoria360](PLANO_AUDITORIA360.md) - Plano estratégico arquitetural
+- **[RELATÓRIO FINAL UNIFICADO](RELATORIO_FINAL_UNIFICADO.md)** ⭐ - **DOCUMENTO DEFINITIVO** com análise consolidada e plano de ação
+- [Histórico - Resumo da Unificação](RESUMO_UNIFICACAO.md) - Processo de unificação anterior  
+- [Histórico - Relatório Técnico](RELATORIO_UNIFICADO_FINAL.md) - Análise técnica detalhada (arquivado)
+- [Histórico - Relatório Executivo](RELATORIO_EXECUTIVO_UNIFICADO.md) - Visão executiva (arquivado)
 
 ### 🛠️ Guias Técnicos
 - [Guia de Desenvolvimento](dev_guide.md) - Setup e desenvolvimento local
@@ -43,6 +43,6 @@ Documentação técnica completa do projeto.
 - `index.md`: Página inicial do site
 
 ## 📝 Notas
-- **Documento principal**: Use sempre o [RELATÓRIO UNIFICADO](RELATORIO_UNIFICADO_AUDITORIA360.md) como referência principal
-- **Atualização**: Documentos são atualizados semanalmente
+- **Documento principal**: Use sempre o **[RELATÓRIO FINAL UNIFICADO](RELATORIO_FINAL_UNIFICADO.md)** como referência definitiva
+- **Atualização**: Este documento substitui todos os relatórios anteriores (janeiro 2025)
 - **Controle de versão**: Todas as mudanças são rastreadas via Git
