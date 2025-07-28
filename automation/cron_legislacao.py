@@ -26,5 +26,10 @@ def buscar_legislacao():
     except Exception as e:
         logging.error(f"Erro ao buscar legislação: {e}")
 
+# Alias para compatibilidade com testes
+def buscar_legislacao_diaria():
+    """Alias para buscar_legislacao para compatibilidade com testes existentes."""
+    return buscar_legislacao()
+
 if __name__ == "__main__":
     buscar_legislacao()
