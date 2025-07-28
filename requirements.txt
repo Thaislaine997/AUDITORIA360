@@ -1,33 +1,22 @@
 fastapi
-uvicorn[standard]
-streamlit
-google-cloud-documentai
-google-cloud-bigquery
-google-cloud-storage
-google-cloud-aiplatform
+uvicorn
+
+# Conexão com Banco de Dados (Neon)
+sqlalchemy
+psycopg2-binary
+
+# Análise de Dados (Substituto do BigQuery)
+duckdb
+pandas
+
+# Armazenamento de Arquivos (Cloudflare R2)
+boto3
+
+# OCR (Substituto do Document AI)
+paddleocr
+paddlepaddle
+
+# Autenticação e Utilitários
 python-jose[cryptography]
 passlib[bcrypt]
-pandas
-requests
-tenacity
-streamlit-authenticator
-reportlab
-pytest-playwright
-SQLAlchemy>=2.0.0
-google-generativeai>=0.8.0,<0.9.0
-beautifulsoup4
-flask
 pydantic[email]
-email-validator
-PyYAML
-shap
-lime
-prometheus_client
-plotly
-scikit-learn
-tensorflow
-scipy
-weasyprint
-jinja2
-pytest-mock
-bcrypt==4.3.0

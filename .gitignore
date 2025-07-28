@@ -41,3 +41,4 @@ configs/*.key
 configs/*.enc
 !configs/README.md
 backups/*.zip
+.vercel
