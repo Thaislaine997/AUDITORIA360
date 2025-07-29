@@ -20,7 +20,7 @@ python scripts/verificar_progresso.py
 pytest --cov=src --cov-report=html --cov-fail-under=90
 ```
 
-**📖 Documentação Unificada**: [**ÍNDICE PRINCIPAL**](docs/00-INDICE_PRINCIPAL.md) | [**Status Detalhado**](docs/relatorios/status-projeto.md)
+**📖 Documentação Unificada**: [**ÍNDICE PRINCIPAL**](docs/00-INDICE_PRINCIPAL.md) | [**Diagnóstico Inicial**](docs/diagnostico-inicial.md) | [**Status Detalhado**](docs/relatorios/status-projeto.md)
 
 ## 🎯 Objetivo
 
