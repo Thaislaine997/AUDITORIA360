@@ -1,0 +1,150 @@
+#!/bin/bash
+# Documentation build and sync script for AUDITORIA360
+
+set -e
+
+echo "🏗️  Building AUDITORIA360 Documentation..."
+
+# Build Sphinx API documentation
+echo "📚 Building Sphinx API documentation..."
+cd docs/sphinx
+sphinx-build -b html . _build/html
+cd ../..
+
+# Create a simple index to link both documentations
+echo "🔗 Creating unified documentation index..."
+cat > docs/documentation_index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDITORIA360 - Documentação</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e1e5e9;
+        }
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .doc-card {
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            transition: transform 0.2s;
+        }
+        .doc-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .doc-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .doc-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        .doc-link:hover {
+            background: #2980b9;
+        }
+        .features {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #e8f4fd;
+            border-radius: 8px;
+        }
+        .features ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 AUDITORIA360 - Documentação</h1>
+        <p>Portal unificado de documentação técnica e de usuário</p>
+    </div>
+
+    <div class="docs-grid">
+        <div class="doc-card">
+            <h3>🔧 Documentação da API</h3>
+            <p>Documentação técnica completa gerada automaticamente a partir do código-fonte, incluindo todos os módulos, classes e funções.</p>
+            <div class="features">
+                <h4>Inclui:</h4>
+                <ul>
+                    <li>Modelos de dados (SQLAlchemy)</li>
+                    <li>APIs REST (FastAPI)</li>
+                    <li>Serviços de negócio</li>
+                    <li>Sistema de autenticação</li>
+                    <li>Utilitários e configurações</li>
+                </ul>
+            </div>
+            <a href="sphinx/_build/html/index.html" class="doc-link">Acessar API Docs</a>
+        </div>
+
+        <div class="doc-card">
+            <h3>📖 Documentação do Usuário</h3>
+            <p>Guias de usuário, manuais de instalação, tutoriais e documentação estratégica do projeto.</p>
+            <div class="features">
+                <h4>Inclui:</h4>
+                <ul>
+                    <li>Guias de início rápido</li>
+                    <li>Manual do usuário</li>
+                    <li>Documentação estratégica</li>
+                    <li>Relatórios de qualidade</li>
+                    <li>Compliance e auditoria</li>
+                </ul>
+            </div>
+            <a href="content/index.md" class="doc-link">Acessar Docs Usuário</a>
+        </div>
+    </div>
+
+    <div class="features">
+        <h3>🚀 Como gerar a documentação</h3>
+        <p>Para atualizar a documentação automaticamente:</p>
+        <pre><code># Gerar documentação da API
+make docs-build
+
+# Executar script de sincronização
+./scripts/build_docs.sh
+
+# Rebuild completo
+make docs-rebuild</code></pre>
+    </div>
+
+    <div class="features">
+        <h3>📝 Mantendo a documentação atualizada</h3>
+        <ul>
+            <li><strong>Docstrings:</strong> Sempre documente funções e classes usando docstrings do Google style</li>
+            <li><strong>Sincronização:</strong> Execute <code>make docs-build</code> após mudanças no código</li>
+            <li><strong>Revisão:</strong> Revise a documentação gerada em <code>docs/sphinx/_build/html/</code></li>
+            <li><strong>Versionamento:</strong> Commit mudanças na pasta docs junto com o código</li>
+        </ul>
+    </div>
+</body>
+</html>
+EOF
+
+echo "✅ Documentation build completed!"
+echo "📁 Sphinx API docs: docs/sphinx/_build/html/index.html"
+echo "🌐 Unified index: docs/documentation_index.html"
