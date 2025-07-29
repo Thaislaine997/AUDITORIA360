@@ -1,3 +1,42 @@
+<!--
+  ===================================================================
+  BASIC MONITOR - AUDITORIA 360 
+  ===================================================================
+  Descrição: Template para monitor básico usando base template
+  Versão: 2.0 - Refactored to use base template inheritance
+  ===================================================================
+-->
+
+<!-- Template Configuration (this would be processed by a template engine) -->
+{{#extend "layouts/base"}} {{#content "pageConfig"}} { "title": "Basic Monitor",
+"description": "Monitor básico do AUDITORIA360 - Sistema de gestão de folha de
+pagamento", "keywords": "auditoria, monitor, status, básico, sistema",
+"bodyClass": "monitoring-page basic-monitor-page", "mainClass": "basic-monitor",
+"showHeader": true, "showFooter": true, "showTimestamp": true, "headerClass":
+"monitoring-header", "headerIcon": "🎯", "headerTitle": "AUDITORIA360 - Monitor
+Básico", "headerSubtitle": "Status básico do sistema em tempo real",
+"footerClass": "monitoring-footer", "coreStyles": [
+"../../src/frontend/src/styles/index.css", "../../assets/monitoring.css" ],
+"pageScripts": [ "./scripts/basic-monitor.js" ] } {{/content}} {{#content
+"main"}}
+<section
+  class="status-section"
+  role="region"
+  aria-label="Status do sistema"
+  id="status-container"
+>
+  <!-- Status serão carregados dinamicamente via JavaScript -->
+  <div class="loading-placeholder" aria-label="Carregando status...">
+    <div class="loading-spinner"></div>
+    <p>Carregando status do sistema...</p>
+  </div>
+</section>
+{{/content}} {{/extend}}
+
+<!-- 
+  Fallback for non-template-engine environments
+  This provides the same functionality but as a complete HTML document
+-->
 <!doctype html>
 <html lang="pt-BR">
   <head>
@@ -7,32 +46,62 @@
       name="description"
       content="Monitor básico do AUDITORIA360 - Sistema de gestão de folha de pagamento"
     />
+    <meta
+      name="keywords"
+      content="auditoria, monitor, status, básico, sistema"
+    />
     <meta name="author" content="AUDITORIA360" />
-    <title>AUDITORIA360 - Basic Monitor</title>
+    <title>Basic Monitor - AUDITORIA360</title>
 
-    <!-- Stylesheets Modularizados -->
+    <!-- Core Stylesheets -->
     <link rel="stylesheet" href="../../src/frontend/src/styles/index.css" />
     <link rel="stylesheet" href="../../assets/monitoring.css" />
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
-  <body>
-    <main class="monitoring-page" role="main">
-      <header class="monitoring-header" role="banner">
-        <h1>🎯 AUDITORIA360 - Monitor Básico</h1>
-        <p>Status básico do sistema em tempo real</p>
-      </header>
+  <body class="monitoring-page basic-monitor-page">
+    <!-- Skip navigation for accessibility -->
+    <a
+      href="#main-content"
+      class="skip-link"
+      aria-label="Ir para o conteúdo principal"
+    >
+      Pular para o conteúdo principal
+    </a>
 
-      <section class="status-section" role="region" aria-label="System status" id="status-container">
+    <!-- Header -->
+    <header class="monitoring-header" role="banner">
+      <div class="header-icon" aria-hidden="true">🎯</div>
+      <div class="header-content">
+        <h1 class="header-title">AUDITORIA360 - Monitor Básico</h1>
+        <p class="header-subtitle">Status básico do sistema em tempo real</p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="basic-monitor" role="main" tabindex="-1">
+      <section
+        class="status-section"
+        role="region"
+        aria-label="Status do sistema"
+        id="status-container"
+      >
         <!-- Status serão carregados dinamicamente via JavaScript -->
+        <div class="loading-placeholder" aria-label="Carregando status...">
+          <div class="loading-spinner"></div>
+          <p>Carregando status do sistema...</p>
+        </div>
       </section>
-
-      <footer class="monitoring-footer">
-        <p class="timestamp">
-          Última atualização: <span id="timestamp"></span>
-        </p>
-      </footer>
     </main>
 
-    <!-- Scripts Modularizados -->
+    <!-- Footer -->
+    <footer class="monitoring-footer" role="contentinfo">
+      <p class="timestamp">Última atualização: <time id="timestamp"></time></p>
+    </footer>
+
+    <!-- Scripts -->
     <script type="module" src="./scripts/basic-monitor.js"></script>
   </body>
 </html>
