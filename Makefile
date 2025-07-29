@@ -58,22 +58,28 @@ docs-build:
 docs-clean:
 	@echo "🧹 Cleaning documentation build files..."
 	rm -rf docs/sphinx/_build
+	rm -f docs/documentation_index.html
 	@echo "✅ Documentation cleaned"
 
 docs-rebuild: docs-clean docs-build
 	@echo "🔄 Documentation rebuilt successfully"
 
+docs-full:
+	@echo "🚀 Building complete documentation system..."
+	./scripts/build_docs.sh
+	@echo "✅ Complete documentation system built"
+
 docs-serve:
-	@echo "🌐 Starting MkDocs development server..."
-	cd docs && mkdocs serve
-	@echo "📝 Documentation available at http://localhost:8000"
+	@echo "🌐 Starting local documentation server..."
+	cd docs && python -m http.server 8080
+	@echo "📝 Documentation available at http://localhost:8080"
 
 docs-deploy:
-	@echo "🚀 Building and deploying MkDocs documentation..."
-	cd docs && mkdocs build
-	@echo "✅ MkDocs documentation built in docs/site"
+	@echo "🚀 Preparing documentation for deployment..."
+	./scripts/build_docs.sh
+	@echo "✅ Documentation ready for deployment"
 
-docs-all: docs-build docs-deploy
+docs-all: docs-full
 	@echo "📚 All documentation generated successfully"
 
-.PHONY: install install-dev run test format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-serve docs-deploy docs-all
+.PHONY: install install-dev run test format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all

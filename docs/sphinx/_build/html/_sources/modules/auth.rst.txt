@@ -1,5 +1,5 @@
 Módulo de Autenticação
-=====================
+======================
 
 Este módulo contém todas as funcionalidades relacionadas à autenticação e autorização de usuários.
 
@@ -9,7 +9,7 @@ Este módulo contém todas as funcionalidades relacionadas à autenticação e a
    :show-inheritance:
 
 Serviços de Autenticação
------------------------
+------------------------
 
 .. automodule:: src.services.auth_service
    :members:
@@ -17,7 +17,7 @@ Serviços de Autenticação
    :show-inheritance:
 
 API de Autenticação
-------------------
+-------------------
 
 .. automodule:: src.api.routers.auth
    :members:

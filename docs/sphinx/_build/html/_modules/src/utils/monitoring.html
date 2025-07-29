@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.utils.monitoring &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código-fonte para src.utils.monitoring</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Enhanced Monitoring System for AUDITORIA360</span>
+<span class="sd">Implements comprehensive metrics collection, alerting, and real-time monitoring.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="c1"># Email imports with fallback</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">smtplib</span>
+    <span class="kn">from</span> <span class="nn">email.mime.multipart</span> <span class="kn">import</span> <span class="n">MIMEMultipart</span>
+    <span class="kn">from</span> <span class="nn">email.mime.text</span> <span class="kn">import</span> <span class="n">MIMEText</span>
+
+    <span class="n">EMAIL_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">EMAIL_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Email functionality not available&quot;</span><span class="p">)</span>
+
+<span class="c1"># Configure logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AlertSeverity">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertSeverity">[documentos]</a>
+<span class="k">class</span> <span class="nc">AlertSeverity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alert severity levels&quot;&quot;&quot;</span>
+
+    <span class="n">LOW</span> <span class="o">=</span> <span class="s2">&quot;low&quot;</span>
+    <span class="n">MEDIUM</span> <span class="o">=</span> <span class="s2">&quot;medium&quot;</span>
+    <span class="n">HIGH</span> <span class="o">=</span> <span class="s2">&quot;high&quot;</span>
+    <span class="n">CRITICAL</span> <span class="o">=</span> <span class="s2">&quot;critical&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="MetricType">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricType">[documentos]</a>
+<span class="k">class</span> <span class="nc">MetricType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of metrics&quot;&quot;&quot;</span>
+
+    <span class="n">COUNTER</span> <span class="o">=</span> <span class="s2">&quot;counter&quot;</span>
+    <span class="n">GAUGE</span> <span class="o">=</span> <span class="s2">&quot;gauge&quot;</span>
+    <span class="n">HISTOGRAM</span> <span class="o">=</span> <span class="s2">&quot;histogram&quot;</span>
+    <span class="n">SUMMARY</span> <span class="o">=</span> <span class="s2">&quot;summary&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Metric">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.Metric">[documentos]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Metric</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metric data structure&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="n">metric_type</span><span class="p">:</span> <span class="n">MetricType</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">help_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Alert">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.Alert">[documentos]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Alert</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alert data structure&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">severity</span><span class="p">:</span> <span class="n">AlertSeverity</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">current_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="n">resolved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">resolved_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HealthCheck">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.HealthCheck">[documentos]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">HealthCheck</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Health check result structure&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;healthy&quot;, &quot;degraded&quot;, &quot;unhealthy&quot;</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">response_time_ms</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">details</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="MetricsCollector">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector">[documentos]</a>
+<span class="k">class</span> <span class="nc">MetricsCollector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collects and stores application metrics&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MetricsCollector.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">retention_hours</span> <span class="o">=</span> <span class="mi">24</span></div>
+
+
+<div class="viewcode-block" id="MetricsCollector.record_metric">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.record_metric">[documentos]</a>
+    <span class="k">def</span> <span class="nf">record_metric</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">metric_type</span><span class="p">:</span> <span class="n">MetricType</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Record a metric&quot;&quot;&quot;</span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">Metric</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">metric_type</span><span class="o">=</span><span class="n">metric_type</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">labels</span><span class="o">=</span><span class="n">labels</span> <span class="ow">or</span> <span class="p">{},</span>
+            <span class="n">help_text</span><span class="o">=</span><span class="n">help_text</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_old_metrics</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsCollector.increment_counter">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.increment_counter">[documentos]</a>
+    <span class="k">def</span> <span class="nf">increment_counter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment a counter metric&quot;&quot;&quot;</span>
+        <span class="n">current_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latest_value</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_metric</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">current_value</span> <span class="o">+</span> <span class="n">amount</span><span class="p">,</span> <span class="n">MetricType</span><span class="o">.</span><span class="n">COUNTER</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsCollector.set_gauge">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.set_gauge">[documentos]</a>
+    <span class="k">def</span> <span class="nf">set_gauge</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a gauge metric&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_metric</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">MetricType</span><span class="o">.</span><span class="n">GAUGE</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsCollector.record_histogram">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.record_histogram">[documentos]</a>
+    <span class="k">def</span> <span class="nf">record_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Record a histogram value&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_metric</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">MetricType</span><span class="o">.</span><span class="n">HISTOGRAM</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsCollector.get_latest_value">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.get_latest_value">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_latest_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the latest value for a metric&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="MetricsCollector.get_metrics_summary">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MetricsCollector.get_metrics_summary">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_metrics_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get summary of metrics for the last N hours&quot;&quot;&quot;</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">)</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">recent_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metric_list</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">recent_metrics</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">recent_metrics</span><span class="p">]</span>
+                <span class="n">summary</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">recent_metrics</span><span class="p">),</span>
+                    <span class="s2">&quot;latest&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">values</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="n">values</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="n">values</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;avg&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="n">values</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">recent_metrics</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metric_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">summary</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_cleanup_old_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove metrics older than retention period&quot;&quot;&quot;</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retention_hours</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="SystemMonitor">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.SystemMonitor">[documentos]</a>
+<span class="k">class</span> <span class="nc">SystemMonitor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Monitors system resources and application health&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SystemMonitor.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.SystemMonitor.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics_collector</span><span class="p">:</span> <span class="n">MetricsCollector</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics_collector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># seconds</span></div>
+
+
+<div class="viewcode-block" id="SystemMonitor.start_monitoring">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.SystemMonitor.start_monitoring">[documentos]</a>
+    <span class="k">def</span> <span class="nf">start_monitoring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start continuous system monitoring&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor_loop</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;System monitoring started&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SystemMonitor.stop_monitoring">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.SystemMonitor.stop_monitoring">[documentos]</a>
+    <span class="k">def</span> <span class="nf">stop_monitoring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop system monitoring&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_thread</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">monitor_thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;System monitoring stopped&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_monitor_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main monitoring loop&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_collect_system_metrics</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in monitoring loop: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_collect_system_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect system metrics&quot;&quot;&quot;</span>
+        <span class="c1"># CPU metrics</span>
+        <span class="n">cpu_percent</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span><span class="s2">&quot;system_cpu_percent&quot;</span><span class="p">,</span> <span class="n">cpu_percent</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;overall&quot;</span><span class="p">})</span>
+
+        <span class="c1"># Memory metrics</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;system_memory_percent&quot;</span><span class="p">,</span> <span class="n">memory</span><span class="o">.</span><span class="n">percent</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;virtual&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;system_memory_available_bytes&quot;</span><span class="p">,</span> <span class="n">memory</span><span class="o">.</span><span class="n">available</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;virtual&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;system_memory_used_bytes&quot;</span><span class="p">,</span> <span class="n">memory</span><span class="o">.</span><span class="n">used</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;virtual&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Disk metrics</span>
+        <span class="n">disk</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span><span class="s2">&quot;system_disk_percent&quot;</span><span class="p">,</span> <span class="n">disk</span><span class="o">.</span><span class="n">percent</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;mountpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span><span class="s2">&quot;system_disk_free_bytes&quot;</span><span class="p">,</span> <span class="n">disk</span><span class="o">.</span><span class="n">free</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;mountpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
+
+        <span class="c1"># Network metrics</span>
+        <span class="n">net_io</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">net_io_counters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;system_network_bytes_sent&quot;</span><span class="p">,</span> <span class="n">net_io</span><span class="o">.</span><span class="n">bytes_sent</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;sent&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;system_network_bytes_recv&quot;</span><span class="p">,</span> <span class="n">net_io</span><span class="o">.</span><span class="n">bytes_recv</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;received&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Process metrics</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;process_memory_percent&quot;</span><span class="p">,</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">memory_percent</span><span class="p">(),</span>
+            <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;current_process&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+            <span class="s2">&quot;process_cpu_percent&quot;</span><span class="p">,</span> <span class="n">process</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">(),</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;current_process&quot;</span><span class="p">}</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AlertManager">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager">[documentos]</a>
+<span class="k">class</span> <span class="nc">AlertManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages alerts and notifications&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AlertManager.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics_collector</span><span class="p">:</span> <span class="n">MetricsCollector</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics_collector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alerts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Alert</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_rules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notification_channels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_interval</span> <span class="o">=</span> <span class="mi">60</span>  <span class="c1"># seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluating</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_thread</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="AlertManager.add_alert_rule">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.add_alert_rule">[documentos]</a>
+    <span class="k">def</span> <span class="nf">add_alert_rule</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">severity</span><span class="p">:</span> <span class="n">AlertSeverity</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an alert rule&quot;&quot;&quot;</span>
+        <span class="n">rule</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;metric_name&quot;</span><span class="p">:</span> <span class="n">metric_name</span><span class="p">,</span>
+            <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+            <span class="s2">&quot;condition&quot;</span><span class="p">:</span> <span class="n">condition</span><span class="p">,</span>  <span class="c1"># &#39;gt&#39;, &#39;lt&#39;, &#39;gte&#39;, &#39;lte&#39;, &#39;eq&#39;</span>
+            <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">severity</span><span class="p">,</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+            <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added alert rule: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AlertManager.add_notification_channel">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.add_notification_channel">[documentos]</a>
+    <span class="k">def</span> <span class="nf">add_notification_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a notification channel (email, webhook, slack, etc.)&quot;&quot;&quot;</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">channel_type</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notification_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added notification channel: </span><span class="si">{</span><span class="n">channel_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AlertManager.start_evaluation">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.start_evaluation">[documentos]</a>
+    <span class="k">def</span> <span class="nf">start_evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start continuous alert evaluation&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluating</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluating</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_loop</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Alert evaluation started&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AlertManager.stop_evaluation">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.stop_evaluation">[documentos]</a>
+    <span class="k">def</span> <span class="nf">stop_evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop alert evaluation&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluating</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_thread</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Alert evaluation stopped&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_evaluation_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main alert evaluation loop&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluating</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_rules</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_interval</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in alert evaluation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_interval</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evaluate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate all alert rules&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alert_rules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;enabled&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error evaluating rule </span><span class="si">{</span><span class="n">rule</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evaluate_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate a single alert rule&quot;&quot;&quot;</span>
+        <span class="n">metric_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_latest_value</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;metric_name&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">metric_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;condition&quot;</span><span class="p">]</span>
+
+        <span class="n">triggered</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;gt&quot;</span> <span class="ow">and</span> <span class="n">metric_value</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">triggered</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;lt&quot;</span> <span class="ow">and</span> <span class="n">metric_value</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">triggered</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;gte&quot;</span> <span class="ow">and</span> <span class="n">metric_value</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">triggered</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;lte&quot;</span> <span class="ow">and</span> <span class="n">metric_value</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">triggered</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;eq&quot;</span> <span class="ow">and</span> <span class="n">metric_value</span> <span class="o">==</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">triggered</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">triggered</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_alert</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">metric_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_trigger_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">current_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trigger an alert&quot;&quot;&quot;</span>
+        <span class="n">alert_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rule</span><span class="p">[</span><span class="s1">&#39;metric_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Check if similar alert already exists and is not resolved</span>
+        <span class="n">existing_alert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_existing_alert</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;metric_name&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">existing_alert</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">existing_alert</span><span class="o">.</span><span class="n">resolved</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># Don&#39;t spam with duplicate alerts</span>
+
+        <span class="n">alert</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">alert_id</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
+            <span class="n">severity</span><span class="o">=</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">],</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">metric_name</span><span class="o">=</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;metric_name&quot;</span><span class="p">],</span>
+            <span class="n">current_value</span><span class="o">=</span><span class="n">current_value</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="o">=</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alerts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alert</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alert triggered: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_notifications</span><span class="p">(</span><span class="n">alert</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_existing_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Alert</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find existing unresolved alert for metric&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alerts</span><span class="p">):</span>  <span class="c1"># Check most recent first</span>
+                <span class="k">if</span> <span class="n">alert</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">==</span> <span class="n">metric_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">alert</span><span class="o">.</span><span class="n">resolved</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">alert</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_send_notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="p">:</span> <span class="n">Alert</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send alert notifications through configured channels&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">notification_channels</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;enabled&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;email&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_send_email_notification</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;webhook&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_send_webhook_notification</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;slack&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_send_slack_notification</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">channel</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to send </span><span class="si">{</span><span class="n">channel</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> notification: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_send_email_notification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="p">:</span> <span class="n">Alert</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send email notification&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">EMAIL_AVAILABLE</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Email notifications not available - skipping&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">()</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;from_email&quot;</span><span class="p">]</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;to_emails&quot;</span><span class="p">])</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Alert Details:</span>
+<span class="s2">- Title: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">title</span><span class="si">}</span>
+<span class="s2">- Description: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">description</span><span class="si">}</span>
+<span class="s2">- Severity: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">value</span><span class="si">}</span>
+<span class="s2">- Metric: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">metric_name</span><span class="si">}</span>
+<span class="s2">- Current Value: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">current_value</span><span class="si">}</span>
+<span class="s2">- Threshold: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span>
+<span class="s2">- Timestamp: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span>
+
+<span class="s2">This is an automated alert from AUDITORIA360 monitoring system.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">msg</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">MIMEText</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;plain&quot;</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;smtp_server&quot;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;smtp_port&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">server</span><span class="p">:</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">starttls</span><span class="p">()</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">])</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_send_webhook_notification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="p">:</span> <span class="n">Alert</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send webhook notification&quot;&quot;&quot;</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;alert&quot;</span><span class="p">:</span> <span class="n">asdict</span><span class="p">(</span><span class="n">alert</span><span class="p">),</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;headers&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span>
+        <span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_send_slack_notification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="p">:</span> <span class="n">Alert</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send Slack notification&quot;&quot;&quot;</span>
+        <span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">LOW</span><span class="p">:</span> <span class="s2">&quot;good&quot;</span><span class="p">,</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">MEDIUM</span><span class="p">:</span> <span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">HIGH</span><span class="p">:</span> <span class="s2">&quot;danger&quot;</span><span class="p">,</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="s2">&quot;danger&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;attachments&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">alert</span><span class="o">.</span><span class="n">severity</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                    <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Metric&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">metric_name</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Current Value&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">alert</span><span class="o">.</span><span class="n">current_value</span><span class="p">),</span>
+                            <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Threshold&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">alert</span><span class="o">.</span><span class="n">threshold</span><span class="p">),</span>
+                            <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="p">},</span>
+                    <span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;webhook_url&quot;</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AlertManager.get_active_alerts">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.get_active_alerts">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_active_alerts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Alert</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all active (unresolved) alerts&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">alert</span> <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerts</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">alert</span><span class="o">.</span><span class="n">resolved</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="AlertManager.resolve_alert">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.AlertManager.resolve_alert">[documentos]</a>
+    <span class="k">def</span> <span class="nf">resolve_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve an alert&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">alert</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">alert_id</span><span class="p">:</span>
+                    <span class="n">alert</span><span class="o">.</span><span class="n">resolved</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">alert</span><span class="o">.</span><span class="n">resolved_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alert resolved: </span><span class="si">{</span><span class="n">alert</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">break</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HealthChecker">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.HealthChecker">[documentos]</a>
+<span class="k">class</span> <span class="nc">HealthChecker</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs health checks on various system components&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HealthChecker.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.HealthChecker.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics_collector</span><span class="p">:</span> <span class="n">MetricsCollector</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics_collector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health_checks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">HealthCheck</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="HealthChecker.add_health_check">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.HealthChecker.add_health_check">[documentos]</a>
+    <span class="k">def</span> <span class="nf">add_health_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">check_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a health check&quot;&quot;&quot;</span>
+        <span class="n">health_check</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;check_func&quot;</span><span class="p">:</span> <span class="n">check_func</span><span class="p">,</span>
+            <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="n">interval</span><span class="p">,</span>
+            <span class="s2">&quot;last_run&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health_checks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">health_check</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added health check: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HealthChecker.run_all_checks">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.HealthChecker.run_all_checks">[documentos]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_all_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">HealthCheck</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run all health checks&quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">health_checks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">check</span><span class="p">[</span><span class="s2">&quot;enabled&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_check</span><span class="p">(</span><span class="n">check</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">HealthCheck</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">check</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                    <span class="n">status</span><span class="o">=</span><span class="s2">&quot;unhealthy&quot;</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                    <span class="n">response_time_ms</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">error</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_run_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">HealthCheck</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a single health check&quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">check</span><span class="p">[</span><span class="s2">&quot;check_func&quot;</span><span class="p">]):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">check</span><span class="p">[</span><span class="s2">&quot;check_func&quot;</span><span class="p">]()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">check</span><span class="p">[</span><span class="s2">&quot;check_func&quot;</span><span class="p">]()</span>
+
+            <span class="n">response_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>  <span class="c1"># ms</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;healthy&quot;</span><span class="p">)</span>
+                <span class="n">details</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;details&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;healthy&quot;</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="s2">&quot;unhealthy&quot;</span>
+                <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">health_check</span> <span class="o">=</span> <span class="n">HealthCheck</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">check</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="n">response_time_ms</span><span class="o">=</span><span class="n">response_time</span><span class="p">,</span>
+                <span class="n">details</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+                <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Record metrics</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;health_check_response_time_ms&quot;</span><span class="p">,</span>
+                <span class="n">response_time</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;check_name&quot;</span><span class="p">:</span> <span class="n">check</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]},</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_gauge</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;health_check_status&quot;</span><span class="p">,</span>
+                <span class="mi">1</span> <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;healthy&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;check_name&quot;</span><span class="p">:</span> <span class="n">check</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]},</span>
+            <span class="p">)</span>
+
+            <span class="n">check</span><span class="p">[</span><span class="s2">&quot;last_run&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">health_check</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">response_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+            <span class="k">return</span> <span class="n">HealthCheck</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">check</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">status</span><span class="o">=</span><span class="s2">&quot;unhealthy&quot;</span><span class="p">,</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="n">response_time_ms</span><span class="o">=</span><span class="n">response_time</span><span class="p">,</span>
+                <span class="n">error</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MonitoringSystem">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MonitoringSystem">[documentos]</a>
+<span class="k">class</span> <span class="nc">MonitoringSystem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main monitoring system coordinator&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MonitoringSystem.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MonitoringSystem.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">MetricsCollector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_monitor</span> <span class="o">=</span> <span class="n">SystemMonitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span> <span class="o">=</span> <span class="n">AlertManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health_checker</span> <span class="o">=</span> <span class="n">HealthChecker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_default_alerts</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MonitoringSystem.start">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MonitoringSystem.start">[documentos]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start all monitoring components&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_monitor</span><span class="o">.</span><span class="n">start_monitoring</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">start_evaluation</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Monitoring system started&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MonitoringSystem.stop">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MonitoringSystem.stop">[documentos]</a>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop all monitoring components&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_monitor</span><span class="o">.</span><span class="n">stop_monitoring</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">stop_evaluation</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Monitoring system stopped&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_setup_default_alerts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup default alert rules&quot;&quot;&quot;</span>
+        <span class="c1"># CPU alerts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">add_alert_rule</span><span class="p">(</span>
+            <span class="s2">&quot;system_cpu_percent&quot;</span><span class="p">,</span>
+            <span class="mi">80</span><span class="p">,</span>
+            <span class="s2">&quot;gt&quot;</span><span class="p">,</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>
+            <span class="s2">&quot;High CPU Usage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CPU usage is above 80%&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Memory alerts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">add_alert_rule</span><span class="p">(</span>
+            <span class="s2">&quot;system_memory_percent&quot;</span><span class="p">,</span>
+            <span class="mi">85</span><span class="p">,</span>
+            <span class="s2">&quot;gt&quot;</span><span class="p">,</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>
+            <span class="s2">&quot;High Memory Usage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Memory usage is above 85%&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Disk alerts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">add_alert_rule</span><span class="p">(</span>
+            <span class="s2">&quot;system_disk_percent&quot;</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="s2">&quot;gt&quot;</span><span class="p">,</span>
+            <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
+            <span class="s2">&quot;High Disk Usage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Disk usage is above 90%&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="MonitoringSystem.get_dashboard_data">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.MonitoringSystem.get_dashboard_data">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_dashboard_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get data for monitoring dashboard&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;metrics_summary&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_metrics_summary</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;active_alerts&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">asdict</span><span class="p">(</span><span class="n">alert</span><span class="p">)</span> <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">get_active_alerts</span><span class="p">()</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;health_checks&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">asdict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">health_checker</span><span class="o">.</span><span class="n">results</span><span class="p">],</span>
+            <span class="s2">&quot;system_status&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_system_status</span><span class="p">(),</span>
+        <span class="p">}</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_system_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get overall system status&quot;&quot;&quot;</span>
+        <span class="n">active_alerts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">get_active_alerts</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">alert</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">CRITICAL</span> <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="n">active_alerts</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;critical&quot;</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">alert</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">AlertSeverity</span><span class="o">.</span><span class="n">HIGH</span> <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="n">active_alerts</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;degraded&quot;</span>
+        <span class="k">elif</span> <span class="n">active_alerts</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;warning&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;healthy&quot;</span></div>
+
+
+
+<span class="c1"># Global monitoring instance</span>
+<span class="n">monitoring</span> <span class="o">=</span> <span class="n">MonitoringSystem</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_monitoring_system">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.monitoring.get_monitoring_system">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_monitoring_system</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">MonitoringSystem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the global monitoring system instance&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">monitoring</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
