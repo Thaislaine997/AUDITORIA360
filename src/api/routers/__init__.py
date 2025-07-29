@@ -10,7 +10,6 @@ from .cct import router as cct_router
 from .notifications import router as notification_router
 from .audit import router as audit_router
 from .ai import router as ai_router
- Principal
 
 __all__ = [
     "auth_router",
