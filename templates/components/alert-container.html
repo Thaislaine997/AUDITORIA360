@@ -1,0 +1,28 @@
+<!--
+  ===================================================================
+  ALERT CONTAINER COMPONENT - AUDITORIA 360
+  ===================================================================
+  Descrição: Componente reutilizável para exibição de alertas
+  ===================================================================
+-->
+<section class="alerts-section" role="region" aria-label="System alerts">
+  <h2>🚨 {{title}}</h2>
+  
+  {{#if hasAlerts}}
+    {{#each alerts}}
+    <div class="alert-item alert-{{level}}">
+      <strong>{{icon}} {{title}}</strong><br />
+      {{message}}
+      <div class="alert-meta">
+        <span class="timestamp">{{timestamp}}</span>
+        <span class="source">{{source}}</span>
+      </div>
+    </div>
+    {{/each}}
+  {{else}}
+    <div class="alert-container no-alerts">
+      <strong>✅ {{noAlertsMessage}}</strong><br />
+      {{noAlertsSubtitle}}
+    </div>
+  {{/if}}
+</section>

@@ -16,6 +16,7 @@
 - **[📊 Métricas KPI](estrategico/metricas-kpi.md)** - Indicadores de performance
 ### 🛠️ **Documentação Técnica**
 - **[🔧 Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)** - Setup e desenvolvimento
+- **[🧩 Frontend Modularização](tecnico/frontend-modularizacao.md)** - **NOVO** - Estrutura modular do frontend
 - **[🔌 APIs Completas](tecnico/apis/api-documentation.md)** - Documentação de APIs (1.537 linhas)
 - **[🏗️ Arquitetura](tecnico/arquitetura/visao-geral.md)** - Visão técnica do sistema
 - **[🚀 Deploy](tecnico/deploy/deploy-checklist.md)** - Checklist de implantação

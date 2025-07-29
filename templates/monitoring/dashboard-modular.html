@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Dashboard de monitoramento em tempo real do AUDITORIA360 - Sistema de gestão de folha de pagamento"
+    />
+    <meta name="author" content="AUDITORIA360" />
+    <title>AUDITORIA360 - Monitoring Dashboard</title>
+
+    <!-- Stylesheets Modularizados -->
+    <link rel="stylesheet" href="../../src/frontend/src/styles/index.css" />
+    <link rel="stylesheet" href="../../assets/monitoring.css" />
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body>
+    <main class="monitoring-page" role="main">
+      <header class="monitoring-header" role="banner">
+        <h1>🎯 AUDITORIA360 - Monitoring Dashboard</h1>
+        <p>Sistema de Monitoramento Avançado em Tempo Real</p>
+      </header>
+
+      <section class="metrics-grid" role="region" aria-label="System metrics" id="metrics-container">
+        <!-- Métricas serão carregadas dinamicamente via JavaScript -->
+      </section>
+
+      <section class="alerts-section" role="region" aria-label="System alerts" id="alerts-container">
+        <!-- Alertas serão carregados dinamicamente via JavaScript -->
+      </section>
+
+      <!-- Auto-refresh indicator -->
+      <div class="refresh-indicator" role="status" aria-live="polite">
+        Auto-refresh: <span id="refresh-countdown">30</span>s
+      </div>
+    </main>
+
+    <!-- Scripts Modularizados -->
+    <script type="module" src="./scripts/monitoring-dashboard.js"></script>
+  </body>
+</html>
