@@ -2,7 +2,6 @@ import json
 import os
 
 
-
 def load_data_from_bq(project_id: str, dataset_id: str, table_name: str):
     from google.cloud import bigquery
 

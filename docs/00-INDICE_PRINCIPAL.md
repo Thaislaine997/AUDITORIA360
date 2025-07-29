@@ -111,7 +111,9 @@ qualidade/
 ├── testes-e2e.md                   # Testes end-to-end
 ├── testes-performance.md           # Testes de performance
 ├── qa-checklist.md                 # Checklist QA
-└── cobertura-testes.md             # Relatório de cobertura
+├── cobertura-testes.md             # Relatório de cobertura
+├── PADRONIZACAO_PYTHON.md         # Padronização PEP8 completa
+└── GUIA_PADROES_CODIGO.md          # Guia rápido de padrões
 ```
 
 ---
@@ -147,9 +149,11 @@ qualidade/
 ### 👨‍💻 **Desenvolvedores**
 1. [Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)
 2. [Setup do Ambiente](tecnico/desenvolvimento/setup-ambiente.md)
-3. [Notebooks de Análise](tecnico/notebooks/README.md)
-4. [Documentação APIs](tecnico/apis/api-documentation.md)
-5. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
+3. [Padrões de Código Python](qualidade/PADRONIZACAO_PYTHON.md)
+4. [Guia Rápido de Qualidade](qualidade/GUIA_PADROES_CODIGO.md)
+5. [Notebooks de Análise](tecnico/notebooks/README.md)
+6. [Documentação APIs](tecnico/apis/api-documentation.md)
+7. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
 
 ### 👨‍🔧 **DevOps / SRE**
 1. [Deploy Checklist](tecnico/deploy/deploy-checklist.md)
