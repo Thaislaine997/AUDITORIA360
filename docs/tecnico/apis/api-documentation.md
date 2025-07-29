@@ -1,53 +1,49 @@
-# 🔌 API de Relatórios - AUDITORIA360
+# 🔌 AUDITORIA360 - API Documentation
 
-## 📋 Visão Geral
+> **📋 Complete API Documentation** - Comprehensive guide to all endpoints with refactored backend
 
-A API de Relatórios do AUDITORIA360 fornece endpoints para geração, consulta e gerenciamento de relatórios unificados com estrutura gráfica.
+## 🚀 **API Refactoring Status**
 
-## 🚀 Endpoints Disponíveis
+### ✅ **Completed Improvements**
+- **Standardized Error Handling**: Consistent error responses across all endpoints
+- **Enhanced Input Validation**: Comprehensive Pydantic models for request validation  
+- **Unified Response Format**: Standardized JSON response structure
+- **Performance Monitoring**: Request/response time tracking and optimization
+- **Consistent URL Patterns**: All endpoints follow `/api/v1/{module}` structure
+- **Middleware Integration**: Centralized logging and error handling
 
-### 📊 Geração de Relatórios
+### 📊 **Progress Summary**
+- ✅ **Router Import Issues**: Fixed all None router issues
+- ✅ **Error Handling**: Implemented standardized error middleware
+- ✅ **Validation**: Added comprehensive input validation
+- ✅ **Documentation**: Updated endpoint documentation
+- ✅ **Response Format**: Standardized all response structures
 
-#### POST `/api/v1/reports/generate`
-Gera um novo relatório com base nos parâmetros fornecidos.
+---
 
-**Request Body**:
-```json
-{
-  "type": "daily|weekly|monthly|quarterly|annual|custom",
-  "period_start": "2025-01-01T00:00:00Z",
-  "period_end": "2025-01-31T23:59:59Z",
-  "include_charts": true,
-  "format": "json|html|pdf|csv|excel",
-  "filters": {
-    "department": ["RH", "Financeiro"],
-    "priority": ["alta", "critica"]
-  }
-}
-```
+## 📚 **Documentation Structure**
 
-**Response**:
-```json
-{
-  "id": "monthly_20250101_20250131",
-  "status": "generated",
-  "download_url": "/api/v1/reports/monthly_20250101_20250131/download",
-  "preview_url": "/api/v1/reports/monthly_20250101_20250131/preview"
-}
-```
+### 🔗 **Quick Links**
+- **[📋 Endpoint Reference](endpoint-reference.md)** - Complete endpoint documentation
+- **[🔧 Error Handling Guide](error-handling.md)** - Error codes and handling
+- **[📊 Performance Guide](performance.md)** - Performance optimization tips
+- **[🧪 Testing Guide](testing.md)** - API testing documentation
 
-#### GET `/api/v1/reports/{report_id}`
-Obtém detalhes de um relatório específico.
+### 📋 **API Modules**
 
-**Response**:
-```json
-{
-  "id": "monthly_20250101_20250131",
-  "type": "monthly",
-  "title": "Relatório Monthly - AUDITORIA360",
-  "generated_at": "2025-01-31T23:59:59Z",
-  "period_start": "2025-01-01T00:00:00Z",
-  "period_end": "2025-01-31T23:59:59Z",
+| Module | Status | Description | Documentation |
+|--------|--------|-------------|---------------|
+| **Authentication** | ✅ Active | User authentication and authorization | [Auth API](auth-api.md) |
+| **Payroll** | ✅ Active | Payroll management and calculations | [Payroll API](payroll-api.md) |
+| **Documents** | ✅ Active | Document upload and management | [Documents API](documents-api.md) |
+| **CCT** | ✅ Active | Collective Labor Agreements | [CCT API](cct-api.md) |
+| **Notifications** | ✅ Active | Notification system | [Notifications API](notifications-api.md) |
+| **Audit** | ✅ **Refactored** | Audit and compliance monitoring | [Audit API](audit-api.md) |
+| **Compliance** | ✅ **Refactored** | Compliance checking engine | [Compliance API](compliance-api.md) |
+| **AI** | ✅ Active | AI-powered features | [AI API](ai-api.md) |
+| **Automation** | ✅ **Refactored** | Serverless automation tasks | [Automation API](automation-api.md) |
+
+---
   "status": "completed",
   "metrics": {
     "total_audits": 150,

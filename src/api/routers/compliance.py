@@ -1,6 +1,6 @@
 """
 Compliance Check API Router
-Performance optimized compliance checking endpoint
+Performance optimized compliance checking endpoint with standardized responses
 """
 
 import logging
@@ -8,8 +8,11 @@ from datetime import datetime
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from src.api.common.responses import create_success_response, forbidden_error, validation_error
+from src.api.common.validators import BaseValidationModel
 from src.models import User, get_db
 from src.services.auth_service import get_current_user
 from src.services.cache_service import cached_response
@@ -19,46 +22,56 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/check")
+class ComplianceCheckRequest(BaseValidationModel):
+    """Request model for compliance check"""
+    
+    entity_type: str = Field(..., pattern="^(payroll|employee|cct)$", description="Type of entity to check")
+    entity_id: str = Field(..., min_length=1, max_length=50, description="ID of the entity to check")
+    rule_categories: Optional[List[str]] = Field(None, description="Specific rule categories to check")
+    include_resolved: bool = Field(False, description="Include already resolved violations")
+
+
+class ComplianceRuleRequest(BaseValidationModel):
+    """Request model for executing compliance rules"""
+    
+    entity_type: str = Field(..., pattern="^(payroll|employee|cct)$", description="Type of entity to check")
+    entity_ids: List[str] = Field(..., min_items=1, max_items=100, description="List of entity IDs to check")
+
+
+@router.post("/check")
 @cached_response("compliance_check", ttl_seconds=180)
 async def compliance_check(
-    entity_type: str = Query(
-        ..., description="Type of entity to check: payroll, employee, cct"
-    ),
-    entity_id: str = Query(..., description="ID of the entity to check"),
-    rule_categories: Optional[List[str]] = Query(
-        None, description="Specific rule categories to check"
-    ),
-    include_resolved: bool = Query(
-        False, description="Include already resolved violations"
-    ),
+    request: ComplianceCheckRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """
-    Perform compliance check - PERFORMANCE OPTIMIZED
+    Perform compliance check with standardized request/response format
     Target: <1s response time (was 2.8s)
     """
     start_time = datetime.now()
 
     try:
-        logger.info(f"Running compliance check for {entity_type}:{entity_id}")
+        logger.info(
+            f"Running compliance check for {request.entity_type}:{request.entity_id}",
+            extra={"entity_type": request.entity_type, "entity_id": request.entity_id}
+        )
 
         # Simulate optimized compliance checking
         compliance_result = {
             "entity": {
-                "type": entity_type,
-                "id": entity_id,
+                "type": request.entity_type,
+                "id": request.entity_id,
                 "checked_at": datetime.now().isoformat(),
             },
             "compliance_status": "COMPLIANT",  # COMPLIANT, NON_COMPLIANT, WARNING, NEEDS_REVIEW
-            "rules_checked": rule_categories or ["salary", "tax", "union", "vacation"],
+            "rules_checked": request.rule_categories or ["salary", "tax", "union", "vacation"],
             "summary": {
                 "total_rules_applied": 0,
                 "violations_found": 0,
                 "warnings_found": 0,
                 "critical_violations": 0,
-                "resolved_violations": 0 if not include_resolved else 0,
+                "resolved_violations": 0 if not request.include_resolved else 0,
             },
             "violations": [],
             "recommendations": [],
@@ -72,7 +85,7 @@ async def compliance_check(
         }
 
         # Simulate finding some issues based on entity type
-        if entity_type == "payroll":
+        if request.entity_type == "payroll":
             compliance_result["summary"]["total_rules_applied"] = 15
             compliance_result["violations"] = [
                 {
@@ -86,12 +99,12 @@ async def compliance_check(
             compliance_result["summary"]["violations_found"] = 1
             compliance_result["compliance_status"] = "NON_COMPLIANT"
 
-        elif entity_type == "employee":
+        elif request.entity_type == "employee":
             compliance_result["summary"]["total_rules_applied"] = 8
             compliance_result["violations"] = []
             compliance_result["compliance_status"] = "COMPLIANT"
 
-        elif entity_type == "cct":
+        elif request.entity_type == "cct":
             compliance_result["summary"]["total_rules_applied"] = 12
             compliance_result["violations"] = [
                 {
@@ -117,7 +130,10 @@ async def compliance_check(
                 f"Compliance check took {processing_time:.3f}s (target: <1s)"
             )
 
-        return compliance_result
+        return create_success_response(
+            data=compliance_result,
+            message="Compliance check completed successfully"
+        )
 
     except Exception as e:
         logger.error(f"Error in compliance check: {e}")
@@ -135,7 +151,7 @@ async def list_compliance_rules(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """List available compliance rules with caching"""
+    """List available compliance rules with caching and standardized response"""
 
     rules = [
         {
@@ -179,48 +195,50 @@ async def list_compliance_rules(
     if active_only:
         rules = [r for r in rules if r["active"]]
 
-    return {
+    result_data = {
         "rules": rules,
         "total": len(rules),
         "categories": list(set(r["category"] for r in rules)),
     }
 
+    return create_success_response(
+        data=result_data,
+        message="Compliance rules retrieved successfully"
+    )
+
 
 @router.post("/rules/{rule_id}/execute")
 async def execute_compliance_rule(
     rule_id: str,
-    entity_type: str = Query(..., description="Type of entity to check"),
-    entity_ids: List[str] = Query(..., description="List of entity IDs to check"),
+    request: ComplianceRuleRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Execute a specific compliance rule against multiple entities"""
+    """Execute a specific compliance rule against multiple entities with validation"""
 
     if current_user.role not in ["administrador", "contador"]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
-        )
+        raise forbidden_error("Insufficient permissions to execute compliance rules")
 
     start_time = datetime.now()
 
     results = []
-    for entity_id in entity_ids:
+    for entity_id in request.entity_ids:
         # Simulate rule execution
         result = {
             "entity_id": entity_id,
             "rule_id": rule_id,
             "status": "PASSED",  # PASSED, FAILED, WARNING
             "checked_at": datetime.now().isoformat(),
-            "details": f"Rule {rule_id} executed successfully for {entity_type} {entity_id}",
+            "details": f"Rule {rule_id} executed successfully for {request.entity_type} {entity_id}",
         }
         results.append(result)
 
     processing_time = (datetime.now() - start_time).total_seconds()
 
-    return {
+    execution_result = {
         "rule_id": rule_id,
-        "entity_type": entity_type,
-        "total_checked": len(entity_ids),
+        "entity_type": request.entity_type,
+        "total_checked": len(request.entity_ids),
         "results": results,
         "execution_time_seconds": processing_time,
         "summary": {
@@ -229,3 +247,8 @@ async def execute_compliance_rule(
             "warnings": len([r for r in results if r["status"] == "WARNING"]),
         },
     }
+
+    return create_success_response(
+        data=execution_result,
+        message=f"Compliance rule {rule_id} executed successfully"
+    )

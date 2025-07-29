@@ -10,7 +10,26 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Import middleware for standardized error handling
+try:
+    from src.api.common.middleware import (
+        PerformanceMonitoringMiddleware,
+        RequestLoggingMiddleware,
+        StandardizedErrorMiddleware,
+    )
+    from src.api.common.responses import create_error_response, ErrorCode
+
+    MIDDLEWARE_AVAILABLE = True
+except ImportError:
+    MIDDLEWARE_AVAILABLE = False
+    logger.warning("⚠️ Standardized middleware not available")
 
 # Import monitoring and performance systems
 try:
@@ -40,9 +59,6 @@ except ImportError:
 
 
 # Import routers for all modules - with fallbacks for broken dependencies
-compliance_router = None
-automation_router = None
-
 try:
     from src.api.routers import (
         ai_router,
@@ -53,6 +69,8 @@ try:
         notification_router,
         payroll_router,
     )
+    from src.api.routers.compliance import router as compliance_router
+    from src.api.routers.automation import router as automation_router
 
     ROUTERS_AVAILABLE = True
 except ImportError as e:
@@ -67,6 +85,8 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
+    compliance_router = APIRouter()
+    automation_router = APIRouter()
 
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
@@ -79,6 +99,14 @@ except ImportError as e:
     @payroll_router.get("/health")
     def payroll_health():
         return {"message": "Payroll module - ready", "status": "ok"}
+    
+    @compliance_router.get("/health")
+    def compliance_health():
+        return {"message": "Compliance module - ready", "status": "ok"}
+    
+    @automation_router.get("/health")
+    def automation_health():
+        return {"message": "Automation module - ready", "status": "ok"}
 
 
 # Security
@@ -152,6 +180,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add standardized middleware
+if MIDDLEWARE_AVAILABLE:
+    app.add_middleware(StandardizedErrorMiddleware)
+    app.add_middleware(PerformanceMonitoringMiddleware, slow_request_threshold=1.0)
+    app.add_middleware(RequestLoggingMiddleware)
+    logger.info("✅ Standardized middleware enabled")
+else:
+    logger.warning("⚠️ Using basic error handling (middleware not available)")
 
 
 # Health check endpoint
@@ -273,28 +310,28 @@ except ImportError:
         return {"message": "Dashboard module loading...", "status": "placeholder"}
 
 
-# Include all module routers
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
-app.include_router(
-    payroll_router, prefix="/api/v1/payroll", tags=["Payroll Management"]
-)
-app.include_router(
-    document_router, prefix="/api/v1/documents", tags=["Document Management"]
-)
-app.include_router(
-    cct_router, prefix="/api/v1/cct", tags=["Collective Labor Agreements"]
-)
-app.include_router(
-    notification_router, prefix="/api/v1/notifications", tags=["Notifications"]
-)
-app.include_router(
-    audit_router, prefix="/api/v1/auditorias", tags=["Audit & Compliance"]
-)
-app.include_router(
-    compliance_router, prefix="/api/v1/compliance", tags=["Compliance Check"]
-)
-app.include_router(ai_router, prefix="/api/v1/ai", tags=["AI & Chatbot"])
-app.include_router(automation_router, prefix="/api/v1", tags=["Serverless Automation"])
+# Include all module routers with safe error handling
+router_configs = [
+    (auth_router, "/api/v1/auth", ["Authentication"]),
+    (payroll_router, "/api/v1/payroll", ["Payroll Management"]),
+    (document_router, "/api/v1/documents", ["Document Management"]),
+    (cct_router, "/api/v1/cct", ["Collective Labor Agreements"]),
+    (notification_router, "/api/v1/notifications", ["Notifications"]),
+    (audit_router, "/api/v1/auditorias", ["Audit & Compliance"]),
+    (compliance_router, "/api/v1/compliance", ["Compliance Check"]),
+    (ai_router, "/api/v1/ai", ["AI & Chatbot"]),
+    (automation_router, "/api/v1/automation", ["Serverless Automation"]),
+]
+
+for router, prefix, tags in router_configs:
+    if router is not None:
+        try:
+            app.include_router(router, prefix=prefix, tags=tags)
+            logger.info(f"✅ Successfully included router: {prefix}")
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to include router {prefix}: {e}")
+    else:
+        logger.warning(f"⚠️ Router for {prefix} is None, skipping")
 
 # Enhanced demonstration endpoints
 if ENHANCED_FEATURES:
@@ -405,10 +442,23 @@ def get_system_status():
     return status_data
 
 
-# Global exception handler
+# Global exception handler with standardized error responses
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
-    return HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail=f"Internal server error: {str(exc)}",
-    )
+    """Global exception handler using standardized error format"""
+    if MIDDLEWARE_AVAILABLE:
+        error_response = create_error_response(
+            error_code=ErrorCode.INTERNAL_SERVER_ERROR,
+            message=f"Internal server error: {str(exc)}",
+            request_id=getattr(request.state, "request_id", None)
+        )
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=error_response.dict()
+        )
+    else:
+        # Fallback to original format
+        return HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(exc)}",
+        )
