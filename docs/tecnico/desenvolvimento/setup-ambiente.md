@@ -214,6 +214,18 @@ python scripts/reset_database.py
 
 # Verificar conexão
 python scripts/test_database.py
+
+# Scripts padronizados (todos com --help para documentação)
+./scripts/git_update_all.sh --help
+./scripts/deploy_vercel.sh --help
+./scripts/restore_db.sh --help
+./deploy/cloudrun_deploy.sh --help
+./auditoria_gcp.sh --help
+
+# Scripts PowerShell padronizados
+Get-Help .\deploy\cloudrun_deploy_backend.ps1 -Full
+Get-Help .\deploy\cloudrun_deploy_streamlit.ps1 -Full
+Get-Help .\installers\setup_dev_env.ps1 -Full
 ```
 
 ---
