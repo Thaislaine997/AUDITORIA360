@@ -57,3 +57,7 @@ temp_*
 # Logs and monitoring
 *.log
 logs/
+
+# Streamlit production secrets (keep template only)
+.streamlit/secrets.toml
+!.streamlit/secrets.toml.template

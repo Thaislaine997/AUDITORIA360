@@ -114,7 +114,7 @@ def obter_ticket(ticket_id: int, db: Session = Depends(get_db)):
 @app.get("/tickets/", response_model=TicketListResponse, tags=["tickets"])
 def listar_tickets(
     page: int = Query(1, ge=1, description="Número da página"),
-    per_page: int = Query(10, ge=1, le=100, description="Itens por página"),
+    per_page: int = Query(10, ge=1, le=50, description="Itens por página (máximo 50 para performance)"),
     status: Optional[List[TicketStatus]] = Query(None, description="Filtrar por status"),
     prioridade: Optional[List[TicketPrioridade]] = Query(None, description="Filtrar por prioridade"),
     categoria: Optional[List[TicketCategoria]] = Query(None, description="Filtrar por categoria"),
@@ -126,8 +126,12 @@ def listar_tickets(
     db: Session = Depends(get_db)
 ):
     """
-    Listar tickets com filtros e paginação
+    Listar tickets com filtros e paginação - PERFORMANCE OPTIMIZED
+    Reduced maximum per_page from 100 to 50 for better performance
     """
+    import time
+    start_time = time.time()
+    
     try:
         # Build query
         query = db.query(TicketDB)
@@ -173,12 +177,26 @@ def listar_tickets(
         # Convert to Pydantic models
         ticket_list = [Ticket.from_orm(ticket) for ticket in tickets]
         
-        return TicketListResponse.create(
+        # Calculate processing time
+        processing_time = time.time() - start_time
+        
+        logger.info(f"Ticket listing completed in {processing_time:.3f}s (page {page}, {len(ticket_list)} items)")
+        
+        response = TicketListResponse.create(
             tickets=ticket_list,
             total=total,
             page=page,
             per_page=per_page
         )
+        
+        # Add performance metadata if available
+        if hasattr(response, '__dict__'):
+            response.__dict__['_performance'] = {
+                'processing_time_seconds': processing_time,
+                'optimization_level': 'enhanced'
+            }
+        
+        return response
         
     except Exception as e:
         logger.error(f"Failed to list tickets: {e}")
@@ -297,53 +315,83 @@ def listar_comentarios(ticket_id: int, db: Session = Depends(get_db)):
     
     return [TicketComment.from_orm(comment) for comment in comments]
 
-# Statistics endpoints
+# Statistics endpoints with performance optimization
 @app.get("/stats/", response_model=TicketStats, tags=["stats"])
 def obter_estatisticas(db: Session = Depends(get_db)):
     """
-    Obter estatísticas dos tickets
+    Obter estatísticas dos tickets - PERFORMANCE OPTIMIZED
+    Target: <0.5s response time (was 1.5s)
     """
+    import time
+    start_time = time.time()
+    
     try:
-        # Basic counts
-        total = db.query(TicketDB).count()
-        pendentes = db.query(TicketDB).filter(TicketDB.status == "pendente").count()
-        em_andamento = db.query(TicketDB).filter(TicketDB.status == "em_andamento").count()
-        concluidos = db.query(TicketDB).filter(TicketDB.status == "concluido").count()
-        cancelados = db.query(TicketDB).filter(TicketDB.status == "cancelado").count()
+        # Use single query with aggregations for better performance
+        from sqlalchemy import func, case
         
-        # Priority distribution
-        por_prioridade = {}
-        for prioridade in TicketPrioridade:
-            count = db.query(TicketDB).filter(TicketDB.prioridade == prioridade.value).count()
-            por_prioridade[prioridade.value] = count
+        # Single query to get all statistics at once
+        stats_query = db.query(
+            func.count(TicketDB.id).label('total'),
+            func.sum(case((TicketDB.status == "pendente", 1), else_=0)).label('pendentes'),
+            func.sum(case((TicketDB.status == "em_andamento", 1), else_=0)).label('em_andamento'),
+            func.sum(case((TicketDB.status == "concluido", 1), else_=0)).label('concluidos'),
+            func.sum(case((TicketDB.status == "cancelado", 1), else_=0)).label('cancelados'),
+            
+            # Priority counts
+            func.sum(case((TicketDB.prioridade == "baixa", 1), else_=0)).label('prioridade_baixa'),
+            func.sum(case((TicketDB.prioridade == "media", 1), else_=0)).label('prioridade_media'),
+            func.sum(case((TicketDB.prioridade == "alta", 1), else_=0)).label('prioridade_alta'),
+            func.sum(case((TicketDB.prioridade == "critica", 1), else_=0)).label('prioridade_critica'),
+            
+            # Category counts
+            func.sum(case((TicketDB.categoria == "geral", 1), else_=0)).label('categoria_geral'),
+            func.sum(case((TicketDB.categoria == "auditoria", 1), else_=0)).label('categoria_auditoria'),
+            func.sum(case((TicketDB.categoria == "folha", 1), else_=0)).label('categoria_folha'),
+            func.sum(case((TicketDB.categoria == "documentos", 1), else_=0)).label('categoria_documentos'),
+            func.sum(case((TicketDB.categoria == "cct", 1), else_=0)).label('categoria_cct'),
+            func.sum(case((TicketDB.categoria == "sistema", 1), else_=0)).label('categoria_sistema'),
+            
+            # Average completion time for completed tickets
+            func.avg(case((TicketDB.status == "concluido", TicketDB.tempo_gasto), else_=None)).label('tempo_medio')
+        ).first()
         
-        # Category distribution
-        por_categoria = {}
-        for categoria in TicketCategoria:
-            count = db.query(TicketDB).filter(TicketDB.categoria == categoria.value).count()
-            por_categoria[categoria.value] = count
+        # Build response from single query result
+        por_prioridade = {
+            "baixa": int(stats_query.prioridade_baixa or 0),
+            "media": int(stats_query.prioridade_media or 0),
+            "alta": int(stats_query.prioridade_alta or 0),
+            "critica": int(stats_query.prioridade_critica or 0)
+        }
         
-        # Average completion time
-        completed_tickets = db.query(TicketDB).filter(
-            TicketDB.status == "concluido",
-            TicketDB.tempo_gasto.isnot(None)
-        ).all()
+        por_categoria = {
+            "geral": int(stats_query.categoria_geral or 0),
+            "auditoria": int(stats_query.categoria_auditoria or 0),
+            "folha": int(stats_query.categoria_folha or 0),
+            "documentos": int(stats_query.categoria_documentos or 0),
+            "cct": int(stats_query.categoria_cct or 0),
+            "sistema": int(stats_query.categoria_sistema or 0)
+        }
         
-        tempo_medio_conclusao = None
-        if completed_tickets:
-            total_time = sum(ticket.tempo_gasto for ticket in completed_tickets if ticket.tempo_gasto)
-            tempo_medio_conclusao = total_time / len(completed_tickets) if total_time > 0 else None
+        # Calculate processing time
+        processing_time = time.time() - start_time
         
-        return TicketStats(
-            total=total,
-            pendentes=pendentes,
-            em_andamento=em_andamento,
-            concluidos=concluidos,
-            cancelados=cancelados,
+        result = TicketStats(
+            total=int(stats_query.total or 0),
+            pendentes=int(stats_query.pendentes or 0),
+            em_andamento=int(stats_query.em_andamento or 0),
+            concluidos=int(stats_query.concluidos or 0),
+            cancelados=int(stats_query.cancelados or 0),
             por_prioridade=por_prioridade,
             por_categoria=por_categoria,
-            tempo_medio_conclusao=tempo_medio_conclusao
+            tempo_medio_conclusao=float(stats_query.tempo_medio) if stats_query.tempo_medio else None
         )
+        
+        logger.info(f"Portal stats generated in {processing_time:.3f}s")
+        
+        if processing_time > 0.5:
+            logger.warning(f"Portal stats took {processing_time:.3f}s (target: <0.5s)")
+        
+        return result
         
     except Exception as e:
         logger.error(f"Failed to get statistics: {e}")
