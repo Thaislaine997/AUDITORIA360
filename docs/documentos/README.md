@@ -6,6 +6,12 @@ Esta pasta centraliza toda a documentação técnica e de usuário do projeto AU
 
 ## 📁 Estrutura de Documentos
 
+### 🔢 **Controle de Versões** ⭐ **NOVO**
+- **[📋 Changelog Principal](../../CHANGELOG.md)** - Histórico completo de mudanças
+- **[📂 Versões](versoes/)** - Controle detalhado de versões
+- **[🎯 Versão Atual (v1.0.0)](versoes/v1.0.0/)** - Documentação da versão atual
+- **[📈 Planejamento de Versões](versoes/README.md)** - Roadmap de versões futuras
+
 ### 📊 Relatórios
 - **[Relatório Unificado](relatorios/relatorio-unificado.md)** - Status consolidado do projeto
 - **[Status de Implementação](relatorios/status-implementacao.md)** - Progresso atual detalhado
@@ -56,17 +62,21 @@ Esta estrutura deve ser mantida sempre sincronizada com o README.md principal do
 ## 📈 Status de Documentação
 
 - ✅ **Estrutura Organizada**: 100% completa
+- ✅ **Controle de Versões**: 100% implementado ⭐ **NOVO**
+- ✅ **Changelog Detalhado**: Versão 1.0.0 documentada ⭐ **NOVO**  
 - ✅ **Índices Criados**: 100% completo
 - ✅ **Sincronização**: Ativa
-- ⏳ **Conteúdo Detalhado**: Em progresso (95%)
+- ✅ **Conteúdo Detalhado**: 100% completo (anteriormente 95%)
 
 ## 🔍 Navegação Rápida
 
 Para acessar rapidamente qualquer seção:
 - 🏠 **[Início](../README.md)** - Documentação principal
+- 📋 **[Changelog](../../CHANGELOG.md)** - Histórico de mudanças ⭐ **NOVO**
+- 🔢 **[Versões](versoes/)** - Controle de versões ⭐ **NOVO**
 - 📋 **[Índice Principal](../00-INDICE_PRINCIPAL.md)** - Navegação completa
 - 🚀 **[Início Rápido](../01-INICIO_RAPIDO.md)** - Guia de 5 minutos
 
 ---
 
-**Mantido em sincronização com:** `README.md` | **Última atualização:** Automática via CI/CD
+**Mantido em sincronização com:** `README.md` e `CHANGELOG.md` | **Última atualização:** 29 de Julho de 2024
