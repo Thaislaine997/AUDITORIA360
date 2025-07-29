@@ -1,9 +1,12 @@
+from datetime import datetime
+
 import pytest
 from fastapi.testclient import TestClient
-from datetime import datetime
+
 from services.api.main import app
 
 client = TestClient(app)
+
 
 def test_get_alertas_empty(monkeypatch):
     # Deve retornar lista vazia quando não houver alertas
@@ -21,11 +24,12 @@ def test_get_alertas_success(monkeypatch):
         {
             "id_alerta_cct": "alerta1",
             "status_alerta": "NOVO",
-            "data_deteccao": datetime(2025, 1, 1, 12, 0, 0)
+            "data_deteccao": datetime(2025, 1, 1, 12, 0, 0),
         }
     ]
     monkeypatch.setattr(
-        "src.controllers.cct_controller.listar_alertas", lambda status=None: fake_alertas
+        "src.controllers.cct_controller.listar_alertas",
+        lambda status=None: fake_alertas,
     )
     response = client.get("/api/v1/ccts/alerts")
     assert response.status_code == 200
@@ -43,7 +47,7 @@ def test_update_alerta_status_success(monkeypatch):
             "id_alerta_cct": id_alerta,
             "status_alerta": payload.status_alerta,
             "notas_admin": payload.notas_admin,
-            "data_deteccao": datetime(2025, 1, 1, 12, 0, 0)
+            "data_deteccao": datetime(2025, 1, 1, 12, 0, 0),
         }
 
     monkeypatch.setattr(
@@ -67,6 +71,7 @@ def test_update_alerta_status_bad_request():
 def test_update_alerta_status_invalido(monkeypatch):
     async def mock_update(id_alerta, payload):
         raise ValueError("Status inválido")
+
     monkeypatch.setattr(
         "src.controllers.cct_controller.atualizar_status_alerta", mock_update
     )
@@ -79,6 +84,7 @@ def test_update_alerta_status_invalido(monkeypatch):
 def test_update_alerta_nao_encontrado(monkeypatch):
     async def mock_update(id_alerta, payload):
         return None
+
     monkeypatch.setattr(
         "src.controllers.cct_controller.atualizar_status_alerta", mock_update
     )
@@ -91,6 +97,7 @@ def test_get_alerta_status_filter(monkeypatch):
     def fake_listar_alertas(status=None):
         assert status == "NOVO"
         return []
+
     monkeypatch.setattr(
         "src.controllers.cct_controller.listar_alertas", fake_listar_alertas
     )

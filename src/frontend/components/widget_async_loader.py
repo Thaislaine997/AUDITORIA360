@@ -1,6 +1,8 @@
 # Widget para carregamento assíncrono
-import streamlit as st
 import time
+
+import streamlit as st
+
 
 def async_loader(message="Carregando..."):
     with st.spinner(message):

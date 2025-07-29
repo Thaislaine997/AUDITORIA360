@@ -1,12 +1,15 @@
-import pytest
-from fastapi.testclient import TestClient
-from fastapi import UploadFile
-from services.api.main import app
 # from src.utils.config_manager import get_current_config
 import builtins
 import json
-from unittest.mock import MagicMock
 import pdb
+from unittest.mock import MagicMock
+
+import pytest
+from fastapi import UploadFile
+from fastapi.testclient import TestClient
+
+from services.api.main import app
+
 
 @pytest.fixture
 def client(mocker):
@@ -15,25 +18,29 @@ def client(mocker):
 
     # Removido autospec=True. Quando 'new' é fornecido, autospec não é usado
     # e causaria o TypeError que estamos vendo.
-    mocker.patch('builtins.open', new=original_builtins_open)
-    mocker.patch('json.load', new=original_json_load)
+    mocker.patch("builtins.open", new=original_builtins_open)
+    mocker.patch("json.load", new=original_json_load)
 
     # original_config_dependency_override = app.dependency_overrides.pop(get_current_config, None)
-    
+
     try:
         with TestClient(app) as c:
             yield c
     finally:
         pass  # Removido manipulação de dependency_overrides para get_current_config
 
+
 @pytest.fixture
 def mock_upload_file(mocker):
     mock_file = MagicMock(spec=UploadFile)
     mock_file.filename = "test_sheet.xlsx"
-    mock_file.content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    mock_file.content_type = (
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
     mock_file.file = MagicMock()  # Corrigir: garantir que file é um mock
     mock_file.file.read.return_value = b"dummy excel content"
     return mock_file
+
 
 def test_folhas_isolamento(client):
     headers_a = {"x-client-id": "cliente_a"}
@@ -54,33 +61,55 @@ def test_folhas_isolamento(client):
         resp_cross = client.get(f"/api/v1/folhas/{id_b}", headers=headers_a)
         assert resp_cross.status_code in (403, 404)
 
+
 def test_folhas_auth_required(client):
     resp = client.get("/api/v1/folhas/")
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente."
+
 
 def test_get_folha_by_id_auth_required(client):
     resp = client.get("/api/v1/folhas/some_id")
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente."
 
-def test_upload_folha_auth_required(client, mock_upload_file): # Adicionado mock_upload_file
-    import pdb; pdb.set_trace() # <<< PONTO DE INTERRUPÇÃO AQUI
-    files = {"file": (mock_upload_file.filename, mock_upload_file.file, mock_upload_file.content_type)}
-    resp = client.post("/api/v1/folhas/upload", files=files) # Sem header X-Client-ID
+
+def test_upload_folha_auth_required(
+    client, mock_upload_file
+):  # Adicionado mock_upload_file
+    import pdb
+
+    pdb.set_trace()  # <<< PONTO DE INTERRUPÇÃO AQUI
+    files = {
+        "file": (
+            mock_upload_file.filename,
+            mock_upload_file.file,
+            mock_upload_file.content_type,
+        )
+    }
+    resp = client.post("/api/v1/folhas/upload", files=files)  # Sem header X-Client-ID
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
+
 
 def test_processar_folha_auth_required(client):
     resp = client.post("/api/v1/folhas/processar/some_id")
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente."
 
+
 def test_folhas_disponiveis_para_checklist(client):
     id_cliente = "cliente_a"
     headers = {"x-client-id": id_cliente}
-    resp = client.get(f"/api/v1/clientes/{id_cliente}/folhas-processadas/disponiveis-para-checklist", headers=headers)
-    assert resp.status_code in (200, 404, 500)  # 404/500 se não houver dados/config, 200 se sucesso
+    resp = client.get(
+        f"/api/v1/clientes/{id_cliente}/folhas-processadas/disponiveis-para-checklist",
+        headers=headers,
+    )
+    assert resp.status_code in (
+        200,
+        404,
+        500,
+    )  # 404/500 se não houver dados/config, 200 se sucesso
     if resp.status_code == 200:
         folhas = resp.json()
         assert isinstance(folhas, list)

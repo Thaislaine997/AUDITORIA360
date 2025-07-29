@@ -1,29 +1,33 @@
-import pytest
-from fastapi.testclient import TestClient
-from unittest.mock import MagicMock, patch
-from services.api.main import app
 # from src.utils.config_manager import get_current_config
 # from core.database import SessionLocal, get_db_session_context
-import builtins 
-import json     
+import builtins
+import json
+from unittest.mock import MagicMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
+
+from services.api.main import app
+
 
 @pytest.fixture
-def client(mocker): # Removido 'request' não utilizado
+def client(mocker):  # Removido 'request' não utilizado
     original_builtins_open = builtins.open
     original_json_load = json.load
 
     # Removido autospec=True. Quando 'new' é fornecido, autospec não é usado
     # e causaria o TypeError que estamos vendo.
-    mocker.patch('builtins.open', new=original_builtins_open)
-    mocker.patch('json.load', new=original_json_load)
+    mocker.patch("builtins.open", new=original_builtins_open)
+    mocker.patch("json.load", new=original_json_load)
 
     # original_config_dependency_override = app.dependency_overrides.pop(get_current_config, None)
-    
+
     try:
         with TestClient(app) as c:
             yield c
     finally:
         pass  # Removido manipulação de dependency_overrides para get_current_config
+
 
 def test_auditorias_isolamento(client):
     # Simula dois clientes diferentes
@@ -45,26 +49,33 @@ def test_auditorias_isolamento(client):
         resp_cross = client.get(f"/api/v1/auditorias/{id_b}", headers=headers_a)
         assert resp_cross.status_code in (403, 404)
 
+
 def test_auditorias_auth_required(client):
     # Sem autenticação deve bloquear
     resp = client.get("/api/v1/auditorias/")
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
 
+
 def test_get_auditoria_by_id_auth_required(client):
     resp = client.get("/api/v1/auditorias/some_id")
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
+
 
 def test_create_auditoria_auth_required(client):
     resp = client.post("/api/v1/auditorias/", json={"nome": "Nova Auditoria"})
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
 
+
 def test_update_auditoria_auth_required(client):
-    resp = client.put("/api/v1/auditorias/some_id", json={"nome": "Auditoria Atualizada"})
+    resp = client.put(
+        "/api/v1/auditorias/some_id", json={"nome": "Auditoria Atualizada"}
+    )
     assert resp.status_code == 401
     assert resp.json()["detail"] == "X-Client-ID header ausente ou inválido."
+
 
 def test_delete_auditoria_auth_required(client):
     resp = client.delete("/api/v1/auditorias/some_id")

@@ -1,8 +1,11 @@
 """
 Schemas para folha processada.
 """
-from pydantic import BaseModel
+
 from typing import Optional
+
+from pydantic import BaseModel
+
 
 class FolhaProcessadaSelecaoSchema(BaseModel):
     id_folha_processada: str

@@ -3,6 +3,7 @@ from services.orchestrator import run_full_pipeline
 
 router = APIRouter()
 
+
 @router.post("/executar-pipeline")
 def executar_pipeline(event: dict):
     """

@@ -1,6 +1,9 @@
 # Modelos para integração consultor de riscos
-from typing import Optional, List
-from pydantic import BaseModel
+from datetime import date, datetime
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, EmailStr, Field
+
 
 class ConsultorRiscosRequest(BaseModel):
     empresa_id: str
@@ -8,14 +11,13 @@ class ConsultorRiscosRequest(BaseModel):
     parametros_legais: Optional[dict] = None
     folha_processada: Optional[dict] = None
 
+
 class ConsultorRiscosResponse(BaseModel):
     risco_id: str
     descricao: str
     nivel: str
     recomendacoes: Optional[List[str]] = None
-from pydantic import BaseModel, Field, EmailStr
-from typing import List, Optional, Dict, Any
-from datetime import datetime, date
+
 
 class RiscoPrevistoDetalheSchema(BaseModel):
     tipo_risco: str
@@ -28,11 +30,13 @@ class RiscoPrevistoDetalheSchema(BaseModel):
     fator_principal: Optional[str] = None
     id_risco_detalhe: Optional[str] = None
 
+
 class FatorContribuinteTecnicoSchema(BaseModel):
     fator: str
     descricao: str
     origem_dado: str
     valor_referencia: Optional[Any] = None
+
 
 class DadosSuporteVisualizacaoSchema(BaseModel):
     tipo_grafico: str
@@ -40,6 +44,7 @@ class DadosSuporteVisualizacaoSchema(BaseModel):
     titulo_grafico: Optional[str] = None
     dados: Dict[str, Any]
     configuracoes_layout: Optional[Dict[str, Any]] = None
+
 
 class PredicaoRiscoDashboardResponse(BaseModel):
     total_colaboradores: int
@@ -55,6 +60,7 @@ class PredicaoRiscoDashboardResponse(BaseModel):
     explicacao_geral_ia: Optional[str] = None
     principais_riscos_previstos: Optional[List[RiscoPrevistoDetalheSchema]] = None
 
+
 class DetalhePredicaoRiscoResponse(BaseModel):
     id_colaborador: str
     nome_colaborador: str
@@ -66,6 +72,8 @@ class DetalhePredicaoRiscoResponse(BaseModel):
     sugestoes_mitigacao: List[str]
     risco_selecionado: Optional[RiscoPrevistoDetalheSchema] = None
     explicacao_detalhada_ia: Optional[str] = None
-    fatores_contribuintes_tecnicos: Optional[List[FatorContribuinteTecnicoSchema]] = None
+    fatores_contribuintes_tecnicos: Optional[List[FatorContribuinteTecnicoSchema]] = (
+        None
+    )
     dados_suporte_visualizacao: Optional[List[DadosSuporteVisualizacaoSchema]] = None
     recomendacoes_ia: Optional[List[str]] = None

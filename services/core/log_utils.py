@@ -1,4 +1,3 @@
-
 # ...código original será movido para cá...
 
 import csv
@@ -10,13 +9,12 @@ import sys
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger(__name__)
 
 LOG_FILE = "logs.csv"
+
 
 def registrar_log(usuario, acao, ip=None, empresa=None, competencia=None):
     log_data = {
@@ -25,14 +23,15 @@ def registrar_log(usuario, acao, ip=None, empresa=None, competencia=None):
         "acao": acao,
         "ip": ip or "",
         "empresa": empresa or "",
-        "competencia": competencia or ""
+        "competencia": competencia or "",
     }
     write_header = not os.path.exists(LOG_FILE)
-    with open(LOG_FILE, mode='a', newline='', encoding='utf-8') as file:
+    with open(LOG_FILE, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=log_data.keys())
         if write_header:
             writer.writeheader()
         writer.writerow(log_data)
+
 
 def demonstrar_logs():
     print(f"--- ID do logger DENTRO de demonstrar_logs: {id(logger)} ---")
@@ -41,6 +40,7 @@ def demonstrar_logs():
     logger.warning("Este é um log de aviso.")
     logger.error("Este é um log de erro.")
     logger.critical("Este é um log crítico.")
+
 
 if __name__ == "__main__":
     demonstrar_logs()

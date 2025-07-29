@@ -1,20 +1,29 @@
-from google.cloud import bigquery
 import asyncio
+
+from google.cloud import bigquery
+
 
 # Mock do cliente BigQuery para propósitos de teste
 class MockBigQueryClient:
     def query(self, query):
         print(f"Executando consulta: {query}")
+
         class Result:
             def __init__(self, rows):
                 self.rows = rows
+
             def result(self):
                 return iter(self.rows)
-        return Result([
-            # Adicione aqui linhas de teste conforme necessário
-        ])
+
+        return Result(
+            [
+                # Adicione aqui linhas de teste conforme necessário
+            ]
+        )
+
 
 bq_client = MockBigQueryClient()
+
 
 async def main():
     # 1. Buscar uma CCT com status 'PENDENTE_EXTRACAO'
@@ -36,6 +45,7 @@ async def main():
     print(f"Processando CCT: {id_cct}\nPDF: {gcs_uri_pdf}")
     # await processar_extracao_texto_cct(id_cct, gcs_uri_pdf, id_cliente, ano_vigencia)
     print("Processo concluído!")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

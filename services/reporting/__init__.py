@@ -10,7 +10,7 @@ This module provides:
 
 Usage:
     from services.reporting import UnifiedReportGenerator, ReportType, ReportFormat
-    
+
     generator = UnifiedReportGenerator()
     report = generator.generate_unified_report(
         ReportType.MONTHLY,
@@ -25,7 +25,7 @@ from .unified_reports import (
     ReportMetrics,
     ReportType,
     ReportFormat,
-    generate_sample_reports
+    generate_sample_reports,
 )
 
 __version__ = "1.0.0"
@@ -33,9 +33,9 @@ __author__ = "AUDITORIA360 Team"
 
 __all__ = [
     "UnifiedReportGenerator",
-    "ReportData", 
+    "ReportData",
     "ReportMetrics",
     "ReportType",
     "ReportFormat",
-    "generate_sample_reports"
+    "generate_sample_reports",
 ]

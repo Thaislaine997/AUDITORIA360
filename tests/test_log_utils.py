@@ -1,8 +1,9 @@
-import pytest
-from unittest.mock import patch, mock_open, MagicMock, call
-from datetime import datetime
 import csv
-import logging # Para spec=logging.Logger
+import logging  # Para spec=logging.Logger
+from datetime import datetime
+from unittest.mock import MagicMock, call, mock_open, patch
+
+import pytest
 
 # Importar funções e constantes do módulo sob teste
 # Mock das funções e variáveis de log_utils
@@ -11,20 +12,23 @@ LOG_FILE = "mock.log"
 demonstrar_logs = lambda: []
 # Removido import inexistente
 
-@patch('utils.log_utils.datetime')
-@patch('utils.log_utils.csv.DictWriter')
-@patch('utils.log_utils.os.path.exists')
-@patch('builtins.open', new_callable=mock_open)
-def test_registrar_log_arquivo_nao_existe(mock_file_open, mock_exists, mock_csv_writer, mock_dt):
+
+@patch("utils.log_utils.datetime")
+@patch("utils.log_utils.csv.DictWriter")
+@patch("utils.log_utils.os.path.exists")
+@patch("builtins.open", new_callable=mock_open)
+def test_registrar_log_arquivo_nao_existe(
+    mock_file_open, mock_exists, mock_csv_writer, mock_dt
+):
     """
     Testa registrar_log quando o arquivo de log não existe (deve escrever o cabeçalho).
     """
-    mock_exists.return_value = False # Simula que LOG_FILE não existe
-    
+    mock_exists.return_value = False  # Simula que LOG_FILE não existe
+
     # Configura o mock do datetime para retornar um valor fixo
     fixed_timestamp = datetime(2023, 10, 26, 10, 0, 0)
     mock_dt.now.return_value = fixed_timestamp
-    
+
     mock_writer_instance = MagicMock()
     mock_csv_writer.return_value = mock_writer_instance
 
@@ -40,28 +44,35 @@ def test_registrar_log_arquivo_nao_existe(mock_file_open, mock_exists, mock_csv_
         "acao": acao_teste,
         "ip": ip_teste,
         "empresa": empresa_teste,
-        "competencia": competencia_teste
+        "competencia": competencia_teste,
     }
 
     registrar_log(usuario_teste, acao_teste, ip_teste, empresa_teste, competencia_teste)
 
     mock_exists.assert_called_once_with(LOG_FILE)
-    mock_file_open.assert_called_once_with(LOG_FILE, mode='a', newline='', encoding='utf-8')
-    mock_csv_writer.assert_called_once_with(mock_file_open(), fieldnames=log_data_esperado.keys())
-    
+    mock_file_open.assert_called_once_with(
+        LOG_FILE, mode="a", newline="", encoding="utf-8"
+    )
+    mock_csv_writer.assert_called_once_with(
+        mock_file_open(), fieldnames=log_data_esperado.keys()
+    )
+
     mock_writer_instance.writeheader.assert_called_once()
     mock_writer_instance.writerow.assert_called_once_with(log_data_esperado)
 
-@patch('utils.log_utils.datetime')
-@patch('utils.log_utils.csv.DictWriter')
-@patch('utils.log_utils.os.path.exists')
-@patch('builtins.open', new_callable=mock_open)
-def test_registrar_log_arquivo_existe(mock_file_open, mock_exists, mock_csv_writer, mock_dt):
+
+@patch("utils.log_utils.datetime")
+@patch("utils.log_utils.csv.DictWriter")
+@patch("utils.log_utils.os.path.exists")
+@patch("builtins.open", new_callable=mock_open)
+def test_registrar_log_arquivo_existe(
+    mock_file_open, mock_exists, mock_csv_writer, mock_dt
+):
     """
     Testa registrar_log quando o arquivo de log já existe (não deve escrever o cabeçalho).
     """
-    mock_exists.return_value = True # Simula que LOG_FILE existe
-    
+    mock_exists.return_value = True  # Simula que LOG_FILE existe
+
     fixed_timestamp = datetime(2023, 10, 26, 11, 0, 0)
     mock_dt.now.return_value = fixed_timestamp
 
@@ -71,7 +82,7 @@ def test_registrar_log_arquivo_existe(mock_file_open, mock_exists, mock_csv_writ
     usuario_teste = "another_user"
     acao_teste = "consulta"
     # Testa com alguns campos opcionais como None para garantir que são tratados como ""
-    ip_teste = None 
+    ip_teste = None
     empresa_teste = "EmpresaY"
     competencia_teste = None
 
@@ -79,36 +90,41 @@ def test_registrar_log_arquivo_existe(mock_file_open, mock_exists, mock_csv_writ
         "timestamp": fixed_timestamp.isoformat(),
         "usuario": usuario_teste,
         "acao": acao_teste,
-        "ip": "", # Esperado como string vazia
+        "ip": "",  # Esperado como string vazia
         "empresa": empresa_teste,
-        "competencia": "" # Esperado como string vazia
+        "competencia": "",  # Esperado como string vazia
     }
 
     registrar_log(usuario_teste, acao_teste, ip_teste, empresa_teste, competencia_teste)
 
     mock_exists.assert_called_once_with(LOG_FILE)
-    mock_file_open.assert_called_once_with(LOG_FILE, mode='a', newline='', encoding='utf-8')
-    mock_csv_writer.assert_called_once_with(mock_file_open(), fieldnames=log_data_esperado.keys())
-    
-    mock_writer_instance.writeheader.assert_not_called() # Não deve chamar writeheader
+    mock_file_open.assert_called_once_with(
+        LOG_FILE, mode="a", newline="", encoding="utf-8"
+    )
+    mock_csv_writer.assert_called_once_with(
+        mock_file_open(), fieldnames=log_data_esperado.keys()
+    )
+
+    mock_writer_instance.writeheader.assert_not_called()  # Não deve chamar writeheader
     mock_writer_instance.writerow.assert_called_once_with(log_data_esperado)
 
-@patch('utils.log_utils.logging.basicConfig')
-@patch('utils.log_utils.logger', spec=logging.Logger)
+
+@patch("utils.log_utils.logging.basicConfig")
+@patch("utils.log_utils.logger", spec=logging.Logger)
 def test_demonstrar_logs(mock_logger_injected, mock_basic_config_injected):
     """
     Testa a função demonstrar_logs.
     - Garante que logging.basicConfig seja mockado para evitar configuração global de log.
     - Garante que o logger usado por demonstrar_logs seja o mock_logger_injected.
     """
-    demonstrar_logs() # Chama a função que usa o logger (agora mockado)
+    demonstrar_logs()  # Chama a função que usa o logger (agora mockado)
 
     expected_calls = [
         call.debug("Este é um log de debug."),
         call.info("Este é um log de informação."),
         call.warning("Este é um log de aviso."),
         call.error("Este é um log de erro."),
-        call.critical("Este é um log crítico.")
+        call.critical("Este é um log crítico."),
     ]
 
     # Asserção primária: verifica se as chamadas esperadas estão em method_calls
@@ -116,6 +132,7 @@ def test_demonstrar_logs(mock_logger_injected, mock_basic_config_injected):
 
     # Asserção secundária: verifica se *apenas* as chamadas esperadas foram feitas
     assert len(mock_logger_injected.method_calls) == len(expected_calls)
+
 
 # Corrigir chamadas para registrar_log() para sempre passar uma string como argumento
 # Exemplo:

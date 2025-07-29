@@ -1,8 +1,7 @@
-
-
 import logging
 import shap
 import pandas as pd
+
 
 def explain_model(model, data: pd.DataFrame, nsamples: int = 100):
     """
