@@ -1,19 +1,184 @@
-# 🌐 AUDITORIA360 API - Guia Completo e Exemplos Práticos
+# 🌟 AUDITORIA360 - Exemplos Práticos e Guia de Uso
 
-Este documento fornece exemplos práticos de uso da nova stack serverless do AUDITORIA360, incluindo integração com FastAPI, Neon PostgreSQL, Cloudflare R2, DuckDB e PaddleOCR.
+Este documento fornece exemplos práticos e completos de uso do sistema AUDITORIA360, incluindo integração com todos os módulos principais, APIs e funcionalidades.
 
 ## 📋 Índice
 
-1. [Arquitetura da Stack](#arquitetura-da-stack)
-2. [Configuração Inicial](#configuração-inicial)
-3. [API Principal (FastAPI)](#api-principal-fastapi)
-4. [Banco de Dados (Neon PostgreSQL)](#banco-de-dados-neon-postgresql)
-5. [Armazenamento (Cloudflare R2)](#armazenamento-cloudflare-r2)
-6. [Analytics (DuckDB)](#analytics-duckdb)
-7. [OCR (PaddleOCR)](#ocr-paddleocr)
-8. [Portal Demandas](#portal-demandas)
-9. [Integração Completa](#integração-completa)
-10. [Monitoramento e Logs](#monitoramento-e-logs)
+1. [Configuração Inicial](#configuração-inicial)
+2. [Exemplos de API](#exemplos-de-api)
+3. [Integração com MCP](#integração-com-mcp)
+4. [Uso dos Módulos Principais](#uso-dos-módulos-principais)
+5. [Scripts Automatizados](#scripts-automatizados)
+6. [Processamento de Documentos](#processamento-de-documentos)
+7. [Analytics e Relatórios](#analytics-e-relatórios)
+8. [Exemplos Avançados](#exemplos-avançados)
+
+---
+
+## ⚙️ Configuração Inicial
+
+### Arquivo .env Completo
+```bash
+# Database (Neon PostgreSQL)
+DATABASE_URL=postgresql://user:password@ep-example.us-east-1.aws.neon.tech/neondb
+
+# Storage (Cloudflare R2)
+R2_ENDPOINT_URL=https://account-id.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your_access_key_id
+R2_SECRET_ACCESS_KEY=your_secret_access_key
+R2_BUCKET_NAME=auditoria360-storage
+
+# Security
+SECRET_KEY=your-super-secret-key-with-at-least-32-characters
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# AI Services
+OPENAI_API_KEY=sk-your-openai-key
+ANTHROPIC_API_KEY=your-anthropic-key
+
+# MCP Integration
+MCP_ENABLED=true
+MCP_SERVER_PORT=3001
+
+# Monitoring
+MONITORING_ENABLED=true
+SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+
+# Email (SendGrid)
+SENDGRID_API_KEY=SG.your-sendgrid-key
+FROM_EMAIL=noreply@auditoria360.com
+```
+
+### Inicialização Rápida
+```python
+# app.py - Exemplo de inicialização
+from src.core.config import ConfigManager
+from src.auth.unified_auth import AuthManager
+from src.mcp.server import MCPServer
+
+# Configuração inicial
+config = ConfigManager()
+auth = AuthManager()
+mcp_server = MCPServer()
+
+print("✅ Sistema AUDITORIA360 inicializado!")
+```
+
+## 🔌 Exemplos de API
+
+### 1. Autenticação JWT
+```python
+import requests
+import json
+
+# Fazer login
+def login_user(email: str, password: str):
+    """Autenticar usuário e obter token JWT"""
+    url = "http://localhost:8000/api/v1/auth/login"
+    data = {
+        "email": email,
+        "password": password
+    }
+    
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        token_data = response.json()
+        return token_data["access_token"]
+    else:
+        raise Exception(f"Login failed: {response.json()}")
+
+# Usar token para chamadas autenticadas
+def authenticated_request(token: str, endpoint: str):
+    """Fazer requisição autenticada"""
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    
+    response = requests.get(f"http://localhost:8000{endpoint}", headers=headers)
+    return response.json()
+
+# Exemplo de uso
+token = login_user("admin@auditoria360.com", "password123")
+user_data = authenticated_request(token, "/api/v1/auth/me")
+print(f"Usuário logado: {user_data['email']}")
+```
+
+### 2. Gestão de Funcionários
+```python
+# Criar funcionário
+def create_employee(token: str, employee_data: dict):
+    """Criar novo funcionário"""
+    headers = {"Authorization": f"Bearer {token}"}
+    url = "http://localhost:8000/api/v1/payroll/employees"
+    
+    response = requests.post(url, json=employee_data, headers=headers)
+    return response.json()
+
+# Listar funcionários
+def list_employees(token: str, page: int = 1, limit: int = 10):
+    """Listar funcionários com paginação"""
+    headers = {"Authorization": f"Bearer {token}"}
+    url = f"http://localhost:8000/api/v1/payroll/employees?page={page}&limit={limit}"
+    
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+# Exemplo de uso
+employee_data = {
+    "name": "João Silva",
+    "cpf": "123.456.789-00",
+    "email": "joao@empresa.com",
+    "position": "Analista",
+    "department": "TI",
+    "base_salary": 5000.00,
+    "hire_date": "2024-01-15"
+}
+
+new_employee = create_employee(token, employee_data)
+print(f"Funcionário criado: ID {new_employee['id']}")
+
+employees = list_employees(token)
+print(f"Total de funcionários: {len(employees['data'])}")
+```
+
+### 3. Upload e Processamento de Documentos
+```python
+import os
+from pathlib import Path
+
+def upload_document(token: str, file_path: str, document_type: str = "cct"):
+    """Upload de documento com processamento OCR"""
+    headers = {"Authorization": f"Bearer {token}"}
+    url = "http://localhost:8000/api/v1/documents/upload"
+    
+    with open(file_path, 'rb') as file:
+        files = {"file": file}
+        data = {"type": document_type, "process_ocr": True}
+        
+        response = requests.post(url, files=files, data=data, headers=headers)
+        return response.json()
+
+def get_document_text(token: str, document_id: str):
+    """Obter texto extraído do documento"""
+    headers = {"Authorization": f"Bearer {token}"}
+    url = f"http://localhost:8000/api/v1/documents/{document_id}/text"
+    
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+# Exemplo de uso
+document = upload_document(token, "cct_2024.pdf", "cct")
+print(f"Documento uploaded: {document['id']}")
+
+# Aguardar processamento (opcional)
+import time
+time.sleep(5)
+
+text_data = get_document_text(token, document['id'])
+print(f"Texto extraído: {text_data['content'][:200]}...")
+```
 
 ---
 

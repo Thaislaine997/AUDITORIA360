@@ -8,7 +8,6 @@ import logging
 import os
 from typing import Any, Dict
 
-from fastapi import HTTPException, Request
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +18,7 @@ CLIENT_CONFIGS_DIR = os.path.join(CONFIG_BASE_PATH, "client_configs")
 
 class ConfigManager:
     """Central configuration manager for the application."""
-    
+
     def __init__(self):
         self.config = self.load_config(DEFAULT_CONFIG_FILE)
 
@@ -28,9 +27,9 @@ class ConfigManager:
         if not os.path.exists(file_path):
             logger.warning(f"Config file not found: {file_path}")
             return {}
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Error loading config from {file_path}: {e}")
@@ -48,7 +47,7 @@ class ConfigManager:
         """Save configuration to file."""
         path = file_path or DEFAULT_CONFIG_FILE
         try:
-            with open(path, 'w', encoding='utf-8') as f:
+            with open(path, "w", encoding="utf-8") as f:
                 json.dump(self.config, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.error(f"Error saving config to {path}: {e}")

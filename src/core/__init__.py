@@ -11,7 +11,7 @@ from .security import SecurityManager
 
 __all__ = [
     "ConfigManager",
-    "AuditoriaException", 
+    "AuditoriaException",
     "ValidationError",
     "SecurityManager",
 ]
