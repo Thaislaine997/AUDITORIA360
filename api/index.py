@@ -45,7 +45,7 @@ try:
         notification_router,
         audit_router,
         ai_router,
-        compliance_router
+Principal
     )
     ROUTERS_AVAILABLE = True
 except ImportError as e:
@@ -60,7 +60,7 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
-    compliance_router = APIRouter()
+>Principal
     
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
@@ -264,6 +264,7 @@ app.include_router(notification_router, prefix="/api/v1/notifications", tags=["N
 app.include_router(audit_router, prefix="/api/v1/auditorias", tags=["Audit & Compliance"])
 app.include_router(compliance_router, prefix="/api/v1/compliance", tags=["Compliance Check"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["AI & Chatbot"])
+app.include_router(automation_router, prefix="/api/v1", tags=["Serverless Automation"])
 
 # Enhanced demonstration endpoints
 if ENHANCED_FEATURES:
