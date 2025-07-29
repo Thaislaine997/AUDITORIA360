@@ -36,6 +36,9 @@ except ImportError:
         pass
 
 # Import routers for all modules - with fallbacks for broken dependencies
+compliance_router = None
+automation_router = None
+
 try:
     from src.api.routers import (
         auth_router,
@@ -59,8 +62,6 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
-    compliance_router = APIRouter()  # Add missing compliance router
-    automation_router = APIRouter()  # Add missing automation router
     
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
@@ -71,11 +72,20 @@ except ImportError as e:
     def payroll_health():
         return {"message": "Payroll module - ready", "status": "ok"}
     
+    ROUTERS_AVAILABLE = False
+
+# Create additional routers that might be missing
+if compliance_router is None:
+    from fastapi import APIRouter
+    compliance_router = APIRouter()
+    
     @compliance_router.get("/check")
     def compliance_check():
         return {"message": "Compliance check endpoint - implementation in progress", "status": "placeholder"}
-    
-    ROUTERS_AVAILABLE = False
+
+if automation_router is None:
+    from fastapi import APIRouter
+    automation_router = APIRouter()
 
 # Security
 security = HTTPBearer()
