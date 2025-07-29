@@ -52,6 +52,9 @@ tecnico/
 │   ├── setup-ambiente.md           # Configuração do ambiente
 │   ├── padroes-codigo.md           # Padrões de código
 │   └── contribuicao.md             # Guia de contribuição
+├── notebooks/
+│   ├── README.md                   # Documentação dos notebooks
+│   └── guia-jupyter.md             # Guia de uso do Jupyter
 ├── deploy/
 │   ├── deploy-checklist.md         # Checklist de deploy
 │   ├── configuracao-prod.md        # Configuração produção
@@ -142,8 +145,9 @@ qualidade/
 ### 👨‍💻 **Desenvolvedores**
 1. [Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)
 2. [Setup do Ambiente](tecnico/desenvolvimento/setup-ambiente.md)
-3. [Documentação APIs](tecnico/apis/api-documentation.md)
-4. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
+3. [Notebooks de Análise](tecnico/notebooks/README.md)
+4. [Documentação APIs](tecnico/apis/api-documentation.md)
+5. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
 
 ### 👨‍🔧 **DevOps / SRE**
 1. [Deploy Checklist](tecnico/deploy/deploy-checklist.md)
