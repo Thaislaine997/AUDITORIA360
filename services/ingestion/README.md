@@ -1,6 +1,7 @@
 # services/ingestion/
 
 Pipeline de ingestão de dados:
+
 - `config_loader.py`: carrega configs YAML/env
 - `main.py`: entrypoint (Cloud Function/Run)
 - `docai_utils.py`: integração Document AI

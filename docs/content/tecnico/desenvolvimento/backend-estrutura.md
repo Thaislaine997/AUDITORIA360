@@ -7,18 +7,21 @@ O backend do AUDITORIA360 foi reestruturado em uma arquitetura modular para melh
 ## Módulos Principais
 
 ### 🏗️ [Core (src/core/)](../modularizacao-backend.md#src-core)
+
 - Lógica de negócio central
 - Configuração do sistema
 - Segurança e validadores
 - Exceções customizadas
 
 ### 🔧 [Services (src/services/)](../modularizacao-backend.md#src-services)
+
 - Serviços de OCR
 - Armazenamento de arquivos
 - Autenticação
 - Relatórios
 
 ### 🛠️ [Utils (src/utils/)](../modularizacao-backend.md#src-utils)
+
 - Monitoramento
 - Performance
 - Integrações de API
@@ -35,7 +38,7 @@ Para detalhes completos sobre a modularização, veja:
 from src.core import ConfigManager, SecurityManager
 from src.core.validators import validate_cpf
 
-# Importar serviços  
+# Importar serviços
 from src.services.ocr import OCRService
 from src.services.storage import StorageService
 

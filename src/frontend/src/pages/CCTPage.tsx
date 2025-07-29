@@ -1,5 +1,5 @@
-import React from 'react';
-import { Container, Typography, Paper } from '@mui/material';
+import React from "react";
+import { Container, Typography, Paper } from "@mui/material";
 
 const CCTPage: React.FC = () => {
   return (

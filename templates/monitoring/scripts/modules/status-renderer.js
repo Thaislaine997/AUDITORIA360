@@ -23,13 +23,13 @@ export class StatusRenderer {
 
   // Render status items
   renderStatus(healthChecks) {
-    return healthChecks.map(check => this.renderStatusItem(check)).join('');
+    return healthChecks.map(check => this.renderStatusItem(check)).join("");
   }
 
   // Render single status item
   renderStatusItem(check) {
     const { type, icon } = this.getStatusDetails(check.status);
-    
+
     return this.template
       .replace(/{{type}}/g, type)
       .replace(/{{icon}}/g, icon)
@@ -40,36 +40,36 @@ export class StatusRenderer {
   // Get status details (type and icon)
   getStatusDetails(status) {
     switch (status.toLowerCase()) {
-      case 'ok':
-      case 'healthy':
-      case 'operacional':
-      case 'funcionando':
-      case 'conectado':
-        return { type: 'ok', icon: '✅' };
-      case 'warning':
-      case 'degraded':
-        return { type: 'warning', icon: '⚠️' };
-      case 'error':
-      case 'unhealthy':
-      case 'offline':
-        return { type: 'error', icon: '❌' };
+      case "ok":
+      case "healthy":
+      case "operacional":
+      case "funcionando":
+      case "conectado":
+        return { type: "ok", icon: "✅" };
+      case "warning":
+      case "degraded":
+        return { type: "warning", icon: "⚠️" };
+      case "error":
+      case "unhealthy":
+      case "offline":
+        return { type: "error", icon: "❌" };
       default:
-        return { type: 'ok', icon: '✅' };
+        return { type: "ok", icon: "✅" };
     }
   }
 
   // Update status dynamically
   updateStatus(service, newStatus, newMessage) {
-    const statusElements = document.querySelectorAll('.status');
-    
+    const statusElements = document.querySelectorAll(".status");
+
     statusElements.forEach(element => {
       const text = element.textContent;
       if (text.includes(service)) {
         const { type, icon } = this.getStatusDetails(newStatus);
-        
+
         // Update classes
         element.className = `status ${type}`;
-        
+
         // Update content
         element.innerHTML = `
           <span aria-hidden="true">${icon}</span>
@@ -86,7 +86,7 @@ export class StatusRenderer {
 
   // Remove loading state
   removeLoadingState(container) {
-    const loadingElement = container.querySelector('.loading');
+    const loadingElement = container.querySelector(".loading");
     if (loadingElement) {
       loadingElement.remove();
     }

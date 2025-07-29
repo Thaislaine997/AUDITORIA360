@@ -69,6 +69,6 @@ Para gerar a documentação offline:
 # Documentação Sphinx
 make docs-build
 
-# Documentação MkDocs  
+# Documentação MkDocs
 make docs-deploy
 ```

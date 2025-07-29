@@ -24,16 +24,16 @@ export class MetricRenderer {
 
   // Render all metrics
   renderMetrics(metrics) {
-    return metrics.map(metric => this.renderMetric(metric)).join('');
+    return metrics.map(metric => this.renderMetric(metric)).join("");
   }
 
   // Render single metric
   renderMetric(metric) {
     const statusType = this.getStatusType(metric.type);
-    
+
     return this.template
       .replace(/{{id}}/g, metric.id)
-      .replace(/{{icon}}/g, metric.icon || '')
+      .replace(/{{icon}}/g, metric.icon || "")
       .replace(/{{title}}/g, metric.title)
       .replace(/{{value}}/g, metric.value)
       .replace(/{{type}}/g, metric.type)
@@ -44,16 +44,16 @@ export class MetricRenderer {
   // Get status type for CSS classes
   getStatusType(type) {
     switch (type) {
-      case 'success':
-        return 'ok';
-      case 'warning':
-        return 'warning';
-      case 'danger':
-      case 'error':
-        return 'error';
-      case 'info':
+      case "success":
+        return "ok";
+      case "warning":
+        return "warning";
+      case "danger":
+      case "error":
+        return "error";
+      case "info":
       default:
-        return 'ok';
+        return "ok";
     }
   }
 
@@ -61,13 +61,13 @@ export class MetricRenderer {
   updateMetric(id, newValue, newStatus) {
     const metricCard = document.querySelector(`[data-metric-id="${id}"]`);
     if (metricCard) {
-      const valueElement = metricCard.querySelector('.metric-value');
-      const statusElement = metricCard.querySelector('.metric-status');
-      
+      const valueElement = metricCard.querySelector(".metric-value");
+      const statusElement = metricCard.querySelector(".metric-status");
+
       if (valueElement) {
         valueElement.textContent = newValue;
       }
-      
+
       if (statusElement && newStatus) {
         statusElement.textContent = newStatus;
       }
@@ -81,7 +81,7 @@ export class MetricRenderer {
 
   // Remove loading state
   removeLoadingState(container) {
-    const loadingElement = container.querySelector('.loading');
+    const loadingElement = container.querySelector(".loading");
     if (loadingElement) {
       loadingElement.remove();
     }

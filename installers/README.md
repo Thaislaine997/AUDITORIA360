@@ -5,21 +5,25 @@ This directory contains automated scripts for setting up the AUDITORIA360 develo
 ## 📋 Quick Start
 
 ### Linux/macOS
+
 ```bash
 chmod +x installers/setup_dev_env.sh
 ./installers/setup_dev_env.sh
 ```
 
 ### Windows (PowerShell as Administrator)
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 .\installers\setup_dev_env.ps1
 ```
 
 ### Manual Setup
+
 If you prefer manual setup or encounter issues with the automated scripts:
 
 1. **Copy environment template:**
+
    ```bash
    cp installers/.env.example .env.local
    ```
@@ -28,6 +32,7 @@ If you prefer manual setup or encounter issues with the automated scripts:
    Edit `.env.local` with your actual database and API credentials
 
 3. **Install dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
@@ -39,17 +44,18 @@ If you prefer manual setup or encounter issues with the automated scripts:
 
 ## 📁 Files Overview
 
-| File | Description | OS Support |
-|------|-------------|------------|
-| `setup_dev_env.sh` | Main setup script for Unix systems | Linux, macOS |
-| `setup_dev_env.ps1` | Main setup script for Windows | Windows |
-| `.env.example` | Environment configuration template | All |
-| `init_db.py` | Database initialization script | All |
-| `compilar_instalador_windows.bat` | Legacy Windows installer | Windows |
+| File                              | Description                        | OS Support   |
+| --------------------------------- | ---------------------------------- | ------------ |
+| `setup_dev_env.sh`                | Main setup script for Unix systems | Linux, macOS |
+| `setup_dev_env.ps1`               | Main setup script for Windows      | Windows      |
+| `.env.example`                    | Environment configuration template | All          |
+| `init_db.py`                      | Database initialization script     | All          |
+| `compilar_instalador_windows.bat` | Legacy Windows installer           | Windows      |
 
 ## 🔧 What the Setup Scripts Do
 
 ### Automated Installation
+
 - ✅ **Python 3.8+** verification and installation
 - ✅ **Virtual environment** creation and activation
 - ✅ **Dependencies** installation from requirements.txt
@@ -60,10 +66,11 @@ If you prefer manual setup or encounter issues with the automated scripts:
 - ✅ **Installation verification** tests
 
 ### Environment Configuration
+
 The scripts create a comprehensive `.env.local` file with all necessary configuration options:
 
 - **Database**: Neon PostgreSQL connection
-- **Storage**: Cloudflare R2 configuration  
+- **Storage**: Cloudflare R2 configuration
 - **AI Services**: OpenAI API, PaddleOCR settings
 - **Authentication**: JWT configuration
 - **Development**: Debug settings, logging levels
@@ -72,6 +79,7 @@ The scripts create a comprehensive `.env.local` file with all necessary configur
 ## 🏗️ Architecture Components
 
 ### Core Stack
+
 - **API**: FastAPI with async support
 - **Database**: Neon PostgreSQL (serverless)
 - **Storage**: Cloudflare R2 (S3-compatible)
@@ -80,6 +88,7 @@ The scripts create a comprehensive `.env.local` file with all necessary configur
 - **ML Orchestration**: Prefect
 
 ### Development Tools
+
 - **Testing**: pytest with coverage
 - **Linting**: flake8, black, isort
 - **Pre-commit**: Automated code quality checks
@@ -88,6 +97,7 @@ The scripts create a comprehensive `.env.local` file with all necessary configur
 ## 📚 Configuration Details
 
 ### Database Setup (Neon PostgreSQL)
+
 ```bash
 # Required environment variables
 DATABASE_URL=postgresql://username:password@host:5432/database
@@ -95,6 +105,7 @@ NEON_DATABASE_URL=postgresql://username:password@host:5432/database
 ```
 
 ### Storage Setup (Cloudflare R2)
+
 ```bash
 # Required for file storage
 R2_ACCESS_KEY_ID=your_access_key
@@ -104,6 +115,7 @@ R2_BUCKET_NAME=auditoria360-storage
 ```
 
 ### AI Services Setup
+
 ```bash
 # OpenAI for chatbot and AI features
 OPENAI_API_KEY=sk-your-key-here
@@ -117,11 +129,13 @@ PADDLE_OCR_LANG=pt
 ## 🚀 Post-Installation Steps
 
 1. **Edit Configuration**
+
    ```bash
    nano .env.local  # Edit with your actual credentials
    ```
 
 2. **Activate Virtual Environment**
+
    ```bash
    source venv/bin/activate  # Linux/macOS
    # or
@@ -129,11 +143,13 @@ PADDLE_OCR_LANG=pt
    ```
 
 3. **Start Development Server**
+
    ```bash
    uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
    ```
 
 4. **Run Tests**
+
    ```bash
    pytest tests/ -v
    ```
@@ -148,6 +164,7 @@ PADDLE_OCR_LANG=pt
 ### Common Issues
 
 **Python Version Error**
+
 ```bash
 # Install Python 3.8+ manually
 # Linux: apt install python3.9
@@ -156,27 +173,32 @@ PADDLE_OCR_LANG=pt
 ```
 
 **Permission Denied (Linux/macOS)**
+
 ```bash
 chmod +x installers/setup_dev_env.sh
 ```
 
 **PowerShell Execution Policy (Windows)**
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 **Database Connection Error**
+
 - Verify DATABASE_URL in .env.local
 - Check Neon database credentials
 - Ensure database exists and is accessible
 
 **Missing Dependencies**
+
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 ### Manual Database Setup
+
 If automated database setup fails:
 
 ```python
@@ -191,11 +213,13 @@ Base.metadata.create_all(bind=engine)
 ## 📞 Support
 
 ### Getting Help
+
 - 📖 **Documentation**: See `docs/` directory
 - 🐛 **Issues**: Create GitHub issue
 - 💬 **Questions**: Use GitHub discussions
 
 ### Development Workflow
+
 1. **Feature development**: Create feature branch
 2. **Code quality**: Pre-commit hooks run automatically
 3. **Testing**: `pytest tests/` before committing
@@ -205,17 +229,20 @@ Base.metadata.create_all(bind=engine)
 ## 🔄 Updates and Maintenance
 
 ### Updating Dependencies
+
 ```bash
 pip install --upgrade -r requirements.txt
 ```
 
 ### Updating Pre-commit Hooks
+
 ```bash
 pre-commit autoupdate
 pre-commit install
 ```
 
 ### Database Migrations
+
 ```bash
 # After model changes
 alembic revision --autogenerate -m "Description"

@@ -15,6 +15,7 @@ Os exemplos foram organizados por módulo e complexidade, permitindo que usuári
 ### 1. 🔐 Autenticação e Segurança
 
 #### Exemplo Básico: Login e Gestão de Usuários
+
 ```python
 from examples.api_authentication_example import AuditAPI
 
@@ -30,6 +31,7 @@ print(f"Usuário: {profile['name']} - Role: {profile['role']}")
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ Autenticação via JWT
 - ✅ Gestão de perfis de usuário
 - ✅ Sistema de permissões granulares
@@ -43,6 +45,7 @@ print(f"Usuário: {profile['name']} - Role: {profile['role']}")
 ### 2. 💼 Folha de Pagamento
 
 #### Exemplo Básico: Gestão de Funcionários
+
 ```python
 from examples.api_payroll_example import PayrollAPI
 
@@ -60,6 +63,7 @@ result = api.create_employee(employee_data)
 ```
 
 #### Exemplo Intermediário: Cálculo de Folha
+
 ```python
 # Configurar cálculo de folha
 calculation_data = {
@@ -77,6 +81,7 @@ print(f"Total líquido: R$ {result['total_net']}")
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ CRUD completo de funcionários
 - ✅ Cálculos automáticos (INSS, IRRF, FGTS)
 - ✅ Geração de relatórios
@@ -90,6 +95,7 @@ print(f"Total líquido: R$ {result['total_net']}")
 ### 3. 📁 Gestão de Documentos
 
 #### Exemplo Básico: Upload e Download
+
 ```python
 from examples.api_documents_example import DocumentsAPI
 
@@ -107,6 +113,7 @@ api.download_document(document_id=1, download_path="/tmp/downloaded.pdf")
 ```
 
 #### Exemplo Avançado: Versionamento
+
 ```python
 # Criar nova versão de documento
 api.create_document_version(
@@ -120,6 +127,7 @@ versions = api.list_document_versions(document_id=1)
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ Upload para Cloudflare R2
 - ✅ Processamento OCR automático
 - ✅ Busca avançada por conteúdo
@@ -133,6 +141,7 @@ versions = api.list_document_versions(document_id=1)
 ### 4. 🤖 Inteligência Artificial e Chatbot
 
 #### Exemplo Básico: Conversa com Chatbot
+
 ```python
 from examples.ai_chatbot_example import ChatbotAPI
 
@@ -144,6 +153,7 @@ print(f"Resposta: {response['response']}")
 ```
 
 #### Exemplo Intermediário: Análise de Documentos
+
 ```python
 # Analisar documento com IA
 analysis = api.analyze_document(
@@ -155,6 +165,7 @@ print(f"Score de conformidade: {analysis['compliance_score']}")
 ```
 
 #### Exemplo Avançado: Recomendações Personalizadas
+
 ```python
 # Obter recomendações baseadas no contexto
 context = {
@@ -167,6 +178,7 @@ recommendations = api.get_recommendations(context)
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ Chatbot especializado em RH/Contabilidade
 - ✅ Busca inteligente na base de conhecimento
 - ✅ Análise automatizada de documentos
@@ -180,6 +192,7 @@ recommendations = api.get_recommendations(context)
 ### 5. 📊 Analytics e Relatórios
 
 #### Exemplo Básico: Análise Departamental
+
 ```python
 from examples.duckdb_example import PayrollAnalytics
 
@@ -192,6 +205,7 @@ print(resultado)
 ```
 
 #### Exemplo Intermediário: Tendências Salariais
+
 ```python
 # Gerar gráfico de tendências
 tendencias = analytics.tendencia_salarial()
@@ -201,6 +215,7 @@ compliance = analytics.analise_compliance()
 ```
 
 #### Exemplo Avançado: Relatório Executivo
+
 ```python
 # Gerar relatório executivo completo
 relatorio = analytics.relatorio_executivo()
@@ -208,6 +223,7 @@ print(f"Funcionários ativos: {relatorio['metricas']['total_funcionarios_ativos'
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ Queries SQL otimizadas com DuckDB
 - ✅ Visualizações com matplotlib/seaborn
 - ✅ Análises de compliance automáticas
@@ -221,6 +237,7 @@ print(f"Funcionários ativos: {relatorio['metricas']['total_funcionarios_ativos'
 ### 6. 🔍 Processamento OCR
 
 #### Exemplo Básico: OCR de Imagem
+
 ```python
 from examples.ocr_paddle_example import DocumentOCR
 
@@ -233,6 +250,7 @@ print(f"Texto extraído: {result['text']}")
 ```
 
 #### Exemplo Intermediário: OCR de PDF
+
 ```python
 # Processar PDF completo
 pdf_result = ocr.extract_text_from_pdf("/path/to/document.pdf")
@@ -240,6 +258,7 @@ print(f"Páginas processadas: {pdf_result['pages_processed']}")
 ```
 
 #### Exemplo Avançado: Extração Estruturada
+
 ```python
 # Extrair dados específicos de demonstrativo
 structured_data = ocr.extract_structured_data(
@@ -251,6 +270,7 @@ print(f"Salário: {structured_data.get('salario_base')}")
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ OCR multi-idioma com PaddleOCR
 - ✅ Pré-processamento de imagens
 - ✅ Processamento de PDFs
@@ -264,6 +284,7 @@ print(f"Salário: {structured_data.get('salario_base')}")
 ### 7. 🔄 Workflows Completos
 
 #### Exemplo: Auditoria Completa de Folha
+
 ```python
 from examples.complete_workflow_example import AuditoriaFlowManager
 
@@ -286,6 +307,7 @@ findings = manager.generate_audit_findings(audit_id)
 ```
 
 **Funcionalidades Demonstradas:**
+
 - ✅ Workflow end-to-end de auditoria
 - ✅ Verificação de compliance com CCT
 - ✅ Monitoramento em tempo real
@@ -301,17 +323,20 @@ findings = manager.generate_audit_findings(audit_id)
 ### Pré-requisitos
 
 1. **Ambiente Python configurado:**
+
 ```bash
 python --version  # 3.12+
 pip install -r requirements.txt
 ```
 
 2. **API rodando:**
+
 ```bash
 uvicorn api.index:app --reload --port 8000
 ```
 
 3. **Variáveis de ambiente configuradas:**
+
 ```bash
 # .env
 DATABASE_URL=postgresql://...
@@ -322,6 +347,7 @@ OPENAI_API_KEY=...
 ### Execução dos Exemplos
 
 #### Execução Individual
+
 ```bash
 # Executar exemplo específico
 python examples/api_authentication_example.py
@@ -331,6 +357,7 @@ python examples/ocr_paddle_example.py /path/to/image.png
 ```
 
 #### Execução em Lote
+
 ```bash
 # Executar todos os exemplos
 for script in examples/*.py; do
@@ -340,6 +367,7 @@ done
 ```
 
 #### Execução com Debug
+
 ```bash
 # Ativar logs detalhados
 export LOG_LEVEL=DEBUG
@@ -355,17 +383,20 @@ python examples/nome_do_exemplo.py
 **Cenário:** Processamento mensal de folha de pagamento
 
 1. **Login no sistema**
+
    ```bash
    python examples/api_authentication_example.py
    ```
 
 2. **Importar dados de funcionários**
+
    ```bash
    python examples/api_payroll_example.py
    # Foco: example_data_import()
    ```
 
 3. **Calcular folha e gerar relatórios**
+
    ```bash
    python examples/api_payroll_example.py
    # Foco: example_payroll_calculation()
@@ -382,11 +413,13 @@ python examples/nome_do_exemplo.py
 **Cenário:** Implementação de nova funcionalidade
 
 1. **Entender arquitetura completa**
+
    ```bash
    python examples/complete_workflow_example.py
    ```
 
 2. **Estudar integração com analytics**
+
    ```bash
    python examples/duckdb_example.py
    ```
@@ -401,12 +434,14 @@ python examples/nome_do_exemplo.py
 **Cenário:** Auditoria trimestral de compliance
 
 1. **Executar workflow de auditoria completo**
+
    ```bash
    python examples/complete_workflow_example.py
    # Foco: example_complete_payroll_audit()
    ```
 
 2. **Analisar documentos submetidos**
+
    ```bash
    python examples/api_documents_example.py
    # Foco: example_document_processing()
@@ -423,12 +458,14 @@ python examples/nome_do_exemplo.py
 **Cenário:** Visão estratégica e gestão de usuários
 
 1. **Gerenciar usuários e permissões**
+
    ```bash
    python examples/api_authentication_example.py
    # Foco: example_user_management()
    ```
 
 2. **Acompanhar métricas executivas**
+
    ```bash
    python examples/duckdb_example.py
    # Foco: relatorio_executivo()
@@ -447,6 +484,7 @@ python examples/nome_do_exemplo.py
 ### Criando Novos Exemplos
 
 1. **Estrutura básica:**
+
 ```python
 """
 Exemplo de [MÓDULO] do AUDITORIA360.
@@ -467,7 +505,7 @@ def main():
     """Função principal com todos os exemplos."""
     print("EXEMPLOS DE USO - [MÓDULO] AUDITORIA360")
     print("=" * 50)
-    
+
     try:
         example_basic_functionality()
         print("\n✅ Todos os exemplos executados com sucesso!")
@@ -486,6 +524,7 @@ if __name__ == "__main__":
    - Comentários explicativos
 
 3. **Testes incluídos:**
+
 ```python
 def test_example_functionality():
     """Teste da funcionalidade do exemplo."""
@@ -496,6 +535,7 @@ def test_example_functionality():
 ### Configuração Avançada
 
 #### Performance Tuning
+
 ```python
 # Configurações para produção
 import os
@@ -504,6 +544,7 @@ os.environ["OCR_BATCH_SIZE"] = "10"
 ```
 
 #### Monitoramento
+
 ```python
 # Ativar métricas detalhadas
 import time
@@ -519,15 +560,15 @@ print(f"Tempo de execução: {execution_time:.2f}s")
 
 ### Benchmarks dos Exemplos
 
-| Exemplo | Tempo Médio | Memória | Dependências |
-|---------|-------------|---------|--------------|
-| Authentication | 0.5s | 15MB | requests |
-| Payroll | 2.1s | 45MB | requests, pandas |
-| Documents | 1.8s | 35MB | requests |
-| AI/Chatbot | 3.2s | 120MB | requests, openai |
-| Analytics | 4.5s | 85MB | duckdb, pandas, matplotlib |
-| OCR | 8.3s | 200MB | paddleocr, opencv |
-| Complete Workflow | 15.2s | 250MB | todas |
+| Exemplo           | Tempo Médio | Memória | Dependências               |
+| ----------------- | ----------- | ------- | -------------------------- |
+| Authentication    | 0.5s        | 15MB    | requests                   |
+| Payroll           | 2.1s        | 45MB    | requests, pandas           |
+| Documents         | 1.8s        | 35MB    | requests                   |
+| AI/Chatbot        | 3.2s        | 120MB   | requests, openai           |
+| Analytics         | 4.5s        | 85MB    | duckdb, pandas, matplotlib |
+| OCR               | 8.3s        | 200MB   | paddleocr, opencv          |
+| Complete Workflow | 15.2s       | 250MB   | todas                      |
 
 ### Otimizações Implementadas
 
@@ -565,17 +606,20 @@ print(f"Tempo de execução: {execution_time:.2f}s")
 ## 📚 Recursos Adicionais
 
 ### Documentação Relacionada
+
 - **[Índice Principal](00-INDICE_PRINCIPAL.md)** - Navegação completa
 - **[Início Rápido](01-INICIO_RAPIDO.md)** - Guia para começar
 - **[APIs](tecnico/apis/)** - Documentação das APIs
 - **[Módulos](tecnico/modulos-principais.md)** - Descrição dos módulos
 
 ### Links Úteis
+
 - **API Interativa:** http://localhost:8000/docs
 - **Código Fonte:** [GitHub Repository](https://github.com/empresa/auditoria360)
 - **Issues:** [GitHub Issues](https://github.com/empresa/auditoria360/issues)
 
 ### Suporte
+
 - **Email:** suporte@auditoria360.com
 - **Chat:** Canal #suporte no Slack
 - **Documentação:** Portal de ajuda online

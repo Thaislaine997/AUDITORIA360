@@ -22,10 +22,10 @@ export class AutoRefresh {
     }
 
     this.isRunning = true;
-    
+
     // Execute immediately
     callback();
-    
+
     // Setup interval
     this.intervalId = setInterval(() => {
       callback();
@@ -53,7 +53,7 @@ export class AutoRefresh {
   // Start countdown display
   startCountdown() {
     let seconds = this.interval / 1000;
-    
+
     // Update immediately
     if (this.onCountdownCallback) {
       this.onCountdownCallback(seconds);
@@ -61,7 +61,7 @@ export class AutoRefresh {
 
     this.countdownId = setInterval(() => {
       seconds--;
-      
+
       if (this.onCountdownCallback) {
         this.onCountdownCallback(seconds);
       }
@@ -80,7 +80,7 @@ export class AutoRefresh {
   // Change interval
   setInterval(newInterval) {
     this.interval = newInterval;
-    
+
     if (this.isRunning) {
       // Restart with new interval
       const currentCallback = this.callback;
@@ -130,7 +130,7 @@ export class AutoRefresh {
     if (callback) {
       callback();
     }
-    
+
     // Reset countdown
     if (this.isRunning) {
       this.pause();

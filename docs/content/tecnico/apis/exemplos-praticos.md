@@ -18,6 +18,7 @@ Este documento fornece exemplos práticos e completos de uso do sistema AUDITORI
 ## ⚙️ Configuração Inicial
 
 ### Arquivo .env Completo
+
 ```bash
 # Database (Neon PostgreSQL)
 DATABASE_URL=postgresql://user:password@ep-example.us-east-1.aws.neon.tech/neondb
@@ -51,6 +52,7 @@ FROM_EMAIL=noreply@auditoria360.com
 ```
 
 ### Inicialização Rápida
+
 ```python
 # app.py - Exemplo de inicialização
 from src.core.config import ConfigManager
@@ -68,6 +70,7 @@ print("✅ Sistema AUDITORIA360 inicializado!")
 ## 🔌 Exemplos de API
 
 ### 1. Autenticação JWT
+
 ```python
 import requests
 import json
@@ -80,7 +83,7 @@ def login_user(email: str, password: str):
         "email": email,
         "password": password
     }
-    
+
     response = requests.post(url, json=data)
     if response.status_code == 200:
         token_data = response.json()
@@ -95,7 +98,7 @@ def authenticated_request(token: str, endpoint: str):
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
-    
+
     response = requests.get(f"http://localhost:8000{endpoint}", headers=headers)
     return response.json()
 
@@ -106,13 +109,14 @@ print(f"Usuário logado: {user_data['email']}")
 ```
 
 ### 2. Gestão de Funcionários
+
 ```python
 # Criar funcionário
 def create_employee(token: str, employee_data: dict):
     """Criar novo funcionário"""
     headers = {"Authorization": f"Bearer {token}"}
     url = "http://localhost:8000/api/v1/payroll/employees"
-    
+
     response = requests.post(url, json=employee_data, headers=headers)
     return response.json()
 
@@ -121,7 +125,7 @@ def list_employees(token: str, page: int = 1, limit: int = 10):
     """Listar funcionários com paginação"""
     headers = {"Authorization": f"Bearer {token}"}
     url = f"http://localhost:8000/api/v1/payroll/employees?page={page}&limit={limit}"
-    
+
     response = requests.get(url, headers=headers)
     return response.json()
 
@@ -144,6 +148,7 @@ print(f"Total de funcionários: {len(employees['data'])}")
 ```
 
 ### 3. Upload e Processamento de Documentos
+
 ```python
 import os
 from pathlib import Path
@@ -152,11 +157,11 @@ def upload_document(token: str, file_path: str, document_type: str = "cct"):
     """Upload de documento com processamento OCR"""
     headers = {"Authorization": f"Bearer {token}"}
     url = "http://localhost:8000/api/v1/documents/upload"
-    
+
     with open(file_path, 'rb') as file:
         files = {"file": file}
         data = {"type": document_type, "process_ocr": True}
-        
+
         response = requests.post(url, files=files, data=data, headers=headers)
         return response.json()
 
@@ -164,7 +169,7 @@ def get_document_text(token: str, document_id: str):
     """Obter texto extraído do documento"""
     headers = {"Authorization": f"Bearer {token}"}
     url = f"http://localhost:8000/api/v1/documents/{document_id}/text"
-    
+
     response = requests.get(url, headers=headers)
     return response.json()
 
@@ -185,6 +190,7 @@ print(f"Texto extraído: {text_data['content'][:200]}...")
 ## 🏗️ Arquitetura da Stack
 
 ### Stack Serverless Moderna
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   API Gateway   │    │   Backend       │
@@ -205,6 +211,7 @@ print(f"Texto extraído: {text_data['content'][:200]}...")
 ```
 
 ### Componentes Principais
+
 - **API**: FastAPI com endpoints REST
 - **Database**: Neon PostgreSQL serverless
 - **Storage**: Cloudflare R2 (S3-compatible)
@@ -217,6 +224,7 @@ print(f"Texto extraído: {text_data['content'][:200]}...")
 ## ⚙️ Configuração Inicial
 
 ### 1. Variáveis de Ambiente
+
 ```bash
 # .env.local
 DATABASE_URL=postgresql://user:pass@ep-xxx.neon.tech/auditoria360?sslmode=require
@@ -228,6 +236,7 @@ OPENAI_API_KEY=sk-your-openai-key
 ```
 
 ### 2. Instalação e Setup
+
 ```bash
 # Clone e configure
 git clone https://github.com/user/AUDITORIA360
@@ -247,6 +256,7 @@ python installers/init_db.py
 ## 🚀 API Principal (FastAPI)
 
 ### Estrutura da API
+
 ```python
 # api/index.py - Ponto de entrada principal
 from fastapi import FastAPI, Depends, HTTPException
@@ -262,12 +272,14 @@ app = FastAPI(
 ### 📌 Endpoints Principais
 
 #### 1. Health Check
+
 ```bash
 # Verificar status da API
 curl -X GET "http://localhost:8000/health"
 ```
 
 **Resposta:**
+
 ```json
 {
   "status": "healthy",
@@ -281,6 +293,7 @@ curl -X GET "http://localhost:8000/health"
 ```
 
 #### 2. Autenticação JWT
+
 ```python
 # Exemplo de login
 import requests
@@ -300,6 +313,7 @@ headers = {"Authorization": f"Bearer {token}"}
 ```
 
 #### 3. Upload de Documentos
+
 ```python
 # Upload de arquivo para processamento
 import requests
@@ -326,6 +340,7 @@ document_id = response.json()["document_id"]
 ## 🗄️ Banco de Dados (Neon PostgreSQL)
 
 ### Configuração e Conexão
+
 ```python
 # src/models/database.py
 import os
@@ -347,6 +362,7 @@ Base = declarative_base()
 ```
 
 ### Modelos de Dados
+
 ```python
 # Exemplo: Modelo de Funcionário
 from sqlalchemy import Column, Integer, String, DateTime, Numeric
@@ -354,7 +370,7 @@ from datetime import datetime
 
 class Employee(Base):
     __tablename__ = "employees"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     cpf = Column(String(11), unique=True, nullable=False, index=True)
@@ -362,7 +378,7 @@ class Employee(Base):
     salary = Column(Numeric(10, 2))
     hire_date = Column(DateTime, default=datetime.utcnow)
     active = Column(Boolean, default=True)
-    
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -376,6 +392,7 @@ class Employee(Base):
 ```
 
 ### Operações CRUD
+
 ```python
 # Exemplo: CRUD de Funcionários
 from sqlalchemy.orm import Session
@@ -384,20 +401,20 @@ from typing import List, Optional
 class EmployeeService:
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create_employee(self, employee_data: dict) -> Employee:
         employee = Employee(**employee_data)
         self.db.add(employee)
         self.db.commit()
         self.db.refresh(employee)
         return employee
-    
+
     def get_employee(self, employee_id: int) -> Optional[Employee]:
         return self.db.query(Employee).filter(Employee.id == employee_id).first()
-    
+
     def list_employees(self, skip: int = 0, limit: int = 100) -> List[Employee]:
         return self.db.query(Employee).offset(skip).limit(limit).all()
-    
+
     def update_employee(self, employee_id: int, update_data: dict) -> Optional[Employee]:
         employee = self.get_employee(employee_id)
         if employee:
@@ -409,6 +426,7 @@ class EmployeeService:
 ```
 
 ### Uso Prático
+
 ```python
 # Exemplo de uso em endpoint
 from fastapi import Depends
@@ -434,6 +452,7 @@ def get_employee(employee_id: int, db: Session = Depends(get_db)):
 ## ☁️ Armazenamento (Cloudflare R2)
 
 ### Configuração do Cliente
+
 ```python
 # src/services/storage_service.py
 import boto3
@@ -454,28 +473,28 @@ class R2StorageService:
             )
         )
         self.bucket_name = os.getenv('R2_BUCKET_NAME')
-    
+
     def upload_file(self, file_content: bytes, file_key: str, content_type: str = None) -> str:
         """Upload arquivo para R2"""
         extra_args = {}
         if content_type:
             extra_args['ContentType'] = content_type
-        
+
         self.client.put_object(
             Bucket=self.bucket_name,
             Key=file_key,
             Body=file_content,
             **extra_args
         )
-        
+
         # Retorna URL de acesso
         return f"https://{self.bucket_name}.{os.getenv('R2_DOMAIN', 'r2.dev')}/{file_key}"
-    
+
     def download_file(self, file_key: str) -> bytes:
         """Download arquivo do R2"""
         response = self.client.get_object(Bucket=self.bucket_name, Key=file_key)
         return response['Body'].read()
-    
+
     def delete_file(self, file_key: str) -> bool:
         """Deletar arquivo do R2"""
         try:
@@ -483,7 +502,7 @@ class R2StorageService:
             return True
         except Exception:
             return False
-    
+
     def list_files(self, prefix: str = "") -> list:
         """Listar arquivos no R2"""
         response = self.client.list_objects_v2(
@@ -494,6 +513,7 @@ class R2StorageService:
 ```
 
 ### Uso em Endpoints
+
 ```python
 # Upload de arquivo via API
 from fastapi import UploadFile, File
@@ -510,16 +530,16 @@ async def upload_document(
     allowed_types = ['application/pdf', 'image/jpeg', 'image/png', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Tipo de arquivo não permitido")
-    
+
     # Gerar chave única para o arquivo
     file_extension = file.filename.split('.')[-1]
     file_key = f"documents/{document_type}/{datetime.now().strftime('%Y/%m')}/{uuid.uuid4()}.{file_extension}"
-    
+
     # Upload para R2
     storage = R2StorageService()
     file_content = await file.read()
     file_url = storage.upload_file(file_content, file_key, file.content_type)
-    
+
     # Salvar metadados no banco
     document = Document(
         filename=file.filename,
@@ -530,11 +550,11 @@ async def upload_document(
         document_type=document_type,
         uploaded_at=datetime.utcnow()
     )
-    
+
     db.add(document)
     db.commit()
     db.refresh(document)
-    
+
     return {
         "document_id": document.id,
         "file_url": file_url,
@@ -547,6 +567,7 @@ async def upload_document(
 ## 📊 Analytics (DuckDB)
 
 ### Configuração e Uso
+
 ```python
 # src/services/analytics_service.py
 import duckdb
@@ -560,7 +581,7 @@ class AnalyticsService:
         db_path = os.getenv('DUCKDB_DATABASE_PATH', ':memory:')
         self.conn = duckdb.connect(db_path)
         self._setup_extensions()
-    
+
     def _setup_extensions(self):
         """Configurar extensões necessárias"""
         try:
@@ -570,7 +591,7 @@ class AnalyticsService:
             self.conn.execute("LOAD postgres")
         except Exception as e:
             print(f"Warning: Could not load extensions: {e}")
-    
+
     def load_from_postgres(self, query: str, connection_string: str) -> pd.DataFrame:
         """Carregar dados do PostgreSQL"""
         postgres_query = f"""
@@ -578,23 +599,23 @@ class AnalyticsService:
         SELECT * FROM postgres_db.({query})
         """
         return self.conn.execute(postgres_query).fetchdf()
-    
+
     def create_payroll_analytics(self) -> Dict[str, Any]:
         """Análise de folha de pagamento"""
         # Exemplo de query analítica
         query = """
         WITH monthly_stats AS (
-            SELECT 
+            SELECT
                 DATE_TRUNC('month', created_at) as month,
                 COUNT(*) as total_employees,
                 SUM(salary) as total_payroll,
                 AVG(salary) as avg_salary,
                 PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary) as median_salary
-            FROM employees 
+            FROM employees
             WHERE active = true
             GROUP BY DATE_TRUNC('month', created_at)
         )
-        SELECT 
+        SELECT
             month,
             total_employees,
             total_payroll,
@@ -605,15 +626,15 @@ class AnalyticsService:
         FROM monthly_stats
         ORDER BY month DESC
         """
-        
+
         result = self.conn.execute(query).fetchdf()
         return result.to_dict('records')
-    
+
     def audit_compliance_report(self) -> Dict[str, Any]:
         """Relatório de compliance de auditoria"""
         queries = {
             'missing_documents': """
-                SELECT employee_id, name, 
+                SELECT employee_id, name,
                        COUNT(*) as missing_docs
                 FROM employees e
                 LEFT JOIN documents d ON e.id = d.employee_id
@@ -629,41 +650,42 @@ class AnalyticsService:
                 SELECT id, name, salary,
                        (salary - avg_sal) / std_sal as z_score
                 FROM employees, stats
-                WHERE active = true 
+                WHERE active = true
                 AND ABS((salary - avg_sal) / std_sal) > 2
             """,
             'compliance_score': """
-                SELECT 
+                SELECT
                     COUNT(CASE WHEN documents_complete = true THEN 1 END) * 100.0 / COUNT(*) as compliance_percentage
                 FROM employees
                 WHERE active = true
             """
         }
-        
+
         results = {}
         for key, query in queries.items():
             results[key] = self.conn.execute(query).fetchdf().to_dict('records')
-        
+
         return results
 ```
 
 ### Endpoint de Analytics
+
 ```python
 @app.get("/api/v1/analytics/payroll")
 def get_payroll_analytics(db: Session = Depends(get_db)):
     """Obter análises de folha de pagamento"""
     analytics = AnalyticsService()
-    
+
     # Carregar dados do PostgreSQL para DuckDB
     connection_string = os.getenv('DATABASE_URL')
     payroll_data = analytics.load_from_postgres(
         "SELECT * FROM employees WHERE active = true",
         connection_string
     )
-    
+
     # Gerar relatórios
     results = analytics.create_payroll_analytics()
-    
+
     return {
         "payroll_analytics": results,
         "generated_at": datetime.utcnow().isoformat(),
@@ -675,7 +697,7 @@ def get_compliance_report(db: Session = Depends(get_db)):
     """Relatório de compliance"""
     analytics = AnalyticsService()
     results = analytics.audit_compliance_report()
-    
+
     return {
         "compliance_report": results,
         "generated_at": datetime.utcnow().isoformat()
@@ -687,6 +709,7 @@ def get_compliance_report(db: Session = Depends(get_db)):
 ## 🔍 OCR (PaddleOCR)
 
 ### Configuração do Serviço
+
 ```python
 # src/services/ocr_service.py
 from paddleocr import PaddleOCR
@@ -706,7 +729,7 @@ class OCRService:
             show_log=False
         )
         self.logger = logging.getLogger(__name__)
-    
+
     def preprocess_image(self, image_array: np.ndarray) -> np.ndarray:
         """Pré-processar imagem para melhor OCR"""
         # Converter para escala de cinza
@@ -714,7 +737,7 @@ class OCRService:
             gray = cv2.cvtColor(image_array, cv2.COLOR_RGB2GRAY)
         else:
             gray = image_array
-        
+
         # Redimensionar se muito grande
         height, width = gray.shape
         if width > 2000:
@@ -722,28 +745,28 @@ class OCRService:
             new_width = int(width * scale)
             new_height = int(height * scale)
             gray = cv2.resize(gray, (new_width, new_height))
-        
+
         # Melhorar contraste
         gray = cv2.equalizeHist(gray)
-        
+
         # Reduzir ruído
         gray = cv2.medianBlur(gray, 3)
-        
+
         return gray
-    
+
     def extract_text(self, image_data: bytes) -> List[Dict[str, Any]]:
         """Extrair texto de imagem"""
         try:
             # Converter bytes para numpy array
             nparr = np.frombuffer(image_data, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            
+
             # Pré-processar
             processed_image = self.preprocess_image(image)
-            
+
             # Executar OCR
             results = self.ocr.ocr(processed_image, cls=True)
-            
+
             # Processar resultados
             extracted_data = []
             for line_result in results[0]:
@@ -754,17 +777,17 @@ class OCRService:
                         'confidence': float(confidence),
                         'bbox': bbox,  # Coordenadas da bounding box
                     })
-            
+
             return extracted_data
-            
+
         except Exception as e:
             self.logger.error(f"OCR extraction failed: {e}")
             raise Exception(f"Erro na extração de texto: {str(e)}")
-    
+
     def extract_payroll_data(self, image_data: bytes) -> Dict[str, Any]:
         """Extrair dados específicos de folha de pagamento"""
         text_data = self.extract_text(image_data)
-        
+
         # Padrões para identificar informações da folha
         patterns = {
             'employee_name': r'NOME[:\s]+([A-ZÁÀÂÃÉÊÍÔÕÚÇ\s]+)',
@@ -774,10 +797,10 @@ class OCRService:
             'net_pay': r'LÍQUIDO[:\s]+([\d\.,]+)',
             'month_year': r'((?:JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)[A-Z]*[\/\-\s]*\d{4})'
         }
-        
+
         # Combinar todo o texto
         full_text = ' '.join([item['text'] for item in text_data])
-        
+
         # Extrair informações usando regex
         import re
         extracted_info = {}
@@ -785,10 +808,10 @@ class OCRService:
             match = re.search(pattern, full_text.upper())
             if match:
                 extracted_info[key] = match.group(1).strip()
-        
+
         # Calcular score de confiança médio
         avg_confidence = sum([item['confidence'] for item in text_data]) / len(text_data) if text_data else 0
-        
+
         return {
             'extracted_fields': extracted_info,
             'raw_text_data': text_data,
@@ -798,6 +821,7 @@ class OCRService:
 ```
 
 ### Endpoint de OCR
+
 ```python
 @app.post("/api/v1/ocr/process")
 async def process_document_ocr(
@@ -806,18 +830,18 @@ async def process_document_ocr(
     extract_fields: bool = True
 ):
     """Processar documento com OCR"""
-    
+
     # Validar tipo de arquivo
     if not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="Apenas imagens são suportadas")
-    
+
     try:
         # Ler arquivo
         file_content = await file.read()
-        
+
         # Processar OCR
         ocr_service = OCRService()
-        
+
         if document_type == "payroll" and extract_fields:
             # Extração específica para folha de pagamento
             result = ocr_service.extract_payroll_data(file_content)
@@ -829,10 +853,10 @@ async def process_document_ocr(
                 'confidence_score': sum([item['confidence'] for item in text_data]) / len(text_data) if text_data else 0,
                 'total_text_blocks': len(text_data)
             }
-        
+
         # Salvar resultado no banco (opcional)
         # ... código para salvar resultado ...
-        
+
         return {
             'status': 'success',
             'filename': file.filename,
@@ -840,7 +864,7 @@ async def process_document_ocr(
             'ocr_result': result,
             'processed_at': datetime.utcnow().isoformat()
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro no processamento OCR: {str(e)}")
 ```
@@ -850,6 +874,7 @@ async def process_document_ocr(
 ## 🎫 Portal Demandas
 
 ### Exemplo Completo de Uso
+
 ```python
 # Exemplo de integração com o Portal Demandas
 import requests
@@ -858,7 +883,7 @@ import json
 class PortalDemandasClient:
     def __init__(self, base_url: str = "http://localhost:8001"):
         self.base_url = base_url
-    
+
     def create_audit_ticket(self, audit_data: dict) -> dict:
         """Criar ticket de auditoria"""
         ticket_data = {
@@ -871,20 +896,20 @@ class PortalDemandasClient:
             "categoria": "auditoria",
             "tempo_estimado": 16
         }
-        
+
         response = requests.post(f"{self.base_url}/tickets/", json=ticket_data)
         return response.json()
-    
+
     def update_ticket_progress(self, ticket_id: int, status: str, comments: str) -> dict:
         """Atualizar progresso do ticket"""
         update_data = {
             "status": status,
             "comentarios_internos": comments
         }
-        
+
         response = requests.patch(f"{self.base_url}/tickets/{ticket_id}", json=update_data)
         return response.json()
-    
+
     def add_ocr_result_comment(self, ticket_id: int, ocr_result: dict) -> dict:
         """Adicionar resultado de OCR como comentário"""
         comment_data = {
@@ -892,7 +917,7 @@ class PortalDemandasClient:
             "comentario": f"Documento processado com OCR. Confiança: {ocr_result['confidence_score']:.2%}",
             "tipo": "system"
         }
-        
+
         response = requests.post(f"{self.base_url}/tickets/{ticket_id}/comments/", json=comment_data)
         return response.json()
 ```
@@ -902,6 +927,7 @@ class PortalDemandasClient:
 ## 🔗 Integração Completa
 
 ### Workflow de Auditoria Completo
+
 ```python
 # Exemplo de workflow completo de auditoria
 from datetime import datetime, timedelta
@@ -914,7 +940,7 @@ async def start_audit_process(
     db: Session = Depends(get_db)
 ):
     """Iniciar processo completo de auditoria"""
-    
+
     try:
         # 1. Criar ticket no Portal Demandas
         portal_client = PortalDemandasClient()
@@ -926,43 +952,43 @@ async def start_audit_process(
         }
         ticket = portal_client.create_audit_ticket(ticket_data)
         ticket_id = ticket['id']
-        
+
         # 2. Upload e processamento de arquivos
         storage = R2StorageService()
         ocr_service = OCRService()
         processed_files = []
-        
+
         for file in files:
             # Upload para R2
             file_content = await file.read()
             file_key = f"audit/{company_id}/{period}/{file.filename}"
             file_url = storage.upload_file(file_content, file_key, file.content_type)
-            
+
             # Processar OCR se for imagem
             if file.content_type.startswith('image/'):
                 ocr_result = ocr_service.extract_payroll_data(file_content)
-                
+
                 # Adicionar resultado como comentário no ticket
                 portal_client.add_ocr_result_comment(ticket_id, ocr_result)
-            
+
             processed_files.append({
                 "filename": file.filename,
                 "file_url": file_url,
                 "file_key": file_key,
                 "ocr_processed": file.content_type.startswith('image/')
             })
-        
+
         # 3. Atualizar status do ticket
         portal_client.update_ticket_progress(
-            ticket_id, 
-            "em_andamento", 
+            ticket_id,
+            "em_andamento",
             f"Arquivos processados: {len(processed_files)} documentos"
         )
-        
+
         # 4. Iniciar análise com DuckDB
         analytics = AnalyticsService()
         compliance_report = analytics.audit_compliance_report()
-        
+
         # 5. Gerar relatório final
         audit_report = {
             "ticket_id": ticket_id,
@@ -973,19 +999,19 @@ async def start_audit_process(
             "started_at": datetime.utcnow().isoformat(),
             "status": "processing"
         }
-        
+
         # 6. Salvar no banco
         audit_record = AuditRecord(**audit_report)
         db.add(audit_record)
         db.commit()
-        
+
         return {
             "message": "Processo de auditoria iniciado com sucesso",
             "audit_id": audit_record.id,
             "ticket_id": ticket_id,
             "files_processed": len(processed_files)
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao iniciar auditoria: {str(e)}")
 ```
@@ -995,6 +1021,7 @@ async def start_audit_process(
 ## 📊 Monitoramento e Logs
 
 ### Sistema de Logs
+
 ```python
 # src/utils/logging_config.py
 import logging
@@ -1003,34 +1030,34 @@ from datetime import datetime
 
 def setup_logging():
     """Configurar sistema de logs"""
-    
+
     # Criar logger
     logger = logging.getLogger("auditoria360")
     logger.setLevel(logging.INFO)
-    
+
     # Criar handler para arquivo
     log_file = f"logs/auditoria360_{datetime.now().strftime('%Y%m%d')}.log"
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
-    
+
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.INFO)
-    
+
     # Criar handler para console
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG if os.getenv('DEBUG') == 'true' else logging.INFO)
-    
+
     # Criar formatador
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
     )
-    
+
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
-    
+
     # Adicionar handlers
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
-    
+
     return logger
 
 # Usar em toda a aplicação
@@ -1038,6 +1065,7 @@ logger = setup_logging()
 ```
 
 ### Métricas da API
+
 ```python
 # Middleware para métricas
 from fastapi import Request
@@ -1048,10 +1076,10 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
-    
+
     # Log da requisição
     logger.info(f"Request: {request.method} {request.url} - Status: {response.status_code} - Time: {process_time:.3f}s")
-    
+
     response.headers["X-Process-Time"] = str(process_time)
     return response
 
@@ -1073,6 +1101,7 @@ def get_metrics():
 ## 🧪 Testes da Integração
 
 ### Teste Completo
+
 ```python
 # tests/test_integration.py
 import pytest
@@ -1084,29 +1113,29 @@ client = TestClient(app)
 
 def test_complete_audit_workflow():
     """Teste do workflow completo de auditoria"""
-    
+
     # 1. Health check
     response = client.get("/health")
     assert response.status_code == 200
-    
+
     # 2. Upload de documento
     with open("test_files/payroll_sample.pdf", "rb") as f:
         files = {"file": ("payroll.pdf", f, "application/pdf")}
         data = {"document_type": "payroll"}
-        
+
         response = client.post("/api/v1/documents/upload", files=files, data=data)
         assert response.status_code == 200
         document_data = response.json()
-    
+
     # 3. Processar OCR
     with open("test_files/payroll_image.jpg", "rb") as f:
         files = {"file": ("payroll.jpg", f, "image/jpeg")}
-        
+
         response = client.post("/api/v1/ocr/process", files=files)
         assert response.status_code == 200
         ocr_data = response.json()
         assert ocr_data['status'] == 'success'
-    
+
     # 4. Criar ticket
     ticket_data = {
         "titulo": "Teste de Auditoria",
@@ -1115,16 +1144,16 @@ def test_complete_audit_workflow():
         "prazo": "2024-12-31T23:59:59",
         "responsavel": "Sistema de Teste"
     }
-    
+
     response = requests.post("http://localhost:8001/tickets/", json=ticket_data)
     assert response.status_code == 200
     ticket = response.json()
-    
+
     # 5. Verificar analytics
     response = client.get("/api/v1/analytics/compliance")
     assert response.status_code == 200
     analytics_data = response.json()
-    
+
     print("✅ Teste de integração completo passou!")
     return {
         "document": document_data,
@@ -1142,12 +1171,14 @@ if __name__ == "__main__":
 ## 📞 Suporte e Recursos
 
 ### Links Úteis
+
 - **API Docs**: http://localhost:8000/docs
 - **Portal Demandas**: http://localhost:8001/docs
 - **Health Check**: http://localhost:8000/health
 - **Metrics**: http://localhost:8000/api/v1/metrics
 
 ### Troubleshooting Comum
+
 ```bash
 # Verificar conexão com Neon
 curl -X GET "http://localhost:8000/health"

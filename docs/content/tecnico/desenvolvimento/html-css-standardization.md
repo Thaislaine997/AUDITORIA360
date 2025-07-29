@@ -65,7 +65,7 @@ Foi configurado o Prettier para formatação automática de código:
 
 ### 4. monitoring/basic_dashboard.html
 
-- **Status**: ✅ Totalmente reestruturado e padronizado  
+- **Status**: ✅ Totalmente reestruturado e padronizado
 - **Descrição**: Dashboard básico com estrutura HTML semântica
 - **Alterações**:
   - Extraído CSS inline para uso do design system
@@ -165,7 +165,7 @@ O arquivo `assets/style.css` contém um design system completo com:
 ### Recursos Implementados
 
 - Cores com contraste adequado
-- Focus outline visível  
+- Focus outline visível
 - Suporte a prefers-reduced-motion
 - Suporte a high contrast mode
 - Estrutura semântica adequada

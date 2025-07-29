@@ -11,6 +11,7 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 **Arquivo:** `templates/layouts/base.html`
 
 #### Melhorias:
+
 - ✅ Suporte a múltiplos arquivos CSS (`coreStyles`, `pageStyles`)
 - ✅ Suporte a múltiplos scripts (`coreScripts`, `pageScripts`)
 - ✅ Cabeçalho e rodapé configuráveis
@@ -21,6 +22,7 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 - ✅ Classes CSS configuráveis para body e main
 
 #### Recursos de Acessibilidade:
+
 - Skip navigation link
 - IDs únicos para conteúdo principal
 - Atributo `tabindex="-1"` no main
@@ -30,24 +32,28 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 ### 2. Componentes Aprimorados
 
 #### 2.1 Header Component (`templates/components/header.html`)
+
 - ✅ Estrutura hierárquica clara
 - ✅ Suporte a ícones, títulos e subtítulos
 - ✅ Área para ações do cabeçalho
 - ✅ Classes CSS configuráveis
 
 #### 2.2 Footer Component (`templates/components/footer.html`)
+
 - ✅ Timestamp configurável
 - ✅ Links de navegação do rodapé
 - ✅ Área de copyright
 - ✅ Conteúdo customizável
 
 #### 2.3 Navigation Component (`templates/components/navigation.html`)
+
 - ✅ Lista de navegação acessível
 - ✅ Estados ativos/inativos
 - ✅ Suporte a ícones e badges
 - ✅ Navegação customizável
 
 #### 2.4 Metric Card Component (`templates/components/metric-card.html`)
+
 - ✅ Estrutura semântica melhorada
 - ✅ Cabeçalho, conteúdo e rodapé claramente definidos
 - ✅ Suporte a tendências e unidades
@@ -55,12 +61,14 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 - ✅ Timestamps formatados
 
 #### 2.5 Status Indicator Component (`templates/components/status-indicator.html`)
+
 - ✅ Estrutura de conteúdo flexível
 - ✅ Suporte a descrições e timestamps
 - ✅ Configuração de aria-live
 - ✅ Labels personalizáveis
 
 #### 2.6 Alert Container Component (`templates/components/alert-container.html`)
+
 - ✅ Estrutura hierárquica de alertas
 - ✅ Suporte a severidade e ações
 - ✅ Detalhes expansíveis
@@ -70,6 +78,7 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 ### 3. Templates de Página Refatorados
 
 #### 3.1 Dashboard Modular (`templates/monitoring/dashboard-modular.html`)
+
 - ✅ Herança do template base
 - ✅ Configuração via template engine
 - ✅ Fallback para ambientes sem template engine
@@ -77,6 +86,7 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 - ✅ Acessibilidade melhorada
 
 #### 3.2 Monitor Básico (`templates/monitoring/basic-monitor-modular.html`)
+
 - ✅ Herança do template base
 - ✅ Estrutura simplificada
 - ✅ Footer com timestamp
@@ -87,6 +97,7 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 **Arquivo:** `templates/styles/accessibility.css`
 
 #### Recursos Implementados:
+
 - ✅ Skip link para navegação por teclado
 - ✅ Classe utilitária `visually-hidden`
 - ✅ Estilos de foco aprimorados
@@ -98,6 +109,7 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 ### 5. Padronização de Scripts e Estilos
 
 #### Inclusão Padronizada:
+
 - ✅ CSS principal do projeto: `src/frontend/src/styles/index.css`
 - ✅ CSS específico de monitoramento: `assets/monitoring.css`
 - ✅ Scripts modulares com `type="module"`
@@ -106,12 +118,15 @@ Este documento descreve as melhorias implementadas na estrutura dos templates HT
 ## Compatibilidade
 
 ### Template Engine
+
 Os templates foram projetados para funcionar com sistemas de template que suportam:
+
 - Handlebars-like syntax
 - Template inheritance (`{{#extend}}`)
 - Partial inclusion (`{{> component}}`)
 
 ### Fallback
+
 Todos os templates incluem fallback completo em HTML para ambientes sem template engine.
 
 ## Estrutura de Diretórios
@@ -137,22 +152,26 @@ templates/
 ## Benefícios da Refatoração
 
 ### 1. Reutilização
+
 - Componentes modulares podem ser reutilizados em qualquer página
 - Template base elimina duplicação de código
 - Configuração flexível permite adaptação a diferentes contextos
 
 ### 2. Manutenibilidade
+
 - Mudanças em componentes se propagam automaticamente
 - Estrutura clara e documentada
 - Separação de responsabilidades
 
 ### 3. Acessibilidade
+
 - Navegação por teclado aprimorada
 - Suporte a leitores de tela
 - Compatibilidade com preferências de usuário
 - Estrutura semântica adequada
 
 ### 4. Performance
+
 - Preload de recursos críticos
 - CSS e JS modulares
 - Loading states apropriados
@@ -167,11 +186,13 @@ templates/
 ## Validação
 
 ### Formatação
+
 ```bash
 npm run format:html-css  # ✅ Aprovado
 ```
 
 ### Acessibilidade
+
 - ✅ Skip links funcionais
 - ✅ Roles semânticos corretos
 - ✅ ARIA labels apropriados
@@ -179,6 +200,7 @@ npm run format:html-css  # ✅ Aprovado
 - ✅ Suporte a preferências de usuário
 
 ### Compatibilidade
+
 - ✅ HTML válido
 - ✅ CSS responsivo
 - ✅ Graceful degradation

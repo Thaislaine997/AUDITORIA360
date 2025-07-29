@@ -8,7 +8,7 @@
 
 export interface MonitoringAlert {
   id: string;
-  level: 'info' | 'warning' | 'error' | 'critical';
+  level: "info" | "warning" | "error" | "critical";
   message: string;
   timestamp: Date;
   resolved: boolean;
@@ -17,7 +17,7 @@ export interface MonitoringAlert {
 
 export interface HealthCheck {
   service: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: "healthy" | "degraded" | "unhealthy";
   responseTime?: number;
   lastCheck: Date;
   error?: string;
@@ -47,7 +47,7 @@ export class MonitoringService {
 
   // Get current alerts
   async getAlerts(): Promise<MonitoringAlert[]> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         // For demo, return empty array (no alerts)
         resolve([]);
@@ -57,24 +57,24 @@ export class MonitoringService {
 
   // Get health checks
   async getHealthChecks(): Promise<HealthCheck[]> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve([
           {
-            service: 'API',
-            status: 'healthy',
+            service: "API",
+            status: "healthy",
             responseTime: 156,
             lastCheck: new Date(),
           },
           {
-            service: 'Database',
-            status: 'healthy',
+            service: "Database",
+            status: "healthy",
             responseTime: 45,
             lastCheck: new Date(),
           },
           {
-            service: 'Authentication',
-            status: 'healthy',
+            service: "Authentication",
+            status: "healthy",
             responseTime: 89,
             lastCheck: new Date(),
           },
@@ -85,7 +85,7 @@ export class MonitoringService {
 
   // Get system metrics
   async getMetrics(): Promise<MonitoringMetrics> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve({
           cpu: Math.floor(Math.random() * 30) + 20, // 20-50%
@@ -116,32 +116,32 @@ export class MonitoringService {
   }
 
   // Get status color for health checks
-  getStatusColor(status: HealthCheck['status']): string {
+  getStatusColor(status: HealthCheck["status"]): string {
     switch (status) {
-      case 'healthy':
-        return 'var(--success-color)';
-      case 'degraded':
-        return 'var(--warning-color)';
-      case 'unhealthy':
-        return 'var(--danger-color)';
+      case "healthy":
+        return "var(--success-color)";
+      case "degraded":
+        return "var(--warning-color)";
+      case "unhealthy":
+        return "var(--danger-color)";
       default:
-        return 'var(--muted-text-color)';
+        return "var(--muted-text-color)";
     }
   }
 
   // Get alert level color
-  getAlertLevelColor(level: MonitoringAlert['level']): string {
+  getAlertLevelColor(level: MonitoringAlert["level"]): string {
     switch (level) {
-      case 'info':
-        return 'var(--info-color)';
-      case 'warning':
-        return 'var(--warning-color)';
-      case 'error':
-        return 'var(--danger-color)';
-      case 'critical':
-        return 'var(--danger-color)';
+      case "info":
+        return "var(--info-color)";
+      case "warning":
+        return "var(--warning-color)";
+      case "error":
+        return "var(--danger-color)";
+      case "critical":
+        return "var(--danger-color)";
       default:
-        return 'var(--muted-text-color)';
+        return "var(--muted-text-color)";
     }
   }
 }

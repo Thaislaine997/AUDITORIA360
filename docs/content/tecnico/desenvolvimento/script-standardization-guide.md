@@ -21,7 +21,7 @@
 #!/bin/bash
 #
 # Nome do Script - Descrição breve do que faz
-# 
+#
 # Uso: ./script.sh [opções] [parâmetros]
 # Exemplo: ./script.sh --env production --verbose
 #
@@ -31,7 +31,7 @@
 
 # Configurações de segurança
 set -e          # Sair em caso de erro
-set -u          # Sair se variável não definida for usada  
+set -u          # Sair se variável não definida for usada
 set -o pipefail # Falhar se qualquer comando no pipe falhar
 
 # Configurações de script
@@ -99,13 +99,13 @@ trap cleanup EXIT
 # Validação de pré-requisitos
 validate_prerequisites() {
     log_info "Validando pré-requisitos..."
-    
+
     # Verificar se estamos no diretório correto
     if [ ! -f "${PROJECT_ROOT}/requirements.txt" ]; then
         log_error "Execute o script a partir da raiz do projeto AUDITORIA360"
         exit 1
     fi
-    
+
     # Verificar dependências obrigatórias
     local required_commands=("git" "python3")
     for cmd in "${required_commands[@]}"; do
@@ -114,14 +114,14 @@ validate_prerequisites() {
             exit 1
         fi
     done
-    
+
     log_success "Pré-requisitos validados"
 }
 
 # Função principal
 main() {
     log_info "Iniciando ${SCRIPT_NAME}..."
-    
+
     # Parse de argumentos
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -144,12 +144,12 @@ main() {
                 ;;
         esac
     done
-    
+
     validate_prerequisites
-    
+
     # Lógica principal do script aqui
     log_info "Executando funcionalidade principal..."
-    
+
     log_success "${SCRIPT_NAME} executado com sucesso!"
 }
 
@@ -162,6 +162,7 @@ fi
 ### 🔧 **Regras Específicas para Shell**
 
 #### **1. Segurança e Robustez**
+
 ```bash
 # OBRIGATÓRIO - Configurações de segurança
 set -e          # Exit on error
@@ -174,6 +175,7 @@ readonly LOG_FILE="audit_$(date +%Y%m%d_%H%M%S).log"
 ```
 
 #### **2. Tratamento de Variáveis de Ambiente**
+
 ```bash
 # Verificar variáveis obrigatórias
 check_env_vars() {
@@ -188,6 +190,7 @@ check_env_vars() {
 ```
 
 #### **3. Processamento de Argumentos**
+
 ```bash
 # Parse estruturado de argumentos
 parse_arguments() {
@@ -217,6 +220,7 @@ parse_arguments() {
 ```
 
 #### **4. Logging e Output**
+
 ```bash
 # OBRIGATÓRIO - Usar funções de logging padronizadas
 log_info "Iniciando processo de deploy..."
@@ -263,7 +267,7 @@ log_to_file() {
     Autor: Equipe AUDITORIA360
     Data: Janeiro 2025
     Versão: 1.0
-    
+
 .LINK
     https://github.com/Thaislaine997/AUDITORIA360
 #>
@@ -273,10 +277,10 @@ param(
     [Parameter(Mandatory = $false)]
     [ValidateSet("development", "staging", "production")]
     [string]$Environment = "development",
-    
+
     [Parameter(Mandatory = $false)]
     [switch]$DryRun,
-    
+
     [Parameter(Mandatory = $false)]
     [switch]$Verbose
 )
@@ -314,13 +318,13 @@ function Write-LogError {
 # Função de validação de pré-requisitos
 function Test-Prerequisites {
     Write-LogInfo "Validando pré-requisitos..."
-    
+
     # Verificar se estamos no diretório correto
     if (!(Test-Path (Join-Path $ProjectRoot "requirements.txt"))) {
         Write-LogError "Execute o script a partir da raiz do projeto AUDITORIA360"
         exit 1
     }
-    
+
     # Verificar dependências
     $requiredCommands = @("git", "python")
     foreach ($cmd in $requiredCommands) {
@@ -329,14 +333,14 @@ function Test-Prerequisites {
             exit 1
         }
     }
-    
+
     Write-LogSuccess "Pré-requisitos validados"
 }
 
 # Função de validação de variáveis de ambiente
 function Test-EnvironmentVariables {
     param([string[]]$RequiredVars)
-    
+
     foreach ($var in $RequiredVars) {
         if (!(Get-ChildItem Env: | Where-Object Name -eq $var)) {
             Write-LogError "Variável de ambiente obrigatória não definida: $var"
@@ -348,13 +352,13 @@ function Test-EnvironmentVariables {
 # Função de limpeza
 function Invoke-Cleanup {
     param([int]$ExitCode = 0)
-    
+
     if ($ExitCode -ne 0) {
         Write-LogError "Script finalizado com erro (código: $ExitCode)"
     }
-    
+
     # Limpeza de recursos temporários
-    
+
     exit $ExitCode
 }
 
@@ -362,23 +366,23 @@ function Invoke-Cleanup {
 function Invoke-Main {
     try {
         Write-LogInfo "Iniciando $ScriptName..."
-        
+
         # Configurar modo verboso se solicitado
         if ($Verbose) {
             $VerbosePreference = "Continue"
         }
-        
+
         Test-Prerequisites
-        
+
         # Lógica principal do script aqui
         Write-LogInfo "Executando funcionalidade principal..."
-        
+
         if ($DryRun) {
             Write-LogWarning "Modo DRY-RUN ativo - nenhuma alteração será feita"
         }
-        
+
         Write-LogSuccess "$ScriptName executado com sucesso!"
-        
+
     }
     catch {
         Write-LogError "Erro durante execução: $($_.Exception.Message)"
@@ -396,6 +400,7 @@ if ($MyInvocation.InvocationName -ne '.') {
 ### 🔧 **Regras Específicas para PowerShell**
 
 #### **1. Parâmetros e Validação**
+
 ```powershell
 # OBRIGATÓRIO - Definição estruturada de parâmetros
 [CmdletBinding()]
@@ -403,11 +408,11 @@ param(
     [Parameter(Mandatory = $true, HelpMessage = "ID do projeto GCP")]
     [ValidateNotNullOrEmpty()]
     [string]$ProjectId,
-    
+
     [Parameter(Mandatory = $false)]
     [ValidateSet("us-central1", "us-east1", "europe-west1")]
     [string]$Region = "us-central1",
-    
+
     [Parameter(Mandatory = $false)]
     [ValidateScript({ Test-Path $_ -PathType Container })]
     [string]$WorkingDirectory = "."
@@ -415,6 +420,7 @@ param(
 ```
 
 #### **2. Tratamento de Erros**
+
 ```powershell
 # OBRIGATÓRIO - Configuração de tratamento de erros
 $ErrorActionPreference = "Stop"
@@ -435,6 +441,7 @@ finally {
 ```
 
 #### **3. Progresso e Feedback**
+
 ```powershell
 # Mostrar progresso para operações longas
 $totalSteps = 5
@@ -443,9 +450,9 @@ $currentStep = 0
 for ($i = 1; $i -le $totalSteps; $i++) {
     $currentStep++
     $percentComplete = ($currentStep / $totalSteps) * 100
-    
+
     Write-Progress -Activity "Processando deployment" -Status "Passo $currentStep de $totalSteps" -PercentComplete $percentComplete
-    
+
     # Fazer trabalho aqui
     Start-Sleep -Seconds 2
 }
@@ -492,25 +499,28 @@ Write-Progress -Activity "Processando deployment" -Completed
 ### 📁 **Templates Disponíveis**
 
 - **Shell Script Básico**: `templates/basic_shell_script.sh`
-- **Shell Script de Deploy**: `templates/deploy_shell_script.sh`  
+- **Shell Script de Deploy**: `templates/deploy_shell_script.sh`
 - **PowerShell Script Básico**: `templates/basic_powershell_script.ps1`
 - **PowerShell Script de Deploy**: `templates/deploy_powershell_script.ps1`
 
 ### 🎯 **Casos de Uso Específicos**
 
 #### **Script de Deploy**
+
 - Validação de ambiente
 - Backup antes de mudanças
 - Rollback em caso de falha
 - Notificações de status
 
 #### **Script de Manutenção**
+
 - Logging detalhado
 - Verificações de integridade
 - Relatórios de status
 - Limpeza automática
 
 #### **Script de Setup/Instalação**
+
 - Detecção de sistema operacional
 - Verificação de dependências
 - Instalação condicional
@@ -562,6 +572,7 @@ Write-Progress -Activity "Processando deployment" -Completed
 ### ✅ **PR 12 - Refatoração de Scripts Shell (Janeiro 2025)**
 
 **Scripts Padronizados:**
+
 - ✅ `deploy_streamlit.sh` - Standardizado com logging e help function
 - ✅ `setup_mcp_dev.sh` - Refatorado com estrutura moderna
 - ✅ `cloudrun_deploy.sh` - Já padronizado (mantido)
@@ -572,6 +583,7 @@ Write-Progress -Activity "Processando deployment" -Completed
 - ✅ `setup_dev_env.sh` - Já padronizado (mantido)
 
 **Melhorias Implementadas:**
+
 - Funções de logging padronizadas em todos os scripts
 - Tratamento de erro consistente com `set -e, -u, -o pipefail`
 - Funções de help implementadas onde necessário
@@ -583,11 +595,13 @@ Write-Progress -Activity "Processando deployment" -Completed
 ### ✅ **PR 13 - Refatoração de Scripts PowerShell (Janeiro 2025)**
 
 **Scripts Validados:**
+
 - ✅ `cloudrun_deploy_backend.ps1` - Já bem estruturado (mantido)
 - ✅ `cloudrun_deploy_streamlit.ps1` - Já bem estruturado (mantido)
 - ✅ `setup_dev_env.ps1` - Já bem estruturado (mantido)
 
 **Melhorias Validadas:**
+
 - Comment-based help já implementado
 - Parâmetros com validação adequada
 - Tratamento de erro estruturado
@@ -596,13 +610,13 @@ Write-Progress -Activity "Processando deployment" -Completed
 
 ### 📊 **Estatísticas de Qualidade Pós-Refatoração**
 
-| Métrica | Antes | Depois | Melhoria |
-|---------|-------|--------|----------|
-| Scripts com logging padronizado | 60% | 100% | +40% |
-| Scripts com help function | 70% | 100% | +30% |
-| Scripts com error handling | 80% | 100% | +20% |
-| Scripts com validação de pré-requisitos | 50% | 100% | +50% |
-| Comentários explicativos | 70% | 90% | +20% |
+| Métrica                                 | Antes | Depois | Melhoria |
+| --------------------------------------- | ----- | ------ | -------- |
+| Scripts com logging padronizado         | 60%   | 100%   | +40%     |
+| Scripts com help function               | 70%   | 100%   | +30%     |
+| Scripts com error handling              | 80%   | 100%   | +20%     |
+| Scripts com validação de pré-requisitos | 50%   | 100%   | +50%     |
+| Comentários explicativos                | 70%   | 90%    | +20%     |
 
 ### 🎯 **Compliance com Padrões**
 

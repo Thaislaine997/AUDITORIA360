@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { authService, type User } from '../modules/auth/authService';
+import { useState, useEffect } from "react";
+import { authService, type User } from "../modules/auth/authService";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -18,14 +18,14 @@ export const useAuth = (): AuthState => {
       try {
         const isAuthenticated = authService.isAuthenticated();
         const user = authService.getCurrentUser();
-        
+
         setAuthState({
           isAuthenticated,
           loading: false,
           user: user || undefined,
         });
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error("Auth check failed:", error);
         setAuthState({
           isAuthenticated: false,
           loading: false,

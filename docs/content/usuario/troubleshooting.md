@@ -9,26 +9,32 @@
 ### 🌐 **Conectividade e Acesso**
 
 #### ❌ **Não consigo acessar o sistema**
+
 **Possíveis causas:**
+
 - Internet instável
-- URL incorreta  
+- URL incorreta
 - Firewall bloqueando acesso
 - Sistema em manutenção
 
 **Soluções:**
+
 1. **Verifique conexão**: Teste outros sites
 2. **Confirme URL**: Use o link oficial fornecido
 3. **Tente aba anônima**: Pode ser cache do browser
 4. **Contate suporte**: Se persistir
 
 #### ❌ **Login não funciona**
+
 **Possíveis causas:**
+
 - Credenciais incorretas
 - Conta bloqueada
 - Caps Lock ativado
 - Cache de senha obsoleto
 
 **Soluções:**
+
 1. **Verifique dados**: Email/CPF e senha corretos
 2. **Caps Lock**: Confira se não está ativado
 3. **Limpe cache**: Ctrl+Shift+Delete
@@ -40,13 +46,16 @@
 ### 📱 **Interface e Navegação**
 
 #### ❌ **Página carrega lenta**
+
 **Possíveis causas:**
+
 - Internet lenta
 - Cache acumulado
 - Muitas abas abertas
 - Recursos pesados
 
 **Soluções:**
+
 ```
 1. Teste velocidade: https://fast.com
 2. Limpe cache: Ctrl+F5
@@ -56,13 +65,16 @@
 ```
 
 #### ❌ **Layout quebrado ou estranho**
+
 **Possíveis causas:**
+
 - Browser desatualizado
 - JavaScript desabilitado
 - Extensões interferindo
 - Zoom inadequado
 
 **Soluções:**
+
 1. **Atualize browser**: Versão mais recente
 2. **Habilite JavaScript**: Necessário para funcionamento
 3. **Desabilite extensões**: Teste em modo anônimo
@@ -73,13 +85,16 @@
 ### 📂 **Upload e Documentos**
 
 #### ❌ **Erro ao fazer upload**
+
 **Possíveis causas:**
+
 - Arquivo muito grande (>10MB)
 - Formato não suportado
 - Nome com caracteres especiais
 - Conexão instável
 
 **Soluções:**
+
 ```yaml
 Tamanho: Reduza para <10MB
 Formatos_Aceitos:
@@ -91,13 +106,16 @@ Conexão: Aguarde internet estável
 ```
 
 #### ❌ **Arquivo não aparece após upload**
+
 **Possíveis causas:**
+
 - Upload não finalizado
 - Processamento em andamento
 - Permissões insuficientes
 - Erro interno
 
 **Soluções:**
+
 1. **Aguarde**: Processamento pode demorar
 2. **Recarregue página**: F5 ou Ctrl+R
 3. **Verifique permissões**: Confirme acesso à pasta
@@ -108,13 +126,16 @@ Conexão: Aguarde internet estável
 ### 📊 **Relatórios e Dados**
 
 #### ❌ **Relatório não gera**
+
 **Possíveis causas:**
+
 - Período muito amplo
 - Muitos dados
 - Filtros conflitantes
 - Timeout do sistema
 
 **Soluções:**
+
 ```
 1. Reduza período: Tente mês por mês
 2. Simplifique filtros: Use menos critérios
@@ -123,13 +144,16 @@ Conexão: Aguarde internet estável
 ```
 
 #### ❌ **Dados inconsistentes**
+
 **Possíveis causas:**
+
 - Cache desatualizado
 - Sincronização pendente
 - Filtros aplicados
 - Dados em processamento
 
 **Soluções:**
+
 1. **Atualize dados**: Botão "Atualizar"
 2. **Limpe filtros**: Reset para padrão
 3. **Aguarde sync**: Dados podem estar sincronizando
@@ -140,26 +164,32 @@ Conexão: Aguarde internet estável
 ### 🔒 **Segurança e Permissões**
 
 #### ❌ **Acesso negado a função**
+
 **Possíveis causas:**
+
 - Perfil insuficiente
 - Permissão não concedida
 - Sessão expirada
 - Conta desativada
 
 **Soluções:**
+
 1. **Verifique perfil**: Confirme privilégios
 2. **Faça login novamente**: Sessão pode ter expirado
 3. **Contate admin**: Para permissões adicionais
 4. **Aguarde**: Permissões podem estar sendo processadas
 
 #### ❌ **Sessão expira rapidamente**
+
 **Possíveis causas:**
+
 - Configuração de segurança
 - Múltiplos dispositivos
 - Inatividade
 - Política da empresa
 
 **Soluções:**
+
 ```
 1. Mantenha atividade: Clique periodicamente
 2. Um dispositivo: Use apenas um por vez
@@ -174,6 +204,7 @@ Conexão: Aguarde internet estável
 ### 💻 **Browser e Cache**
 
 #### 🧹 **Limpeza completa de cache**
+
 ```bash
 # Chrome
 1. Ctrl+Shift+Delete
@@ -181,7 +212,7 @@ Conexão: Aguarde internet estável
 3. Marque todas opções
 4. Clique "Limpar dados"
 
-# Firefox  
+# Firefox
 1. Ctrl+Shift+Delete
 2. Selecione "Tudo"
 3. Marque Cache e Cookies
@@ -195,6 +226,7 @@ Conexão: Aguarde internet estável
 ```
 
 #### 🔄 **Reset configurações browser**
+
 ```
 Chrome: chrome://settings/reset
 Firefox: about:support > Refresh Firefox
@@ -204,6 +236,7 @@ Edge: edge://settings/reset
 ### 🌐 **Problemas de Rede**
 
 #### 🔍 **Diagnóstico de conectividade**
+
 ```bash
 # Teste ping
 ping auditoria360.com
@@ -216,7 +249,9 @@ telnet auditoria360.com 443
 ```
 
 #### 🛡️ **Firewall e Proxy**
+
 **URLs para whitelist:**
+
 ```
 https://*.auditoria360.com
 https://*.cloudflare.com
@@ -231,14 +266,18 @@ https://*.openai.com
 ### 📲 **App/Mobile Web**
 
 #### ❌ **Interface não responsiva**
+
 **Soluções:**
+
 1. **Rotate device**: Teste landscape/portrait
 2. **Zoom reset**: Toque duplo para ajustar
 3. **Clear app cache**: Configurações > Apps > Limpar
 4. **Update app**: Versão mais recente
 
 #### ❌ **Performance lenta mobile**
+
 **Soluções:**
+
 ```
 1. Feche apps: Libere memória RAM
 2. WiFi forte: Use conexão estável
@@ -253,14 +292,18 @@ https://*.openai.com
 ### 🔴 **Problemas Críticos**
 
 #### ⚠️ **Sistema totalmente inacessível**
+
 **Passos imediatos:**
+
 1. **Verifique status**: Página de status do sistema
 2. **Confirme internet**: Teste outros sites
 3. **Tente dispositivo alternativo**: Celular, outro PC
 4. **Contate suporte URGENTE**: Canal de emergência
 
 #### ⚠️ **Perda de dados**
+
 **Ações críticas:**
+
 1. **NÃO faça mais alterações**: Evite sobrescrever
 2. **Documente o problema**: Hora, ação que causou
 3. **Contate suporte IMEDIATO**: Escalação máxima
@@ -269,6 +312,7 @@ https://*.openai.com
 ### 📞 **Contatos de Emergência**
 
 #### 🆘 **Suporte por Severidade**
+
 ```yaml
 CRÍTICO:
   - Email: emergencia@auditoria360.com
@@ -291,6 +335,7 @@ NORMAL:
 ## 📋 **CHECKLIST DE TROUBLESHOOTING**
 
 ### ✅ **Antes de contatar suporte**
+
 ```
 □ Testei em navegador atualizado
 □ Limpei cache e cookies
@@ -305,7 +350,9 @@ NORMAL:
 ```
 
 ### 📊 **Informações para suporte**
+
 Ao contatar suporte, inclua:
+
 - **Browser**: Chrome 120, Firefox 115, etc.
 - **Sistema**: Windows 11, macOS, Android, etc.
 - **Erro exato**: Mensagem completa
@@ -318,13 +365,15 @@ Ao contatar suporte, inclua:
 ## 🔗 **RECURSOS ADICIONAIS**
 
 ### 📚 **Documentação Relacionada**
+
 - **[FAQ Geral](faq.md)** - Perguntas frequentes
 - **[Manual do Usuário](manual-usuario.md)** - Guia completo
 - **[Guia de Instalação](guia-instalacao.md)** - Setup inicial
 
 ### 🌐 **Links Úteis**
+
 - **[Status do Sistema]** - Verificar disponibilidade
-- **[Portal de Suporte]** - Tickets e base conhecimento  
+- **[Portal de Suporte]** - Tickets e base conhecimento
 - **[Comunidade]** - Fórum de usuários
 - **[Changelog]** - Histórico de atualizações
 

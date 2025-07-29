@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AUDITORIA360 - Portal de Gestão da Folha</title>
+    <meta
+      name="description"
+      content="Portal seguro, inteligente e integrado para centralizar, automatizar e auditar todos os processos de folha de pagamento"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./assets/logo.png" />
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="./assets/style.css" />
+
+    <style>
+      /* Estilos específicos para a página inicial */
+      .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          var(--background-color) 0%,
+          var(--secondary-background-color) 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(
+            circle at 30% 20%,
+            rgba(0, 212, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 70% 80%,
+            rgba(14, 165, 233, 0.1) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+      }
+
+      .login-card {
+        width: 100%;
+        max-width: 400px;
+        margin: var(--spacing-md);
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo-container {
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .logo-container img {
+        height: 80px;
+        width: auto;
+        margin-bottom: var(--spacing-md);
+        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+      }
+
+      .logo-title {
+        font-size: var(--font-size-3xl);
+        font-weight: 700;
+        color: var(--primary-color);
+        margin: 0;
+        text-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+      }
+
+      .logo-subtitle {
+        font-size: var(--font-size-sm);
+        color: var(--secondary-text-color);
+        margin-top: var(--spacing-xs);
+      }
+
+      .login-form {
+        background: var(--glass-background);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius-xl);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .form-title {
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+        color: var(--text-color);
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+      }
+
+      .user-type-selector {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .user-type-btn {
+        padding: var(--spacing-md);
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius-md);
+        background: transparent;
+        color: var(--secondary-text-color);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .user-type-btn.active {
+        border-color: var(--primary-color);
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--primary-color);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      }
+
+      .user-type-btn:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .dashboard-container {
+        min-height: 100vh;
+        background: var(--background-color);
+        display: none;
+      }
+
+      .dashboard-container.active {
+        display: block;
+      }
+
+      .header-bar {
+        background: var(--secondary-background-color);
+        border-bottom: 1px solid var(--border-color);
+        padding: var(--spacing-md) var(--spacing-lg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header-info {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+      }
+
+      .header-logo {
+        height: 40px;
+        width: auto;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        color: var(--text-color);
+      }
+
+      .logout-btn {
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        font-size: var(--font-size-sm);
+        transition: all var(--transition-fast);
+      }
+
+      .logout-btn:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        min-height: calc(100vh - 73px);
+      }
+
+      .sidebar {
+        background: var(--secondary-background-color);
+        border-right: 1px solid var(--border-color);
+        padding: var(--spacing-lg);
+      }
+
+      .sidebar-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .nav-menu li {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .nav-menu a {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+        color: var(--secondary-text-color);
+        text-decoration: none;
+        border-radius: var(--border-radius-md);
+        transition: all var(--transition-fast);
+        font-size: var(--font-size-sm);
+      }
+
+      .nav-menu a:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--primary-color);
+      }
+
+      .content-area {
+        padding: var(--spacing-xl);
+        overflow-y: auto;
+      }
+
+      .welcome-section {
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .welcome-title {
+        font-size: var(--font-size-3xl);
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+      }
+
+      .module-card {
+        background: var(--secondary-background-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-lg);
+        transition: all var(--transition-normal);
+        cursor: pointer;
+      }
+
+      .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+      }
+
+      .module-icon {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .module-title {
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .module-description {
+        color: var(--secondary-text-color);
+        font-size: var(--font-size-sm);
+        line-height: 1.5;
+      }
+
+      .client-restricted {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .access-badge {
+        display: inline-block;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        background: var(--success-color);
+        color: white;
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-xs);
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .restricted-badge {
+        background: var(--warning-color);
+        color: var(--background-color);
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .modules-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .user-type-selector {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Área de Login -->
+    <div id="loginContainer" class="login-container">
+      <div class="login-card">
+        <div class="logo-container">
+          <img
+            src="./assets/logo.png"
+            alt="AUDITORIA360 Logo"
+            onerror="this.style.display='none'"
+          />
+          <h1 class="logo-title">AUDITORIA360</h1>
+          <p class="logo-subtitle">Portal de Gestão da Folha</p>
+        </div>
+
+        <div class="login-form">
+          <h2 class="form-title">Acesso ao Sistema</h2>
+
+          <div class="user-type-selector">
+            <button
+              type="button"
+              class="user-type-btn active"
+              data-type="admin"
+            >
+              <div>👑 Administrador</div>
+              <small>Acesso completo</small>
+            </button>
+            <button type="button" class="user-type-btn" data-type="client">
+              <div>👤 Cliente</div>
+              <small>Consulta restrita</small>
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label for="username" class="form-label">Usuário</label>
+            <input
+              type="text"
+              id="username"
+              class="form-input"
+              placeholder="Digite seu usuário"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Senha</label>
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              placeholder="Digite sua senha"
+              required
+            />
+          </div>
+
+          <button
+            type="button"
+            class="button button-primary w-full"
+            onclick="handleLogin()"
+          >
+            🔐 Entrar no Sistema
+          </button>
+
+          <div class="text-center mt-1">
+            <a href="#" class="text-small text-muted">Esqueceu sua senha?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Administrativo -->
+    <div id="adminDashboard" class="dashboard-container">
+      <header class="header-bar">
+        <div class="header-info">
+          <img
+            src="./assets/logo.png"
+            alt="AUDITORIA360"
+            class="header-logo"
+            onerror="this.style.display='none'"
+          />
+          <span class="text-lg font-weight-600"
+            >AUDITORIA360 - Visão Administrativa</span
+          >
+        </div>
+        <div class="user-info">
+          <span class="badge badge-success">👑 Administrador</span>
+          <span id="adminUsername">Admin</span>
+          <button class="logout-btn" onclick="handleLogout()">Sair</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <aside class="sidebar">
+          <h3 class="sidebar-title">📊 Navegação</h3>
+          <ul class="nav-menu">
+            <li><a href="#dashboards">📈 Dashboards</a></li>
+            <li><a href="#folha">💼 Gestão da Folha</a></li>
+            <li><a href="#checklist">📝 Checklist</a></li>
+            <li><a href="#consultor">🤖 Consultor de Riscos</a></li>
+            <li><a href="#ccts">📊 Gestão de CCTs</a></li>
+            <li><a href="#revisao">🔍 Revisão Cláusulas</a></li>
+            <li><a href="#obrigacoes">🗓️ Obrigações e Prazos</a></li>
+            <li><a href="#parametros">⚙️ Parâmetros Legais</a></li>
+            <li><a href="#sugestoes">💡 Sugestões CCT</a></li>
+            <li><a href="#benchmarking">📊 Benchmarking</a></li>
+            <li><a href="#trilha">🔍 Trilha de Auditoria</a></li>
+            <li><a href="#portal-demandas">📋 Portal de Demandas</a></li>
+          </ul>
+        </aside>
+
+        <main class="content-area">
+          <div class="welcome-section">
+            <h1 class="welcome-title">Bem-vindo ao AUDITORIA360</h1>
+            <p class="text-muted">
+              Sistema integrado de gestão e auditoria da folha de pagamento com
+              acesso completo a todos os módulos.
+            </p>
+          </div>
+
+          <div class="modules-grid">
+            <div
+              class="module-card"
+              onclick="navigateToModule('./dashboards/pages/')"
+            >
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📈</div>
+              <h3 class="module-title">Dashboards</h3>
+              <p class="module-description">
+                Visualize métricas, indicadores e relatórios detalhados da folha
+                de pagamento com dashboards interativos.
+              </p>
+            </div>
+
+            <div
+              class="module-card"
+              onclick="navigateToModule('./portal_demandas/')"
+            >
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📋</div>
+              <h3 class="module-title">Portal de Demandas</h3>
+              <p class="module-description">
+                Gerencie solicitações, tickets e demandas dos clientes de forma
+                centralizada e eficiente.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">👥</div>
+              <h3 class="module-title">Gerenciamento de Usuários</h3>
+              <p class="module-description">
+                Controle completo de usuários, permissões e acessos ao sistema.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">🤖</div>
+              <h3 class="module-title">Consultor de Riscos</h3>
+              <p class="module-description">
+                IA avançada para identificação e análise de riscos na folha de
+                pagamento.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">⚙️</div>
+              <h3 class="module-title">Administração</h3>
+              <p class="module-description">
+                Configurações avançadas, parâmetros legais e customizações do
+                sistema.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📊</div>
+              <h3 class="module-title">Relatórios Avançados</h3>
+              <p class="module-description">
+                Relatórios detalhados e personalizáveis para análises profundas.
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Dashboard do Cliente -->
+    <div id="clientDashboard" class="dashboard-container">
+      <header class="header-bar">
+        <div class="header-info">
+          <img
+            src="./assets/logo.png"
+            alt="AUDITORIA360"
+            class="header-logo"
+            onerror="this.style.display='none'"
+          />
+          <span class="text-lg font-weight-600"
+            >AUDITORIA360 - Portal do Cliente</span
+          >
+        </div>
+        <div class="user-info">
+          <span class="badge badge-info">👤 Cliente</span>
+          <span id="clientUsername">Cliente</span>
+          <button class="logout-btn" onclick="handleLogout()">Sair</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <aside class="sidebar">
+          <h3 class="sidebar-title">🔍 Consultas</h3>
+          <ul class="nav-menu">
+            <li><a href="#consulta-situacao">📊 Situação dos Clientes</a></li>
+            <li><a href="#relatorios-basicos">📋 Relatórios Básicos</a></li>
+            <li><a href="#documentos">📄 Documentos</a></li>
+            <li><a href="#suporte">💬 Suporte</a></li>
+          </ul>
+        </aside>
+
+        <main class="content-area">
+          <div class="welcome-section">
+            <h1 class="welcome-title">Portal do Cliente</h1>
+            <p class="text-muted">
+              Acesso simplificado para consulta da situação dos seus clientes e
+              relatórios básicos.
+            </p>
+          </div>
+
+          <div class="modules-grid">
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📊</div>
+              <h3 class="module-title">Situação dos Clientes</h3>
+              <p class="module-description">
+                Consulte o status atual e informações básicas dos seus clientes.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📋</div>
+              <h3 class="module-title">Relatórios Básicos</h3>
+              <p class="module-description">
+                Acesse relatórios simplificados e dados essenciais.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📄</div>
+              <h3 class="module-title">Documentos</h3>
+              <p class="module-description">
+                Baixe documentos e comprovantes relacionados aos seus clientes.
+              </p>
+            </div>
+
+            <div class="module-card client-restricted">
+              <div class="access-badge restricted-badge">
+                🚫 Acesso Restrito
+              </div>
+              <div class="module-icon">⚙️</div>
+              <h3 class="module-title">Administração</h3>
+              <p class="module-description">
+                Funcionalidade disponível apenas para administradores.
+              </p>
+            </div>
+
+            <div class="module-card client-restricted">
+              <div class="access-badge restricted-badge">
+                🚫 Acesso Restrito
+              </div>
+              <div class="module-icon">👥</div>
+              <h3 class="module-title">Gerenciamento</h3>
+              <p class="module-description">
+                Funcionalidade disponível apenas para administradores.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">💬</div>
+              <h3 class="module-title">Suporte</h3>
+              <p class="module-description">
+                Entre em contato com nossa equipe de suporte especializada.
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Variáveis globais
+      let currentUserType = "admin";
+      let isLoggedIn = false;
+
+      // Inicialização
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeApp();
+        setupEventListeners();
+      });
+
+      function initializeApp() {
+        // Verifica se há sessão salva
+        const savedSession = localStorage.getItem("auditoria360_session");
+        if (savedSession) {
+          const session = JSON.parse(savedSession);
+          if (session.userType && session.username) {
+            loginUser(session.userType, session.username);
+          }
+        }
+      }
+
+      function setupEventListeners() {
+        // Seletores de tipo de usuário
+        const userTypeButtons = document.querySelectorAll(".user-type-btn");
+        userTypeButtons.forEach(btn => {
+          btn.addEventListener("click", function () {
+            userTypeButtons.forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+            currentUserType = this.dataset.type;
+          });
+        });
+
+        // Enter no formulário
+        document.addEventListener("keypress", function (e) {
+          if (e.key === "Enter" && !isLoggedIn) {
+            handleLogin();
+          }
+        });
+      }
+
+      function handleLogin() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!username || !password) {
+          showNotification("Por favor, preencha todos os campos.", "warning");
+          return;
+        }
+
+        // Simulação de autenticação (em produção, seria uma chamada para API)
+        if (authenticateUser(username, password)) {
+          loginUser(currentUserType, username);
+          saveSession(currentUserType, username);
+          showNotification("Login realizado com sucesso!", "success");
+        } else {
+          showNotification("Usuário ou senha incorretos.", "danger");
+        }
+      }
+
+      function authenticateUser(username, password) {
+        // Simulação - em produção, fazer chamada para API de autenticação
+        const validCredentials = {
+          admin: "admin123",
+          contabilidade: "conta123",
+          demo: "demo123",
+        };
+
+        return validCredentials[username] === password;
+      }
+
+      function loginUser(userType, username) {
+        isLoggedIn = true;
+        currentUserType = userType;
+
+        // Esconder login
+        document.getElementById("loginContainer").style.display = "none";
+
+        // Mostrar dashboard apropriado
+        if (userType === "admin") {
+          document.getElementById("adminDashboard").classList.add("active");
+          document.getElementById("adminUsername").textContent = username;
+        } else {
+          document.getElementById("clientDashboard").classList.add("active");
+          document.getElementById("clientUsername").textContent = username;
+        }
+
+        // Animação de entrada
+        setTimeout(() => {
+          document.querySelector(".dashboard-container.active").style.opacity =
+            "1";
+        }, 100);
+      }
+
+      function handleLogout() {
+        if (confirm("Tem certeza que deseja sair?")) {
+          isLoggedIn = false;
+
+          // Limpar sessão
+          localStorage.removeItem("auditoria360_session");
+
+          // Esconder dashboards
+          document.getElementById("adminDashboard").classList.remove("active");
+          document.getElementById("clientDashboard").classList.remove("active");
+
+          // Mostrar login
+          document.getElementById("loginContainer").style.display = "flex";
+
+          // Limpar campos
+          document.getElementById("username").value = "";
+          document.getElementById("password").value = "";
+
+          showNotification("Logout realizado com sucesso!", "info");
+        }
+      }
+
+      function saveSession(userType, username) {
+        const session = {
+          userType: userType,
+          username: username,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem("auditoria360_session", JSON.stringify(session));
+      }
+
+      function navigateToModule(path) {
+        if (isLoggedIn) {
+          // Em produção, navegar para o módulo específico
+          console.log(`Navegando para: ${path}`);
+          showNotification(`Redirecionando para ${path}...`, "info");
+
+          // Simulação de redirecionamento
+          setTimeout(() => {
+            // window.location.href = path;
+            console.log(`Módulo ${path} carregado`);
+          }, 1000);
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        // Criar elemento de notificação
+        const notification = document.createElement("div");
+        notification.className = `alert alert-${type} animate-fade-in`;
+        notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        // Animar entrada
+        setTimeout(() => {
+          notification.style.opacity = "1";
+          notification.style.transform = "translateX(0)";
+        }, 100);
+
+        // Remover após 4 segundos
+        setTimeout(() => {
+          notification.style.opacity = "0";
+          notification.style.transform = "translateX(100%)";
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 300);
+        }, 4000);
+      }
+
+      // Função para demonstrar interatividade dos cards
+      document.addEventListener("click", function (e) {
+        if (
+          e.target.closest(".module-card") &&
+          !e.target.closest(".client-restricted")
+        ) {
+          const card = e.target.closest(".module-card");
+          const title = card.querySelector(".module-title").textContent;
+
+          // Efeito visual no clique
+          card.style.transform = "scale(0.98)";
+          setTimeout(() => {
+            card.style.transform = "";
+          }, 150);
+
+          showNotification(`Acessando módulo: ${title}`, "info");
+        }
+      });
+    </script>
+  </body>
+</html>

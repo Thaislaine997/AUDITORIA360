@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Container,
   Paper,
@@ -6,18 +6,18 @@ import {
   Button,
   Typography,
   Box,
-} from '@mui/material';
+} from "@mui/material";
 
 const LoginPage: React.FC = () => {
   const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // For demo purposes, just store a token
-    localStorage.setItem('authToken', 'demo-token');
+    localStorage.setItem("authToken", "demo-token");
     window.location.reload();
   };
 
@@ -26,12 +26,12 @@ const LoginPage: React.FC = () => {
       <Box
         sx={{
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
+        <Paper elevation={3} sx={{ padding: 4, width: "100%" }}>
           <Typography component="h1" variant="h5" align="center">
             AUDITORIA360
           </Typography>
@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
               autoComplete="username"
               autoFocus
               value={credentials.username}
-              onChange={(e) =>
+              onChange={e =>
                 setCredentials({ ...credentials, username: e.target.value })
               }
             />
@@ -63,7 +63,7 @@ const LoginPage: React.FC = () => {
               id="password"
               autoComplete="current-password"
               value={credentials.password}
-              onChange={(e) =>
+              onChange={e =>
                 setCredentials({ ...credentials, password: e.target.value })
               }
             />

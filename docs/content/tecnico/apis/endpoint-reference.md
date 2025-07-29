@@ -5,6 +5,7 @@
 ## 🚀 **Recent Refactoring Improvements**
 
 ### ✅ **Completed Enhancements**
+
 - **Standardized Response Format**: All endpoints now use consistent JSON response structure
 - **Enhanced Error Handling**: Structured error responses with detailed error codes
 - **Input Validation**: Comprehensive request validation using Pydantic models
@@ -15,17 +16,19 @@
 ### 🎯 **API Standards**
 
 #### **Response Format**
+
 ```json
 {
   "success": true,
   "message": "Operation completed successfully",
-  "data": {}, 
+  "data": {},
   "timestamp": "2024-01-29T10:00:00Z",
   "request_id": "req_abc123"
 }
 ```
 
 #### **Error Format**
+
 ```json
 {
   "success": false,
@@ -46,6 +49,7 @@
 ```
 
 #### **Pagination Format**
+
 ```json
 {
   "success": true,
@@ -66,17 +70,17 @@
 
 ## 📋 **API Modules Overview**
 
-| Module | Prefix | Description | Status |
-|--------|--------|-------------|--------|
-| Authentication | `/api/v1/auth` | User authentication and authorization | ✅ Active |
-| Payroll | `/api/v1/payroll` | Payroll management and calculations | ✅ Active |
-| Documents | `/api/v1/documents` | Document upload and management | ✅ Active |
-| CCT | `/api/v1/cct` | Collective Labor Agreements | ✅ Active |
-| Notifications | `/api/v1/notifications` | Notification system | ✅ Active |
-| Audit | `/api/v1/auditorias` | Audit and compliance monitoring | ✅ **Refactored** |
-| Compliance | `/api/v1/compliance` | Compliance checking engine | ✅ **Refactored** |
-| AI | `/api/v1/ai` | AI-powered features | ✅ Active |
-| Automation | `/api/v1/automation` | Serverless automation tasks | ✅ **Refactored** |
+| Module         | Prefix                  | Description                           | Status            |
+| -------------- | ----------------------- | ------------------------------------- | ----------------- |
+| Authentication | `/api/v1/auth`          | User authentication and authorization | ✅ Active         |
+| Payroll        | `/api/v1/payroll`       | Payroll management and calculations   | ✅ Active         |
+| Documents      | `/api/v1/documents`     | Document upload and management        | ✅ Active         |
+| CCT            | `/api/v1/cct`           | Collective Labor Agreements           | ✅ Active         |
+| Notifications  | `/api/v1/notifications` | Notification system                   | ✅ Active         |
+| Audit          | `/api/v1/auditorias`    | Audit and compliance monitoring       | ✅ **Refactored** |
+| Compliance     | `/api/v1/compliance`    | Compliance checking engine            | ✅ **Refactored** |
+| AI             | `/api/v1/ai`            | AI-powered features                   | ✅ Active         |
+| Automation     | `/api/v1/automation`    | Serverless automation tasks           | ✅ **Refactored** |
 
 ---
 
@@ -85,9 +89,11 @@
 ### 🔐 **Authentication Module** (`/api/v1/auth`)
 
 #### **POST /api/v1/auth/login**
+
 Authenticate user and obtain access token.
 
 **Request:**
+
 ```json
 {
   "username": "user@example.com",
@@ -96,6 +102,7 @@ Authenticate user and obtain access token.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -117,16 +124,19 @@ Authenticate user and obtain access token.
 
 ### 🏛️ **Audit Module** (`/api/v1/auditorias`) - **REFACTORED**
 
-#### **POST /api/v1/auditorias/execute** 
+#### **POST /api/v1/auditorias/execute**
+
 Execute audit process with enhanced error handling.
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -142,9 +152,11 @@ Content-Type: application/json
 ```
 
 #### **GET /api/v1/auditorias/executions**
+
 List audit executions with standardized pagination.
 
 **Query Parameters:**
+
 - `page` (int): Page number (default: 1)
 - `page_size` (int): Items per page (default: 20, max: 100)
 - `search` (string): Search term
@@ -153,6 +165,7 @@ List audit executions with standardized pagination.
 - `sort_order` (string): "asc" or "desc"
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -188,25 +201,29 @@ List audit executions with standardized pagination.
 ### ✅ **Compliance Module** (`/api/v1/compliance`) - **REFACTORED**
 
 #### **POST /api/v1/compliance/check**
+
 Perform compliance check with enhanced validation.
 
 **Request:**
+
 ```json
 {
   "entity_type": "payroll",
-  "entity_id": "payroll_001", 
+  "entity_id": "payroll_001",
   "rule_categories": ["salary", "tax"],
   "include_resolved": false
 }
 ```
 
 **Validation Rules:**
+
 - `entity_type`: Must be one of "payroll", "employee", "cct"
 - `entity_id`: Required, 1-50 characters
 - `rule_categories`: Optional array of rule categories
 - `include_resolved`: Boolean, default false
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -248,13 +265,16 @@ Perform compliance check with enhanced validation.
 ```
 
 #### **GET /api/v1/compliance/rules**
+
 List available compliance rules with filtering.
 
 **Query Parameters:**
+
 - `category` (string): Filter by rule category
 - `active_only` (boolean): Show only active rules (default: true)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -277,12 +297,15 @@ List available compliance rules with filtering.
 ```
 
 #### **POST /api/v1/compliance/rules/{rule_id}/execute**
+
 Execute specific compliance rule against multiple entities.
 
 **Path Parameters:**
+
 - `rule_id` (string): ID of the rule to execute
 
 **Request:**
+
 ```json
 {
   "entity_type": "payroll",
@@ -291,10 +314,12 @@ Execute specific compliance rule against multiple entities.
 ```
 
 **Validation Rules:**
+
 - `entity_type`: Must be one of "payroll", "employee", "cct"
 - `entity_ids`: Array of 1-100 entity IDs
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -307,7 +332,7 @@ Execute specific compliance rule against multiple entities.
     "results": [
       {
         "entity_id": "payroll_001",
-        "rule_id": "SALARY_001", 
+        "rule_id": "SALARY_001",
         "status": "PASSED",
         "checked_at": "2024-01-29T14:05:30Z",
         "details": "Rule SALARY_001 executed successfully for payroll payroll_001"
@@ -327,9 +352,11 @@ Execute specific compliance rule against multiple entities.
 ### 🤖 **Automation Module** (`/api/v1/automation`) - **REFACTORED**
 
 #### **POST /api/v1/automation/reports/daily**
+
 Trigger daily report generation via Vercel Cron.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -343,9 +370,11 @@ Trigger daily report generation via Vercel Cron.
 ```
 
 #### **GET /api/v1/automation/status**
+
 Get status of all automation modules.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -373,44 +402,47 @@ Get status of all automation modules.
 
 ## 🔧 **Error Codes Reference**
 
-| Code | Type | Description |
-|------|------|-------------|
-| `AUTH_001` | Authentication | Authentication failed |
-| `AUTH_002` | Authorization | Authorization failed |
-| `AUTH_003` | Authentication | Token expired |
-| `AUTH_004` | Authentication | Invalid credentials |
-| `VAL_001` | Validation | Invalid input |
-| `VAL_002` | Validation | Missing required field |
-| `VAL_003` | Validation | Invalid format |
-| `VAL_004` | Validation | Invalid range |
-| `BIZ_001` | Business | Resource not found |
-| `BIZ_002` | Business | Resource conflict |
-| `BIZ_003` | Business | Operation not allowed |
-| `BIZ_004` | Business | Business rule violation |
-| `SYS_001` | System | Internal server error |
-| `SYS_002` | System | Service unavailable |
-| `SYS_003` | System | Database error |
-| `SYS_004` | System | External service error |
-| `PROC_001` | Processing | File processing error |
-| `PROC_002` | Processing | OCR processing error |
-| `PROC_003` | Processing | Calculation error |
-| `PROC_004` | Processing | Export error |
+| Code       | Type           | Description             |
+| ---------- | -------------- | ----------------------- |
+| `AUTH_001` | Authentication | Authentication failed   |
+| `AUTH_002` | Authorization  | Authorization failed    |
+| `AUTH_003` | Authentication | Token expired           |
+| `AUTH_004` | Authentication | Invalid credentials     |
+| `VAL_001`  | Validation     | Invalid input           |
+| `VAL_002`  | Validation     | Missing required field  |
+| `VAL_003`  | Validation     | Invalid format          |
+| `VAL_004`  | Validation     | Invalid range           |
+| `BIZ_001`  | Business       | Resource not found      |
+| `BIZ_002`  | Business       | Resource conflict       |
+| `BIZ_003`  | Business       | Operation not allowed   |
+| `BIZ_004`  | Business       | Business rule violation |
+| `SYS_001`  | System         | Internal server error   |
+| `SYS_002`  | System         | Service unavailable     |
+| `SYS_003`  | System         | Database error          |
+| `SYS_004`  | System         | External service error  |
+| `PROC_001` | Processing     | File processing error   |
+| `PROC_002` | Processing     | OCR processing error    |
+| `PROC_003` | Processing     | Calculation error       |
+| `PROC_004` | Processing     | Export error            |
 
 ---
 
 ## 🎯 **Common Query Parameters**
 
 ### **Pagination**
+
 - `page` (int): Page number (1-based, default: 1)
 - `page_size` (int): Items per page (1-100, default: 20)
 
 ### **Filtering**
+
 - `search` (string): Search term (min 2 characters)
 - `active_only` (boolean): Filter only active records
 - `start_date` (datetime): Start date filter (ISO format)
 - `end_date` (datetime): End date filter (ISO format)
 
 ### **Sorting**
+
 - `sort_by` (string): Field to sort by
 - `sort_order` (string): "asc" or "desc" (default: "asc")
 
@@ -425,6 +457,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 ### **Role-Based Access**
+
 - `administrador`: Full access to all endpoints
 - `contador`: Access to audit, compliance, and payroll endpoints
 - `usuario`: Limited access to read-only endpoints
@@ -434,12 +467,14 @@ Authorization: Bearer {jwt_token}
 ## 📊 **Performance Metrics**
 
 ### **Response Time Targets**
+
 - Compliance checks: < 1 second
 - List endpoints: < 500ms
 - Authentication: < 200ms
 - Health checks: < 100ms
 
 ### **Monitoring Headers**
+
 - `X-Request-ID`: Unique request identifier
 - `X-Process-Time`: Processing time in seconds
 
@@ -448,16 +483,19 @@ Authorization: Bearer {jwt_token}
 ## 🧪 **Testing Endpoints**
 
 ### **Health Check**
+
 ```http
 GET /health
 ```
 
 ### **System Status**
-```http  
+
+```http
 GET /api/v1/system/status
 ```
 
 ### **API Documentation**
+
 - Swagger UI: `/docs`
 - ReDoc: `/redoc`
 - OpenAPI JSON: `/openapi.json`
@@ -467,6 +505,7 @@ GET /api/v1/system/status
 ## 📝 **Change Log**
 
 ### **v1.0.0 - January 2024**
+
 - ✅ Implemented standardized response format
 - ✅ Added comprehensive error handling
 - ✅ Enhanced input validation with Pydantic
@@ -477,6 +516,7 @@ GET /api/v1/system/status
 - ✅ Enhanced authentication and authorization
 
 ### **Refactored Modules**
+
 - ✅ Audit Module: Enhanced with standardized responses and pagination
-- ✅ Compliance Module: Added request validation and structured responses  
+- ✅ Compliance Module: Added request validation and structured responses
 - ✅ Automation Module: Improved error handling and status reporting

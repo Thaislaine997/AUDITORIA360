@@ -5,6 +5,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
 ## 📚 Índice de Exemplos
 
 ### 🔐 Autenticação e Segurança
+
 - **[api_authentication_example.py](api_authentication_example.py)** - Autenticação, gestão de usuários e permissões
   - Login e logout de usuários
   - Criação e gestão de usuários
@@ -13,6 +14,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Tratamento de erros de autenticação
 
 ### 💼 Folha de Pagamento
+
 - **[api_payroll_example.py](api_payroll_example.py)** - Gestão completa de folha de pagamento
   - Gestão de funcionários (CRUD)
   - Cálculos de folha automatizados
@@ -21,6 +23,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Validação de folha de pagamento
 
 ### 📁 Gestão de Documentos
+
 - **[api_documents_example.py](api_documents_example.py)** - Gestão completa de documentos
   - Upload para Cloudflare R2
   - Listagem e busca avançada
@@ -29,6 +32,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Versionamento de documentos
 
 ### 🤖 Inteligência Artificial e Chatbot
+
 - **[ai_chatbot_example.py](ai_chatbot_example.py)** - IA e assistente virtual
   - Conversa com chatbot especializado
   - Busca na base de conhecimento
@@ -37,6 +41,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Treinamento e feedback do chatbot
 
 ### 📊 Analytics e Relatórios
+
 - **[duckdb_example.py](duckdb_example.py)** - Analytics avançados com DuckDB
   - Análise departamental de custos
   - Tendências salariais com gráficos
@@ -46,6 +51,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Testes de performance de queries
 
 ### 🔍 Processamento OCR
+
 - **[ocr_paddle_example.py](ocr_paddle_example.py)** - OCR avançado com PaddleOCR
   - Processamento de imagens e PDFs
   - Pré-processamento para melhor precisão
@@ -54,6 +60,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Comparação de performance
 
 ### ☁️ Armazenamento em Nuvem
+
 - **[r2_upload_download_example.py](r2_upload_download_example.py)** - Integração com Cloudflare R2
   - Upload e download de arquivos
   - Gestão de buckets
@@ -61,6 +68,7 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
   - Backup e sincronização
 
 ### 🔄 Workflows Completos
+
 - **[complete_workflow_example.py](complete_workflow_example.py)** - Fluxos de trabalho integrados
   - Auditoria completa de folha de pagamento
   - Verificação de compliance com CCT
@@ -72,17 +80,20 @@ Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos
 ### Pré-requisitos
 
 1. **Instalar dependências:**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 2. **Configurar variáveis de ambiente:**
+
 ```bash
 cp .env.example .env
 # Editar .env com suas credenciais
 ```
 
 3. **Iniciar a API:**
+
 ```bash
 uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -133,21 +144,25 @@ done
 ## 📋 Cenários de Uso por Perfil
 
 ### 👤 **Usuário Final (RH/Contador)**
+
 1. **[api_authentication_example.py](api_authentication_example.py)** - Login e acesso ao sistema
 2. **[api_payroll_example.py](api_payroll_example.py)** - Processamento de folha
 3. **[api_documents_example.py](api_documents_example.py)** - Gestão de documentos
 
 ### 👨‍💻 **Desenvolvedor**
+
 1. **[complete_workflow_example.py](complete_workflow_example.py)** - Entendimento do fluxo completo
 2. **[duckdb_example.py](duckdb_example.py)** - Implementação de analytics
 3. **[ai_chatbot_example.py](ai_chatbot_example.py)** - Integração com IA
 
 ### 🔍 **Auditor**
+
 1. **[complete_workflow_example.py](complete_workflow_example.py)** - Processo de auditoria
 2. **[api_documents_example.py](api_documents_example.py)** - Análise de documentos
 3. **[duckdb_example.py](duckdb_example.py)** - Relatórios de compliance
 
 ### 👔 **Gestor/Administrador**
+
 1. **[api_authentication_example.py](api_authentication_example.py)** - Gestão de usuários
 2. **[duckdb_example.py](duckdb_example.py)** - Relatórios executivos
 3. **[complete_workflow_example.py](complete_workflow_example.py)** - Visão geral do sistema
