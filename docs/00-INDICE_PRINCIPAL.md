@@ -19,6 +19,7 @@
 - [🏗️ Estrutura do Backend](tecnico/desenvolvimento/backend-estrutura.md)
 - [📘 Documentação dos Módulos Principais](tecnico/modulos-principais.md) **[NOVO]**
 - [🔌 Documentação de APIs](tecnico/apis/api-documentation.md)
+- [🧪 Testes Frontend](tecnico/frontend-tests.md) **[NOVO]**
 - [📋 Integração MCP](MCP_INTEGRATION.md)
 
 ### 👔 **Para Gestores e Executivos**
@@ -161,11 +162,12 @@ qualidade/
 1. [Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)
 2. [Setup do Ambiente](tecnico/desenvolvimento/setup-ambiente.md)
 3. [Organização de Testes](tecnico/desenvolvimento/organizacao-testes.md) **[ATUALIZADO]**
-4. [Padrões de Código Python](qualidade/PADRONIZACAO_PYTHON.md)
-5. [Guia Rápido de Qualidade](qualidade/GUIA_PADROES_CODIGO.md)
-6. [Notebooks de Análise](tecnico/notebooks/README.md)
-7. [Documentação APIs](tecnico/apis/api-documentation.md)
-8. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
+4. [Testes Frontend](tecnico/frontend-tests.md) **[NOVO]**
+5. [Padrões de Código Python](qualidade/PADRONIZACAO_PYTHON.md)
+6. [Guia Rápido de Qualidade](qualidade/GUIA_PADROES_CODIGO.md)
+7. [Notebooks de Análise](tecnico/notebooks/README.md)
+8. [Documentação APIs](tecnico/apis/api-documentation.md)
+9. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
 
 ### 👨‍🔧 **DevOps / SRE**
 1. [Deploy Checklist](tecnico/deploy/deploy-checklist.md)
