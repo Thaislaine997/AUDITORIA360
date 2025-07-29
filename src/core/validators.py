@@ -110,7 +110,7 @@ def validate_required_fields(data: dict, required_fields: list) -> None:
     for field in required_fields:
         if field not in data:
             missing_fields.append(field)
-        elif not data[field] or (
+        elif data[field] is None or (
             isinstance(data[field], str) and not data[field].strip()
         ):
             empty_fields.append(field)
