@@ -61,7 +61,7 @@ Desenvolver um portal completo que elimina processos manuais e riscos de não co
 
 ### 👥 **Por Perfil de Usuário**
 - **👤 Usuários**: [Manual do Usuário](docs/usuario/manual-usuario.md) | [Guia de Instalação](docs/usuario/guia-instalacao.md) | [FAQ](docs/usuario/faq.md)
-- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [Exemplos](docs/tecnico/apis/exemplos-praticos.md)
+- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [**Exemplos Práticos**](docs/tecnico/exemplos-praticos-uso.md)
 - **👔 Gestores**: [Análise Estratégica](docs/estrategico/analise-consolidada.md) | [Roadmap](docs/estrategico/roadmap-estrategico.md)
 - **🔍 Auditores**: [Compliance](docs/compliance/auditoria/checklist-auditoria.md) | [LGPD](docs/compliance/lgpd/)
 
@@ -265,6 +265,61 @@ OpenAI: Integração para respostas contextuais
 Recomendações: Sistema de sugestões automáticas
 Aprendizado: Melhoria contínua baseada em feedback
 Knowledge Base: Base de conhecimento searchável
+Pré-requisitos
+Python 3.12+
+Node.js 18+
+Conta na Neon (PostgreSQL)
+Conta no Cloudflare R2
+Chave da OpenAI (opcional)
+Backend (API)
+Instalar dependências:
+pip install -r requirements.txt
+Configurar variáveis de ambiente:
+cp .env.example .env
+# Editar .env com suas credenciais
+Executar API:
+uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
+Acessar documentação:
+API Docs: http://localhost:8000/docs
+Health Check: http://localhost:8000/health
+Frontend (React)
+Navegar para frontend:
+cd src/frontend
+Instalar dependências:
+npm install
+Executar aplicação:
+npm run dev
+Acessar aplicação:
+Frontend: http://localhost:3000
+
+### 📋 Exemplos Práticos
+
+**Executar exemplos de uso:**
+```bash
+# Exemplo básico de autenticação
+python examples/api_authentication_example.py
+
+# Exemplo de gestão de folha de pagamento
+python examples/api_payroll_example.py
+
+# Exemplo de processamento de documentos
+python examples/api_documents_example.py
+
+# Exemplo de IA e chatbot
+python examples/ai_chatbot_example.py
+
+# Exemplo de analytics avançado
+python examples/duckdb_example.py
+
+# Exemplo de OCR
+python examples/ocr_paddle_example.py caminho/para/imagem.png
+
+# Workflow completo de auditoria
+python examples/complete_workflow_example.py
+```
+
+**Documentação completa de exemplos:** [**Exemplos Práticos de Uso**](docs/tecnico/exemplos-praticos-uso.md)
+=======
 ## 🚀 Como Executar
 
 ### Pré-requisitos
@@ -410,8 +465,6 @@ test-types:
 - Métricas de performance
 
 ### 📊 Comandos de Monitoramento
-
-```bash
 # Status geral do projeto
 python scripts/verificar_progresso.py
 
@@ -422,9 +475,8 @@ python scripts/health_check.py
 make backup-db
 
 # Limpeza de cache
-make clean
-```
-📊 Endpoints da API
+make clea
+
 Autenticação
 POST /api/v1/auth/login - Login de usuário
 GET /api/v1/auth/me - Dados do usuário atual
