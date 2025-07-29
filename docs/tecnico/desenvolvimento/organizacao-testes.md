@@ -30,6 +30,10 @@ tests/
 │   │   └── test_mcp_integration_simple.py
 │   ├── test_api_*.py          # Testes de APIs principais
 │   ├── test_automation_*.py   # Testes de automação
+│   ├── test_auxiliary_scripts.py    # 🆕 Testes scripts auxiliares
+│   ├── test_etl_script.py           # 🆕 Testes integração ETL
+│   ├── test_health_check_script.py  # 🆕 Testes health check
+│   ├── test_monitoring_script.py    # 🆕 Testes monitoramento
 │   └── test_*_integration.py  # Outros testes de integração
 ├── e2e/                       # Testes end-to-end
 │   ├── __init__.py
