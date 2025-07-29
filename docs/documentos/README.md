@@ -9,6 +9,7 @@ Esta pasta centraliza toda a documentação técnica e de usuário do projeto AU
 ### 📊 Relatórios
 - **[Relatório Unificado](relatorios/relatorio-unificado.md)** - Status consolidado do projeto
 - **[Status de Implementação](relatorios/status-implementacao.md)** - Progresso atual detalhado
+- **[Correções Pós-Revisão](relatorios/pos-revisao-correcoes.md)** - Documentação de correções implementadas
 - **[Relatórios de Testes](relatorios/)** - Cobertura e resultados de testes
 
 ### 🏗️ Arquitetura
