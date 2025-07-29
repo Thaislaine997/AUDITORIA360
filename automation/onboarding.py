@@ -1,7 +1,9 @@
-import requests
 import os
 
+import requests
+
 # Placeholder para automação de onboarding
+
 
 def onboarding_automacao():
     portal_url = os.getenv("PORTAL_DEMANDAS_URL", "http://localhost:8000/api/clientes")
@@ -9,7 +11,7 @@ def onboarding_automacao():
         "nome": "Empresa Exemplo",
         "email": "contato@empresa.com",
         "responsavel": "João RH",
-        "data_onboarding": "2025-07-24"
+        "data_onboarding": "2025-07-24",
     }
     try:
         response = requests.post(portal_url, json=novo_cliente, timeout=10)
@@ -19,6 +21,7 @@ def onboarding_automacao():
             print(f"Falha no onboarding: {response.status_code} - {response.text}")
     except Exception as e:
         print(f"Erro na integração com Portal Demandas: {e}")
+
 
 if __name__ == "__main__":
     onboarding_automacao()

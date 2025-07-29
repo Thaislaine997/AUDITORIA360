@@ -1,9 +1,11 @@
 import hashlib
+
 from google.cloud import storage
 
+
 def compute_hash(gcs_uri: str) -> str:
-    _, path = gcs_uri.split('gs://')
-    bucket_name, blob_name = path.split('/', 1)
+    _, path = gcs_uri.split("gs://")
+    bucket_name, blob_name = path.split("/", 1)
 
     client = storage.Client()
     bucket = client.bucket(bucket_name)

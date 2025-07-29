@@ -4,11 +4,24 @@ Implements granular permissions system with roles:
 - Administrador, RH, Contador, Colaborador, Sindicato
 """
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Enum, ForeignKey, Table
+import enum
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Text,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
 from .database import Base
-import enum
+
 
 class UserRole(enum.Enum):
     ADMINISTRADOR = "administrador"
@@ -17,22 +30,25 @@ class UserRole(enum.Enum):
     COLABORADOR = "colaborador"
     SINDICATO = "sindicato"
 
+
 class UserStatus(enum.Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
     SUSPENDED = "suspended"
 
+
 # Association table for many-to-many relationship between users and permissions
 user_permissions = Table(
-    'user_permissions',
+    "user_permissions",
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
-    Column('permission_id', Integer, ForeignKey('permissions.id'), primary_key=True)
+    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("permission_id", Integer, ForeignKey("permissions.id"), primary_key=True),
 )
+
 
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(255), unique=True, index=True, nullable=False)
     full_name = Column(String(255), nullable=False)
@@ -40,50 +56,56 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     role = Column(Enum(UserRole), nullable=False, default=UserRole.COLABORADOR)
     status = Column(Enum(UserStatus), nullable=False, default=UserStatus.ACTIVE)
-    
+
     # Profile information
     phone = Column(String(20))
     department = Column(String(100))
     position = Column(String(100))
     employee_id = Column(String(50))
-    
+
     # Audit fields
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     last_login = Column(DateTime(timezone=True))
     is_email_verified = Column(Boolean, default=False)
-    
+
     # LGPD Compliance
     consent_given = Column(Boolean, default=False)
     consent_date = Column(DateTime(timezone=True))
     data_retention_date = Column(DateTime(timezone=True))
-    
+
     # Relationships
-    permissions = relationship("Permission", secondary=user_permissions, back_populates="users")
+    permissions = relationship(
+        "Permission", secondary=user_permissions, back_populates="users"
+    )
     access_logs = relationship("AccessLog", back_populates="user")
     notifications = relationship("Notification", back_populates="user")
-    
+
     # Use default __repr__ from BaseModel
+
 
 class Permission(Base):
     __tablename__ = "permissions"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
     description = Column(Text)
     resource = Column(String(100), nullable=False)  # folha, cct, documentos, etc.
-    action = Column(String(50), nullable=False)     # create, read, update, delete, admin
-    
+    action = Column(String(50), nullable=False)  # create, read, update, delete, admin
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     # Relationships
-    users = relationship("User", secondary=user_permissions, back_populates="permissions")
-    
+    users = relationship(
+        "User", secondary=user_permissions, back_populates="permissions"
+    )
+
     # Use default __repr__ from BaseModel
+
 
 class AccessLog(Base):
     __tablename__ = "access_logs"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     action = Column(String(100), nullable=False)
@@ -93,10 +115,10 @@ class AccessLog(Base):
     user_agent = Column(Text)
     success = Column(Boolean, default=True)
     error_message = Column(Text)
-    
+
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     # Relationships
     user = relationship("User", back_populates="access_logs")
-    
+
     # Use default __repr__ from BaseModel

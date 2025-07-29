@@ -1,10 +1,13 @@
 """
 Testes automatizados para o worker de extração de texto de CCTs.
 """
+
+from unittest.mock import MagicMock
+
 import pytest
-import asyncio
-from unittest.mock import patch, MagicMock
+
 # Remover importação de processar_extracao_texto_cct e substituir por um mock ou comentário explicativo
+
 
 @pytest.mark.asyncio
 async def test_processar_extracao_texto_cct_mock(monkeypatch):

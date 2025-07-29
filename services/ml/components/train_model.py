@@ -1,10 +1,10 @@
-
-
 import logging
+
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
-def train_model(data: pd.DataFrame, target_col: str = 'target'):
+
+def train_model(data: pd.DataFrame, target_col: str = "target"):
     """
     Treina um modelo RandomForest simples.
     """

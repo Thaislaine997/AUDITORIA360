@@ -1,6 +1,7 @@
-import os
-import requests
 import csv
+import os
+
+import requests
 
 API_URL = os.getenv("API_URL", "http://localhost:8000/api/v1/auditorias/")
 CLIENT_ID = os.getenv("CLIENT_ID", "cliente_a")

@@ -4,12 +4,11 @@ Advanced Monitoring Setup Script for AUDITORIA360
 Configures comprehensive monitoring, alerts and observability
 """
 
-import os
-import sys
 import json
-import time
+import sys
+from datetime import datetime
 from pathlib import Path
-from datetime import datetime, timedelta
+
 
 class AdvancedMonitoringSetup:
     def __init__(self):
@@ -19,21 +18,21 @@ class AdvancedMonitoringSetup:
             "version": "2.0.0",
             "alerts_configured": 0,
             "dashboards_created": 0,
-            "metrics_enabled": 0
+            "metrics_enabled": 0,
         }
         self.setup_log = []
-    
+
     def log_step(self, message, status="info"):
         """Log setup step"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         log_entry = f"[{timestamp}] {status.upper()}: {message}"
         print(log_entry)
         self.setup_log.append(log_entry)
-    
+
     def create_alerts_config(self):
         """Create automated alerts configuration"""
         self.log_step("Configurando alertas automáticos...", "info")
-        
+
         alerts_config = {
             "version": "1.0",
             "alerts": [
@@ -44,16 +43,16 @@ class AdvancedMonitoringSetup:
                     "threshold": 80,
                     "severity": "warning",
                     "duration": "5m",
-                    "actions": ["email", "slack"]
+                    "actions": ["email", "slack"],
                 },
                 {
-                    "name": "high_memory_usage", 
+                    "name": "high_memory_usage",
                     "description": "Memory usage above 85%",
                     "metric": "memory_usage_percent",
                     "threshold": 85,
                     "severity": "warning",
                     "duration": "5m",
-                    "actions": ["email", "slack"]
+                    "actions": ["email", "slack"],
                 },
                 {
                     "name": "api_error_rate",
@@ -62,7 +61,7 @@ class AdvancedMonitoringSetup:
                     "threshold": 5,
                     "severity": "critical",
                     "duration": "2m",
-                    "actions": ["email", "slack", "pagerduty"]
+                    "actions": ["email", "slack", "pagerduty"],
                 },
                 {
                     "name": "response_time_high",
@@ -71,7 +70,7 @@ class AdvancedMonitoringSetup:
                     "threshold": 2000,
                     "severity": "warning",
                     "duration": "3m",
-                    "actions": ["email"]
+                    "actions": ["email"],
                 },
                 {
                     "name": "database_connection_failure",
@@ -80,7 +79,7 @@ class AdvancedMonitoringSetup:
                     "threshold": 1,
                     "severity": "critical",
                     "duration": "1m",
-                    "actions": ["email", "slack", "pagerduty"]
+                    "actions": ["email", "slack", "pagerduty"],
                 },
                 {
                     "name": "disk_space_low",
@@ -89,7 +88,7 @@ class AdvancedMonitoringSetup:
                     "threshold": 80,
                     "severity": "warning",
                     "duration": "10m",
-                    "actions": ["email"]
+                    "actions": ["email"],
                 },
                 {
                     "name": "user_session_anomaly",
@@ -98,42 +97,41 @@ class AdvancedMonitoringSetup:
                     "threshold": 0.8,
                     "severity": "medium",
                     "duration": "15m",
-                    "actions": ["email"]
-                }
+                    "actions": ["email"],
+                },
             ],
             "notification_channels": {
                 "email": {
                     "enabled": True,
-                    "recipients": ["admin@auditoria360.com", "devops@auditoria360.com"]
+                    "recipients": ["admin@auditoria360.com", "devops@auditoria360.com"],
                 },
                 "slack": {
                     "enabled": True,
                     "webhook_url": "${SLACK_WEBHOOK_URL}",
-                    "channel": "#auditoria360-alerts"
+                    "channel": "#auditoria360-alerts",
                 },
-                "pagerduty": {
-                    "enabled": False,
-                    "integration_key": "${PAGERDUTY_KEY}"
-                }
-            }
+                "pagerduty": {"enabled": False, "integration_key": "${PAGERDUTY_KEY}"},
+            },
         }
-        
+
         # Save alerts configuration
         alerts_dir = self.project_root / "monitoring" / "alerts"
         alerts_dir.mkdir(parents=True, exist_ok=True)
-        
+
         with open(alerts_dir / "alerts_config.json", "w") as f:
             json.dump(alerts_config, f, indent=2)
-        
+
         self.monitoring_config["alerts_configured"] = len(alerts_config["alerts"])
-        self.log_step(f"✅ {len(alerts_config['alerts'])} alertas configurados", "success")
-        
+        self.log_step(
+            f"✅ {len(alerts_config['alerts'])} alertas configurados", "success"
+        )
+
         return True
-    
+
     def create_business_dashboards(self):
         """Create business metrics dashboards"""
         self.log_step("Criando dashboards de métricas de negócio...", "info")
-        
+
         dashboards = [
             {
                 "name": "Business Overview",
@@ -143,27 +141,27 @@ class AdvancedMonitoringSetup:
                         "title": "Auditorias Processadas",
                         "type": "counter",
                         "metric": "auditorias_processadas_total",
-                        "time_range": "24h"
+                        "time_range": "24h",
                     },
                     {
                         "title": "Tempo Médio de Processamento",
                         "type": "gauge",
                         "metric": "tempo_medio_processamento_min",
-                        "time_range": "1h"
+                        "time_range": "1h",
                     },
                     {
                         "title": "Taxa de Sucesso",
                         "type": "percentage",
                         "metric": "taxa_sucesso_processamento",
-                        "time_range": "24h"
+                        "time_range": "24h",
                     },
                     {
                         "title": "Alertas de Compliance",
                         "type": "counter",
                         "metric": "alertas_compliance_total",
-                        "time_range": "7d"
-                    }
-                ]
+                        "time_range": "7d",
+                    },
+                ],
             },
             {
                 "name": "Technical Performance",
@@ -173,27 +171,27 @@ class AdvancedMonitoringSetup:
                         "title": "CPU Usage",
                         "type": "line_chart",
                         "metric": "cpu_usage_percent",
-                        "time_range": "1h"
+                        "time_range": "1h",
                     },
                     {
-                        "title": "Memory Usage", 
+                        "title": "Memory Usage",
                         "type": "line_chart",
                         "metric": "memory_usage_percent",
-                        "time_range": "1h"
+                        "time_range": "1h",
                     },
                     {
                         "title": "API Response Time",
                         "type": "line_chart",
                         "metric": "api_response_time_ms",
-                        "time_range": "1h"
+                        "time_range": "1h",
                     },
                     {
                         "title": "Database Connections",
                         "type": "gauge",
                         "metric": "database_connections_active",
-                        "time_range": "5m"
-                    }
-                ]
+                        "time_range": "5m",
+                    },
+                ],
             },
             {
                 "name": "Security & Compliance",
@@ -203,48 +201,48 @@ class AdvancedMonitoringSetup:
                         "title": "Login Attempts",
                         "type": "counter",
                         "metric": "login_attempts_total",
-                        "time_range": "24h"
+                        "time_range": "24h",
                     },
                     {
                         "title": "Failed Authentications",
                         "type": "counter",
                         "metric": "failed_auth_total",
-                        "time_range": "24h"
+                        "time_range": "24h",
                     },
                     {
                         "title": "LGPD Compliance Score",
                         "type": "gauge",
                         "metric": "lgpd_compliance_score",
-                        "time_range": "1d"
+                        "time_range": "1d",
                     },
                     {
                         "title": "Data Encryption Status",
                         "type": "status",
                         "metric": "data_encryption_status",
-                        "time_range": "5m"
-                    }
-                ]
-            }
+                        "time_range": "5m",
+                    },
+                ],
+            },
         ]
-        
+
         # Save dashboards configuration
         dashboards_dir = self.project_root / "monitoring" / "dashboards"
         dashboards_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for dashboard in dashboards:
             filename = dashboard["name"].lower().replace(" ", "_") + ".json"
             with open(dashboards_dir / filename, "w") as f:
                 json.dump(dashboard, f, indent=2)
-        
+
         self.monitoring_config["dashboards_created"] = len(dashboards)
         self.log_step(f"✅ {len(dashboards)} dashboards criados", "success")
-        
+
         return True
-    
+
     def setup_real_time_metrics(self):
         """Setup real-time metrics collection"""
         self.log_step("Configurando métricas em tempo real...", "info")
-        
+
         metrics_config = {
             "collection_interval": "10s",
             "retention_period": "30d",
@@ -253,84 +251,86 @@ class AdvancedMonitoringSetup:
                     "name": "system_cpu_usage",
                     "type": "gauge",
                     "description": "CPU usage percentage",
-                    "labels": ["host", "instance"]
+                    "labels": ["host", "instance"],
                 },
                 {
                     "name": "system_memory_usage",
-                    "type": "gauge", 
+                    "type": "gauge",
                     "description": "Memory usage percentage",
-                    "labels": ["host", "instance"]
+                    "labels": ["host", "instance"],
                 },
                 {
                     "name": "http_requests_total",
                     "type": "counter",
                     "description": "Total HTTP requests",
-                    "labels": ["method", "endpoint", "status"]
+                    "labels": ["method", "endpoint", "status"],
                 },
                 {
                     "name": "http_request_duration_seconds",
                     "type": "histogram",
                     "description": "HTTP request duration",
                     "labels": ["method", "endpoint"],
-                    "buckets": [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+                    "buckets": [0.1, 0.5, 1.0, 2.0, 5.0, 10.0],
                 },
                 {
                     "name": "database_connections_active",
                     "type": "gauge",
                     "description": "Active database connections",
-                    "labels": ["database", "pool"]
+                    "labels": ["database", "pool"],
                 },
                 {
                     "name": "audit_process_duration_seconds",
                     "type": "histogram",
                     "description": "Audit process duration",
                     "labels": ["audit_type", "status"],
-                    "buckets": [1, 5, 10, 30, 60, 300, 600]
+                    "buckets": [1, 5, 10, 30, 60, 300, 600],
                 },
                 {
                     "name": "compliance_checks_total",
                     "type": "counter",
                     "description": "Total compliance checks",
-                    "labels": ["check_type", "result"]
+                    "labels": ["check_type", "result"],
                 },
                 {
                     "name": "user_sessions_active",
                     "type": "gauge",
                     "description": "Active user sessions",
-                    "labels": ["user_type"]
-                }
+                    "labels": ["user_type"],
+                },
             ],
             "exporters": [
                 {
                     "name": "prometheus",
                     "enabled": True,
                     "endpoint": "/metrics",
-                    "port": 9090
+                    "port": 9090,
                 },
                 {
                     "name": "grafana_cloud",
                     "enabled": False,
-                    "api_key": "${GRAFANA_API_KEY}"
-                }
-            ]
+                    "api_key": "${GRAFANA_API_KEY}",
+                },
+            ],
         }
-        
+
         # Save metrics configuration
         metrics_dir = self.project_root / "monitoring" / "metrics"
         metrics_dir.mkdir(parents=True, exist_ok=True)
-        
+
         with open(metrics_dir / "metrics_config.json", "w") as f:
             json.dump(metrics_config, f, indent=2)
-        
+
         self.monitoring_config["metrics_enabled"] = len(metrics_config["metrics"])
-        self.log_step(f"✅ {len(metrics_config['metrics'])} métricas configuradas", "success")
-        
+        self.log_step(
+            f"✅ {len(metrics_config['metrics'])} métricas configuradas", "success"
+        )
+
         return True
-    
+
     def create_health_checks(self):
         """Create comprehensive health checks"""
         self.log_step("Configurando health checks avançados...", "info")
-        
+
         health_checks_script = '''#!/usr/bin/env python3
 """
 Advanced Health Checks for AUDITORIA360
@@ -410,20 +410,20 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 '''
-        
+
         # Save health check script
         with open(self.project_root / "scripts" / "health_check.py", "w") as f:
             f.write(health_checks_script)
-        
+
         self.log_step("✅ Health checks configurados", "success")
-        
+
         return True
-    
+
     def create_monitoring_dashboard_html(self):
         """Create HTML monitoring dashboard"""
         self.log_step("Criando dashboard HTML de monitoramento...", "info")
-        
-        html_content = '''<!DOCTYPE html>
+
+        html_content = """<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -507,19 +507,19 @@ if __name__ == "__main__":
         });
     </script>
 </body>
-</html>'''
-        
+</html>"""
+
         # Save dashboard HTML
         monitoring_dir = self.project_root / "monitoring"
         monitoring_dir.mkdir(exist_ok=True)
-        
+
         with open(monitoring_dir / "dashboard.html", "w") as f:
             f.write(html_content)
-        
+
         self.log_step("✅ Dashboard HTML criado", "success")
-        
+
         return True
-    
+
     def generate_monitoring_report(self):
         """Generate monitoring setup report"""
         report = f"""
@@ -580,28 +580,28 @@ Versão: {self.monitoring_config['version']}
 MONITORAMENTO AVANÇADO 100% CONFIGURADO
 Sistema pronto para produção com observabilidade completa!
 """
-        
+
         print(report)
-        
+
         # Save report
         with open(self.project_root / "monitoring_setup_report.txt", "w") as f:
             f.write(report)
-        
+
         self.log_step("📊 Relatório de monitoramento gerado", "info")
-    
+
     def setup_advanced_monitoring(self):
         """Execute complete advanced monitoring setup"""
         self.log_step("🎯 AUDITORIA360 - Setup de Monitoramento Avançado", "info")
         self.log_step("=" * 50, "info")
-        
+
         setup_steps = [
             ("Alertas Automáticos", self.create_alerts_config),
             ("Dashboards de Negócio", self.create_business_dashboards),
             ("Métricas Tempo Real", self.setup_real_time_metrics),
             ("Health Checks", self.create_health_checks),
-            ("Dashboard HTML", self.create_monitoring_dashboard_html)
+            ("Dashboard HTML", self.create_monitoring_dashboard_html),
         ]
-        
+
         success = True
         for step_name, step_func in setup_steps:
             try:
@@ -613,10 +613,10 @@ Sistema pronto para produção com observabilidade completa!
             except Exception as e:
                 self.log_step(f"❌ {step_name}: ERRO - {e}", "error")
                 success = False
-        
+
         # Generate report
         self.generate_monitoring_report()
-        
+
         if success:
             self.log_step("🎉 MONITORAMENTO AVANÇADO 100% CONFIGURADO!", "success")
             self.log_step("📈 Sistema pronto para observabilidade completa", "success")
@@ -625,11 +625,13 @@ Sistema pronto para produção com observabilidade completa!
             self.log_step("⚠️  Setup concluído com algumas limitações", "warning")
             return False
 
+
 def main():
     """Main monitoring setup function"""
     setup = AdvancedMonitoringSetup()
     success = setup.setup_advanced_monitoring()
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

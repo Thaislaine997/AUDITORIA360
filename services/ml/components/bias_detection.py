@@ -1,10 +1,12 @@
-
-
 import logging
+
 import pandas as pd
 from sklearn.metrics import accuracy_score
 
-def detect_bias(model, data: pd.DataFrame, target_col: str = 'target', group_col: str = None):
+
+def detect_bias(
+    model, data: pd.DataFrame, target_col: str = "target", group_col: str = None
+):
     """
     Detecta viés de performance entre grupos (exemplo: accuracy por grupo).
     """

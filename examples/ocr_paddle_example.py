@@ -2,10 +2,12 @@
 Exemplo de uso do PaddleOCR localmente.
 Requer: paddleocr, paddlepaddle
 """
-from paddleocr import PaddleOCR
+
 import sys
 
-ocr = PaddleOCR(use_angle_cls=True, lang='pt')
+from paddleocr import PaddleOCR
+
+ocr = PaddleOCR(use_angle_cls=True, lang="pt")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

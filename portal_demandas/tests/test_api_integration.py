@@ -1,7 +1,9 @@
 """
 Teste de integração para API de demandas.
 """
+
 import requests
+
 
 def test_api_demandas_integration():
     # TODO: Ajustar endpoint real

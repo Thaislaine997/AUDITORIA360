@@ -1,5 +1,5 @@
-import streamlit as st
 import requests
+import streamlit as st
 
 # import src.frontend.components.obrigacoes_componentes  # TODO: implementar ou ajustar caminho
 # import src.frontend.utils.auth  # TODO: implementar ou ajustar caminho
@@ -7,8 +7,10 @@ import requests
 
 st.title("Obrigações e Prazos")
 
+
 def obter_token():
     return st.text_input("Token JWT", type="password")
+
 
 def get_obrigacoes(token):
     url = "http://localhost:8000/api/obrigacoes"
@@ -21,11 +23,14 @@ def get_obrigacoes(token):
         st.error(f"Erro ao buscar obrigações: {e}")
         return [], url, headers
 
+
 token = obter_token()
 if token:
     obrigacoes, url, headers = get_obrigacoes(token)
     filtro = st.text_input("Buscar por obrigação")
-    obrigacoes_filtradas = [o for o in obrigacoes if filtro.lower() in o.get("descricao", "").lower()]
+    obrigacoes_filtradas = [
+        o for o in obrigacoes if filtro.lower() in o.get("descricao", "").lower()
+    ]
     st.write(obrigacoes_filtradas)
     with st.form("Adicionar Obrigação"):
         descricao = st.text_input("Descrição")

@@ -3,24 +3,24 @@ FastAPI wrapper for Streamlit Dashboard integration
 This allows Streamlit-like dashboards to run on Vercel
 """
 
-from fastapi import FastAPI, Request, Depends, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from typing import Any, Dict
+
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
-import json
-from typing import Dict, Any, Optional
+
 from src.auth.unified_auth import get_current_user_dependency
 
 # Create FastAPI app for dashboard
 dashboard_app = FastAPI(
     title="AUDITORIA360 Dashboard",
     description="Interactive Dashboard for AUDITORIA360 System",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Setup templates and static files
 templates = Jinja2Templates(directory="dashboards/templates")
+
 
 # Mock dashboard data (replace with real data from your services)
 def get_dashboard_data(user: Dict[str, Any]) -> Dict[str, Any]:
@@ -31,32 +31,41 @@ def get_dashboard_data(user: Dict[str, Any]) -> Dict[str, Any]:
             "total_employees": 1250,
             "active_audits": 15,
             "pending_documents": 8,
-            "compliance_score": 94.5
+            "compliance_score": 94.5,
         },
         "recent_activities": [
-            {"action": "Payroll processed", "timestamp": "2024-01-28 14:30", "status": "success"},
-            {"action": "Audit completed", "timestamp": "2024-01-28 13:15", "status": "success"},
-            {"action": "Document uploaded", "timestamp": "2024-01-28 12:45", "status": "pending"},
+            {
+                "action": "Payroll processed",
+                "timestamp": "2024-01-28 14:30",
+                "status": "success",
+            },
+            {
+                "action": "Audit completed",
+                "timestamp": "2024-01-28 13:15",
+                "status": "success",
+            },
+            {
+                "action": "Document uploaded",
+                "timestamp": "2024-01-28 12:45",
+                "status": "pending",
+            },
         ],
         "charts": {
             "compliance_trend": [85, 88, 91, 93, 94.5],
             "monthly_audits": [12, 15, 18, 20, 15],
-            "document_status": {
-                "approved": 45,
-                "pending": 8,
-                "rejected": 2
-            }
-        }
+            "document_status": {"approved": 45, "pending": 8, "rejected": 2},
+        },
     }
+
 
 @dashboard_app.get("/", response_class=HTMLResponse)
 async def dashboard_home(
     request: Request,
-    current_user: Dict[str, Any] = Depends(get_current_user_dependency)
+    current_user: Dict[str, Any] = Depends(get_current_user_dependency),
 ):
     """Main dashboard page"""
     dashboard_data = get_dashboard_data(current_user)
-    
+
     # Simple HTML template (in production, use proper Jinja2 templates)
     html_content = f"""
     <!DOCTYPE html>
@@ -198,31 +207,35 @@ async def dashboard_home(
     </body>
     </html>
     """
-    
+
     return HTMLResponse(content=html_content)
+
 
 @dashboard_app.get("/api/data")
 async def get_dashboard_api_data(
-    current_user: Dict[str, Any] = Depends(get_current_user_dependency)
+    current_user: Dict[str, Any] = Depends(get_current_user_dependency),
 ):
     """API endpoint for dashboard data"""
     return get_dashboard_data(current_user)
 
+
 @dashboard_app.get("/api/stats")
 async def get_stats(
-    current_user: Dict[str, Any] = Depends(get_current_user_dependency)
+    current_user: Dict[str, Any] = Depends(get_current_user_dependency),
 ):
     """Get just the stats data"""
     data = get_dashboard_data(current_user)
     return data["stats"]
 
+
 @dashboard_app.get("/api/activities")
 async def get_recent_activities(
-    current_user: Dict[str, Any] = Depends(get_current_user_dependency)
+    current_user: Dict[str, Any] = Depends(get_current_user_dependency),
 ):
     """Get recent activities"""
     data = get_dashboard_data(current_user)
     return data["recent_activities"]
+
 
 @dashboard_app.get("/health")
 async def dashboard_health():
@@ -235,9 +248,10 @@ async def dashboard_health():
             "Real-time statistics",
             "Interactive charts",
             "Activity monitoring",
-            "Compliance tracking"
-        ]
+            "Compliance tracking",
+        ],
     }
+
 
 # Integration endpoint for main API
 @dashboard_app.get("/embed")
@@ -250,31 +264,30 @@ async def embed_dashboard():
     """
     return HTMLResponse(content=html_content)
 
+
 # Dashboard configuration for different user roles
 @dashboard_app.get("/config")
 async def get_dashboard_config(
-    current_user: Dict[str, Any] = Depends(get_current_user_dependency)
+    current_user: Dict[str, Any] = Depends(get_current_user_dependency),
 ):
     """Get dashboard configuration based on user role"""
-    user_roles = current_user.get('roles', ['user'])
-    
+    user_roles = current_user.get("roles", ["user"])
+
     config = {
         "widgets": ["stats", "activities"],
         "charts": ["compliance_trend"],
         "permissions": {
             "export_data": False,
             "manage_users": False,
-            "view_reports": True
-        }
+            "view_reports": True,
+        },
     }
-    
-    if 'admin' in user_roles:
+
+    if "admin" in user_roles:
         config["widgets"].extend(["user_management", "system_logs"])
         config["charts"].extend(["monthly_audits", "document_status"])
-        config["permissions"].update({
-            "export_data": True,
-            "manage_users": True,
-            "view_reports": True
-        })
-    
+        config["permissions"].update(
+            {"export_data": True, "manage_users": True, "view_reports": True}
+        )
+
     return config

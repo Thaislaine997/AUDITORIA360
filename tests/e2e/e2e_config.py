@@ -3,4 +3,5 @@ class E2EContext:
     username = "testuser"
     password = "testpassword"
 
+
 e2e_context_instance = E2EContext()

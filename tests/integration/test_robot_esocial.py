@@ -1,8 +1,10 @@
 """
 Teste de uso do Robô eSocial automático.
 """
-from robot_esocial import RoboESocial
+
 import os
+
+from robot_esocial import RoboESocial
 
 # Exemplo de uso (substitua por credenciais válidas e caminho do XML)
 USUARIO = os.getenv("ESOCIAL_USUARIO", "seu_usuario")
