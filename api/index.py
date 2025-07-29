@@ -8,8 +8,16 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 from contextlib import asynccontextmanager
+from enum import Enum
 import os
 import logging
+
+# Simple enum for AlertSeverity
+class AlertSeverity(Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
 # Import monitoring and performance systems
 try:
@@ -60,7 +68,8 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
->Principal
+    compliance_router = APIRouter()
+    automation_router = APIRouter()
     
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
