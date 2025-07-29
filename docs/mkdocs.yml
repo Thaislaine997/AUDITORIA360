@@ -1,5 +1,71 @@
 site_name: Auditoria360
+docs_dir: content
+site_dir: site
 nav:
   - Home: index.md
-  - Guia de Dev: dev_guide.md
+  - Guia de Início Rápido: 01-INICIO_RAPIDO.md
+  - Guia de Desenvolvimento: dev_guide.md
   - Manual do Usuário: manual_usuario.md
+  - Documentação Técnica:
+    - Estratégico: estrategico/
+    - Técnico: tecnico/
+    - Qualidade: qualidade/
+    - Compliance: compliance/
+    - Usuário: usuario/
+  - API Documentation: 
+    - Introdução: api/intro.md
+    - Referência Completa: api/reference.md
+  - Relatórios: relatorios/
+  - Roadmap: roadmap.md
+
+theme:
+  name: material
+  language: pt
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [../src]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_signature_annotations: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
