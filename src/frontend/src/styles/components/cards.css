@@ -1,0 +1,59 @@
+/*
+ * ===================================================================
+ * CARD COMPONENTS - AUDITORIA 360
+ * ===================================================================
+ * Descrição: Estilos para componentes de card
+ * ===================================================================
+ */
+
+.card {
+  background: var(--secondary-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.card-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.card-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+  margin: var(--spacing-xs) 0 0 0;
+}
+
+.card-body {
+  color: var(--text-color);
+}
+
+.card-glass {
+  background: var(--glass-background);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Cards */
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-md);
+  }
+}

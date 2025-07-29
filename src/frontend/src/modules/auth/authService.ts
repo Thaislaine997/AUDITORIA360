@@ -1,0 +1,128 @@
+/*
+ * ===================================================================
+ * AUTH MODULE - AUDITORIA 360
+ * ===================================================================
+ * Descrição: Módulo para funcionalidades de autenticação
+ * ===================================================================
+ */
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'auditor';
+}
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+}
+
+export class AuthService {
+  private static instance: AuthService;
+  private user: User | null = null;
+  private tokens: AuthTokens | null = null;
+
+  private constructor() {}
+
+  static getInstance(): AuthService {
+    if (!AuthService.instance) {
+      AuthService.instance = new AuthService();
+    }
+    return AuthService.instance;
+  }
+
+  // Login
+  async login(username: string, password: string): Promise<boolean> {
+    try {
+      // In a real app, this would make an API call
+      const mockResponse = {
+        user: {
+          id: '1',
+          name: 'Demo User',
+          email: 'demo@auditoria360.com',
+          role: 'admin' as const,
+        },
+        tokens: {
+          accessToken: 'mock-access-token',
+          refreshToken: 'mock-refresh-token',
+          expiresAt: Date.now() + 3600000, // 1 hour
+        },
+      };
+
+      this.user = mockResponse.user;
+      this.tokens = mockResponse.tokens;
+      
+      // Store in localStorage
+      localStorage.setItem('authTokens', JSON.stringify(this.tokens));
+      localStorage.setItem('user', JSON.stringify(this.user));
+      
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
+  }
+
+  // Logout
+  logout(): void {
+    this.user = null;
+    this.tokens = null;
+    localStorage.removeItem('authTokens');
+    localStorage.removeItem('user');
+  }
+
+  // Check if user is authenticated
+  isAuthenticated(): boolean {
+    if (!this.tokens) {
+      this.loadFromStorage();
+    }
+    
+    if (!this.tokens) {
+      return false;
+    }
+
+    // Check if token is expired
+    if (Date.now() > this.tokens.expiresAt) {
+      this.logout();
+      return false;
+    }
+
+    return true;
+  }
+
+  // Get current user
+  getCurrentUser(): User | null {
+    if (!this.user) {
+      this.loadFromStorage();
+    }
+    return this.user;
+  }
+
+  // Get access token
+  getAccessToken(): string | null {
+    if (!this.tokens) {
+      this.loadFromStorage();
+    }
+    return this.tokens?.accessToken || null;
+  }
+
+  // Load auth data from localStorage
+  private loadFromStorage(): void {
+    try {
+      const tokensJson = localStorage.getItem('authTokens');
+      const userJson = localStorage.getItem('user');
+
+      if (tokensJson && userJson) {
+        this.tokens = JSON.parse(tokensJson);
+        this.user = JSON.parse(userJson);
+      }
+    } catch (error) {
+      console.error('Error loading auth data from storage:', error);
+      this.logout();
+    }
+  }
+}
+
+export const authService = AuthService.getInstance();

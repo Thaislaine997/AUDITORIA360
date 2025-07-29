@@ -1,0 +1,53 @@
+<!--
+  ===================================================================
+  BASE LAYOUT TEMPLATE - AUDITORIA 360
+  ===================================================================
+  Descrição: Template base reutilizável para todas as páginas
+  ===================================================================
+-->
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{{description}}" />
+    <meta name="author" content="AUDITORIA360" />
+    <title>{{title}} - AUDITORIA360</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{cssPath}}" />
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Custom head content -->
+    {{customHead}}
+  </head>
+  <body>
+    <!-- Header Component -->
+    {{#if showHeader}}
+    <header class="monitoring-header" role="banner">
+      <h1>{{headerTitle}}</h1>
+      <p>{{headerSubtitle}}</p>
+    </header>
+    {{/if}}
+
+    <!-- Main Content -->
+    <main class="{{mainClass}}" role="main">
+      {{content}}
+    </main>
+
+    <!-- Footer Component -->
+    {{#if showFooter}}
+    <footer class="monitoring-footer">
+      <p class="timestamp">
+        Última atualização: <span id="timestamp"></span>
+      </p>
+    </footer>
+    {{/if}}
+
+    <!-- Scripts -->
+    {{scripts}}
+  </body>
+</html>

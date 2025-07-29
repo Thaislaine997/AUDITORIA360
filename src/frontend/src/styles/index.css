@@ -1,0 +1,24 @@
+/*
+ * ===================================================================
+ * AUDITORIA 360 - MAIN STYLES INDEX
+ * ===================================================================
+ * Descrição: Arquivo principal que importa todos os módulos CSS
+ * Versão: Modular 3.0
+ * ===================================================================
+ */
+
+/* Importação de Temas e Variáveis */
+@import './themes/variables.css';
+@import './themes/global.css';
+
+/* Importação de Layout */
+@import './layout/layout.css';
+
+/* Importação de Componentes */
+@import './components/cards.css';
+@import './components/buttons.css';
+@import './components/forms.css';
+@import './components/badges.css';
+@import './components/navigation.css';
+@import './components/alerts.css';
+@import './components/animations.css';
