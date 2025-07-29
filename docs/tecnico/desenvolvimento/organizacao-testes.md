@@ -21,12 +21,20 @@ tests/
 │   └── test_*.py              # Testes unitários diversos
 ├── integration/               # Testes de integração
 │   ├── __init__.py
-│   ├── test_api_*.py          # Testes de APIs
+│   ├── portal_demandas/       # Testes do Portal de Demandas
+│   │   ├── __init__.py
+│   │   ├── test_api.py        # Testes da API do portal
+│   │   └── test_api_integration.py
+│   ├── mcp/                   # Testes de integração MCP
+│   │   ├── __init__.py
+│   │   └── test_mcp_integration_simple.py
+│   ├── test_api_*.py          # Testes de APIs principais
 │   ├── test_automation_*.py   # Testes de automação
 │   └── test_*_integration.py  # Outros testes de integração
 ├── e2e/                       # Testes end-to-end
 │   ├── __init__.py
 │   ├── e2e_config.py          # Configurações para testes E2E
+│   ├── playwright-page-*.html # Páginas de teste Playwright
 │   └── test_e2e_*.py          # Testes E2E com Playwright
 └── performance/               # Testes de performance
     ├── __init__.py
@@ -54,13 +62,17 @@ Testes que verificam o comportamento de componentes individuais de forma isolada
 
 Testes que verificam a interação entre múltiplos componentes:
 
-- **APIs**: Endpoints e rotas da aplicação
+- **APIs**: Endpoints e rotas da aplicação principal
+- **Portal de Demandas**: Testes específicos do portal (`portal_demandas/`)
+- **Integração MCP**: Testes de Model Context Protocol (`mcp/`)
 - **Automação**: Processos automatizados completos
 - **Integrações Externas**: Serviços externos como BigQuery, GCP
 - **Fluxos Completos**: Processos de negócio end-to-end
 
 **Exemplos:**
-- `test_api_*.py` - Testes de APIs REST
+- `test_api_*.py` - Testes de APIs REST principais
+- `portal_demandas/test_api.py` - API do Portal de Demandas
+- `mcp/test_mcp_integration_simple.py` - Integração MCP
 - `test_automation_*.py` - Automação e RPA
 - `test_*_integration.py` - Integrações específicas
 
@@ -94,6 +106,11 @@ python_functions = test_*
 testpaths = unit integration e2e performance
 ```
 
+**Suporte a Async/Await:**
+- Testes assíncronos suportados via `pytest-asyncio`
+- Use o decorador `@pytest.mark.asyncio` para testes async
+- Configuração automática para testes MCP e componentes assíncronos
+
 ### Comandos de Execução
 
 **Executar todos os testes:**
@@ -108,6 +125,12 @@ pytest tests/unit/
 
 # Apenas testes de integração
 pytest tests/integration/
+
+# Portal de Demandas especificamente
+pytest tests/integration/portal_demandas/
+
+# Integração MCP especificamente
+pytest tests/integration/mcp/
 
 # Apenas testes E2E
 pytest tests/e2e/
@@ -133,26 +156,31 @@ make test
 
 ### Movimentações de Arquivos
 
-1. **De `e2e_tests/` para `tests/e2e/`:**
-   - `test_e2e_playwright.py`
-   - `e2e_config.py`
-   - Arquivos HTML de teste
+1. **De `portal_demandas/tests/` para `tests/integration/portal_demandas/`:**
+   - `test_api.py` - Testes da API do Portal de Demandas
+   - `test_api_integration.py` - Testes de integração do Portal
 
-2. **De `/automation/` para `tests/integration/`:**
-   - `test_robot_esocial.py`
+2. **De `scripts/python/` para `tests/integration/mcp/`:**
+   - `test_mcp_simple.py` → `test_mcp_integration_simple.py` (convertido para pytest)
 
-3. **Da raiz para `tests/performance/`:**
-   - `test_performance.py`
-
-4. **Organização dentro de `tests/`:**
+3. **Organização dentro de `tests/`:**
    - Separação entre `unit/` e `integration/` baseada na análise do conteúdo
    - Manutenção das subpastas `ingestion/` e `ml/` em `unit/`
+   - Criação de subpastas organizacionais em `integration/`:
+     - `portal_demandas/` - Para testes específicos do portal
+     - `mcp/` - Para testes de integração MCP
 
 ### Atualizações de Configuração
 
-- **conftest.py**: Ajustado import do `e2e_config`
-- **pytest.ini**: Adicionado `testpaths` para as novas pastas
-- **__init__.py**: Criados em todas as subpastas
+- **conftest.py**: Mantém configurações globais e mocks
+- **pytest.ini**: Configurado com `testpaths` para as categorias de teste
+- **__init__.py**: Criados em todas as subpastas para organização modular
+- **Conversão para pytest**: Testes convertidos para usar decoradores `@pytest.mark.asyncio`
+
+### Padronização de Scripts
+
+- Scripts originais atualizados para referenciar a nova localização dos testes
+- Mantidos links para compatibilidade com workflows existentes
 
 ## Benefícios da Reorganização
 
@@ -172,9 +200,13 @@ make test
 ## Padrões de Nomenclatura
 
 - **Testes unitários**: `test_<componente>.py`
-- **Testes de integração**: `test_<funcionalidade>_integration.py` ou `test_api_<endpoint>.py`
+- **Testes de integração**: 
+  - `test_<funcionalidade>_integration.py` 
+  - `test_api_<endpoint>.py` (para APIs)
+  - Organizados em subpastas por módulo (`portal_demandas/`, `mcp/`)
 - **Testes E2E**: `test_e2e_<cenario>.py`
 - **Testes de performance**: `test_performance_<aspecto>.py`
+- **Testes assíncronos**: Usar `@pytest.mark.asyncio` para métodos async
 
 ## Contribuição
 
