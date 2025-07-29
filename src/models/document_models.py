@@ -96,8 +96,7 @@ class Document(Base):
     access_logs = relationship("DocumentAccess", back_populates="document")
     parent = relationship("Document", remote_side=[id])
     
-    def __repr__(self):
-        return f"<Document {self.filename} ({self.category.value})>"
+    # Use default __repr__ from BaseModel
 
 class DocumentVersion(Base):
     __tablename__ = "document_versions"
@@ -122,8 +121,7 @@ class DocumentVersion(Base):
     document = relationship("Document", back_populates="versions")
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<DocumentVersion {self.document.filename} v{self.version_number}>"
+    # Use default __repr__ from BaseModel
 
 class DocumentAccess(Base):
     __tablename__ = "document_access"
@@ -148,8 +146,7 @@ class DocumentAccess(Base):
     document = relationship("Document", back_populates="access_logs")
     user = relationship("User")
     
-    def __repr__(self):
-        return f"<DocumentAccess {self.user.username}: {self.action} on {self.document.filename}>"
+    # Use default __repr__ from BaseModel
 
 class DocumentShare(Base):
     __tablename__ = "document_shares"
@@ -178,8 +175,7 @@ class DocumentShare(Base):
     shared_with = relationship("User", foreign_keys=[shared_with_user_id])
     shared_by = relationship("User", foreign_keys=[shared_by_user_id])
     
-    def __repr__(self):
-        return f"<DocumentShare {self.document.filename} with {self.shared_with.username}>"
+    # Use default __repr__ from BaseModel
 
 class DocumentTemplate(Base):
     __tablename__ = "document_templates"
@@ -205,5 +201,4 @@ class DocumentTemplate(Base):
     # Relationships
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<DocumentTemplate {self.name} ({self.category.value})>"
+    # Use default __repr__ from BaseModel

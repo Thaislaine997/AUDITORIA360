@@ -22,7 +22,7 @@ class Settings:
         self.config['google_application_credentials'] = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', self.config.get('google_application_credentials'))
         self.config['environment'] = os.getenv('ENVIRONMENT', self.config.get('environment'))
         self.config['log_level'] = os.getenv('LOG_LEVEL', self.config.get('log_level', 'INFO'))
-        self.config['database_url'] = os.getenv('DATABASE_URL')
+        # Database configuration is centralized in src/models/database.py
         self.config['cloud_sql_instance'] = os.getenv('CLOUD_SQL_INSTANCE')
         self.config['cloud_sql_internal_ip'] = os.getenv('CLOUD_SQL_INTERNAL_IP')
         self.config['cloud_sql_external_ip'] = os.getenv('CLOUD_SQL_EXTERNAL_IP')

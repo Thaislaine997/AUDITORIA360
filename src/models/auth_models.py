@@ -63,8 +63,7 @@ class User(Base):
     access_logs = relationship("AccessLog", back_populates="user")
     notifications = relationship("Notification", back_populates="user")
     
-    def __repr__(self):
-        return f"<User {self.username} ({self.role.value})>"
+    # Use default __repr__ from BaseModel
 
 class Permission(Base):
     __tablename__ = "permissions"
@@ -80,8 +79,7 @@ class Permission(Base):
     # Relationships
     users = relationship("User", secondary=user_permissions, back_populates="permissions")
     
-    def __repr__(self):
-        return f"<Permission {self.name}: {self.action} on {self.resource}>"
+    # Use default __repr__ from BaseModel
 
 class AccessLog(Base):
     __tablename__ = "access_logs"
@@ -101,5 +99,4 @@ class AccessLog(Base):
     # Relationships
     user = relationship("User", back_populates="access_logs")
     
-    def __repr__(self):
-        return f"<AccessLog {self.user.username}: {self.action} on {self.resource}>"
+    # Use default __repr__ from BaseModel
