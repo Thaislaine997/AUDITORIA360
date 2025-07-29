@@ -54,6 +54,7 @@ tecnico/
 │   ├── dev-guide.md                # Guia de desenvolvimento
 │   ├── setup-ambiente.md           # Configuração do ambiente
 │   ├── padroes-codigo.md           # Padrões de código
+│   ├── organizacao-testes.md       # Organização de testes [ATUALIZADO]
 │   └── contribuicao.md             # Guia de contribuição
 ├── notebooks/
 │   ├── README.md                   # Documentação dos notebooks
@@ -118,6 +119,12 @@ qualidade/
 └── GUIA_PADROES_CODIGO.md          # Guia rápido de padrões
 ```
 
+**Organização de Testes Centralizada**:
+- **Estrutura `/tests`**: Testes centralizados por categoria (unit, integration, e2e, performance)
+- **Portal Demandas**: Testes específicos organizados em `tests/integration/portal_demandas/`
+- **Integração MCP**: Testes de Model Context Protocol em `tests/integration/mcp/`
+- **Documentação**: [Organização de Testes](tecnico/desenvolvimento/organizacao-testes.md)
+
 ---
 
 ## 🔍 **DOCUMENTOS PRINCIPAIS POR CATEGORIA**
@@ -151,11 +158,12 @@ qualidade/
 ### 👨‍💻 **Desenvolvedores**
 1. [Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)
 2. [Setup do Ambiente](tecnico/desenvolvimento/setup-ambiente.md)
-3. [Padrões de Código Python](qualidade/PADRONIZACAO_PYTHON.md)
-4. [Guia Rápido de Qualidade](qualidade/GUIA_PADROES_CODIGO.md)
-5. [Notebooks de Análise](tecnico/notebooks/README.md)
-6. [Documentação APIs](tecnico/apis/api-documentation.md)
-7. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
+3. [Organização de Testes](tecnico/desenvolvimento/organizacao-testes.md) **[ATUALIZADO]**
+4. [Padrões de Código Python](qualidade/PADRONIZACAO_PYTHON.md)
+5. [Guia Rápido de Qualidade](qualidade/GUIA_PADROES_CODIGO.md)
+6. [Notebooks de Análise](tecnico/notebooks/README.md)
+7. [Documentação APIs](tecnico/apis/api-documentation.md)
+8. [Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
 
 ### 👨‍🔧 **DevOps / SRE**
 1. [Deploy Checklist](tecnico/deploy/deploy-checklist.md)
