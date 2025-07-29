@@ -57,12 +57,169 @@ Desenvolver um portal completo que elimina processos manuais e riscos de não co
 - **[📋 Índice Principal](docs/00-INDICE_PRINCIPAL.md)** - Navegação completa da documentação
 - **[🏁 Início Rápido](docs/01-INICIO_RAPIDO.md)** - Guia para começar em 5 minutos
 - **[📊 Status do Projeto](docs/relatorios/status-projeto.md)** - Situação atual detalhada
+- **[📁 Documentos Organizados](docs/documentos/README.md)** - Estrutura centralizada de documentação
 
 ### 👥 **Por Perfil de Usuário**
 - **👤 Usuários**: [Manual do Usuário](docs/usuario/manual-usuario.md) | [Guia de Instalação](docs/usuario/guia-instalacao.md) | [FAQ](docs/usuario/faq.md)
 - **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [**Exemplos Práticos**](docs/tecnico/exemplos-praticos-uso.md)
 - **👔 Gestores**: [Análise Estratégica](docs/estrategico/analise-consolidada.md) | [Roadmap](docs/estrategico/roadmap-estrategico.md)
 - **🔍 Auditores**: [Compliance](docs/compliance/auditoria/checklist-auditoria.md) | [LGPD](docs/compliance/lgpd/)
+
+## 💡 Exemplos de Uso e Fluxo Prático
+
+### 🚀 Caso de Uso 1: Processamento de Folha Mensal
+
+```bash
+# 1. Configurar sistema
+git clone https://github.com/Thaislaine997/AUDITORIA360.git
+cd AUDITORIA360
+make install-dev
+
+# 2. Iniciar serviços
+make run  # Terminal 1
+cd src/frontend && npm run dev  # Terminal 2
+
+# 3. Acessar sistema
+# Frontend: http://localhost:3000
+# API: http://localhost:8000/docs
+```
+
+**Fluxo no Sistema:**
+1. **Login** → Dashboard principal
+2. **Funcionários** → Verificar cadastros atualizados
+3. **Folha** → Criar nova competência (ex: Jan/2024)
+4. **Calcular** → Processamento automático
+5. **Revisar** → Validar cálculos e exceções
+6. **Aprovar** → Gerar holerites e relatórios
+7. **Exportar** → PDF, Excel para contabilidade
+
+### 📄 Caso de Uso 2: Gestão de Documentos CCT
+
+```python
+# Exemplo de API para upload de CCT
+import requests
+
+# Upload documento CCT
+files = {'file': open('cct_sindicato_2024.pdf', 'rb')}
+response = requests.post(
+    'http://localhost:8000/api/v1/cct/upload',
+    files=files,
+    headers={'Authorization': 'Bearer your_token'}
+)
+
+# Extrair cláusulas automaticamente (IA + OCR)
+cct_id = response.json()['id']
+clausulas = requests.get(f'http://localhost:8000/api/v1/cct/{cct_id}/clausulas')
+```
+
+**Fluxo no Sistema:**
+1. **CCT** → Upload de nova convenção
+2. **Processamento** → OCR + IA extrai cláusulas
+3. **Revisão** → Validar extração automática
+4. **Comparação** → Comparar com CCT anterior
+5. **Notificação** → Alertar sobre mudanças críticas
+6. **Compliance** → Auditar conformidade automática
+
+### 🔍 Caso de Uso 3: Auditoria Automatizada
+
+```python
+# Exemplo de execução de auditoria via API
+audit_request = {
+    "tipo": "folha_pagamento",
+    "periodo": {"inicio": "2024-01-01", "fim": "2024-12-31"},
+    "regras": ["inss", "fgts", "irrf", "clt_compliance"]
+}
+
+response = requests.post(
+    'http://localhost:8000/api/v1/auditorias/executar',
+    json=audit_request,
+    headers={'Authorization': 'Bearer your_token'}
+)
+
+# Acompanhar progresso
+audit_id = response.json()['id']
+status = requests.get(f'http://localhost:8000/api/v1/auditorias/{audit_id}/status')
+```
+
+**Fluxo no Sistema:**
+1. **Auditoria** → Configurar escopo e regras
+2. **Execução** → Motor de compliance automatizado
+3. **Análise** → IA identifica não conformidades
+4. **Relatório** → Achados com recomendações
+5. **Plano de Ação** → Priorização por risco
+6. **Acompanhamento** → Status de correções
+
+### 🤖 Caso de Uso 4: Assistente de IA
+
+```python
+# Exemplo de interação com chatbot
+chat_request = {
+    "pergunta": "Como calcular adicional noturno para funcionário CLT?",
+    "contexto": "empresa_categoria_a",
+    "cct_aplicavel": "sindicato_metalurgicos_sp"
+}
+
+response = requests.post(
+    'http://localhost:8000/api/v1/ai/chat',
+    json=chat_request,
+    headers={'Authorization': 'Bearer your_token'}
+)
+
+resposta = response.json()['resposta']
+# Retorna: "Para adicional noturno CLT, aplicar 20% sobre hora normal..."
+```
+
+**Fluxo no Sistema:**
+1. **Chat IA** → Pergunta sobre legislação
+2. **Processamento** → IA consulta base de conhecimento
+3. **Resposta** → Contextualizada com CCT específica
+4. **Referências** → Links para artigos relevantes
+5. **Aprendizado** → Sistema melhora com feedback
+
+## 🔄 Fluxo de CI/CD em Ação
+
+### Pipeline Automatizado (GitHub Actions)
+
+```yaml
+# Exemplo de execução automática
+push main → Trigger Pipeline:
+  ✅ Pre-commit hooks (formatação, linting)  
+  ✅ Testes unitários (205 testes, 90%+ cobertura)
+  ✅ Testes integração (API + DB)
+  ✅ Testes frontend (React + TypeScript)
+  ✅ Build produção
+  ✅ Deploy Vercel automático
+  ✅ Health checks pós-deploy
+  ✅ Notificação Slack/email
+```
+
+### Monitoramento Contínuo
+
+```bash
+# Comandos de monitoramento
+python scripts/verificar_progresso.py  # Status geral
+python scripts/health_check.py         # Saúde do sistema  
+python scripts/performance_monitor.py  # Métricas de performance
+
+# Relatórios automáticos
+pytest --cov=src --cov-report=html     # Cobertura de testes
+make backup-db                         # Backup automático
+```
+
+### Desenvolvimento em Equipe
+
+```bash
+# Fluxo de desenvolvimento colaborativo
+git checkout -b feature/nova-funcionalidade
+git commit -m "feat: adicionar validação INSS"
+git push origin feature/nova-funcionalidade
+
+# PR automático disparará:
+# - Testes em múltiplas versões Python (3.11, 3.12)
+# - Verificação de conflitos
+# - Review automático de código
+# - Deploy preview no Vercel
+```
 
 ## 📋 Funcionalidades Principais
 
@@ -108,7 +265,6 @@ OpenAI: Integração para respostas contextuais
 Recomendações: Sistema de sugestões automáticas
 Aprendizado: Melhoria contínua baseada em feedback
 Knowledge Base: Base de conhecimento searchável
-🚀 Como Executar
 Pré-requisitos
 Python 3.12+
 Node.js 18+
@@ -163,7 +319,164 @@ python examples/complete_workflow_example.py
 ```
 
 **Documentação completa de exemplos:** [**Exemplos Práticos de Uso**](docs/tecnico/exemplos-praticos-uso.md)
-📊 Endpoints da API
+=======
+## 🚀 Como Executar
+
+### Pré-requisitos
+- Python 3.12+
+- Node.js 18+
+- Conta na Neon (PostgreSQL)
+- Conta no Cloudflare R2
+- Chave da OpenAI (opcional)
+
+### 🔧 Instalação Rápida
+
+#### Método 1: Usando Makefile (Recomendado)
+```bash
+# Clonar repositório
+git clone https://github.com/Thaislaine997/AUDITORIA360.git
+cd AUDITORIA360
+
+# Instalar dependências de desenvolvimento
+make install-dev
+
+# Configurar hooks de qualidade
+make setup-hooks
+
+# Verificar instalação
+make check
+```
+
+#### Método 2: Manual
+```bash
+# Instalar dependências Python
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# Instalar dependências Frontend
+cd src/frontend
+npm install
+cd ../..
+```
+
+### ⚙️ Configuração
+
+1. **Configurar variáveis de ambiente:**
+```bash
+cp .env.example .env
+# Editar .env com suas credenciais
+```
+
+2. **Variáveis essenciais:**
+```env
+# Database
+DATABASE_URL=postgresql://user:pass@host/db
+
+# Storage
+R2_ENDPOINT_URL=https://account.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your_access_key
+R2_SECRET_ACCESS_KEY=your_secret_key
+R2_BUCKET_NAME=auditoria360-storage
+
+# Security
+SECRET_KEY=your-super-secret-key
+ALGORITHM=HS256
+
+# AI Services (opcional)
+OPENAI_API_KEY=your_openai_key
+```
+
+### 🏃‍♂️ Execução
+
+#### Backend (API)
+```bash
+# Método 1: Usando Makefile
+make run
+
+# Método 2: Direto
+uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
+```
+
+#### Frontend (React)
+```bash
+cd src/frontend
+npm run dev
+```
+
+#### Acessar aplicação:
+- **API Docs**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/health
+- **Frontend**: http://localhost:3000
+
+### 🧪 Testes
+
+#### Executar todos os testes
+```bash
+# Usando Makefile
+make test
+
+# Com cobertura detalhada
+pytest --cov=src --cov=api --cov=automation --cov-report=html --cov-fail-under=90
+
+# Testes específicos
+pytest tests/unit/ -v          # Testes unitários
+pytest tests/integration/ -v   # Testes de integração
+pytest tests/e2e/ -v          # Testes end-to-end
+```
+
+#### Verificar qualidade do código
+```bash
+# Formatação e linting
+make quality
+
+# Verificar sem modificar
+make check
+```
+
+### 🔄 CI/CD Pipeline
+
+O projeto possui pipeline automatizado configurado no GitHub Actions com as seguintes etapas:
+
+#### 1. **Verificações de Qualidade**
+- Pre-commit hooks (formatação, linting)
+- Análise estática de código
+- Verificação de imports e dependências
+
+#### 2. **Testes Automatizados**
+```yaml
+# Matriz de testes
+python-version: [3.11, 3.12]
+test-types:
+  - unit: Testes unitários com cobertura
+  - integration: Testes de integração
+  - frontend: Testes React/TypeScript  
+  - automation: Testes de automação serverless
+  - api-health: Verificações de saúde da API
+```
+
+#### 3. **Deploy Automatizado**
+- **Staging**: Deploy automático na branch `develop`
+- **Production**: Deploy automático na branch `main`
+- **Plataforma**: Vercel com otimizações serverless
+
+#### 4. **Monitoramento**
+- Cobertura de código via Codecov
+- Health checks contínuos
+- Métricas de performance
+
+### 📊 Comandos de Monitoramento
+# Status geral do projeto
+python scripts/verificar_progresso.py
+
+# Gerar relatório de saúde
+python scripts/health_check.py
+
+# Backup do banco
+make backup-db
+
+# Limpeza de cache
+make clea
+
 Autenticação
 POST /api/v1/auth/login - Login de usuário
 GET /api/v1/auth/me - Dados do usuário atual

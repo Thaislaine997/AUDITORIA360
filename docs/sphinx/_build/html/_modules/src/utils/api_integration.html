@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.utils.api_integration &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código-fonte para src.utils.api_integration</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Integration module for performance monitoring and alerting in AUDITORIA360 API</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">HTTPException</span>
+<span class="kn">from</span> <span class="nn">fastapi.middleware.base</span> <span class="kn">import</span> <span class="n">BaseHTTPMiddleware</span>
+<span class="kn">from</span> <span class="nn">fastapi.requests</span> <span class="kn">import</span> <span class="n">Request</span>
+
+<span class="c1"># Import monitoring and performance utilities</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">src.utils.monitoring</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">AlertSeverity</span><span class="p">,</span>
+        <span class="n">get_monitoring_system</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">src.utils.performance</span> <span class="kn">import</span> <span class="n">DatabaseOptimizer</span><span class="p">,</span> <span class="n">cached</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">profiler</span>
+
+    <span class="n">MONITORING_ENABLED</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">MONITORING_ENABLED</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Create mock classes for when monitoring is not available</span>
+    <span class="k">class</span> <span class="nc">MockMonitoring</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">get_dashboard_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">get_monitoring_system</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">MockMonitoring</span><span class="p">()</span>
+
+
+<span class="c1"># Create monitoring router</span>
+<span class="n">monitoring_router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/v1/monitoring&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Monitoring&quot;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="MonitoringMiddleware">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.MonitoringMiddleware">[documentos]</a>
+<span class="k">class</span> <span class="nc">MonitoringMiddleware</span><span class="p">(</span><span class="n">BaseHTTPMiddleware</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Middleware to collect API metrics automatically&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MonitoringMiddleware.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.MonitoringMiddleware.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">monitoring_system</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span> <span class="o">=</span> <span class="n">monitoring_system</span> <span class="ow">or</span> <span class="n">get_monitoring_system</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MonitoringMiddleware.dispatch">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.MonitoringMiddleware.dispatch">[documentos]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">call_next</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">call_next</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="c1"># Skip monitoring endpoints to avoid recursion</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/api/v1/monitoring&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">call_next</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="c1"># Increment request counter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">increment_counter</span><span class="p">(</span>
+            <span class="s2">&quot;api_requests_total&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Process request</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">call_next</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="c1"># Calculate response time</span>
+        <span class="n">process_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>  <span class="c1"># ms</span>
+
+        <span class="c1"># Record metrics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">record_histogram</span><span class="p">(</span>
+            <span class="s2">&quot;api_response_time_ms&quot;</span><span class="p">,</span>
+            <span class="n">process_time</span><span class="p">,</span>
+            <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+                <span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
+                <span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Count responses by status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitoring</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">increment_counter</span><span class="p">(</span>
+            <span class="s2">&quot;api_responses_total&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add response time header</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Process-Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">ms&quot;</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_monitoring_dashboard">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_monitoring_dashboard">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/dashboard&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_monitoring_dashboard</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get comprehensive monitoring dashboard data&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Monitoring not available&quot;</span><span class="p">)</span>
+
+    <span class="n">monitoring</span> <span class="o">=</span> <span class="n">get_monitoring_system</span><span class="p">()</span>
+    <span class="n">dashboard_data</span> <span class="o">=</span> <span class="n">monitoring</span><span class="o">.</span><span class="n">get_dashboard_data</span><span class="p">()</span>
+
+    <span class="c1"># Add additional context</span>
+    <span class="n">dashboard_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">&quot;monitoring_enabled&quot;</span><span class="p">:</span> <span class="n">MONITORING_ENABLED</span><span class="p">,</span>
+            <span class="s2">&quot;system_info&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="s2">&quot;production&quot;</span><span class="p">,</span>  <span class="c1"># This should come from env var</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dashboard_data</span></div>
+
+
+
+<div class="viewcode-block" id="get_metrics">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_metrics">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/metrics&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get metrics summary for specified time period&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Monitoring not available&quot;</span><span class="p">)</span>
+
+    <span class="n">monitoring</span> <span class="o">=</span> <span class="n">get_monitoring_system</span><span class="p">()</span>
+    <span class="n">metrics_summary</span> <span class="o">=</span> <span class="n">monitoring</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_metrics_summary</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;period_hours&quot;</span><span class="p">:</span> <span class="n">hours</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="n">metrics_summary</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_active_alerts">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_active_alerts">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/alerts&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_active_alerts</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get all active alerts&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Monitoring not available&quot;</span><span class="p">)</span>
+
+    <span class="n">monitoring</span> <span class="o">=</span> <span class="n">get_monitoring_system</span><span class="p">()</span>
+    <span class="n">active_alerts</span> <span class="o">=</span> <span class="n">monitoring</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">get_active_alerts</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_alerts</span><span class="p">),</span>
+        <span class="s2">&quot;alerts&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;metric_name&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">metric_name</span><span class="p">,</span>
+                <span class="s2">&quot;current_value&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">current_value</span><span class="p">,</span>
+                <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">alert</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="n">active_alerts</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="resolve_alert">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.resolve_alert">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/alerts/</span><span class="si">{alert_id}</span><span class="s2">/resolve&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_alert</span><span class="p">(</span><span class="n">alert_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a specific alert&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Monitoring not available&quot;</span><span class="p">)</span>
+
+    <span class="n">monitoring</span> <span class="o">=</span> <span class="n">get_monitoring_system</span><span class="p">()</span>
+    <span class="n">monitoring</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">resolve_alert</span><span class="p">(</span><span class="n">alert_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Alert </span><span class="si">{</span><span class="n">alert_id</span><span class="si">}</span><span class="s2"> resolved successfully&quot;</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_health_checks">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_health_checks">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/health&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_health_checks</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run and return all health checks&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Monitoring not available&quot;</span><span class="p">)</span>
+
+    <span class="n">monitoring</span> <span class="o">=</span> <span class="n">get_monitoring_system</span><span class="p">()</span>
+    <span class="n">health_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">monitoring</span><span class="o">.</span><span class="n">health_checker</span><span class="o">.</span><span class="n">run_all_checks</span><span class="p">()</span>
+
+    <span class="n">overall_status</span> <span class="o">=</span> <span class="s2">&quot;healthy&quot;</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;unhealthy&quot;</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">health_results</span><span class="p">):</span>
+        <span class="n">overall_status</span> <span class="o">=</span> <span class="s2">&quot;unhealthy&quot;</span>
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;degraded&quot;</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">health_results</span><span class="p">):</span>
+        <span class="n">overall_status</span> <span class="o">=</span> <span class="s2">&quot;degraded&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;overall_status&quot;</span><span class="p">:</span> <span class="n">overall_status</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;checks&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                <span class="s2">&quot;response_time_ms&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">response_time_ms</span><span class="p">,</span>
+                <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">details</span><span class="p">,</span>
+                <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">health_results</span>
+        <span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_performance_bottlenecks">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_performance_bottlenecks">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/performance/bottlenecks&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_performance_bottlenecks</span><span class="p">(</span><span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">24</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get performance bottlenecks analysis&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bottlenecks&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Performance monitoring not available&quot;</span><span class="p">}</span>
+
+    <span class="n">bottlenecks</span> <span class="o">=</span> <span class="n">profiler</span><span class="o">.</span><span class="n">get_bottlenecks</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;period_hours&quot;</span><span class="p">:</span> <span class="n">hours</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;bottlenecks_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">bottlenecks</span><span class="p">),</span>
+        <span class="s2">&quot;bottlenecks&quot;</span><span class="p">:</span> <span class="n">bottlenecks</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="clear_performance_metrics">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.clear_performance_metrics">[documentos]</a>
+<span class="nd">@monitoring_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/performance/clear-metrics&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">clear_performance_metrics</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear stored performance metrics (admin only)&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Monitoring not available&quot;</span><span class="p">)</span>
+
+    <span class="n">profiler</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Performance metrics cleared successfully&quot;</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># Performance optimization endpoints</span>
+<span class="n">performance_router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/v1/performance&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Performance&quot;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="get_slow_queries">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_slow_queries">[documentos]</a>
+<span class="nd">@performance_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/database/slow-queries&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_slow_queries</span><span class="p">(</span><span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get slowest database queries&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;slow_queries&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Performance monitoring not available&quot;</span><span class="p">}</span>
+
+    <span class="n">db_optimizer</span> <span class="o">=</span> <span class="n">DatabaseOptimizer</span><span class="p">()</span>
+    <span class="n">slow_queries</span> <span class="o">=</span> <span class="n">db_optimizer</span><span class="o">.</span><span class="n">get_slow_queries</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;threshold_seconds&quot;</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+        <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;slow_queries&quot;</span><span class="p">:</span> <span class="n">slow_queries</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="analyze_query">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.analyze_query">[documentos]</a>
+<span class="nd">@performance_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/database/analyze-query&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">analyze_query</span><span class="p">(</span><span class="n">query_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze a specific query for optimization opportunities&quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;query&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">database_type</span> <span class="o">=</span> <span class="n">query_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">)</span>  <span class="c1"># postgresql or duckdb</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">query</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Query is required&quot;</span><span class="p">)</span>
+
+    <span class="n">db_optimizer</span> <span class="o">=</span> <span class="n">DatabaseOptimizer</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">database_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">:</span>
+        <span class="n">analysis</span> <span class="o">=</span> <span class="n">db_optimizer</span><span class="o">.</span><span class="n">optimize_postgresql_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">database_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span>
+        <span class="n">analysis</span> <span class="o">=</span> <span class="n">db_optimizer</span><span class="o">.</span><span class="n">optimize_duckdb_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Unsupported database type&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;database_type&quot;</span><span class="p">:</span> <span class="n">database_type</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;analysis&quot;</span><span class="p">:</span> <span class="n">analysis</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_cache_stats">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.get_cache_stats">[documentos]</a>
+<span class="nd">@performance_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/cache/stats&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_cache_stats</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get cache performance statistics&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cache_stats&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Performance monitoring not available&quot;</span><span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">src.utils.performance</span> <span class="kn">import</span> <span class="n">cache</span>
+
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="s2">&quot;cache_stats&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Cache statistics not available&quot;</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="clear_cache">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.clear_cache">[documentos]</a>
+<span class="nd">@performance_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/cache/clear&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">clear_cache</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear application cache (admin only)&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+        <span class="c1"># Clear cache implementation would go here</span>
+        <span class="c1"># cache.clear_all()  # This method would need to be implemented</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Cache cleared successfully&quot;</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Failed to clear cache: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># Utility functions for decorated endpoints</span>
+<div class="viewcode-block" id="monitor_endpoint">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.monitor_endpoint">[documentos]</a>
+<span class="k">def</span> <span class="nf">monitor_endpoint</span><span class="p">(</span><span class="n">endpoint_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to monitor specific endpoints&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+        <span class="c1"># This would wrap the function with monitoring</span>
+        <span class="c1"># Implementation depends on whether it&#39;s sync or async</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="p">(</span><span class="n">include_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<div class="viewcode-block" id="cache_endpoint">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.cache_endpoint">[documentos]</a>
+<span class="k">def</span> <span class="nf">cache_endpoint</span><span class="p">(</span><span class="n">ttl_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to cache endpoint responses&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+        <span class="k">return</span> <span class="n">cached</span><span class="p">(</span><span class="n">ttl_seconds</span><span class="o">=</span><span class="n">ttl_seconds</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<span class="c1"># Health check functions for common services</span>
+<div class="viewcode-block" id="check_database_health">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.check_database_health">[documentos]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check_database_health</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check database connectivity and performance&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># This would test actual database connection</span>
+        <span class="c1"># For now, we&#39;ll simulate the check</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Simulate database check</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>  <span class="c1"># Simulate connection time</span>
+
+        <span class="n">response_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;healthy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;response_time_ms&quot;</span><span class="p">:</span> <span class="n">response_time</span><span class="p">,</span>
+                <span class="s2">&quot;connection_pool_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># This would come from actual pool</span>
+                <span class="s2">&quot;active_connections&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;unhealthy&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span></div>
+
+
+
+<div class="viewcode-block" id="check_storage_health">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.check_storage_health">[documentos]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check_storage_health</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check storage (R2) connectivity&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># This would test actual R2 connection</span>
+        <span class="c1"># For now, we&#39;ll simulate the check</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Simulate storage check</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.005</span><span class="p">)</span>  <span class="c1"># Simulate API call</span>
+
+        <span class="n">response_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;healthy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;response_time_ms&quot;</span><span class="p">:</span> <span class="n">response_time</span><span class="p">,</span> <span class="s2">&quot;bucket_accessible&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;unhealthy&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span></div>
+
+
+
+<div class="viewcode-block" id="setup_monitoring_integration">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.api_integration.setup_monitoring_integration">[documentos]</a>
+<span class="k">def</span> <span class="nf">setup_monitoring_integration</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup monitoring integration with FastAPI app&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MONITORING_ENABLED</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Initialize monitoring system</span>
+    <span class="n">monitoring</span> <span class="o">=</span> <span class="n">get_monitoring_system</span><span class="p">()</span>
+
+    <span class="c1"># Add middleware</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">MonitoringMiddleware</span><span class="p">,</span> <span class="n">monitoring_system</span><span class="o">=</span><span class="n">monitoring</span><span class="p">)</span>
+
+    <span class="c1"># Include routers</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">monitoring_router</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">performance_router</span><span class="p">)</span>
+
+    <span class="c1"># Add health checks</span>
+    <span class="n">monitoring</span><span class="o">.</span><span class="n">health_checker</span><span class="o">.</span><span class="n">add_health_check</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">,</span> <span class="n">check_database_health</span><span class="p">)</span>
+    <span class="n">monitoring</span><span class="o">.</span><span class="n">health_checker</span><span class="o">.</span><span class="n">add_health_check</span><span class="p">(</span><span class="s2">&quot;storage&quot;</span><span class="p">,</span> <span class="n">check_storage_health</span><span class="p">)</span>
+
+    <span class="c1"># Setup default alerts</span>
+    <span class="n">monitoring</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">add_alert_rule</span><span class="p">(</span>
+        <span class="n">metric_name</span><span class="o">=</span><span class="s2">&quot;api_response_time_ms&quot;</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># 1 second</span>
+        <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;gt&quot;</span><span class="p">,</span>
+        <span class="n">severity</span><span class="o">=</span><span class="n">AlertSeverity</span><span class="o">.</span><span class="n">MEDIUM</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;API Response Time High&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;API response time is above 1 second&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">monitoring</span><span class="o">.</span><span class="n">alert_manager</span><span class="o">.</span><span class="n">add_alert_rule</span><span class="p">(</span>
+        <span class="n">metric_name</span><span class="o">=</span><span class="s2">&quot;api_error_rate&quot;</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># 5%</span>
+        <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;gt&quot;</span><span class="p">,</span>
+        <span class="n">severity</span><span class="o">=</span><span class="n">AlertSeverity</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;High API Error Rate&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;API error rate is above 5%&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Start monitoring</span>
+    <span class="n">monitoring</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">monitoring</span></div>
+
+
+
+<span class="c1"># Example of how to use the decorators in actual endpoints</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">@app.get(&quot;/api/v1/auditorias/heavy-operation&quot;)</span>
+<span class="sd">@monitor_endpoint(&quot;heavy_operation&quot;)</span>
+<span class="sd">@cache_endpoint(ttl_seconds=600)  # Cache for 10 minutes</span>
+<span class="sd">async def heavy_operation_endpoint():</span>
+<span class="sd">    # Your heavy computation here</span>
+<span class="sd">    result = perform_heavy_computation()</span>
+<span class="sd">    return result</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

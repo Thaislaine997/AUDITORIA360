@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.utils.performance &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código-fonte para src.utils.performance</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Performance Optimization Module for AUDITORIA360</span>
+<span class="sd">Implements bottleneck analysis, query optimization, and performance monitoring.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">psutil</span>
+
+<span class="c1"># Configure logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PerformanceMetrics">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.PerformanceMetrics">[documentos]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">PerformanceMetrics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performance metrics data structure&quot;&quot;&quot;</span>
+
+    <span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">execution_time</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">memory_usage_mb</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">cpu_percent</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">result_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="PerformanceProfiler">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.PerformanceProfiler">[documentos]</a>
+<span class="k">class</span> <span class="nc">PerformanceProfiler</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Advanced performance profiler for AUDITORIA360&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PerformanceProfiler.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.PerformanceProfiler.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PerformanceMetrics</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slow_queries_threshold</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory_threshold</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># MB</span></div>
+
+
+<div class="viewcode-block" id="PerformanceProfiler.profile_function">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.PerformanceProfiler.profile_function">[documentos]</a>
+    <span class="k">def</span> <span class="nf">profile_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decorator to profile function performance&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+            <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_execution</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">include_params</span><span class="p">)</span>
+
+            <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">async</span> <span class="k">def</span> <span class="nf">async_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_async_execution</span><span class="p">(</span>
+                    <span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">include_params</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">async_wrapper</span> <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">else</span> <span class="n">wrapper</span>
+
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_profile_execution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">include_params</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Profile synchronous function execution&quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start_memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>  <span class="c1"># MB</span>
+        <span class="n">start_cpu</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">end_memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>  <span class="c1"># MB</span>
+            <span class="n">end_cpu</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">PerformanceMetrics</span><span class="p">(</span>
+                <span class="n">function_name</span><span class="o">=</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">execution_time</span><span class="o">=</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span>
+                <span class="n">memory_usage_mb</span><span class="o">=</span><span class="n">end_memory</span> <span class="o">-</span> <span class="n">start_memory</span><span class="p">,</span>
+                <span class="n">cpu_percent</span><span class="o">=</span><span class="p">(</span><span class="n">start_cpu</span> <span class="o">+</span> <span class="n">end_cpu</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;args_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="s2">&quot;kwargs_keys&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
+                    <span class="k">if</span> <span class="n">include_params</span>
+                    <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">),</span>
+                <span class="n">result_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record_metrics</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_profile_async_execution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">include_params</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Profile asynchronous function execution&quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start_memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>  <span class="c1"># MB</span>
+        <span class="n">start_cpu</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">end_memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>  <span class="c1"># MB</span>
+            <span class="n">end_cpu</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">PerformanceMetrics</span><span class="p">(</span>
+                <span class="n">function_name</span><span class="o">=</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">execution_time</span><span class="o">=</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span>
+                <span class="n">memory_usage_mb</span><span class="o">=</span><span class="n">end_memory</span> <span class="o">-</span> <span class="n">start_memory</span><span class="p">,</span>
+                <span class="n">cpu_percent</span><span class="o">=</span><span class="p">(</span><span class="n">start_cpu</span> <span class="o">+</span> <span class="n">end_cpu</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;args_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="s2">&quot;kwargs_keys&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
+                    <span class="k">if</span> <span class="n">include_params</span>
+                    <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">),</span>
+                <span class="n">result_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record_metrics</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_record_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">PerformanceMetrics</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Thread-safe metrics recording&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+            <span class="c1"># Log slow operations</span>
+            <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">execution_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_queries_threshold</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Slow operation detected: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">function_name</span><span class="si">}</span><span class="s2"> took </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Log high memory usage</span>
+            <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">memory_usage_mb</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_threshold</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;High memory usage: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">function_name</span><span class="si">}</span><span class="s2"> used </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">memory_usage_mb</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">MB&quot;</span>
+                <span class="p">)</span>
+
+<div class="viewcode-block" id="PerformanceProfiler.get_bottlenecks">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.PerformanceProfiler.get_bottlenecks">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_bottlenecks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">24</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify performance bottlenecks in the last N hours&quot;&quot;&quot;</span>
+        <span class="n">cutoff_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">)</span>
+        <span class="n">recent_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">&gt;=</span> <span class="n">cutoff_time</span><span class="p">]</span>
+
+        <span class="c1"># Group by function</span>
+        <span class="n">function_stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">recent_metrics</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">function_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">function_stats</span><span class="p">:</span>
+                <span class="n">function_stats</span><span class="p">[</span><span class="n">metric</span><span class="o">.</span><span class="n">function_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;total_calls&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;total_time&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;avg_time&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;total_memory&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;avg_memory&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;max_memory&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;error_count&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="p">}</span>
+
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">function_stats</span><span class="p">[</span><span class="n">metric</span><span class="o">.</span><span class="n">function_name</span><span class="p">]</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_calls&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_time&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">metric</span><span class="o">.</span><span class="n">execution_time</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;max_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;max_time&quot;</span><span class="p">],</span> <span class="n">metric</span><span class="o">.</span><span class="n">execution_time</span><span class="p">)</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_memory&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">metric</span><span class="o">.</span><span class="n">memory_usage_mb</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;max_memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;max_memory&quot;</span><span class="p">],</span> <span class="n">metric</span><span class="o">.</span><span class="n">memory_usage_mb</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;error_count&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Calculate averages and identify bottlenecks</span>
+        <span class="n">bottlenecks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span> <span class="n">function_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_time&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_calls&quot;</span><span class="p">]</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_memory&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_calls&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Identify as bottleneck if:</span>
+            <span class="c1"># 1. Average execution time &gt; threshold</span>
+            <span class="c1"># 2. High memory usage</span>
+            <span class="c1"># 3. Error rate &gt; 5%</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_time&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_queries_threshold</span>
+                <span class="ow">or</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_memory&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_threshold</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;error_count&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_calls&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.05</span>
+            <span class="p">):</span>
+
+                <span class="n">bottlenecks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;function_name&quot;</span><span class="p">:</span> <span class="n">func_name</span><span class="p">,</span>
+                        <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_severity</span><span class="p">(</span><span class="n">stats</span><span class="p">),</span>
+                        <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="p">,</span>
+                        <span class="s2">&quot;recommendations&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_recommendations</span><span class="p">(</span><span class="n">func_name</span><span class="p">,</span> <span class="n">stats</span><span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bottlenecks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_calculate_severity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate bottleneck severity score (0-100)&quot;&quot;&quot;</span>
+        <span class="n">severity</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Time-based severity</span>
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_time&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_queries_threshold</span><span class="p">:</span>
+            <span class="n">severity</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_time&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_queries_threshold</span><span class="p">)</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1"># Memory-based severity</span>
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_memory&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_threshold</span><span class="p">:</span>
+            <span class="n">severity</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_memory&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_threshold</span><span class="p">)</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span>
+
+        <span class="c1"># Error-based severity</span>
+        <span class="n">error_rate</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;error_count&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_calls&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">error_rate</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">severity</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">error_rate</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">severity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_recommendations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate optimization recommendations&quot;&quot;&quot;</span>
+        <span class="n">recommendations</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_time&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_queries_threshold</span><span class="p">:</span>
+            <span class="n">recommendations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider optimizing algorithm or adding caching&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;database&quot;</span> <span class="ow">in</span> <span class="n">func_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;query&quot;</span> <span class="ow">in</span> <span class="n">func_name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">recommendations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="s2">&quot;Review database query performance and add indexes&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;avg_memory&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_threshold</span><span class="p">:</span>
+            <span class="n">recommendations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Optimize memory usage - consider streaming or pagination&quot;</span>
+            <span class="p">)</span>
+            <span class="n">recommendations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Review data structures and remove unnecessary object creation&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;error_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">recommendations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Add better error handling and validation&quot;</span><span class="p">)</span>
+            <span class="n">recommendations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Review input parameters and edge cases&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">recommendations</span></div>
+
+
+
+<div class="viewcode-block" id="DatabaseOptimizer">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.DatabaseOptimizer">[documentos]</a>
+<span class="k">class</span> <span class="nc">DatabaseOptimizer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Database query optimization utilities&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DatabaseOptimizer.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.DatabaseOptimizer.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database_url</span> <span class="o">=</span> <span class="n">database_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_stats</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="DatabaseOptimizer.profile_query">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.DatabaseOptimizer.profile_query">[documentos]</a>
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">profile_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager to profile database queries&quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start_memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">execution_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="n">memory_used</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">-</span> <span class="n">start_memory</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">query_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_stats</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">query_stats</span><span class="p">[</span><span class="n">query_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">query_stats</span><span class="p">[</span><span class="n">query_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;execution_time&quot;</span><span class="p">:</span> <span class="n">execution_time</span><span class="p">,</span>
+                    <span class="s2">&quot;memory_usage&quot;</span><span class="p">:</span> <span class="n">memory_used</span><span class="p">,</span>
+                    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">execution_time</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>  <span class="c1"># Log slow queries</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Slow query detected: </span><span class="si">{</span><span class="n">query_name</span><span class="si">}</span><span class="s2"> took </span><span class="si">{</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseOptimizer.optimize_postgresql_query">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.DatabaseOptimizer.optimize_postgresql_query">[documentos]</a>
+    <span class="k">def</span> <span class="nf">optimize_postgresql_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze and optimize PostgreSQL queries&quot;&quot;&quot;</span>
+        <span class="n">optimizations</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;suggestions&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;estimated_improvement&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+        <span class="n">query_lower</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Check for missing indexes</span>
+        <span class="k">if</span> <span class="s2">&quot;where&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span> <span class="ow">and</span> <span class="s2">&quot;index&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Consider adding indexes on WHERE clause columns&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">30</span>
+
+        <span class="c1"># Check for SELECT *</span>
+        <span class="k">if</span> <span class="s2">&quot;select *&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Avoid SELECT * - specify only needed columns&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">20</span>
+
+        <span class="c1"># Check for JOIN optimization</span>
+        <span class="k">if</span> <span class="s2">&quot;join&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span> <span class="ow">and</span> <span class="s2">&quot;on&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Ensure JOIN conditions use indexed columns&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">25</span>
+
+        <span class="c1"># Check for ORDER BY without LIMIT</span>
+        <span class="k">if</span> <span class="s2">&quot;order by&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span> <span class="ow">and</span> <span class="s2">&quot;limit&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Consider adding LIMIT to ORDER BY queries&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">15</span>
+
+        <span class="k">return</span> <span class="n">optimizations</span></div>
+
+
+<div class="viewcode-block" id="DatabaseOptimizer.optimize_duckdb_query">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.DatabaseOptimizer.optimize_duckdb_query">[documentos]</a>
+    <span class="k">def</span> <span class="nf">optimize_duckdb_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze and optimize DuckDB queries&quot;&quot;&quot;</span>
+        <span class="n">optimizations</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;suggestions&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;estimated_improvement&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+        <span class="n">query_lower</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Check for efficient file formats</span>
+        <span class="k">if</span> <span class="s2">&quot;csv&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Consider using Parquet format for better performance&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">40</span>
+
+        <span class="c1"># Check for column projection</span>
+        <span class="k">if</span> <span class="s2">&quot;select *&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Project only necessary columns for better I/O performance&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">25</span>
+
+        <span class="c1"># Check for filter pushdown</span>
+        <span class="k">if</span> <span class="s2">&quot;where&quot;</span> <span class="ow">in</span> <span class="n">query_lower</span><span class="p">:</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;suggestions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Ensure filters are applied early (filter pushdown)&quot;</span>
+            <span class="p">)</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s2">&quot;estimated_improvement&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">20</span>
+
+        <span class="k">return</span> <span class="n">optimizations</span></div>
+
+
+<div class="viewcode-block" id="DatabaseOptimizer.get_slow_queries">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.DatabaseOptimizer.get_slow_queries">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_slow_queries</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get slowest queries above threshold&quot;&quot;&quot;</span>
+        <span class="n">slow_queries</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">query_name</span><span class="p">,</span> <span class="n">stats_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">avg_time</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;execution_time&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stats_list</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats_list</span><span class="p">)</span>
+            <span class="n">max_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;execution_time&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stats_list</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">avg_time</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                <span class="n">slow_queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;query_name&quot;</span><span class="p">:</span> <span class="n">query_name</span><span class="p">,</span>
+                        <span class="s2">&quot;avg_execution_time&quot;</span><span class="p">:</span> <span class="n">avg_time</span><span class="p">,</span>
+                        <span class="s2">&quot;max_execution_time&quot;</span><span class="p">:</span> <span class="n">max_time</span><span class="p">,</span>
+                        <span class="s2">&quot;call_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats_list</span><span class="p">),</span>
+                        <span class="s2">&quot;total_time&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;execution_time&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stats_list</span><span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">slow_queries</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;avg_execution_time&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)[:</span><span class="n">limit</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CacheManager">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.CacheManager">[documentos]</a>
+<span class="k">class</span> <span class="nc">CacheManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Intelligent caching system for performance optimization&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CacheManager.__init__">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.CacheManager.__init__">[documentos]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_times</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creation_times</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="o">=</span> <span class="n">max_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttl_seconds</span> <span class="o">=</span> <span class="n">ttl_seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CacheManager.get">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.CacheManager.get">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cached value with TTL check&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                <span class="c1"># Check TTL</span>
+                <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">creation_times</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl_seconds</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_remove_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_times</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="CacheManager.set">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.CacheManager.set">[documentos]</a>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set cached value with LRU eviction&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+            <span class="c1"># Remove expired entries</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_expired</span><span class="p">()</span>
+
+            <span class="c1"># Check if we need to evict</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_evict_lru</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_times</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creation_times</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_cleanup_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove expired entries&quot;&quot;&quot;</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">expired_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">creation_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">creation_times</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">creation_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl_seconds</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">expired_keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evict_lru</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evict least recently used entry&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_times</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">lru_key</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access_times</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_times</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_key</span><span class="p">(</span><span class="n">lru_key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_remove_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove key from all dictionaries&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_times</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creation_times</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CacheManager.stats">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.CacheManager.stats">[documentos]</a>
+    <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cache statistics&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">),</span>
+            <span class="s2">&quot;max_size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span><span class="p">,</span>
+            <span class="s2">&quot;hit_rate&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_hit_rate</span><span class="p">(),</span>
+            <span class="s2">&quot;memory_usage_mb&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_memory_usage</span><span class="p">(),</span>
+        <span class="p">}</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_calculate_hit_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate cache hit rate (simplified)&quot;&quot;&quot;</span>
+        <span class="c1"># This is a simplified implementation</span>
+        <span class="c1"># In a real system, you&#39;d track hits and misses</span>
+        <span class="k">return</span> <span class="mf">0.75</span>  <span class="c1"># Placeholder</span>
+
+    <span class="k">def</span> <span class="nf">_estimate_memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimate memory usage in MB&quot;&quot;&quot;</span>
+        <span class="c1"># Rough estimation based on number of objects</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.001</span>  <span class="c1"># ~1KB per entry estimate</span></div>
+
+
+
+<span class="c1"># Global performance profiler instance</span>
+<span class="n">profiler</span> <span class="o">=</span> <span class="n">PerformanceProfiler</span><span class="p">()</span>
+
+
+<span class="c1"># Decorator shortcuts</span>
+<div class="viewcode-block" id="profile">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.profile">[documentos]</a>
+<span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">include_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenient decorator for profiling functions&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">profiler</span><span class="o">.</span><span class="n">profile_function</span><span class="p">(</span><span class="n">include_params</span><span class="o">=</span><span class="n">include_params</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="profile_database_query">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.profile_database_query">[documentos]</a>
+<span class="k">def</span> <span class="nf">profile_database_query</span><span class="p">(</span><span class="n">query_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator for profiling database queries&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">db_optimizer</span> <span class="o">=</span> <span class="n">DatabaseOptimizer</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">db_optimizer</span><span class="o">.</span><span class="n">profile_query</span><span class="p">(</span><span class="n">query_name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">async_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">db_optimizer</span> <span class="o">=</span> <span class="n">DatabaseOptimizer</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">db_optimizer</span><span class="o">.</span><span class="n">profile_query</span><span class="p">(</span><span class="n">query_name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">async_wrapper</span> <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">else</span> <span class="n">wrapper</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<span class="c1"># Cache instance</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">CacheManager</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="cached">
+<a class="viewcode-back" href="../../../modules/utils.html#src.utils.performance.cached">[documentos]</a>
+<span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">ttl_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">,</span> <span class="n">key_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator for caching function results&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># Generate cache key</span>
+            <span class="k">if</span> <span class="n">key_func</span><span class="p">:</span>
+                <span class="n">cache_key</span> <span class="o">=</span> <span class="n">key_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="nb">hash</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="c1"># Try to get from cache</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cache_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+            <span class="c1"># Execute function and cache result</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.services.payroll_service &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código-fonte para src.services.payroll_service</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Payroll service for AUDITORIA360</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Session</span>
+
+<span class="kn">from</span> <span class="nn">src.models</span> <span class="kn">import</span> <span class="n">Employee</span><span class="p">,</span> <span class="n">PayrollCompetency</span><span class="p">,</span> <span class="n">PayrollItem</span>
+<span class="kn">from</span> <span class="nn">src.schemas.payroll_schemas</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EmployeeCreate</span><span class="p">,</span>
+    <span class="n">EmployeeUpdate</span><span class="p">,</span>
+    <span class="n">PayrollCalculationRequest</span><span class="p">,</span>
+    <span class="n">PayrollCalculationResult</span><span class="p">,</span>
+    <span class="n">PayrollCompetencyCreate</span><span class="p">,</span>
+    <span class="n">PayrollCompetencyUpdate</span><span class="p">,</span>
+    <span class="n">PayrollReportRequest</span><span class="p">,</span>
+    <span class="n">PayrollReportResponse</span><span class="p">,</span>
+    <span class="n">PayrollValidationRequest</span><span class="p">,</span>
+    <span class="n">PayrollValidationResult</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="create_employee">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.create_employee">[documentos]</a>
+<span class="k">def</span> <span class="nf">create_employee</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">employee_data</span><span class="p">:</span> <span class="n">EmployeeCreate</span><span class="p">,</span> <span class="n">created_by_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Employee</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new employee&quot;&quot;&quot;</span>
+    <span class="c1"># Check if employee ID already exists</span>
+    <span class="n">existing_employee</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Employee</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Employee</span><span class="o">.</span><span class="n">employee_id</span> <span class="o">==</span> <span class="n">employee_data</span><span class="o">.</span><span class="n">employee_id</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">existing_employee</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Employee ID already exists&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">db_employee</span> <span class="o">=</span> <span class="n">Employee</span><span class="p">(</span><span class="o">**</span><span class="n">employee_data</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">created_by_id</span><span class="o">=</span><span class="n">created_by_id</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">db_employee</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">db_employee</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db_employee</span></div>
+
+
+
+<div class="viewcode-block" id="get_employees">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.get_employees">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_employees</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
+    <span class="n">skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">is_active</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">department</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Employee</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get list of employees with optional filtering&quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Employee</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_active</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Employee</span><span class="o">.</span><span class="n">is_active</span> <span class="o">==</span> <span class="n">is_active</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">department</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Employee</span><span class="o">.</span><span class="n">department</span> <span class="o">==</span> <span class="n">department</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">skip</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_employee_by_id">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.get_employee_by_id">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_employee_by_id</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">employee_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Employee</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get employee by ID&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Employee</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Employee</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">employee_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="update_employee">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.update_employee">[documentos]</a>
+<span class="k">def</span> <span class="nf">update_employee</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">employee_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">employee_update</span><span class="p">:</span> <span class="n">EmployeeUpdate</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Employee</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update employee by ID&quot;&quot;&quot;</span>
+    <span class="n">employee</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Employee</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Employee</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">employee_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">employee</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">update_data</span> <span class="o">=</span> <span class="n">employee_update</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">update_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">employee</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">employee</span></div>
+
+
+
+<div class="viewcode-block" id="create_payroll_competency">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.create_payroll_competency">[documentos]</a>
+<span class="k">def</span> <span class="nf">create_payroll_competency</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">competency_data</span><span class="p">:</span> <span class="n">PayrollCompetencyCreate</span><span class="p">,</span> <span class="n">created_by_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PayrollCompetency</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new payroll competency&quot;&quot;&quot;</span>
+    <span class="c1"># Check if competency already exists for this year/month/type</span>
+    <span class="n">existing_competency</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="n">competency_data</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="n">competency_data</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+            <span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">competency_data</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">existing_competency</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Payroll competency already exists for this period&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">db_competency</span> <span class="o">=</span> <span class="n">PayrollCompetency</span><span class="p">(</span>
+        <span class="o">**</span><span class="n">competency_data</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">created_by_id</span><span class="o">=</span><span class="n">created_by_id</span>
+    <span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">db_competency</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">db_competency</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db_competency</span></div>
+
+
+
+<div class="viewcode-block" id="get_payroll_competencies">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.get_payroll_competencies">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_payroll_competencies</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
+    <span class="n">skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">month</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PayrollCompetency</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get list of payroll competencies with optional filtering&quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">year</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="n">year</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">month</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="n">month</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">skip</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_payroll_competency_by_id">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.get_payroll_competency_by_id">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_payroll_competency_by_id</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">competency_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">include_items</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PayrollCompetency</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get payroll competency by ID&quot;&quot;&quot;</span>
+    <span class="n">competency</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">competency_id</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">competency</span> <span class="ow">and</span> <span class="n">include_items</span><span class="p">:</span>
+        <span class="c1"># Load payroll items with employee information</span>
+        <span class="n">competency</span><span class="o">.</span><span class="n">payroll_items</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PayrollItem</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PayrollItem</span><span class="o">.</span><span class="n">competency_id</span> <span class="o">==</span> <span class="n">competency_id</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">competency</span></div>
+
+
+
+<div class="viewcode-block" id="update_payroll_competency">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.update_payroll_competency">[documentos]</a>
+<span class="k">def</span> <span class="nf">update_payroll_competency</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">competency_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">competency_update</span><span class="p">:</span> <span class="n">PayrollCompetencyUpdate</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PayrollCompetency</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update payroll competency by ID&quot;&quot;&quot;</span>
+    <span class="n">competency</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PayrollCompetency</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">competency_id</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">competency</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">update_data</span> <span class="o">=</span> <span class="n">competency_update</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">update_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">competency</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">competency</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">competency</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_payroll">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.calculate_payroll">[documentos]</a>
+<span class="k">def</span> <span class="nf">calculate_payroll</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">calculation_request</span><span class="p">:</span> <span class="n">PayrollCalculationRequest</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PayrollCalculationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate payroll for a competency&quot;&quot;&quot;</span>
+    <span class="c1"># This is a placeholder implementation</span>
+    <span class="c1"># In a real implementation, this would:</span>
+    <span class="c1"># 1. Get the competency</span>
+    <span class="c1"># 2. Get employees to calculate (all or specific ones)</span>
+    <span class="c1"># 3. Apply calculation rules</span>
+    <span class="c1"># 4. Update payroll items</span>
+    <span class="c1"># 5. Return results</span>
+
+    <span class="n">competency</span> <span class="o">=</span> <span class="n">get_payroll_competency_by_id</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">calculation_request</span><span class="o">.</span><span class="n">competency_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">competency</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Payroll competency not found&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Placeholder calculation logic</span>
+    <span class="n">total_calculated</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">successful</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">warnings</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="n">PayrollCalculationResult</span><span class="p">(</span>
+        <span class="n">competency_id</span><span class="o">=</span><span class="n">calculation_request</span><span class="o">.</span><span class="n">competency_id</span><span class="p">,</span>
+        <span class="n">total_calculated</span><span class="o">=</span><span class="n">total_calculated</span><span class="p">,</span>
+        <span class="n">successful</span><span class="o">=</span><span class="n">successful</span><span class="p">,</span>
+        <span class="n">failed</span><span class="o">=</span><span class="n">failed</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
+        <span class="n">warnings</span><span class="o">=</span><span class="n">warnings</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="validate_payroll">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.validate_payroll">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_payroll</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">validation_request</span><span class="p">:</span> <span class="n">PayrollValidationRequest</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PayrollValidationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate payroll calculations&quot;&quot;&quot;</span>
+    <span class="c1"># This is a placeholder implementation</span>
+    <span class="c1"># In a real implementation, this would:</span>
+    <span class="c1"># 1. Get the competency and its items</span>
+    <span class="c1"># 2. Apply validation rules</span>
+    <span class="c1"># 3. Check for compliance with CCT rules</span>
+    <span class="c1"># 4. Return validation results</span>
+
+    <span class="n">competency</span> <span class="o">=</span> <span class="n">get_payroll_competency_by_id</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">validation_request</span><span class="o">.</span><span class="n">competency_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">competency</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Payroll competency not found&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">PayrollValidationResult</span><span class="p">(</span>
+        <span class="n">competency_id</span><span class="o">=</span><span class="n">validation_request</span><span class="o">.</span><span class="n">competency_id</span><span class="p">,</span>
+        <span class="n">is_valid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Placeholder</span>
+        <span class="n">errors</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">warnings</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">divergences</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="import_payroll_data">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.import_payroll_data">[documentos]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">import_payroll_data</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">competency_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Import payroll data from file&quot;&quot;&quot;</span>
+    <span class="c1"># This is a placeholder implementation</span>
+    <span class="c1"># In a real implementation, this would:</span>
+    <span class="c1"># 1. Save file to temporary location</span>
+    <span class="c1"># 2. Parse CSV/XLSX file</span>
+    <span class="c1"># 3. Validate data</span>
+    <span class="c1"># 4. Create/update employee and payroll item records</span>
+    <span class="c1"># 5. Return import results</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Payroll import - implementation pending&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="generate_payroll_report">
+<a class="viewcode-back" href="../../../modules/services.html#src.services.payroll_service.generate_payroll_report">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_payroll_report</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">report_request</span><span class="p">:</span> <span class="n">PayrollReportRequest</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PayrollReportResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate payroll report&quot;&quot;&quot;</span>
+    <span class="c1"># This is a placeholder implementation</span>
+    <span class="c1"># In a real implementation, this would:</span>
+    <span class="c1"># 1. Get competency and payroll data</span>
+    <span class="c1"># 2. Generate report based on type</span>
+    <span class="c1"># 3. Save to R2 storage</span>
+    <span class="c1"># 4. Return download URL</span>
+
+    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+    <span class="k">return</span> <span class="n">PayrollReportResponse</span><span class="p">(</span>
+        <span class="n">report_id</span><span class="o">=</span><span class="s2">&quot;placeholder-report-id&quot;</span><span class="p">,</span>
+        <span class="n">file_url</span><span class="o">=</span><span class="s2">&quot;/api/v1/reports/download/placeholder-report-id&quot;</span><span class="p">,</span>
+        <span class="n">file_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+        <span class="n">generated_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

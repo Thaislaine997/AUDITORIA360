@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.core.validators &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código-fonte para src.core.validators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Validation utilities for AUDITORIA360.</span>
+<span class="sd">Consolidated from services/core/validators.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+
+
+<div class="viewcode-block" id="validate_cpf">
+<a class="viewcode-back" href="../../../modules/core.html#src.core.validators.validate_cpf">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_cpf</span><span class="p">(</span><span class="n">cpf</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate Brazilian CPF (Cadastro de Pessoas Físicas) number.</span>
+<span class="sd">    </span>
+<span class="sd">    Performs comprehensive validation including format, length, and check digit verification</span>
+<span class="sd">    according to Brazilian government standards.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        cpf: The CPF string to validate. Can contain formatting characters (dots, hyphens)</span>
+<span class="sd">             that will be automatically removed.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        True if the CPF is valid, False otherwise.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; validate_cpf(&quot;123.456.789-09&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_cpf(&quot;12345678909&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_cpf(&quot;111.111.111-11&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; validate_cpf(&quot;invalid&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        This function validates the mathematical correctness of the CPF</span>
+<span class="sd">        but does not verify if it&#39;s actually registered in government databases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cpf</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Remove non-numeric characters</span>
+    <span class="n">cpf</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">cpf</span><span class="p">)</span>
+
+    <span class="c1"># CPF must have 11 digits</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Check for repeated digits</span>
+    <span class="k">if</span> <span class="n">cpf</span> <span class="o">==</span> <span class="n">cpf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Validate check digits</span>
+    <span class="k">def</span> <span class="nf">calculate_digit</span><span class="p">(</span><span class="n">cpf_digits</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="n">sum_digits</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">digit</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span>
+            <span class="k">for</span> <span class="n">digit</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cpf_digits</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">sum_digits</span> <span class="o">%</span> <span class="mi">11</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">remainder</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">11</span> <span class="o">-</span> <span class="n">remainder</span>
+
+    <span class="c1"># Check first digit</span>
+    <span class="n">first_digit</span> <span class="o">=</span> <span class="n">calculate_digit</span><span class="p">(</span><span class="n">cpf</span><span class="p">[:</span><span class="mi">9</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">first_digit</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cpf</span><span class="p">[</span><span class="mi">9</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Check second digit</span>
+    <span class="n">second_digit</span> <span class="o">=</span> <span class="n">calculate_digit</span><span class="p">(</span><span class="n">cpf</span><span class="p">[:</span><span class="mi">10</span><span class="p">],</span> <span class="mi">11</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">second_digit</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cpf</span><span class="p">[</span><span class="mi">10</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="validate_cnpj">
+<a class="viewcode-back" href="../../../modules/core.html#src.core.validators.validate_cnpj">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_cnpj</span><span class="p">(</span><span class="n">cnpj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate Brazilian CNPJ (Cadastro Nacional de Pessoas Jurídicas) number.</span>
+<span class="sd">    </span>
+<span class="sd">    Validates CNPJ format and check digits according to Brazilian standards.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        cnpj: The CNPJ string to validate. Accepts formatted (XX.XXX.XXX/XXXX-XX) </span>
+<span class="sd">              or unformatted (XXXXXXXXXXXXXX) strings.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        True if CNPJ is valid, False otherwise.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; validate_cnpj(&quot;11.222.333/0001-81&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_cnpj(&quot;11222333000181&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_cnpj(&quot;00.000.000/0000-00&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValidationError: If input is not a string or is empty.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cnpj</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cnpj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;CNPJ must be a non-empty string&quot;</span><span class="p">,</span> <span class="s2">&quot;cnpj&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Remove non-numeric characters</span>
+    <span class="n">cnpj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">cnpj</span><span class="p">)</span>
+
+    <span class="c1"># CNPJ must have 14 digits</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cnpj</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Check for repeated digits</span>
+    <span class="k">if</span> <span class="n">cnpj</span> <span class="o">==</span> <span class="n">cnpj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Calculate first check digit</span>
+    <span class="n">weights1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">sum1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">weights1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span>
+    <span class="n">remainder1</span> <span class="o">=</span> <span class="n">sum1</span> <span class="o">%</span> <span class="mi">11</span>
+    <span class="n">digit1</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">remainder1</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">11</span> <span class="o">-</span> <span class="n">remainder1</span>
+
+    <span class="k">if</span> <span class="n">digit1</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[</span><span class="mi">12</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Calculate second check digit</span>
+    <span class="n">weights2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">sum2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">weights2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">))</span>
+    <span class="n">remainder2</span> <span class="o">=</span> <span class="n">sum2</span> <span class="o">%</span> <span class="mi">11</span>
+    <span class="n">digit2</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">remainder2</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">11</span> <span class="o">-</span> <span class="n">remainder2</span>
+
+    <span class="k">return</span> <span class="n">digit2</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[</span><span class="mi">13</span><span class="p">])</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate email address format using RFC-compliant regex pattern.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        email: Email address string to validate.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        True if email format is valid, False otherwise.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; validate_email(&quot;user@example.com&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_email(&quot;invalid.email&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; validate_email(&quot;test+tag@domain.co.uk&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">email</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+        
+    <span class="c1"># RFC 5322 compliant email regex pattern</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&#39;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="validate_phone_br">
+<a class="viewcode-back" href="../../../modules/core.html#src.core.validators.validate_phone_br">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_phone_br</span><span class="p">(</span><span class="n">phone</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate Brazilian phone number format.</span>
+<span class="sd">    </span>
+<span class="sd">    Accepts mobile and landline numbers with or without country code.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        phone: Phone number string. Can include formatting characters.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        True if phone number format is valid, False otherwise.</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; validate_phone_br(&quot;(11) 99999-9999&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_phone_br(&quot;+55 11 99999-9999&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_phone_br(&quot;11999999999&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validate_phone_br(&quot;(11) 3333-3333&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Validates format only, not if the number is actually active.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">phone</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phone</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+        
+    <span class="c1"># Remove all non-numeric characters</span>
+    <span class="n">phone</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">phone</span><span class="p">)</span>
+    
+    <span class="c1"># Remove country code if present</span>
+    <span class="k">if</span> <span class="n">phone</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;55&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">phone</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">phone</span> <span class="o">=</span> <span class="n">phone</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+    
+    <span class="c1"># Brazilian mobile: 11 digits (area code + 9 + 8 digits)</span>
+    <span class="c1"># Brazilian landline: 10 digits (area code + 7-8 digits)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">phone</span><span class="p">)</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="c1"># Mobile format: XX9XXXXXXXX</span>
+        <span class="k">return</span> <span class="n">phone</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;9&#39;</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">phone</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="c1"># Landline format: XXXXXXXXXX</span>
+        <span class="k">return</span> <span class="n">phone</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;2345&#39;</span>
+    
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="validate_payroll_data">
+<a class="viewcode-back" href="../../../modules/core.html#src.core.validators.validate_payroll_data">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_payroll_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Comprehensive validation for payroll data entries.</span>
+<span class="sd">    </span>
+<span class="sd">    Validates employee payroll information according to Brazilian labor laws</span>
+<span class="sd">    and internal business rules.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        data: Dictionary containing payroll information with keys:</span>
+<span class="sd">              - employee_id (str): Employee identification</span>
+<span class="sd">              - salary (float): Base salary amount</span>
+<span class="sd">              - hours_worked (float): Hours worked in the period</span>
+<span class="sd">              - benefits (dict): Additional benefits data</span>
+<span class="sd">              </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple containing:</span>
+<span class="sd">        - bool: True if all validations pass, False otherwise</span>
+<span class="sd">        - list[str]: List of validation error messages (empty if valid)</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; data = {</span>
+<span class="sd">        ...     &quot;employee_id&quot;: &quot;EMP001&quot;,</span>
+<span class="sd">        ...     &quot;salary&quot;: 2500.00,</span>
+<span class="sd">        ...     &quot;hours_worked&quot;: 160.0,</span>
+<span class="sd">        ...     &quot;benefits&quot;: {&quot;health&quot;: 150.0}</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; is_valid, errors = validate_payroll_data(data)</span>
+<span class="sd">        &gt;&gt;&gt; is_valid</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; errors</span>
+<span class="sd">        []</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValidationError: If data is not a dictionary or required fields are missing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Payroll data must be a dictionary&quot;</span><span class="p">,</span> <span class="s2">&quot;payroll_data&quot;</span><span class="p">)</span>
+    
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># Required fields validation</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;employee_id&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">,</span> <span class="s1">&#39;hours_worked&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing required field: </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> cannot be null&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Employee ID validation</span>
+    <span class="k">if</span> <span class="s1">&#39;employee_id&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">employee_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;employee_id&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">employee_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">employee_id</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Employee ID must be a non-empty string&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Salary validation</span>
+    <span class="k">if</span> <span class="s1">&#39;salary&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">salary</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">salary</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">salary</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Salary must be a non-negative number&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">salary</span> <span class="o">&lt;</span> <span class="mf">1320.00</span><span class="p">:</span>  <span class="c1"># Brazilian minimum wage (approximate)</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Salary below minimum wage (R$ 1,320.00)&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Hours worked validation</span>
+    <span class="k">if</span> <span class="s1">&#39;hours_worked&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">hours</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hours_worked&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">hours</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Hours worked must be a non-negative number&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">220</span><span class="p">:</span>  <span class="c1"># Maximum monthly hours (44h/week * 4.5 weeks)</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Hours worked exceeds maximum allowed (220 hours/month)&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Benefits validation (optional)</span>
+    <span class="k">if</span> <span class="s1">&#39;benefits&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">benefits</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;benefits&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">benefits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benefits</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Benefits must be a dictionary or null&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">benefits</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">benefit_type</span><span class="p">,</span> <span class="n">amount</span> <span class="ow">in</span> <span class="n">benefits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Benefit &#39;</span><span class="si">{</span><span class="n">benefit_type</span><span class="si">}</span><span class="s2">&#39; must have non-negative amount&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">errors</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate Brazilian CNPJ number.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cnpj</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cnpj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Remove non-numeric characters</span>
+    <span class="n">cnpj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">cnpj</span><span class="p">)</span>
+
+    <span class="c1"># CNPJ must have 14 digits</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cnpj</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Check for repeated digits</span>
+    <span class="k">if</span> <span class="n">cnpj</span> <span class="o">==</span> <span class="n">cnpj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Validate check digits</span>
+    <span class="k">def</span> <span class="nf">calculate_digit</span><span class="p">(</span><span class="n">cnpj_digits</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="n">sum_digits</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">digit</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">digit</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cnpj_digits</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">sum_digits</span> <span class="o">%</span> <span class="mi">11</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">remainder</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">11</span> <span class="o">-</span> <span class="n">remainder</span>
+
+    <span class="c1"># Check first digit</span>
+    <span class="n">weights_1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">first_digit</span> <span class="o">=</span> <span class="n">calculate_digit</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[:</span><span class="mi">12</span><span class="p">],</span> <span class="n">weights_1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">first_digit</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[</span><span class="mi">12</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Check second digit</span>
+    <span class="n">weights_2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">second_digit</span> <span class="o">=</span> <span class="n">calculate_digit</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[:</span><span class="mi">13</span><span class="p">],</span> <span class="n">weights_2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">second_digit</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cnpj</span><span class="p">[</span><span class="mi">13</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="validate_email">
+<a class="viewcode-back" href="../../../modules/core.html#src.core.validators.validate_email">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate email address format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">email</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">email_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">email_pattern</span><span class="p">,</span> <span class="n">email</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="validate_required_fields">
+<a class="viewcode-back" href="../../../modules/core.html#src.core.validators.validate_required_fields">[documentos]</a>
+<span class="k">def</span> <span class="nf">validate_required_fields</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">required_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate that all required fields are present and not empty.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">missing_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">empty_fields</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">missing_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">empty_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">missing_fields</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing required fields: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">empty_fields</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Empty required fields: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">empty_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
