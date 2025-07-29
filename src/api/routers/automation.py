@@ -25,7 +25,7 @@ except ImportError:
     run_backup_routine = None
     gerar_comunicados = None
 
-router = APIRouter(prefix="/automation", tags=["automation"])
+router = APIRouter(tags=["automation"])
 
 
 def verify_cron_auth():
