@@ -60,7 +60,6 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
->Principal
     
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
