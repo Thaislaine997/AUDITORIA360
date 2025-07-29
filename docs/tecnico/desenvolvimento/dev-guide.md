@@ -169,4 +169,24 @@ def test_listar_empresas_isolamento(...):
 
 ---
 
-> Consulte também os arquivos `onboarding_white_label.md`, `qa_checklist.md` e `deploy_checklist.md` para garantir qualidade e segurança no ciclo de vida do projeto.
+## 7. Padrões de Scripts
+
+- Todos os scripts Shell (.sh) e PowerShell (.ps1) devem seguir os padrões definidos no [Guia de Padronização de Scripts](script-standardization-guide.md).
+- Use os templates disponíveis em `templates/scripts/` para novos scripts.
+- Scripts devem incluir:
+  - Tratamento adequado de erros
+  - Funções de logging padronizadas
+  - Validação de pré-requisitos
+  - Documentação completa (--help)
+  - Modo dry-run quando aplicável
+
+```bash
+# Exemplo de uso dos scripts padronizados
+./scripts/git_update_all.sh --help
+./scripts/deploy_vercel.sh --production --verbose
+./deploy/cloudrun_deploy.sh --project-id my-project --dry-run
+```
+
+---
+
+> Consulte também os arquivos `script-standardization-guide.md`, `onboarding_white_label.md`, `qa_checklist.md` e `deploy_checklist.md` para garantir qualidade e segurança no ciclo de vida do projeto.
