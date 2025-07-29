@@ -45,7 +45,6 @@ try:
         notification_router,
         audit_router,
         ai_router,
-Principal
     )
     ROUTERS_AVAILABLE = True
 except ImportError as e:
@@ -60,7 +59,8 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
->Principal
+    compliance_router = APIRouter()  # Add missing compliance router
+    automation_router = APIRouter()  # Add missing automation router
     
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")

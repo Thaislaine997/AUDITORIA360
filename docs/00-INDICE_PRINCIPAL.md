@@ -8,6 +8,7 @@
 
 ### 🎯 **Para Novos Usuários**
 - [📖 Guia de Início Rápido](01-INICIO_RAPIDO.md)
+- [📊 Diagnóstico Inicial do Projeto](diagnostico-inicial.md)
 - [🎓 Manual do Usuário](usuario/manual-usuario.md)
 - [❓ FAQ - Perguntas Frequentes](usuario/faq.md)
 
@@ -118,6 +119,7 @@ qualidade/
 ## 🔍 **DOCUMENTOS PRINCIPAIS POR CATEGORIA**
 
 ### 📈 **Status e Progresso**
+- **[Diagnóstico Inicial](diagnostico-inicial.md)** - Mapeamento completo e análise estrutural
 - **[Status 96% Concluído](relatorios/status-projeto.md)** - Estado atual do projeto
 - **[Checklist Finalização](qualidade/qa-checklist.md)** - Últimas etapas
 - **[Performance Atual](relatorios/performance.md)** - Métricas e benchmarks

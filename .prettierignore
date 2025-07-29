@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.db
+*.sqlite
+
+# Environment files
+.env
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files (don't format generated test files)
+e2e_tests/playwright-page-*.html
+
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary files
+tmp/
+temp/
