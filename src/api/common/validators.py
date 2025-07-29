@@ -327,3 +327,46 @@ def validate_field_lengths(data: dict, field_limits: dict) -> List[ErrorDetail]:
                 ))
     
     return errors
+
+
+def validate_date_range(
+    start_date: Optional[datetime],
+    end_date: Optional[datetime]
+) -> None:
+    """
+    Validate date range parameters
+    
+    Args:
+        start_date: Start date
+        end_date: End date
+    
+    Raises:
+        validation_error: If date range is invalid
+    """
+    if start_date and end_date and end_date < start_date:
+        raise validation_error(
+            "End date must be after start date",
+            field="end_date"
+        )
+
+
+def validate_pagination_params(page: int, page_size: int) -> None:
+    """
+    Validate pagination parameters
+    
+    Args:
+        page: Page number
+        page_size: Items per page
+    
+    Raises:
+        validation_error: If parameters are invalid
+    """
+    if page < 1:
+        raise validation_error("Page must be greater than 0", field="page", value=page)
+    
+    if page_size < 1 or page_size > 100:
+        raise validation_error(
+            "Page size must be between 1 and 100",
+            field="page_size",
+            value=page_size
+        )
