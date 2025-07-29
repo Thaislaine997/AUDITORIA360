@@ -36,5 +36,27 @@
       "memory": 3008,
       "maxDuration": 30
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/v1/automation/reports/daily",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/v1/automation/reports/weekly", 
+      "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/v1/automation/reports/monthly",
+      "schedule": "0 9 1 * *"
+    },
+    {
+      "path": "/api/v1/automation/backup/daily",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/v1/automation/payroll/process",
+      "schedule": "0 8 * * 1-5"
+    }
+  ]
 }

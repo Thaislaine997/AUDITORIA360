@@ -1,0 +1,45 @@
+name = "auditoria360-backup-worker"
+main = "backup-worker.js"
+compatibility_date = "2024-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker configuration
+[env.production]
+vars = { ENVIRONMENT = "production" }
+kv_namespaces = [
+  { binding = "BACKUP_METADATA", id = "backup_metadata_kv" }
+]
+
+# Scheduled backup runs - every day at 2 AM UTC
+[[triggers.crons]]
+cron = "0 2 * * *"
+
+# Environment variables (set via wrangler secret put)
+# API_BASE_URL - Base URL for AUDITORIA360 API
+# API_AUTH_TOKEN - Authentication token for API access  
+# WORKER_AUTH_TOKEN - Token for manual worker triggers
+# NOTIFICATION_WEBHOOK - Webhook URL for failure notifications
+
+# Deployment configuration
+[build]
+command = "echo 'No build required for this worker'"
+
+# Development configuration
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+# Resource limits
+[limits]
+cpu_ms = 10000  # 10 seconds CPU time limit
+memory_mb = 128 # 128MB memory limit
+
+# Custom domains (configure in Cloudflare dashboard)
+# route = "backup.auditoria360.com/*"
+
+# Analytics and monitoring
+[observability]
+enabled = true
+
+# Security headers
+[build.upload]
+format = "service-worker"
