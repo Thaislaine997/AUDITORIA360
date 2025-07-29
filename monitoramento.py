@@ -1,192 +1,237 @@
 """
-Enhanced Monitoring Script for AUDITORIA360
+Enhanced Monitoring Script for AUDITORIA360 (Refatorado)
 Integrates with the advanced monitoring system and provides CLI interface.
+Uses modularized monitoring utilities for better organization.
 """
 
-import requests
 import asyncio
-import json
-import os
 import sys
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))
 
 try:
-    from src.utils.monitoring import MonitoringSystem, AlertSeverity
-    from src.utils.performance import profiler, DatabaseOptimizer
-    ENHANCED_MONITORING = True
-except ImportError:
-    ENHANCED_MONITORING = False
-    print("Enhanced monitoring not available - using basic monitoring")
-
-def checar_servico(nome, url):
-    """Check service health with enhanced monitoring"""
-    try:
-        start_time = datetime.now()
-        resp = requests.get(url, timeout=5)
-        response_time = (datetime.now() - start_time).total_seconds() * 1000
-        
-        if resp.status_code == 200:
-            print(f"{nome}: OK (Response: {response_time:.0f}ms)")
-            if ENHANCED_MONITORING:
-                monitoring.metrics.set_gauge(f"service_status", 1, {"service": nome})
-                monitoring.metrics.record_histogram(f"service_response_time_ms", response_time, {"service": nome})
-        else:
-            print(f"{nome}: Falha ({resp.status_code})")
-            if ENHANCED_MONITORING:
-                monitoring.metrics.set_gauge(f"service_status", 0, {"service": nome})
-    except Exception as e:
-        print(f"{nome}: Erro ({e})")
-        if ENHANCED_MONITORING:
-            monitoring.metrics.set_gauge(f"service_status", 0, {"service": nome})
-            monitoring.metrics.increment_counter("service_errors", {"service": nome})
-
-async def check_database_health():
-    """Check database connectivity and performance"""
-    try:
-        # This would normally connect to your actual database
-        # For now, we'll simulate the check
-        print("Database: Simulating connection check...")
-        await asyncio.sleep(0.1)  # Simulate connection time
-        print("Database: OK (Connection established)")
-        
-        if ENHANCED_MONITORING:
-            monitoring.metrics.set_gauge("database_status", 1)
-            monitoring.metrics.record_histogram("database_connection_time_ms", 100)
-        
-        return True
-    except Exception as e:
-        print(f"Database: Erro ({e})")
-        if ENHANCED_MONITORING:
-            monitoring.metrics.set_gauge("database_status", 0)
-        return False
-
-async def check_storage_health():
-    """Check storage (R2) connectivity"""
-    try:
-        # This would normally check R2 connectivity
-        print("Storage (R2): Simulating connectivity check...")
-        await asyncio.sleep(0.05)
-        print("Storage (R2): OK")
-        
-        if ENHANCED_MONITORING:
-            monitoring.metrics.set_gauge("storage_status", 1)
-        
-        return True
-    except Exception as e:
-        print(f"Storage (R2): Erro ({e})")
-        if ENHANCED_MONITORING:
-            monitoring.metrics.set_gauge("storage_status", 0)
-        return False
-
-def check_performance_metrics():
-    """Display performance metrics if available"""
-    if not ENHANCED_MONITORING:
-        return
+    from src.utils.system_monitor import SystemMonitor
+    from src.utils.error_handling import (
+        error_handler, ErrorCategory, ErrorSeverity, handle_exceptions, safe_execute
+    )
+    import logging
     
-    print("\n=== Performance Metrics ===")
-    
-    # Get recent bottlenecks
-    bottlenecks = profiler.get_bottlenecks(hours=1)
-    if bottlenecks:
-        print("⚠️  Performance Bottlenecks Detected:")
-        for bottleneck in bottlenecks[:3]:  # Show top 3
-            print(f"  - {bottleneck['function_name']}: Severity {bottleneck['severity']:.1f}/100")
-            for rec in bottleneck['recommendations'][:2]:  # Show top 2 recommendations
-                print(f"    • {rec}")
-    else:
-        print("✅ No significant performance bottlenecks detected")
-    
-    # Show metrics summary
-    summary = monitoring.metrics.get_metrics_summary(hours=1)
-    print(f"\nMetrics Summary (last hour):")
-    for metric_name, stats in list(summary.items())[:5]:  # Show top 5 metrics
-        print(f"  {metric_name}: {stats['latest']} (avg: {stats['avg']:.2f})")
+    # Configure logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
 
-def show_alerts():
-    """Display active alerts"""
-    if not ENHANCED_MONITORING:
-        return
-    
-    active_alerts = monitoring.alert_manager.get_active_alerts()
-    if active_alerts:
-        print(f"\n🚨 Active Alerts ({len(active_alerts)}):")
-        for alert in active_alerts:
-            severity_icon = {
-                AlertSeverity.LOW: "🟡",
-                AlertSeverity.MEDIUM: "🟠", 
-                AlertSeverity.HIGH: "🔴",
-                AlertSeverity.CRITICAL: "💥"
-            }.get(alert.severity, "⚠️")
+    @handle_exceptions(ErrorCategory.SYSTEM, ErrorSeverity.HIGH)
+    async def run_monitoring_system():
+        """
+        Executa o sistema de monitoramento completo usando módulos refatorados.
+        
+        Returns:
+            dict: Resultado do monitoramento
+        """
+        try:
+            # Criar instância do monitor do sistema
+            monitor = SystemMonitor()
             
-            print(f"  {severity_icon} [{alert.severity.value.upper()}] {alert.title}")
-            print(f"    {alert.description}")
-            print(f"    Metric: {alert.metric_name} = {alert.current_value} (threshold: {alert.threshold})")
-    else:
-        print("\n✅ No active alerts")
+            # Executar monitoramento completo
+            monitoring_result = await monitor.run_complete_monitoring()
+            
+            # Log do resultado
+            logger.info("Monitoramento do sistema executado com sucesso")
+            
+            return monitoring_result
+            
+        except Exception as e:
+            error = error_handler.create_error(
+                message="Falha no sistema de monitoramento",
+                category=ErrorCategory.SYSTEM,
+                severity=ErrorSeverity.CRITICAL,
+                details="Erro durante execução do monitoramento completo",
+                original_exception=e
+            )
+            error_handler.handle_error(error)
+            raise
 
-async def main():
-    """Main monitoring routine"""
-    print("=== AUDITORIA360 System Monitor ===")
-    print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Enhanced Monitoring: {'Enabled' if ENHANCED_MONITORING else 'Disabled'}")
-    
-    if ENHANCED_MONITORING:
-        # Start monitoring system
-        monitoring.start()
+    def display_monitoring_summary(result: dict) -> None:
+        """
+        Exibe resumo do resultado do monitoramento.
         
-        # Add some basic health checks
-        monitoring.health_checker.add_health_check("database", check_database_health)
-        monitoring.health_checker.add_health_check("storage", check_storage_health)
-    
-    print("\n=== Service Health Checks ===")
-    
-    # Check main services
-    servicos = {
-        "API Health": "http://localhost:8000/health",
-        "API Root": "http://localhost:8000/",
-        "API Auditorias": "http://localhost:8000/api/v1/auditorias/options/contabilidades",
-    }
-    
-    for nome, url in servicos.items():
-        checar_servico(nome, url)
-    
-    print("\n=== Infrastructure Health Checks ===")
-    
-    # Check infrastructure components
-    await check_database_health()
-    await check_storage_health()
-    
-    if ENHANCED_MONITORING:
-        # Run all health checks
-        print("\n=== Running Health Checks ===")
-        health_results = await monitoring.health_checker.run_all_checks()
-        for result in health_results:
-            status_icon = "✅" if result.status == "healthy" else "❌"
-            print(f"{status_icon} {result.name}: {result.status} ({result.response_time_ms:.0f}ms)")
-            if result.error:
-                print(f"    Error: {result.error}")
+        Args:
+            result: Resultado do monitoramento
+        """
+        print("\n📋 RESUMO DO MONITORAMENTO")
+        print("=" * 40)
         
-        # Show performance metrics
-        check_performance_metrics()
+        # Status geral
+        status = result.get('overall_status', 'unknown')
+        status_icon = {
+            'healthy': '✅',
+            'degraded': '⚠️',
+            'unhealthy': '❌',
+            'error': '💥'
+        }.get(status, '❓')
         
-        # Show alerts
-        show_alerts()
+        print(f"Status Geral: {status_icon} {status.upper()}")
+        print(f"Timestamp: {result.get('timestamp', 'N/A')}")
+        print(f"Monitoramento Avançado: {'✅' if result.get('enhanced_monitoring') else '❌'}")
         
-        # Get dashboard data
-        dashboard_data = monitoring.get_dashboard_data()
-        print(f"\nSystem Status: {dashboard_data['system_status'].upper()}")
+        # Resumo de serviços
+        services = result.get('services', {})
+        if services:
+            healthy_services = sum(1 for s in services.values() if s.get('status') == 'healthy')
+            total_services = len(services)
+            print(f"Serviços: {healthy_services}/{total_services} saudáveis")
         
-        # Stop monitoring
-        monitoring.stop()
+        # Resumo de infraestrutura
+        infrastructure = result.get('infrastructure', {})
+        if infrastructure:
+            healthy_infra = sum(1 for i in infrastructure.values() if i.get('status') == 'healthy')
+            total_infra = len(infrastructure)
+            print(f"Infraestrutura: {healthy_infra}/{total_infra} componentes saudáveis")
+        
+        # Alertas
+        alerts = result.get('alerts')
+        if alerts and isinstance(alerts, list):
+            critical_alerts = sum(1 for a in alerts if a.get('severity') == 'critical')
+            print(f"Alertas: {len(alerts)} ativos ({critical_alerts} críticos)")
+        elif alerts is None:
+            print("Alertas: Sistema não disponível")
+        else:
+            print("Alertas: Nenhum alerta ativo")
 
-if __name__ == "__main__":
-    if ENHANCED_MONITORING:
-        # Initialize monitoring system
-        monitoring = MonitoringSystem()
+    def save_monitoring_report(result: dict, output_file: str = "monitoring_report.json") -> None:
+        """
+        Salva relatório de monitoramento em arquivo.
+        
+        Args:
+            result: Resultado do monitoramento
+            output_file: Nome do arquivo de saída
+        """
+        def _save_report():
+            import json
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(result, f, indent=2, default=str)
+            print(f"📄 Relatório salvo em: {output_file}")
+            return True
+        
+        success = safe_execute(
+            _save_report,
+            default_value=False,
+            category=ErrorCategory.SYSTEM
+        )
+        
+        if not success:
+            print(f"❌ Falha ao salvar relatório em {output_file}")
+
+    async def main():
+        """
+        Função principal do monitoramento usando sistema modularizado.
+        """
+        print("=== AUDITORIA360 Enhanced System Monitor ===")
+        print("Sistema de monitoramento refatorado e modularizado")
+        print(f"Executado em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print()
+        
+        try:
+            # Executar monitoramento
+            monitoring_result = await run_monitoring_system()
+            
+            # Exibir resumo
+            display_monitoring_summary(monitoring_result)
+            
+            # Salvar relatório
+            save_monitoring_report(monitoring_result)
+            
+            # Verificar se há problemas críticos
+            if monitoring_result.get('overall_status') in ['unhealthy', 'error']:
+                print("\n⚠️  ATENÇÃO: Problemas críticos detectados!")
+                print("Consulte o relatório detalhado e tome ações corretivas.")
+                return 1
+            elif monitoring_result.get('overall_status') == 'degraded':
+                print("\n⚠️  Aviso: Sistema em estado degradado.")
+                print("Alguns componentes precisam de atenção.")
+                return 0
+            else:
+                print("\n✅ Sistema funcionando normalmente.")
+                return 0
+                
+        except Exception as e:
+            print(f"❌ Erro crítico durante monitoramento: {e}")
+            logger.error(f"Erro crítico no monitoramento: {e}")
+            return 1
+
+    if __name__ == "__main__":
+        try:
+            import asyncio
+            exit_code = asyncio.run(main())
+            sys.exit(exit_code)
+        except KeyboardInterrupt:
+            print("\n⚠️  Monitoramento interrompido pelo usuário")
+            sys.exit(130)  # Standard exit code for Ctrl+C
+
+except ImportError as e:
+    print(f"❌ Erro de importação: {e}")
+    print("\n🔧 Sistema de monitoramento básico:")
+    print("O sistema modularizado não está disponível.")
+    print("Executando monitoramento básico como fallback...")
     
-    # Run the monitoring
-    asyncio.run(main())
+    # Fallback para monitoramento básico
+    import requests
+    import asyncio
+    from datetime import datetime
+
+    async def basic_monitoring():
+        """Monitoramento básico como fallback."""
+        print("\n=== Monitoramento Básico ===")
+        
+        # Verificações básicas de serviço
+        services = {
+            "API Health": "http://localhost:8000/health",
+            "API Root": "http://localhost:8000/",
+        }
+        
+        results = {}
+        
+        for service_name, url in services.items():
+            try:
+                start_time = datetime.now()
+                response = requests.get(url, timeout=5)
+                response_time = (datetime.now() - start_time).total_seconds() * 1000
+                
+                if response.status_code == 200:
+                    print(f"✅ {service_name}: OK ({response_time:.0f}ms)")
+                    results[service_name] = "healthy"
+                else:
+                    print(f"❌ {service_name}: Falha ({response.status_code})")
+                    results[service_name] = "unhealthy"
+            except requests.exceptions.Timeout:
+                print(f"⏱️  {service_name}: Timeout")
+                results[service_name] = "timeout"
+            except Exception as e:
+                print(f"❌ {service_name}: Erro ({e})")
+                results[service_name] = "error"
+        
+        # Verificação básica de arquivo
+        important_files = ["src/main.py", "requirements.txt", "README.md"]
+        for file in important_files:
+            if Path(file).exists():
+                print(f"✅ Arquivo {file}: Presente")
+            else:
+                print(f"❌ Arquivo {file}: Ausente")
+        
+        healthy_services = sum(1 for status in results.values() if status == "healthy")
+        total_services = len(results)
+        
+        print(f"\n📊 Resumo: {healthy_services}/{total_services} serviços saudáveis")
+        
+        return 0 if healthy_services == total_services else 1
+
+    if __name__ == "__main__":
+        try:
+            exit_code = asyncio.run(basic_monitoring())
+            sys.exit(exit_code)
+        except KeyboardInterrupt:
+            print("\n⚠️  Monitoramento interrompido pelo usuário")
+            sys.exit(130)
