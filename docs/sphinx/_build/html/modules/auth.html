@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Módulo de Autenticação &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+    <link rel="next" title="Modelos de Dados" href="models.html" />
+    <link rel="prev" title="AUDITORIA360 API Documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="modulo-de-autenticacao">
+<h1>Módulo de Autenticação<a class="headerlink" href="#modulo-de-autenticacao" title="Link para este cabeçalho">¶</a></h1>
+<p>Este módulo contém todas as funcionalidades relacionadas à autenticação e autorização de usuários.</p>
+<p id="module-src.auth.unified_auth">Unified Authentication System for AUDITORIA360
+Consolidates JWT and SSO authentication flows</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">UnifiedAuthManager</span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Unified authentication manager that handles both JWT and SSO flows</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.hash_password">
+<span class="sig-name descname"><span class="pre">hash_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.hash_password"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.hash_password" title="Link para esta definição">¶</a></dt>
+<dd><p>Hash a password using bcrypt</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.verify_password">
+<span class="sig-name descname"><span class="pre">verify_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.verify_password"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.verify_password" title="Link para esta definição">¶</a></dt>
+<dd><p>Verify a password against its hash</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.create_access_token">
+<span class="sig-name descname"><span class="pre">create_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.create_access_token"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.create_access_token" title="Link para esta definição">¶</a></dt>
+<dd><p>Create a JWT access token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.verify_token">
+<span class="sig-name descname"><span class="pre">verify_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.verify_token"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.verify_token" title="Link para esta definição">¶</a></dt>
+<dd><p>Verify and decode a JWT token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.authenticate_user">
+<span class="sig-name descname"><span class="pre">authenticate_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.authenticate_user"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.authenticate_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Authenticate user with username/password (supports both DB and YAML)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.get_current_user_from_token">
+<span class="sig-name descname"><span class="pre">get_current_user_from_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.get_current_user_from_token"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.get_current_user_from_token" title="Link para esta definição">¶</a></dt>
+<dd><p>Get current user from JWT token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.login">
+<span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.login"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.login" title="Link para esta definição">¶</a></dt>
+<dd><p>Unified login method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.logout">
+<span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.logout"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.logout" title="Link para esta definição">¶</a></dt>
+<dd><p>Logout user (mainly for audit purposes in stateless JWT)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.get_streamlit_auth_status">
+<span class="sig-name descname"><span class="pre">get_streamlit_auth_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.get_streamlit_auth_status"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.get_streamlit_auth_status" title="Link para esta definição">¶</a></dt>
+<dd><p>Get authentication status for Streamlit integration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.streamlit_login">
+<span class="sig-name descname"><span class="pre">streamlit_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.streamlit_login"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.streamlit_login" title="Link para esta definição">¶</a></dt>
+<dd><p>Streamlit-specific login method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.auth.unified_auth.UnifiedAuthManager.streamlit_logout">
+<span class="sig-name descname"><span class="pre">streamlit_logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#UnifiedAuthManager.streamlit_logout"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.UnifiedAuthManager.streamlit_logout" title="Link para esta definição">¶</a></dt>
+<dd><p>Streamlit-specific logout method</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.auth.unified_auth.get_current_user_dependency">
+<span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">get_current_user_dependency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPAuthorizationCredentials</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#get_current_user_dependency"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.get_current_user_dependency" title="Link para esta definição">¶</a></dt>
+<dd><p>FastAPI dependency to get current user from JWT token</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.auth.unified_auth.require_role">
+<span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">require_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">required_roles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#require_role"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.require_role" title="Link para esta definição">¶</a></dt>
+<dd><p>Decorator to require specific roles</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.auth.unified_auth.hash_password">
+<span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">hash_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#hash_password"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.hash_password" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.auth.unified_auth.verify_password">
+<span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">verify_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#verify_password"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.verify_password" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.auth.unified_auth.create_access_token">
+<span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">create_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#create_access_token"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.create_access_token" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.auth.unified_auth.authenticate_user">
+<span class="sig-prename descclassname"><span class="pre">src.auth.unified_auth.</span></span><span class="sig-name descname"><span class="pre">authenticate_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/auth/unified_auth.html#authenticate_user"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.auth.unified_auth.authenticate_user" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<section id="servicos-de-autenticacao">
+<h2>Serviços de Autenticação<a class="headerlink" href="#servicos-de-autenticacao" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.services.auth_service">Authentication service for AUDITORIA360</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.verify_password">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">verify_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#verify_password"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.verify_password" title="Link para esta definição">¶</a></dt>
+<dd><p>Verify a password against its hash</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.hash_password">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">hash_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#hash_password"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.hash_password" title="Link para esta definição">¶</a></dt>
+<dd><p>Hash a password</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.create_access_token">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">create_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/auth_service.html#create_access_token"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.create_access_token" title="Link para esta definição">¶</a></dt>
+<dd><p>Create a JWT access token</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.authenticate_user">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">authenticate_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#authenticate_user"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.authenticate_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Authenticate a user with username and password</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.get_current_user">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">get_current_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.security.HTTPAuthorizationCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#get_current_user"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.get_current_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Get current authenticated user from JWT token</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.create_user">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">create_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.UserCreate" title="src.schemas.auth_schemas.UserCreate"><span class="pre">UserCreate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#create_user"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.create_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Create a new user</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.get_users">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">get_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#get_users"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.get_users" title="Link para esta definição">¶</a></dt>
+<dd><p>Get list of users</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.get_user_by_id">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">get_user_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#get_user_by_id"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.get_user_by_id" title="Link para esta definição">¶</a></dt>
+<dd><p>Get user by ID</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.update_user">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">update_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.UserUpdate" title="src.schemas.auth_schemas.UserUpdate"><span class="pre">UserUpdate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#update_user"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.update_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Update user by ID</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.create_permission">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">create_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.PermissionCreate" title="src.schemas.auth_schemas.PermissionCreate"><span class="pre">PermissionCreate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.auth_models.Permission" title="src.models.auth_models.Permission"><span class="pre">Permission</span></a></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#create_permission"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.create_permission" title="Link para esta definição">¶</a></dt>
+<dd><p>Create a new permission</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.get_permissions">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">get_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#src.models.auth_models.Permission" title="src.models.auth_models.Permission"><span class="pre">Permission</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#get_permissions"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.get_permissions" title="Link para esta definição">¶</a></dt>
+<dd><p>Get list of permissions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.services.auth_service.check_permission">
+<span class="sig-prename descclassname"><span class="pre">src.services.auth_service.</span></span><span class="sig-name descname"><span class="pre">check_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/services/auth_service.html#check_permission"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.auth_service.check_permission" title="Link para esta definição">¶</a></dt>
+<dd><p>Check if user has permission for resource and action</p>
+</dd></dl>
+
+</section>
+<section id="api-de-autenticacao">
+<h2>API de Autenticação<a class="headerlink" href="#api-de-autenticacao" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.api.routers.auth">Authentication and User Management API Router
+Módulo 8: Gestão de usuários e permissões</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.login">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">login_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.LoginRequest" title="src.schemas.auth_schemas.LoginRequest"><span class="pre">LoginRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.login" title="Link para esta definição">¶</a></dt>
+<dd><p>Authenticate user and return access token</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.logout">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.logout" title="Link para esta definição">¶</a></dt>
+<dd><p>Logout user (mainly for logging purposes)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.read_users_me">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">read_users_me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.read_users_me" title="Link para esta definição">¶</a></dt>
+<dd><p>Get current user information</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.update_users_me">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">update_users_me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.UserUpdate" title="src.schemas.auth_schemas.UserUpdate"><span class="pre">UserUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.update_users_me" title="Link para esta definição">¶</a></dt>
+<dd><p>Update current user information</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.change_password">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">change_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.PasswordChange" title="src.schemas.auth_schemas.PasswordChange"><span class="pre">PasswordChange</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.change_password" title="Link para esta definição">¶</a></dt>
+<dd><p>Change user password</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.create_new_user">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">create_new_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.UserCreate" title="src.schemas.auth_schemas.UserCreate"><span class="pre">UserCreate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.create_new_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Create a new user (admin only)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.read_users">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">read_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.read_users" title="Link para esta definição">¶</a></dt>
+<dd><p>Get list of users (admin/HR only)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.read_user">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">read_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.read_user" title="Link para esta definição">¶</a></dt>
+<dd><p>Get user by ID (admin/HR only or own profile)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.update_user_by_id">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">update_user_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.UserUpdate" title="src.schemas.auth_schemas.UserUpdate"><span class="pre">UserUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.update_user_by_id" title="Link para esta definição">¶</a></dt>
+<dd><p>Update user by ID (admin only)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.create_new_permission">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">create_new_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permission_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.PermissionCreate" title="src.schemas.auth_schemas.PermissionCreate"><span class="pre">PermissionCreate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.create_new_permission" title="Link para esta definição">¶</a></dt>
+<dd><p>Create a new permission (admin only)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.read_permissions">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">read_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#src.models.auth_models.User" title="src.models.auth_models.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.read_permissions" title="Link para esta definição">¶</a></dt>
+<dd><p>Get list of permissions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.request_password_reset">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">request_password_reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.PasswordReset" title="src.schemas.auth_schemas.PasswordReset"><span class="pre">PasswordReset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.request_password_reset" title="Link para esta definição">¶</a></dt>
+<dd><p>Request password reset (sends email with reset token)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.api.routers.auth.confirm_password_reset">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.api.routers.auth.</span></span><span class="sig-name descname"><span class="pre">confirm_password_reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.auth_schemas.PasswordResetConfirm" title="src.schemas.auth_schemas.PasswordResetConfirm"><span class="pre">PasswordResetConfirm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">fastapi.Depends</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.api.routers.auth.confirm_password_reset" title="Link para esta definição">¶</a></dt>
+<dd><p>Confirm password reset with token</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Módulo de Autenticação</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.UnifiedAuthManager"><code class="docutils literal notranslate"><span class="pre">UnifiedAuthManager</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.get_current_user_dependency"><code class="docutils literal notranslate"><span class="pre">get_current_user_dependency()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.require_role"><code class="docutils literal notranslate"><span class="pre">require_role()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.hash_password"><code class="docutils literal notranslate"><span class="pre">hash_password()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.verify_password"><code class="docutils literal notranslate"><span class="pre">verify_password()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.create_access_token"><code class="docutils literal notranslate"><span class="pre">create_access_token()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#src.auth.unified_auth.authenticate_user"><code class="docutils literal notranslate"><span class="pre">authenticate_user()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#servicos-de-autenticacao">Serviços de Autenticação</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-de-autenticacao">API de Autenticação</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="capítulo anterior">AUDITORIA360 API Documentation</a></li>
+      <li>Next: <a href="models.html" title="próximo capítulo">Modelos de Dados</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/modules/auth.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

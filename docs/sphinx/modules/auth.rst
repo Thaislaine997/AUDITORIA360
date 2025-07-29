@@ -1,0 +1,25 @@
+Módulo de Autenticação
+======================
+
+Este módulo contém todas as funcionalidades relacionadas à autenticação e autorização de usuários.
+
+.. automodule:: src.auth.unified_auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Serviços de Autenticação
+------------------------
+
+.. automodule:: src.services.auth_service
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+API de Autenticação
+-------------------
+
+.. automodule:: src.api.routers.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:

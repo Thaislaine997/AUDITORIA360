@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Integração MCP &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+    <link rel="prev" title="Esquemas Pydantic" href="schemas.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="integracao-mcp">
+<h1>Integração MCP<a class="headerlink" href="#integracao-mcp" title="Link para este cabeçalho">¶</a></h1>
+<p>Este módulo contém a integração com o Model Context Protocol (MCP).</p>
+<section id="cliente-mcp">
+<h2>Cliente MCP<a class="headerlink" href="#cliente-mcp" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.mcp.client">MCP Client Implementation for AUDITORIA360
+Provides client functionality for connecting to external MCP servers</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.client.</span></span><span class="sig-name descname"><span class="pre">MCPClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AUDITORIA360-Client'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1.0.0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Model Context Protocol client for connecting to external MCP servers</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AUDITORIA360-Client'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1.0.0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.set_connection_handler">
+<span class="sig-name descname"><span class="pre">set_connection_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.set_connection_handler"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.set_connection_handler" title="Link para esta definição">¶</a></dt>
+<dd><p>Set the connection handler for sending messages</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.connect">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.connect"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.connect" title="Link para esta definição">¶</a></dt>
+<dd><p>Initialize connection with MCP server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.disconnect">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.disconnect"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.disconnect" title="Link para esta definição">¶</a></dt>
+<dd><p>Disconnect from MCP server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.list_resources">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#src.mcp.protocol.ResourceInfo" title="src.mcp.protocol.ResourceInfo"><span class="pre">ResourceInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.list_resources"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.list_resources" title="Link para esta definição">¶</a></dt>
+<dd><p>List available resources from the server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.read_resource">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.read_resource"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.read_resource" title="Link para esta definição">¶</a></dt>
+<dd><p>Read content from a specific resource</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.list_tools">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_tools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#src.mcp.protocol.ToolInfo" title="src.mcp.protocol.ToolInfo"><span class="pre">ToolInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.list_tools"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.list_tools" title="Link para esta definição">¶</a></dt>
+<dd><p>List available tools from the server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.call_tool">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.call_tool"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.call_tool" title="Link para esta definição">¶</a></dt>
+<dd><p>Call a specific tool with given arguments</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.get_server_capabilities">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_server_capabilities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.get_server_capabilities"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.get_server_capabilities" title="Link para esta definição">¶</a></dt>
+<dd><p>Get server capabilities</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClient.invalidate_cache">
+<span class="sig-name descname"><span class="pre">invalidate_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClient.invalidate_cache"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClient.invalidate_cache" title="Link para esta definição">¶</a></dt>
+<dd><p>Invalidate cached resources and tools</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.client.</span></span><span class="sig-name descname"><span class="pre">MCPClientManager</span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages multiple MCP client connections</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.register_client">
+<span class="sig-name descname"><span class="pre">register_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.client.MCPClient" title="src.mcp.client.MCPClient"><span class="pre">MCPClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.register_client"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.register_client" title="Link para esta definição">¶</a></dt>
+<dd><p>Register a client with optional configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.get_client">
+<span class="sig-name descname"><span class="pre">get_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.mcp.client.MCPClient" title="src.mcp.client.MCPClient"><span class="pre">MCPClient</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.get_client"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.get_client" title="Link para esta definição">¶</a></dt>
+<dd><p>Get a client by name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.connect_all">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.connect_all"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.connect_all" title="Link para esta definição">¶</a></dt>
+<dd><p>Connect all registered clients</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.disconnect_all">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.disconnect_all"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.disconnect_all" title="Link para esta definição">¶</a></dt>
+<dd><p>Disconnect all clients</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.list_all_resources">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_all_resources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#src.mcp.protocol.ResourceInfo" title="src.mcp.protocol.ResourceInfo"><span class="pre">ResourceInfo</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.list_all_resources"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.list_all_resources" title="Link para esta definição">¶</a></dt>
+<dd><p>List resources from all connected clients</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.list_all_tools">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_all_tools</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#src.mcp.protocol.ToolInfo" title="src.mcp.protocol.ToolInfo"><span class="pre">ToolInfo</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.list_all_tools"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.list_all_tools" title="Link para esta definição">¶</a></dt>
+<dd><p>List tools from all connected clients</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.call_tool_on_client">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call_tool_on_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.call_tool_on_client"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.call_tool_on_client" title="Link para esta definição">¶</a></dt>
+<dd><p>Call a tool on a specific client</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.client.MCPClientManager.get_connection_status">
+<span class="sig-name descname"><span class="pre">get_connection_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#MCPClientManager.get_connection_status"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.MCPClientManager.get_connection_status" title="Link para esta definição">¶</a></dt>
+<dd><p>Get connection status for all clients</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.mcp.client.create_simple_mcp_client">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.client.</span></span><span class="sig-name descname"><span class="pre">create_simple_mcp_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AUDITORIA360-Client'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.mcp.client.MCPClient" title="src.mcp.client.MCPClient"><span class="pre">MCPClient</span></a></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#create_simple_mcp_client"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.create_simple_mcp_client" title="Link para esta definição">¶</a></dt>
+<dd><p>Create and connect a simple MCP client</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.mcp.client.discover_and_cache_capabilities">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.client.</span></span><span class="sig-name descname"><span class="pre">discover_and_cache_capabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.client.MCPClient" title="src.mcp.client.MCPClient"><span class="pre">MCPClient</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/client.html#discover_and_cache_capabilities"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.client.discover_and_cache_capabilities" title="Link para esta definição">¶</a></dt>
+<dd><p>Discover and cache all capabilities from an MCP server</p>
+</dd></dl>
+
+</section>
+<section id="servidor-mcp">
+<h2>Servidor MCP<a class="headerlink" href="#servidor-mcp" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.mcp.server">MCP Server Implementation for AUDITORIA360
+Provides MCP server functionality for exposing system resources and tools</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.server.</span></span><span class="sig-name descname"><span class="pre">MCPServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AUDITORIA360-MCP'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1.0.0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Model Context Protocol server for AUDITORIA360</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'AUDITORIA360-MCP'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1.0.0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.handle_request">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.handle_request"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.handle_request" title="Link para esta definição">¶</a></dt>
+<dd><p>Handle incoming MCP request</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.register_resource">
+<span class="sig-name descname"><span class="pre">register_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.protocol.ResourceInfo" title="src.mcp.protocol.ResourceInfo"><span class="pre">ResourceInfo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.register_resource"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.register_resource" title="Link para esta definição">¶</a></dt>
+<dd><p>Register a resource with its reader function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.register_tool">
+<span class="sig-name descname"><span class="pre">register_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.protocol.ToolInfo" title="src.mcp.protocol.ToolInfo"><span class="pre">ToolInfo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.register_tool"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.register_tool" title="Link para esta definição">¶</a></dt>
+<dd><p>Register a tool with its executor function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.notify_resource_updated">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">notify_resource_updated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.notify_resource_updated"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.notify_resource_updated" title="Link para esta definição">¶</a></dt>
+<dd><p>Send notification about resource update</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.notify_tools_changed">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">notify_tools_changed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.notify_tools_changed"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.notify_tools_changed" title="Link para esta definição">¶</a></dt>
+<dd><p>Send notification about tools list change</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.MCPServer.add_notification_callback">
+<span class="sig-name descname"><span class="pre">add_notification_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#MCPServer.add_notification_callback"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.MCPServer.add_notification_callback" title="Link para esta definição">¶</a></dt>
+<dd><p>Add callback for sending notifications</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.server.AuditoriaResourceProvider">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.server.</span></span><span class="sig-name descname"><span class="pre">AuditoriaResourceProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.server.MCPServer" title="src.mcp.server.MCPServer"><span class="pre">MCPServer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_session_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#AuditoriaResourceProvider"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.AuditoriaResourceProvider" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides AUDITORIA360-specific resources via MCP</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.server.AuditoriaResourceProvider.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.server.MCPServer" title="src.mcp.server.MCPServer"><span class="pre">MCPServer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_session_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/server.html#AuditoriaResourceProvider.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.server.AuditoriaResourceProvider.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="protocolo-mcp">
+<h2>Protocolo MCP<a class="headerlink" href="#protocolo-mcp" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.mcp.protocol">MCP Protocol Implementation for AUDITORIA360
+Defines core protocol messages and types according to MCP specification</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPVersion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">MCPVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#MCPVersion"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.MCPVersion" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Supported MCP protocol versions</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPVersion.V1_0">
+<span class="sig-name descname"><span class="pre">V1_0</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0'</span></em><a class="headerlink" href="#src.mcp.protocol.MCPVersion.V1_0" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ErrorCode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ErrorCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ErrorCode"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ErrorCode" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Standard MCP error codes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ErrorCode.PARSE_ERROR">
+<span class="sig-name descname"><span class="pre">PARSE_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-32700</span></em><a class="headerlink" href="#src.mcp.protocol.ErrorCode.PARSE_ERROR" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ErrorCode.INVALID_REQUEST">
+<span class="sig-name descname"><span class="pre">INVALID_REQUEST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-32600</span></em><a class="headerlink" href="#src.mcp.protocol.ErrorCode.INVALID_REQUEST" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ErrorCode.METHOD_NOT_FOUND">
+<span class="sig-name descname"><span class="pre">METHOD_NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-32601</span></em><a class="headerlink" href="#src.mcp.protocol.ErrorCode.METHOD_NOT_FOUND" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ErrorCode.INVALID_PARAMS">
+<span class="sig-name descname"><span class="pre">INVALID_PARAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-32602</span></em><a class="headerlink" href="#src.mcp.protocol.ErrorCode.INVALID_PARAMS" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ErrorCode.INTERNAL_ERROR">
+<span class="sig-name descname"><span class="pre">INTERNAL_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-32603</span></em><a class="headerlink" href="#src.mcp.protocol.ErrorCode.INTERNAL_ERROR" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPError">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">MCPError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#MCPError"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.MCPError" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>MCP error response format</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPError.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#src.mcp.protocol.ErrorCode" title="src.mcp.protocol.ErrorCode"><span class="pre">ErrorCode</span></a></em><a class="headerlink" href="#src.mcp.protocol.MCPError.code" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.MCPError.message" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPError.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPError.data" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">MCPRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#MCPRequest"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.MCPRequest" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Base MCP request message</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPRequest.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'2.0'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2.0'</span></em><a class="headerlink" href="#src.mcp.protocol.MCPRequest.jsonrpc" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPRequest.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPRequest.id" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.MCPRequest.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPRequest.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPRequest.params" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">MCPResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#MCPResponse"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.MCPResponse" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Base MCP response message</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPResponse.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'2.0'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2.0'</span></em><a class="headerlink" href="#src.mcp.protocol.MCPResponse.jsonrpc" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPResponse.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPResponse.id" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPResponse.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPResponse.result" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPResponse.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#src.mcp.protocol.MCPError" title="src.mcp.protocol.MCPError"><span class="pre">MCPError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPResponse.error" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPNotification">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">MCPNotification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#MCPNotification"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.MCPNotification" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>MCP notification message (no response expected)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPNotification.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'2.0'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2.0'</span></em><a class="headerlink" href="#src.mcp.protocol.MCPNotification.jsonrpc" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPNotification.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.MCPNotification.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.MCPNotification.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.MCPNotification.params" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ResourceType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ResourceType"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ResourceType" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Types of resources available via MCP</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType.PAYROLL_DATA">
+<span class="sig-name descname"><span class="pre">PAYROLL_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'payroll_data'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceType.PAYROLL_DATA" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType.EMPLOYEE_INFO">
+<span class="sig-name descname"><span class="pre">EMPLOYEE_INFO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'employee_info'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceType.EMPLOYEE_INFO" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType.CCT_DOCUMENT">
+<span class="sig-name descname"><span class="pre">CCT_DOCUMENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cct_document'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceType.CCT_DOCUMENT" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType.AUDIT_REPORT">
+<span class="sig-name descname"><span class="pre">AUDIT_REPORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'audit_report'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceType.AUDIT_REPORT" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType.COMPLIANCE_RULE">
+<span class="sig-name descname"><span class="pre">COMPLIANCE_RULE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'compliance_rule'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceType.COMPLIANCE_RULE" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceType.KNOWLEDGE_BASE">
+<span class="sig-name descname"><span class="pre">KNOWLEDGE_BASE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'knowledge_base'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceType.KNOWLEDGE_BASE" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ToolType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ToolType"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ToolType" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Types of tools available via MCP</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolType.PAYROLL_CALCULATOR">
+<span class="sig-name descname"><span class="pre">PAYROLL_CALCULATOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'payroll_calculator'</span></em><a class="headerlink" href="#src.mcp.protocol.ToolType.PAYROLL_CALCULATOR" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolType.COMPLIANCE_CHECKER">
+<span class="sig-name descname"><span class="pre">COMPLIANCE_CHECKER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'compliance_checker'</span></em><a class="headerlink" href="#src.mcp.protocol.ToolType.COMPLIANCE_CHECKER" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolType.DOCUMENT_ANALYZER">
+<span class="sig-name descname"><span class="pre">DOCUMENT_ANALYZER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'document_analyzer'</span></em><a class="headerlink" href="#src.mcp.protocol.ToolType.DOCUMENT_ANALYZER" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolType.AUDIT_EXECUTOR">
+<span class="sig-name descname"><span class="pre">AUDIT_EXECUTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'audit_executor'</span></em><a class="headerlink" href="#src.mcp.protocol.ToolType.AUDIT_EXECUTOR" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolType.CCT_COMPARATOR">
+<span class="sig-name descname"><span class="pre">CCT_COMPARATOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cct_comparator'</span></em><a class="headerlink" href="#src.mcp.protocol.ToolType.CCT_COMPARATOR" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ResourceInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ResourceInfo"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ResourceInfo" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Information about an available resource</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceInfo.uri">
+<span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceInfo.uri" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceInfo.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceInfo.name" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceInfo.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceInfo.description" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceInfo.mimeType">
+<span class="sig-name descname"><span class="pre">mimeType</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceInfo.mimeType" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceInfo.annotations">
+<span class="sig-name descname"><span class="pre">annotations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceInfo.annotations" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ToolInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ToolInfo"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ToolInfo" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Information about an available tool</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolInfo.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ToolInfo.name" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolInfo.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ToolInfo.description" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolInfo.inputSchema">
+<span class="sig-name descname"><span class="pre">inputSchema</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#src.mcp.protocol.ToolInfo.inputSchema" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolInfo.outputSchema">
+<span class="sig-name descname"><span class="pre">outputSchema</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.protocol.ToolInfo.outputSchema" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ServerInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ServerInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ServerInfo"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ServerInfo" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>MCP server information</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ServerInfo.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ServerInfo.name" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ServerInfo.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ServerInfo.version" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ServerInfo.protocolVersion">
+<span class="sig-name descname"><span class="pre">protocolVersion</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#src.mcp.protocol.MCPVersion" title="src.mcp.protocol.MCPVersion"><span class="pre">MCPVersion</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0'</span></em><a class="headerlink" href="#src.mcp.protocol.ServerInfo.protocolVersion" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ClientInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ClientInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ClientInfo"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ClientInfo" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>MCP client information</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ClientInfo.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ClientInfo.name" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ClientInfo.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.protocol.ClientInfo.version" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ClientInfo.protocolVersion">
+<span class="sig-name descname"><span class="pre">protocolVersion</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#src.mcp.protocol.MCPVersion" title="src.mcp.protocol.MCPVersion"><span class="pre">MCPVersion</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0'</span></em><a class="headerlink" href="#src.mcp.protocol.ClientInfo.protocolVersion" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.InitializeRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">InitializeRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#InitializeRequest"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.InitializeRequest" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPRequest" title="src.mcp.protocol.MCPRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPRequest</span></code></a></p>
+<p>Initialize MCP connection</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.InitializeRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'initialize'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'initialize'</span></em><a class="headerlink" href="#src.mcp.protocol.InitializeRequest.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.InitializeResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">InitializeResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#InitializeResponse"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.InitializeResponse" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPResponse" title="src.mcp.protocol.MCPResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPResponse</span></code></a></p>
+<p>Initialize response with server info</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ListResourcesRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ListResourcesRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ListResourcesRequest"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ListResourcesRequest" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPRequest" title="src.mcp.protocol.MCPRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPRequest</span></code></a></p>
+<p>List available resources</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ListResourcesRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'resources/list'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'resources/list'</span></em><a class="headerlink" href="#src.mcp.protocol.ListResourcesRequest.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ListResourcesResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ListResourcesResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ListResourcesResponse"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ListResourcesResponse" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPResponse" title="src.mcp.protocol.MCPResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPResponse</span></code></a></p>
+<p>Resources list response</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ReadResourceRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ReadResourceRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ReadResourceRequest"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ReadResourceRequest" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPRequest" title="src.mcp.protocol.MCPRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPRequest</span></code></a></p>
+<p>Read a specific resource</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ReadResourceRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'resources/read'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'resources/read'</span></em><a class="headerlink" href="#src.mcp.protocol.ReadResourceRequest.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ReadResourceResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ReadResourceResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ReadResourceResponse"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ReadResourceResponse" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPResponse" title="src.mcp.protocol.MCPResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPResponse</span></code></a></p>
+<p>Resource content response</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ListToolsRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ListToolsRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ListToolsRequest"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ListToolsRequest" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPRequest" title="src.mcp.protocol.MCPRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPRequest</span></code></a></p>
+<p>List available tools</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ListToolsRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'tools/list'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tools/list'</span></em><a class="headerlink" href="#src.mcp.protocol.ListToolsRequest.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ListToolsResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ListToolsResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ListToolsResponse"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ListToolsResponse" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPResponse" title="src.mcp.protocol.MCPResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPResponse</span></code></a></p>
+<p>Tools list response</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.CallToolRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">CallToolRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#CallToolRequest"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.CallToolRequest" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPRequest" title="src.mcp.protocol.MCPRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPRequest</span></code></a></p>
+<p>Call a specific tool</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.CallToolRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'tools/call'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tools/call'</span></em><a class="headerlink" href="#src.mcp.protocol.CallToolRequest.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.CallToolResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">CallToolResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#CallToolResponse"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.CallToolResponse" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPResponse" title="src.mcp.protocol.MCPResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPResponse</span></code></a></p>
+<p>Tool call result</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceUpdateNotification">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ResourceUpdateNotification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ResourceUpdateNotification"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ResourceUpdateNotification" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPNotification" title="src.mcp.protocol.MCPNotification"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPNotification</span></code></a></p>
+<p>Notify about resource updates</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ResourceUpdateNotification.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'notifications/resources/updated'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'notifications/resources/updated'</span></em><a class="headerlink" href="#src.mcp.protocol.ResourceUpdateNotification.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolUpdateNotification">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.protocol.</span></span><span class="sig-name descname"><span class="pre">ToolUpdateNotification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/protocol.html#ToolUpdateNotification"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.protocol.ToolUpdateNotification" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <a class="reference internal" href="#src.mcp.protocol.MCPNotification" title="src.mcp.protocol.MCPNotification"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCPNotification</span></code></a></p>
+<p>Notify about tool updates</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.protocol.ToolUpdateNotification.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'notifications/tools/list_changed'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'notifications/tools/list_changed'</span></em><a class="headerlink" href="#src.mcp.protocol.ToolUpdateNotification.method" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="ferramentas-mcp">
+<h2>Ferramentas MCP<a class="headerlink" href="#ferramentas-mcp" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.mcp.tools">MCP Tools Implementation for AUDITORIA360
+Provides computational tools accessible via MCP protocol</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.tools.AuditoriaToolProvider">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.tools.</span></span><span class="sig-name descname"><span class="pre">AuditoriaToolProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.server.MCPServer" title="src.mcp.server.MCPServer"><span class="pre">MCPServer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_session_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/tools.html#AuditoriaToolProvider"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.tools.AuditoriaToolProvider" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides AUDITORIA360-specific tools via MCP</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.tools.AuditoriaToolProvider.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.server.MCPServer" title="src.mcp.server.MCPServer"><span class="pre">MCPServer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_session_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/tools.html#AuditoriaToolProvider.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.tools.AuditoriaToolProvider.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="configuracao-mcp">
+<h2>Configuração MCP<a class="headerlink" href="#configuracao-mcp" title="Link para este cabeçalho">¶</a></h2>
+<p id="module-src.mcp.config">MCP Configuration Management for AUDITORIA360
+Handles configuration for MCP servers, clients, and development environment</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.MCPTransportType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">MCPTransportType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPTransportType"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPTransportType" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Supported MCP transport types</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPTransportType.HTTP">
+<span class="sig-name descname"><span class="pre">HTTP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http'</span></em><a class="headerlink" href="#src.mcp.config.MCPTransportType.HTTP" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPTransportType.WEBSOCKET">
+<span class="sig-name descname"><span class="pre">WEBSOCKET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'websocket'</span></em><a class="headerlink" href="#src.mcp.config.MCPTransportType.WEBSOCKET" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPTransportType.STDIO">
+<span class="sig-name descname"><span class="pre">STDIO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'stdio'</span></em><a class="headerlink" href="#src.mcp.config.MCPTransportType.STDIO" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPTransportType.TCP">
+<span class="sig-name descname"><span class="pre">TCP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tcp'</span></em><a class="headerlink" href="#src.mcp.config.MCPTransportType.TCP" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">MCPServerConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPServerConfig"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPServerConfig" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Configuration for an MCP server</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.name" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.description" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.transport">
+<span class="sig-name descname"><span class="pre">transport</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#src.mcp.config.MCPTransportType" title="src.mcp.config.MCPTransportType"><span class="pre">MCPTransportType</span></a></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.transport" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'localhost'</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.host" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.port" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.path">
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.path" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.command">
+<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.command" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.args">
+<span class="sig-name descname"><span class="pre">args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.args" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.env">
+<span class="sig-name descname"><span class="pre">env</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.env" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.timeout" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.auto_start">
+<span class="sig-name descname"><span class="pre">auto_start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.auto_start" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPServerConfig.enabled">
+<span class="sig-name descname"><span class="pre">enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.MCPServerConfig.enabled" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">MCPClientConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPClientConfig"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPClientConfig" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Configuration for an MCP client</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.config.MCPClientConfig.name" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig.target_server">
+<span class="sig-name descname"><span class="pre">target_server</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.mcp.config.MCPClientConfig.target_server" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig.auto_connect">
+<span class="sig-name descname"><span class="pre">auto_connect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.MCPClientConfig.auto_connect" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig.retry_attempts">
+<span class="sig-name descname"><span class="pre">retry_attempts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#src.mcp.config.MCPClientConfig.retry_attempts" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig.retry_delay">
+<span class="sig-name descname"><span class="pre">retry_delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#src.mcp.config.MCPClientConfig.retry_delay" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPClientConfig.enabled">
+<span class="sig-name descname"><span class="pre">enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.MCPClientConfig.enabled" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">MCPDevelopmentConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPDevelopmentConfig"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Development environment configuration for MCP</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.debug_mode">
+<span class="sig-name descname"><span class="pre">debug_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.debug_mode" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.log_level">
+<span class="sig-name descname"><span class="pre">log_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INFO'</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.log_level" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.log_file">
+<span class="sig-name descname"><span class="pre">log_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.log_file" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.enable_metrics">
+<span class="sig-name descname"><span class="pre">enable_metrics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.enable_metrics" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.metrics_port">
+<span class="sig-name descname"><span class="pre">metrics_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9090</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.metrics_port" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.enable_health_checks">
+<span class="sig-name descname"><span class="pre">enable_health_checks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.enable_health_checks" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPDevelopmentConfig.health_check_interval">
+<span class="sig-name descname"><span class="pre">health_check_interval</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">60</span></em><a class="headerlink" href="#src.mcp.config.MCPDevelopmentConfig.health_check_interval" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.CopilotIntegrationConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">CopilotIntegrationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#CopilotIntegrationConfig"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.CopilotIntegrationConfig" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Configuration for GitHub Copilot integration</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.CopilotIntegrationConfig.enabled">
+<span class="sig-name descname"><span class="pre">enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.CopilotIntegrationConfig.enabled" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.CopilotIntegrationConfig.mcp_server_url">
+<span class="sig-name descname"><span class="pre">mcp_server_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#src.mcp.config.CopilotIntegrationConfig.mcp_server_url" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.CopilotIntegrationConfig.context_window_size">
+<span class="sig-name descname"><span class="pre">context_window_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8000</span></em><a class="headerlink" href="#src.mcp.config.CopilotIntegrationConfig.context_window_size" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.CopilotIntegrationConfig.max_tool_calls_per_request">
+<span class="sig-name descname"><span class="pre">max_tool_calls_per_request</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#src.mcp.config.CopilotIntegrationConfig.max_tool_calls_per_request" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.CopilotIntegrationConfig.enable_streaming">
+<span class="sig-name descname"><span class="pre">enable_streaming</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#src.mcp.config.CopilotIntegrationConfig.enable_streaming" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfiguration">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">MCPConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfiguration"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfiguration" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Main MCP configuration</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfiguration.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0.0'</span></em><a class="headerlink" href="#src.mcp.config.MCPConfiguration.version" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfiguration.protocol_version">
+<span class="sig-name descname"><span class="pre">protocol_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#src.mcp.protocol.MCPVersion" title="src.mcp.protocol.MCPVersion"><span class="pre">MCPVersion</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0'</span></em><a class="headerlink" href="#src.mcp.config.MCPConfiguration.protocol_version" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">MCPConfigManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages MCP configuration loading, saving, and validation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.__init__" title="Link para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.load_config">
+<span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.mcp.config.MCPConfiguration" title="src.mcp.config.MCPConfiguration"><span class="pre">MCPConfiguration</span></a></span></span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.load_config"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.load_config" title="Link para esta definição">¶</a></dt>
+<dd><p>Load MCP configuration from file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.save_config">
+<span class="sig-name descname"><span class="pre">save_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.config.MCPConfiguration" title="src.mcp.config.MCPConfiguration"><span class="pre">MCPConfiguration</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.save_config"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.save_config" title="Link para esta definição">¶</a></dt>
+<dd><p>Save MCP configuration to file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.mcp.config.MCPConfiguration" title="src.mcp.config.MCPConfiguration"><span class="pre">MCPConfiguration</span></a></span></span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.get_config"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.get_config" title="Link para esta definição">¶</a></dt>
+<dd><p>Get current configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.add_server">
+<span class="sig-name descname"><span class="pre">add_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.config.MCPServerConfig" title="src.mcp.config.MCPServerConfig"><span class="pre">MCPServerConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.add_server"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.add_server" title="Link para esta definição">¶</a></dt>
+<dd><p>Add a new server configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.add_client">
+<span class="sig-name descname"><span class="pre">add_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.mcp.config.MCPClientConfig" title="src.mcp.config.MCPClientConfig"><span class="pre">MCPClientConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.add_client"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.add_client" title="Link para esta definição">¶</a></dt>
+<dd><p>Add a new client configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.remove_server">
+<span class="sig-name descname"><span class="pre">remove_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.remove_server"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.remove_server" title="Link para esta definição">¶</a></dt>
+<dd><p>Remove a server configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.remove_client">
+<span class="sig-name descname"><span class="pre">remove_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.remove_client"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.remove_client" title="Link para esta definição">¶</a></dt>
+<dd><p>Remove a client configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.validate_config">
+<span class="sig-name descname"><span class="pre">validate_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.validate_config"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.validate_config" title="Link para esta definição">¶</a></dt>
+<dd><p>Validate configuration and return list of errors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.mcp.config.MCPConfigManager.generate_copilot_config">
+<span class="sig-name descname"><span class="pre">generate_copilot_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/mcp/config.html#MCPConfigManager.generate_copilot_config"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.MCPConfigManager.generate_copilot_config" title="Link para esta definição">¶</a></dt>
+<dd><p>Generate GitHub Copilot configuration for MCP integration</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.mcp.config.get_config_manager">
+<span class="sig-prename descclassname"><span class="pre">src.mcp.config.</span></span><span class="sig-name descname"><span class="pre">get_config_manager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.mcp.config.MCPConfigManager" title="src.mcp.config.MCPConfigManager"><span class="pre">MCPConfigManager</span></a></span></span><a class="reference internal" href="../_modules/src/mcp/config.html#get_config_manager"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.mcp.config.get_config_manager" title="Link para esta definição">¶</a></dt>
+<dd><p>Get global configuration manager instance</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Integração MCP</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cliente-mcp">Cliente MCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#servidor-mcp">Servidor MCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#protocolo-mcp">Protocolo MCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ferramentas-mcp">Ferramentas MCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuracao-mcp">Configuração MCP</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="schemas.html" title="capítulo anterior">Esquemas Pydantic</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/modules/mcp.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

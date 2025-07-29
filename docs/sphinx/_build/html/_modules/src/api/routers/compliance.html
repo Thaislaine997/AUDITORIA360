@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.api.routers.compliance &#8212; Documentação AUDITORIA360 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../../_static/documentation_options.js?v=c0c8e3fa"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/translations.js?v=71a39b36"></script>
+    <link rel="index" title="Índice" href="../../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código-fonte para src.api.routers.compliance</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Compliance Check API Router</span>
+<span class="sd">Performance optimized compliance checking endpoint with standardized responses</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Query</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Session</span>
+
+<span class="kn">from</span> <span class="nn">src.api.common.responses</span> <span class="kn">import</span> <span class="n">create_success_response</span><span class="p">,</span> <span class="n">forbidden_error</span><span class="p">,</span> <span class="n">validation_error</span>
+<span class="kn">from</span> <span class="nn">src.api.common.validators</span> <span class="kn">import</span> <span class="n">BaseValidationModel</span>
+<span class="kn">from</span> <span class="nn">src.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">get_db</span>
+<span class="kn">from</span> <span class="nn">src.services.auth_service</span> <span class="kn">import</span> <span class="n">get_current_user</span>
+<span class="kn">from</span> <span class="nn">src.services.cache_service</span> <span class="kn">import</span> <span class="n">cached_response</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="ComplianceCheckRequest">
+<a class="viewcode-back" href="../../../../modules/api.html#src.api.routers.compliance.ComplianceCheckRequest">[documentos]</a>
+<span class="k">class</span> <span class="nc">ComplianceCheckRequest</span><span class="p">(</span><span class="n">BaseValidationModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Request model for compliance check&quot;&quot;&quot;</span>
+    
+    <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s2">&quot;^(payroll|employee|cct)$&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of entity to check&quot;</span><span class="p">)</span>
+    <span class="n">entity_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the entity to check&quot;</span><span class="p">)</span>
+    <span class="n">rule_categories</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Specific rule categories to check&quot;</span><span class="p">)</span>
+    <span class="n">include_resolved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Include already resolved violations&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ComplianceRuleRequest">
+<a class="viewcode-back" href="../../../../modules/api.html#src.api.routers.compliance.ComplianceRuleRequest">[documentos]</a>
+<span class="k">class</span> <span class="nc">ComplianceRuleRequest</span><span class="p">(</span><span class="n">BaseValidationModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Request model for executing compliance rules&quot;&quot;&quot;</span>
+    
+    <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s2">&quot;^(payroll|employee|cct)$&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of entity to check&quot;</span><span class="p">)</span>
+    <span class="n">entity_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_items</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of entity IDs to check&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/check&quot;</span><span class="p">)</span>
+<span class="nd">@cached_response</span><span class="p">(</span><span class="s2">&quot;compliance_check&quot;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">compliance_check</span><span class="p">(</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">ComplianceCheckRequest</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">),</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform compliance check with standardized request/response format</span>
+<span class="sd">    Target: &lt;1s response time (was 2.8s)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Running compliance check for </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">entity_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;entity_type&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_type</span><span class="p">,</span> <span class="s2">&quot;entity_id&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_id</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Simulate optimized compliance checking</span>
+        <span class="n">compliance_result</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;entity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_type</span><span class="p">,</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_id</span><span class="p">,</span>
+                <span class="s2">&quot;checked_at&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;compliance_status&quot;</span><span class="p">:</span> <span class="s2">&quot;COMPLIANT&quot;</span><span class="p">,</span>  <span class="c1"># COMPLIANT, NON_COMPLIANT, WARNING, NEEDS_REVIEW</span>
+            <span class="s2">&quot;rules_checked&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">rule_categories</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">,</span> <span class="s2">&quot;tax&quot;</span><span class="p">,</span> <span class="s2">&quot;union&quot;</span><span class="p">,</span> <span class="s2">&quot;vacation&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;total_rules_applied&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;violations_found&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;warnings_found&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;critical_violations&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;resolved_violations&quot;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">include_resolved</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;violations&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;recommendations&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;performance&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;optimizations&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">&quot;Cached rule evaluations&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Optimized database queries&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Parallel rule checking&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Simulate finding some issues based on entity type</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <span class="s2">&quot;payroll&quot;</span><span class="p">:</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;total_rules_applied&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">15</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;violations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="s2">&quot;SALARY_001&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Minimum salary check&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Salary below minimum wage threshold&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;recommendation&quot;</span><span class="p">:</span> <span class="s2">&quot;Review salary calculation&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;violations_found&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;compliance_status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NON_COMPLIANT&quot;</span>
+
+        <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <span class="s2">&quot;employee&quot;</span><span class="p">:</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;total_rules_applied&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;violations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;compliance_status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;COMPLIANT&quot;</span>
+
+        <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <span class="s2">&quot;cct&quot;</span><span class="p">:</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;total_rules_applied&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;violations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="s2">&quot;CCT_001&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="s2">&quot;low&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;CCT clause validation&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Minor discrepancy in clause interpretation&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;recommendation&quot;</span><span class="p">:</span> <span class="s2">&quot;Review clause documentation&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;violations_found&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">][</span><span class="s2">&quot;warnings_found&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;compliance_status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;WARNING&quot;</span>
+
+        <span class="c1"># Add processing time</span>
+        <span class="n">processing_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="n">compliance_result</span><span class="p">[</span><span class="s2">&quot;performance&quot;</span><span class="p">][</span><span class="s2">&quot;check_time_seconds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">processing_time</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compliance check completed in </span><span class="si">{</span><span class="n">processing_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">processing_time</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Compliance check took </span><span class="si">{</span><span class="n">processing_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s (target: &lt;1s)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">create_success_response</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">compliance_result</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Compliance check completed successfully&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in compliance check: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Error performing compliance check: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/rules&quot;</span><span class="p">)</span>
+<span class="nd">@cached_response</span><span class="p">(</span><span class="s2">&quot;compliance_rules&quot;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="mi">1800</span><span class="p">)</span>  <span class="c1"># 30 minutes cache for rules</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">list_compliance_rules</span><span class="p">(</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Filter by rule category&quot;</span><span class="p">),</span>
+    <span class="n">active_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show only active rules&quot;</span><span class="p">),</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">),</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List available compliance rules with caching and standardized response&quot;&quot;&quot;</span>
+
+    <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;SALARY_001&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Minimum Salary Check&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;salary&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="s2">&quot;high&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Validates minimum wage compliance&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;TAX_001&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tax Calculation Validation&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;tax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensures correct tax calculations&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;UNION_001&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Union Contribution Check&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;union&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Validates union contribution payments&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;CCT_001&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;CCT Clause Compliance&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;cct&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Checks compliance with collective agreement clauses&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Apply filters</span>
+    <span class="k">if</span> <span class="n">category</span><span class="p">:</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rules</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">category</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">active_only</span><span class="p">:</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rules</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]]</span>
+
+    <span class="n">result_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;rules&quot;</span><span class="p">:</span> <span class="n">rules</span><span class="p">,</span>
+        <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">),</span>
+        <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">)),</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">create_success_response</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">result_data</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Compliance rules retrieved successfully&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/rules/</span><span class="si">{rule_id}</span><span class="s2">/execute&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">execute_compliance_rule</span><span class="p">(</span>
+    <span class="n">rule_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">ComplianceRuleRequest</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">),</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a specific compliance rule against multiple entities with validation&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">role</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;administrador&quot;</span><span class="p">,</span> <span class="s2">&quot;contador&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">forbidden_error</span><span class="p">(</span><span class="s2">&quot;Insufficient permissions to execute compliance rules&quot;</span><span class="p">)</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">entity_id</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_ids</span><span class="p">:</span>
+        <span class="c1"># Simulate rule execution</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;entity_id&quot;</span><span class="p">:</span> <span class="n">entity_id</span><span class="p">,</span>
+            <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="n">rule_id</span><span class="p">,</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;PASSED&quot;</span><span class="p">,</span>  <span class="c1"># PASSED, FAILED, WARNING</span>
+            <span class="s2">&quot;checked_at&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Rule </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s2"> executed successfully for </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">entity_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">entity_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">processing_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+
+    <span class="n">execution_result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="n">rule_id</span><span class="p">,</span>
+        <span class="s2">&quot;entity_type&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">entity_type</span><span class="p">,</span>
+        <span class="s2">&quot;total_checked&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">entity_ids</span><span class="p">),</span>
+        <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span>
+        <span class="s2">&quot;execution_time_seconds&quot;</span><span class="p">:</span> <span class="n">processing_time</span><span class="p">,</span>
+        <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;passed&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;PASSED&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;failed&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;FAILED&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">]),</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">create_success_response</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">execution_result</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Compliance rule </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s2"> executed successfully&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">AUDITORIA360</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/auth.html">Módulo de Autenticação</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/models.html">Modelos de Dados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/services.html">Serviços de Negócio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/api.html">APIs REST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/core.html">Módulo Central</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/utils.html">Utilitários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/schemas.html">Esquemas Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/mcp.html">Integração MCP</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, AUDITORIA360 Team.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

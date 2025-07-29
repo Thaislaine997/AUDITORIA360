@@ -49,4 +49,31 @@ setup-hooks:
 	pre-commit install
 	@echo "✅ Pre-commit hooks installed"
 
-.PHONY: install install-dev run test format lint check quality backup-db clean setup-hooks
+# Documentation generation
+docs-build:
+	@echo "🔨 Building Sphinx documentation..."
+	cd docs/sphinx && sphinx-build -b html . _build/html
+	@echo "✅ Sphinx documentation built in docs/sphinx/_build/html"
+
+docs-clean:
+	@echo "🧹 Cleaning documentation build files..."
+	rm -rf docs/sphinx/_build
+	@echo "✅ Documentation cleaned"
+
+docs-rebuild: docs-clean docs-build
+	@echo "🔄 Documentation rebuilt successfully"
+
+docs-serve:
+	@echo "🌐 Starting MkDocs development server..."
+	cd docs && mkdocs serve
+	@echo "📝 Documentation available at http://localhost:8000"
+
+docs-deploy:
+	@echo "🚀 Building and deploying MkDocs documentation..."
+	cd docs && mkdocs build
+	@echo "✅ MkDocs documentation built in docs/site"
+
+docs-all: docs-build docs-deploy
+	@echo "📚 All documentation generated successfully"
+
+.PHONY: install install-dev run test format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-serve docs-deploy docs-all
