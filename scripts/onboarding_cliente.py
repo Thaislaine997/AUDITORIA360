@@ -1,7 +1,7 @@
-import os
-import json
-import bcrypt
 import getpass
+import json
+import os
+
 import bcrypt
 
 TEMPLATE_CONFIG = {
@@ -11,11 +11,12 @@ TEMPLATE_CONFIG = {
     "gcp_project_id": "SEU_PROJECT_ID",
     "bq_dataset_id": "SEU_DATASET_BQ",
     "bq_table_id": "SUA_TABELA_BQ",
-    "client_id": "ID_UNICO_CLIENTE"
+    "client_id": "ID_UNICO_CLIENTE",
 }
 
 CONFIG_DIR = "configs/client_configs/"
 LOGIN_YAML = "auth/login.yaml"
+
 
 def criar_config_cliente():
     nome = input("Nome do cliente (ex: cliente_x): ").strip()
@@ -35,21 +36,26 @@ def criar_config_cliente():
     print(f"Arquivo de configuração criado: {config_path}")
     return client_id
 
+
 def adicionar_usuario_login_yaml(client_id):
     usuario = input(f"Usuário para o cliente {client_id}: ").strip()
     senha = getpass.getpass(f"Senha para {usuario}: ")
     # Hash da senha usando bcrypt
-    senha_hashed = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    senha_hashed = bcrypt.hashpw(senha.encode("utf-8"), bcrypt.gensalt()).decode(
+        "utf-8"
+    )
     # Adiciona ao login.yaml (simples, sem parser yaml avançado)
     with open(LOGIN_YAML, "a", encoding="utf-8") as f:
-        f.write(f"  {usuario}: \"{senha_hashed}\"\n")
+        f.write(f'  {usuario}: "{senha_hashed}"\n')
     print(f"Usuário {usuario} adicionado ao {LOGIN_YAML}")
+
 
 def main():
     print("--- Onboarding de Novo Cliente White-Label ---")
     client_id = criar_config_cliente()
     adicionar_usuario_login_yaml(client_id)
     print("Onboarding concluído! Valide o branding, login e isolamento de dados.")
+
 
 if __name__ == "__main__":
     main()

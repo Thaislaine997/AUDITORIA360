@@ -1,15 +1,20 @@
 """
 Página de notificações do sistema AUDITORIA360.
 """
-import streamlit as st
+
 import os
 import sys
 
+import streamlit as st
+
 # --- Path Setup ---
-_project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) # Adjusted for pages subdir
+_project_root = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+)  # Adjusted for pages subdir
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 # --- End Path Setup ---
+
 
 # --- Carregamento do CSS para Design System ---
 def load_css():
@@ -17,7 +22,8 @@ def load_css():
     if not os.path.exists(css_path):
         css_path = "/workspaces/AUDITORIA360/assets/style.css"
     with open(css_path) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 
 load_css()  # Carrega os estilos do Design System
 # --- Fim do Carregamento do CSS ---

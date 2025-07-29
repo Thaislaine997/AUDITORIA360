@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
 from datetime import date
+from typing import List, Optional
+
+from pydantic import BaseModel
+
 
 class ClausulaExtraidaResponse(BaseModel):
     id_clausula: Optional[str] = None
@@ -9,11 +11,13 @@ class ClausulaExtraidaResponse(BaseModel):
     relevancia: Optional[float] = None
     # Adicione outros campos conforme necessário com base na sua lógica de negócios
 
+
 class UpdateClausulaRevisaoRequest(BaseModel):
     revisado: bool
     texto_revisado: Optional[str] = None
     comentarios: Optional[str] = None
     # Adicione outros campos conforme necessário
+
 
 # Schemas para CCT (Convenção Coletiva de Trabalho)
 class CCTIdentificacaoResponse(BaseModel):
@@ -24,20 +28,24 @@ class CCTIdentificacaoResponse(BaseModel):
     vigencia_fim: Optional[date] = None
     # Adicione outros campos identificadores relevantes
 
+
 class CCTDetalheResponse(CCTIdentificacaoResponse):
     texto_integral: Optional[str] = None
     clausulas: Optional[List[ClausulaExtraidaResponse]] = []
     status_processamento: Optional[str] = None
     # Adicione outros detalhes da CCT
 
+
 class CCTStatusResponse(BaseModel):
     id_cct: str
     status_atual: str
     mensagem: Optional[str] = None
 
+
 class CCTUpdateStatusRequest(BaseModel):
     novo_status: str
     detalhes: Optional[str] = None
+
 
 class CCTDocumentoCreateRequest(BaseModel):
     nome_documento_original: str
@@ -50,6 +58,7 @@ class CCTDocumentoCreateRequest(BaseModel):
     id_cct_base_fk: Optional[str] = None
     id_cliente_principal_associado: Optional[str] = None
     ids_clientes_afetados_lista: Optional[List[str]] = None
+
 
 class CCTDocumentoResponse(BaseModel):
     _id: str
@@ -67,11 +76,13 @@ class CCTDocumentoResponse(BaseModel):
     status_processamento_ia: Optional[str] = None
     gcs_uri_documento: Optional[str] = None
 
+
 class AlertaCCTResponse(BaseModel):
     id_alerta: str
     id_cct: str
     status: str
     notas: Optional[str] = None
+
 
 class UpdateAlertaStatusRequest(BaseModel):
     status: str

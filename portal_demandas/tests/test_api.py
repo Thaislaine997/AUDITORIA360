@@ -1,10 +1,11 @@
-import pytest
-from fastapi.testclient import TestClient
-from portal_demandas.api import app
-from portal_demandas.models import Ticket
 from datetime import datetime, timedelta
 
+from fastapi.testclient import TestClient
+
+from portal_demandas.api import app
+
 client = TestClient(app)
+
 
 def test_criar_e_obter_ticket():
     payload = {
@@ -12,7 +13,7 @@ def test_criar_e_obter_ticket():
         "descricao": "Descrição de teste",
         "etapa": "inicial",
         "prazo": (datetime.now() + timedelta(days=2)).isoformat(),
-        "responsavel": "dev"
+        "responsavel": "dev",
     }
     response = client.post("/tickets/", json=payload)
     assert response.status_code == 200
@@ -29,6 +30,7 @@ def test_criar_e_obter_ticket():
     data_get = response_get.json()
     assert data_get["id"] == ticket_id
     assert data_get["titulo"] == payload["titulo"]
+
 
 def test_listar_tickets():
     response = client.get("/tickets/")

@@ -1,6 +1,7 @@
 from services.ingestion.main import main as ingestion_main
-from services.ml.pipeline_runner import run_pipeline
 from services.ml.components.explainers import explain_model
+from services.ml.pipeline_runner import run_pipeline
+
 
 def run_full_pipeline(event, context):
     """
@@ -12,4 +13,4 @@ def run_full_pipeline(event, context):
     run_pipeline()
     # 3. Explainability (mock)
     explain_model(model=None, data=None)
-    print('Pipeline completo executado.')
+    print("Pipeline completo executado.")

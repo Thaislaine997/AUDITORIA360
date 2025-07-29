@@ -1,9 +1,11 @@
 """
 Robô eSocial para automação de processos.
 """
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
+
 
 # Função de login (placeholder)
 def login_esocial(usuario, senha):
@@ -11,17 +13,20 @@ def login_esocial(usuario, senha):
     # TODO: Integrar Selenium/Playwright
     return True
 
+
 # Função para envio de evento (placeholder)
 def enviar_evento(evento):
     logging.info(f"Enviando evento ao eSocial: {evento}")
     # TODO: Integrar Selenium/Playwright
     return True
 
+
 # Função para consulta de status (placeholder)
 def consultar_status(evento_id):
     logging.info(f"Consultando status do evento: {evento_id}")
     # TODO: Integrar Selenium/Playwright
     return "Processado"
+
 
 def executar_esocial():
     logging.info("Executando automação eSocial...")
@@ -33,6 +38,7 @@ def executar_esocial():
         logging.info(f"Status do evento: {status}")
     else:
         logging.error("Falha no login do eSocial.")
+
 
 if __name__ == "__main__":
     executar_esocial()
