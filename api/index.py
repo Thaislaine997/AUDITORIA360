@@ -67,7 +67,7 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
-Principal
+
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
     def auth_login():
@@ -79,7 +79,6 @@ Principal
     @payroll_router.get("/health")
     def payroll_health():
         return {"message": "Payroll module - ready", "status": "ok"}
-Principal
 
 # Security
 security = HTTPBearer()
