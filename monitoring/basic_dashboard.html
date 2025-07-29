@@ -3,37 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Monitor básico do AUDITORIA360 - Sistema de gestão de folha de pagamento"
+    />
+    <meta name="author" content="AUDITORIA360" />
     <title>AUDITORIA360 - Basic Monitor</title>
-    <style>
-      body {
-        font-family: Arial;
-        margin: 20px;
-      }
-      .status {
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-      }
-      .ok {
-        background: #d4edda;
-      }
-      .warning {
-        background: #fff3cd;
-      }
-      .error {
-        background: #f8d7da;
-      }
-    </style>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/monitoring.css" />
   </head>
   <body>
-    <h1>🎯 AUDITORIA360 - Monitor Básico</h1>
-    <div class="status ok">✅ Sistema: Operacional</div>
-    <div class="status ok">✅ API: Funcionando</div>
-    <div class="status ok">✅ Database: Conectado</div>
-    <p>Última atualização: <span id="timestamp"></span></p>
+    <main class="monitoring-page" role="main">
+      <header class="monitoring-header" role="banner">
+        <h1>🎯 AUDITORIA360 - Monitor Básico</h1>
+        <p>Status básico do sistema em tempo real</p>
+      </header>
+
+      <section class="status-section" role="region" aria-label="System status">
+        <div class="status ok" role="status">
+          <span aria-hidden="true">✅</span>
+          <span>Sistema: Operacional</span>
+        </div>
+
+        <div class="status ok" role="status">
+          <span aria-hidden="true">✅</span>
+          <span>API: Funcionando</span>
+        </div>
+
+        <div class="status ok" role="status">
+          <span aria-hidden="true">✅</span>
+          <span>Database: Conectado</span>
+        </div>
+      </section>
+
+      <footer class="monitoring-footer">
+        <p class="timestamp">
+          Última atualização: <span id="timestamp"></span>
+        </p>
+      </footer>
+    </main>
+
     <script>
-      document.getElementById("timestamp").textContent =
-        new Date().toLocaleString();
+      document.addEventListener("DOMContentLoaded", function () {
+        // Update timestamp
+        const timestampElement = document.getElementById("timestamp");
+        if (timestampElement) {
+          timestampElement.textContent = new Date().toLocaleString("pt-BR");
+        }
+
+        // Add fade-in animation
+        const statusItems = document.querySelectorAll(".status");
+        statusItems.forEach((item, index) => {
+          item.style.animationDelay = `${index * 0.2}s`;
+          item.classList.add("animate-fade-in");
+        });
+      });
     </script>
   </body>
 </html>

@@ -25,6 +25,7 @@ Thumbs.db
 
 # Test files (don't format generated test files)
 e2e_tests/playwright-page-*.html
+tests/e2e/playwright-page-*.html
 
 # Virtual environment
 .venv/
