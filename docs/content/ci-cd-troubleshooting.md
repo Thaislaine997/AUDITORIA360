@@ -7,12 +7,14 @@
 #### 1. Import Errors (ModuleNotFoundError)
 
 **Problem:**
+
 ```
 ImportError: No module named 'tensorflow'
 ModuleNotFoundError: No module named 'shap'
 ```
 
 **Solution:**
+
 ```bash
 # Option 1: Install missing dependencies
 pip install tensorflow shap
@@ -37,11 +39,13 @@ def test_ml_function():
 #### 2. Database Connection Errors
 
 **Problem:**
+
 ```
 sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection failed
 ```
 
 **Solution:**
+
 ```python
 # In conftest.py - mock database for tests
 @pytest.fixture
@@ -58,11 +62,13 @@ def test_database_function(mock_db):
 #### 3. Async Test Issues
 
 **Problem:**
+
 ```
 RuntimeError: There is no current event loop in thread
 ```
 
 **Solution:**
+
 ```python
 # Use pytest-asyncio
 import pytest
@@ -78,11 +84,13 @@ async def test_async_function():
 #### 1. Black Formatting Conflicts
 
 **Problem:**
+
 ```
 would reformat file.py
 ```
 
 **Solution:**
+
 ```bash
 # Fix all formatting issues
 black .
@@ -97,11 +105,13 @@ black src/specific_file.py
 #### 2. Import Sorting Issues (isort)
 
 **Problem:**
+
 ```
 Imports are incorrectly sorted and/or formatted
 ```
 
 **Solution:**
+
 ```bash
 # Fix all import sorting
 isort .
@@ -116,12 +126,14 @@ isort --profile black src/specific_file.py
 #### 3. Flake8 Violations
 
 **Problem:**
+
 ```
 E501 line too long (89 > 88 characters)
 F401 'module' imported but unused
 ```
 
 **Solution:**
+
 ```bash
 # Check all violations
 flake8 . --show-source
@@ -140,11 +152,13 @@ autoflake --in-place --remove-all-unused-imports --recursive .
 #### 1. Workflow Syntax Errors
 
 **Problem:**
+
 ```
 Invalid workflow file: .github/workflows/ci-cd.yml
 ```
 
 **Solution:**
+
 1. Validate YAML syntax online: https://yamlchecker.com/
 2. Check GitHub Actions documentation for correct syntax
 3. Use GitHub's workflow editor for validation
@@ -152,17 +166,19 @@ Invalid workflow file: .github/workflows/ci-cd.yml
 #### 2. Matrix Job Failures
 
 **Problem:**
+
 ```
 Strategy job failed: Python 3.11 tests failed
 ```
 
 **Solution:**
+
 ```yaml
 # Add continue-on-error for non-critical versions
 strategy:
   matrix:
     python-version: [3.11, 3.12]
-  fail-fast: false  # Continue other jobs if one fails
+  fail-fast: false # Continue other jobs if one fails
 
 steps:
   - name: Test with Python ${{ matrix.python-version }}
@@ -172,21 +188,23 @@ steps:
 #### 3. Timeout Issues
 
 **Problem:**
+
 ```
 The job running on ubuntu-latest exceeded the maximum execution time
 ```
 
 **Solution:**
+
 ```yaml
 # Increase timeout
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # Increase from default 6 hours
+    timeout-minutes: 30 # Increase from default 6 hours
 
     steps:
-    - name: Run tests
-      timeout-minutes: 15  # Set step-specific timeout
+      - name: Run tests
+        timeout-minutes: 15 # Set step-specific timeout
 ```
 
 ### Deployment Issues
@@ -194,14 +212,17 @@ jobs:
 #### 1. Vercel Deployment Failures
 
 **Problem:**
+
 ```
 Error: Build failed with exit code 1
 ```
 
 **Solution:**
+
 1. Check build logs in Vercel dashboard
 2. Verify environment variables are set
 3. Test build locally:
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -213,13 +234,16 @@ vercel dev
 #### 2. Environment Variable Issues
 
 **Problem:**
+
 ```
 KeyError: 'REQUIRED_ENV_VAR'
 ```
 
 **Solution:**
+
 1. Add missing environment variables in GitHub repository settings
 2. Use default values for optional variables:
+
 ```python
 import os
 API_KEY = os.getenv('API_KEY', 'default_value')
@@ -228,11 +252,13 @@ API_KEY = os.getenv('API_KEY', 'default_value')
 #### 3. Secret Access Issues
 
 **Problem:**
+
 ```
 Error: Secret VERCEL_TOKEN not found
 ```
 
 **Solution:**
+
 1. Go to GitHub repository → Settings → Secrets and variables → Actions
 2. Add required secrets
 3. Verify secret names match workflow file exactly
@@ -242,11 +268,13 @@ Error: Secret VERCEL_TOKEN not found
 #### 1. Low Coverage Warnings
 
 **Problem:**
+
 ```
 TOTAL coverage: 65% (below 70% threshold)
 ```
 
 **Solution:**
+
 ```bash
 # Generate detailed coverage report
 pytest tests/ --cov=src --cov-report=html
@@ -256,7 +284,7 @@ pytest tests/ --cov=src --cov-report=html
 # Add tests for uncovered code or exclude non-testable code
 # In .coveragerc:
 [run]
-omit = 
+omit =
     */migrations/*
     */venv/*
     */env/*
@@ -266,11 +294,13 @@ omit =
 #### 2. Coverage Report Generation Failures
 
 **Problem:**
+
 ```
 Coverage.py warning: No data to report
 ```
 
 **Solution:**
+
 ```bash
 # Ensure tests are actually running
 pytest tests/ -v
@@ -287,11 +317,13 @@ pytest tests/ --cov=. --cov-report=term
 #### 1. Pre-commit Installation Failures
 
 **Problem:**
+
 ```
 command not found: pre-commit
 ```
 
 **Solution:**
+
 ```bash
 # Install pre-commit
 pip install pre-commit
@@ -306,11 +338,13 @@ pre-commit autoupdate
 #### 2. Hook Execution Failures
 
 **Problem:**
+
 ```
 black....................................................................Failed
 ```
 
 **Solution:**
+
 ```bash
 # Run hooks manually to see detailed errors
 pre-commit run --all-files
@@ -329,11 +363,13 @@ git commit --no-verify
 #### 1. Version Conflicts
 
 **Problem:**
+
 ```
 ERROR: package-a 1.0.0 has requirement package-b<2.0.0, but you have package-b 2.1.0
 ```
 
 **Solution:**
+
 ```bash
 # Check dependency tree
 pip check
@@ -354,12 +390,14 @@ pip freeze > requirements.txt
 #### 2. Missing System Dependencies
 
 **Problem:**
+
 ```
 Error: Microsoft Visual C++ 14.0 is required
 error: Microsoft Visual C++ 14.0 or greater is required
 ```
 
 **Solution:**
+
 ```bash
 # For Ubuntu/Linux
 sudo apt-get update
@@ -380,6 +418,7 @@ xcode-select --install
 Tests taking too long to complete
 
 **Solution:**
+
 ```bash
 # Run tests in parallel
 pip install pytest-xdist
@@ -400,11 +439,13 @@ pytest tests/ -m "not slow"
 #### 2. High Memory Usage
 
 **Problem:**
+
 ```
 MemoryError: Unable to allocate array
 ```
 
 **Solution:**
+
 ```python
 # Use generators instead of lists for large datasets
 def process_large_data():

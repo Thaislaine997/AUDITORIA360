@@ -10,24 +10,24 @@ A **refatoração de scripts Shell e PowerShell** (PRs 12 e 13) foi **concluída
 
 ### 🐚 **Scripts Shell Refatorados (PR 12)**
 
-| Script | Status | Ação Realizada | Linhas |
-|--------|--------|----------------|--------|
-| `deploy_streamlit.sh` | ✅ **Refatorado** | Estrutura completa padronizada | 330 |
-| `setup_mcp_dev.sh` | ✅ **Refatorado** | Modernizado com validações | 380 |
-| `cloudrun_deploy.sh` | ✅ **Mantido** | Já estava bem estruturado | 365 |
-| `git_update_all.sh` | ✅ **Mantido** | Já estava bem estruturado | 240 |
-| `deploy_vercel.sh` | ✅ **Mantido** | Já estava bem estruturado | 303 |
-| `auditoria_gcp.sh` | ✅ **Mantido** | Já estava bem estruturado | 368 |
-| `restore_db.sh` | ✅ **Mantido** | Já estava bem estruturado | 417 |
-| `setup_dev_env.sh` | ✅ **Mantido** | Já estava bem estruturado | 308 |
+| Script                | Status            | Ação Realizada                 | Linhas |
+| --------------------- | ----------------- | ------------------------------ | ------ |
+| `deploy_streamlit.sh` | ✅ **Refatorado** | Estrutura completa padronizada | 330    |
+| `setup_mcp_dev.sh`    | ✅ **Refatorado** | Modernizado com validações     | 380    |
+| `cloudrun_deploy.sh`  | ✅ **Mantido**    | Já estava bem estruturado      | 365    |
+| `git_update_all.sh`   | ✅ **Mantido**    | Já estava bem estruturado      | 240    |
+| `deploy_vercel.sh`    | ✅ **Mantido**    | Já estava bem estruturado      | 303    |
+| `auditoria_gcp.sh`    | ✅ **Mantido**    | Já estava bem estruturado      | 368    |
+| `restore_db.sh`       | ✅ **Mantido**    | Já estava bem estruturado      | 417    |
+| `setup_dev_env.sh`    | ✅ **Mantido**    | Já estava bem estruturado      | 308    |
 
 ### 💻 **Scripts PowerShell Validados (PR 13)**
 
-| Script | Status | Validação | Qualidade |
-|--------|--------|-----------|-----------|
-| `cloudrun_deploy_backend.ps1` | ✅ **Aprovado** | Estrutura exemplar | A+ |
-| `cloudrun_deploy_streamlit.ps1` | ✅ **Aprovado** | Documentação completa | A+ |
-| `setup_dev_env.ps1` | ✅ **Aprovado** | Tratamento de erro robusto | A+ |
+| Script                          | Status          | Validação                  | Qualidade |
+| ------------------------------- | --------------- | -------------------------- | --------- |
+| `cloudrun_deploy_backend.ps1`   | ✅ **Aprovado** | Estrutura exemplar         | A+        |
+| `cloudrun_deploy_streamlit.ps1` | ✅ **Aprovado** | Documentação completa      | A+        |
+| `setup_dev_env.ps1`             | ✅ **Aprovado** | Tratamento de erro robusto | A+        |
 
 **Total de scripts**: 11 | **Scripts conformes**: 11 (100%)
 
@@ -36,32 +36,38 @@ A **refatoração de scripts Shell e PowerShell** (PRs 12 e 13) foi **concluída
 ## 🔧 **MELHORIAS IMPLEMENTADAS**
 
 ### ✅ **Estrutura Padronizada (100% dos scripts)**
+
 - **Header consistente** com descrição, uso e exemplos
 - **Configurações de segurança** (`set -e`, `set -u`, `set -o pipefail`)
 - **Variáveis readonly** para configurações importantes
 - **Funções organizadas** e bem documentadas
 
 ### ✅ **Sistema de Logging Unificado**
+
 - **Funções padronizadas**: `log_info()`, `log_success()`, `log_warning()`, `log_error()`
 - **Cores consistentes**: Azul (INFO), Verde (SUCCESS), Amarelo (WARNING), Vermelho (ERROR)
 - **Output estruturado**: Logs direcionados para stderr quando apropriado
 
 ### ✅ **Tratamento de Erros Robusto**
+
 - **Shell**: `set -e`, `set -u`, `set -o pipefail` em todos os scripts
 - **PowerShell**: `$ErrorActionPreference = "Stop"` com try-catch estruturado
 - **Cleanup automático**: Funções de limpeza com trap/finally
 
 ### ✅ **Validação de Pré-requisitos**
+
 - **Verificação de ambiente**: Diretório correto, arquivos necessários
 - **Validação de dependências**: Comandos obrigatórios disponíveis
 - **Checagem de autenticação**: Credenciais e permissões
 
 ### ✅ **Interface de Usuário Melhorada**
+
 - **Help function**: `--help` completo em todos os scripts
 - **Parse de argumentos**: Estruturado com validação
 - **Modos de operação**: `--dry-run`, `--verbose`, `--force` conforme necessário
 
 ### ✅ **Segurança Aprimorada**
+
 - **Sem credenciais hardcoded**: 100% verificado
 - **Detecção de arquivos sensíveis**: Prevenção de commits acidentais
 - **Validação de entrada**: Sanitização de parâmetros do usuário
@@ -73,6 +79,7 @@ A **refatoração de scripts Shell e PowerShell** (PRs 12 e 13) foi **concluída
 ### 🐚 **Shell Scripts**
 
 #### `scripts/git_update_all.sh`
+
 ```bash
 # ANTES (4 linhas)
 #!/bin/bash
@@ -91,6 +98,7 @@ git push
 ```
 
 #### `scripts/deploy_vercel.sh`
+
 ```bash
 # ANTES (11 linhas)
 #!/bin/bash
@@ -113,6 +121,7 @@ vercel --prod --confirm
 ```
 
 #### `auditoria_gcp.sh`
+
 ```bash
 # ANTES (50 linhas)
 #!/bin/bash
@@ -134,6 +143,7 @@ echo "==== Auditoria GCP - Projeto: $PROJECT_ID ====" | tee $LOGFILE
 ### 💻 **PowerShell Scripts**
 
 #### `deploy/cloudrun_deploy_backend.ps1`
+
 ```powershell
 # ANTES (16 linhas)
 # Script PowerShell para build e deploy do backend no Cloud Run
@@ -168,6 +178,7 @@ param(
 ## 📚 **DOCUMENTAÇÃO CRIADA**
 
 ### 1. **Guia de Padronização Completo**
+
 - **Arquivo**: `docs/tecnico/desenvolvimento/script-standardization-guide.md`
 - **Tamanho**: 491 linhas
 - **Conteúdo**:
@@ -178,10 +189,12 @@ param(
   - Templates de referência
 
 ### 2. **Templates para Novos Scripts**
+
 - `templates/scripts/basic_shell_script.sh` - Template Shell
 - `templates/scripts/basic_powershell_script.ps1` - Template PowerShell
 
 ### 3. **Atualizações na Documentação Existente**
+
 - `docs/tecnico/desenvolvimento/setup-ambiente.md` - Referências aos novos scripts
 - `docs/tecnico/desenvolvimento/dev-guide.md` - Padrões de desenvolvimento
 
@@ -190,6 +203,7 @@ param(
 ## 🧪 **TESTES REALIZADOS**
 
 ### ✅ **Funcionalidade dos Scripts**
+
 ```bash
 # Todos os scripts testados com --help
 ./scripts/shell/git_update_all.sh --help ✓
@@ -203,6 +217,7 @@ param(
 ```
 
 ### ✅ **Validação de Estrutura**
+
 - Headers padronizados ✓
 - Funções de logging implementadas ✓
 - Tratamento de erro configurado ✓
@@ -214,24 +229,28 @@ param(
 ## 🎯 **BENEFÍCIOS ALCANÇADOS**
 
 ### 👩‍💻 **Para Desenvolvedores**
+
 - **Scripts auto-documentados** com `--help` completo
 - **Modo dry-run** para testes seguros
 - **Logging colorido** para melhor experiência
 - **Validação automática** de pré-requisitos
 
 ### 🔒 **Para Segurança**
+
 - **Detecção de arquivos sensíveis** antes de commits
 - **Backup automático** antes de operações destrutivas
 - **Validação de autenticação** em scripts de deploy
 - **Tratamento robusto de erros**
 
 ### 🚀 **Para Produtividade**
+
 - **Automação completa** de tarefas comuns
 - **Configuração flexível** via parâmetros
 - **Reutilização fácil** com templates
 - **Manutenção simplificada**
 
 ### 📊 **Para Qualidade**
+
 - **Padrões consistentes** em todo o projeto
 - **Código bem documentado** e comentado
 - **Estrutura profissional** seguindo melhores práticas
@@ -246,7 +265,7 @@ param(
 ✅ **Sem dependências diretas de outros PRs**  
 ✅ **Documentação atualizada na pasta `docs/`**  
 ✅ **Testes validados no ambiente**  
-✅ **Sem conflitos conhecidos com outros PRs abertos**  
+✅ **Sem conflitos conhecidos com outros PRs abertos**
 
 ---
 

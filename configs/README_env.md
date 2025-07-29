@@ -6,6 +6,7 @@
 - Para rodar localmente, copie `.env.example` para `.env` e preencha com seus segredos.
 
 ## Variáveis obrigatórias
+
 - DATABASE_URL
 - CLOUDFLARE_ACCOUNT_ID
 - R2_BUCKET_NAME

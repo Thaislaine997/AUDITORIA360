@@ -9,9 +9,11 @@ Os testes de integração foram criados para garantir que todos os scripts auxil
 ## Scripts Testados
 
 ### 1. Health Check (`health_check.py`)
+
 **Arquivo de teste**: `tests/integration/test_health_check_script.py`
 
 **Funcionalidades testadas**:
+
 - Inicialização do HealthChecker
 - Verificação de saúde da API, banco de dados e storage
 - Execução de todas as verificações de saúde
@@ -23,9 +25,11 @@ Os testes de integração foram criados para garantir que todos os scripts auxil
 **Cobertura**: 11 testes implementados
 
 ### 2. ETL/ELT (`etl_elt.py`)
+
 **Arquivo de teste**: `tests/integration/test_etl_script.py`
 
 **Funcionalidades testadas**:
+
 - Configuração do cliente BigQuery
 - Extração de dados da folha de pagamento
 - Transformação e engenharia de features
@@ -38,9 +42,11 @@ Os testes de integração foram criados para garantir que todos os scripts auxil
 **Cobertura**: 15 testes implementados
 
 ### 3. Monitoramento (`monitoramento.py`)
+
 **Arquivo de teste**: `tests/integration/test_monitoring_script.py`
 
 **Funcionalidades testadas**:
+
 - Verificação de serviços HTTP
 - Monitoramento de banco de dados e storage
 - Verificação de métricas de performance
@@ -55,9 +61,11 @@ Os testes de integração foram criados para garantir que todos os scripts auxil
 **Cobertura**: 16 testes implementados
 
 ### 4. Scripts Auxiliares Diversos
+
 **Arquivo de teste**: `tests/integration/test_auxiliary_scripts.py`
 
 **Scripts cobertos**:
+
 - `deploy_production.py` - Deploy em produção
 - `validate_config.py` - Validação de configurações
 - `api_healthcheck.py` - Verificação de saúde da API
@@ -69,6 +77,7 @@ Os testes de integração foram criados para garantir que todos os scripts auxil
 - Scripts de exportação CSV
 
 **Verificações realizadas**:
+
 - Disponibilidade e estrutura dos scripts
 - Sintaxe válida de Python
 - Documentação adequada
@@ -81,11 +90,13 @@ Os testes de integração foram criados para garantir que todos os scripts auxil
 ## Execução dos Testes
 
 ### Executar todos os testes de integração de scripts auxiliares:
+
 ```bash
 python -m pytest tests/integration/test_health_check_script.py tests/integration/test_etl_script.py tests/integration/test_monitoring_script.py tests/integration/test_auxiliary_scripts.py -v
 ```
 
 ### Executar testes específicos:
+
 ```bash
 # Apenas testes de health check
 python -m pytest tests/integration/test_health_check_script.py -v
@@ -101,6 +112,7 @@ python -m pytest tests/integration/test_auxiliary_scripts.py -v
 ```
 
 ### Executar com cobertura:
+
 ```bash
 python -m pytest tests/integration/test_*_script*.py --cov=scripts --cov-report=html
 ```
@@ -125,6 +137,7 @@ Os testes de integração estão integrados ao pipeline de CI/CD através do Git
 ## Estrutura dos Testes
 
 ### Padrão de organização:
+
 ```
 tests/integration/
 ├── test_health_check_script.py     # Testes do health check
@@ -134,6 +147,7 @@ tests/integration/
 ```
 
 ### Convenções:
+
 - Classes de teste organizadas por funcionalidade
 - Uso de mocks para dependências externas
 - Testes parametrizados para diferentes cenários
@@ -143,6 +157,7 @@ tests/integration/
 ## Mocks e Dependências
 
 ### Dependências mockadas:
+
 - **BigQuery**: Cliente e operações de query/load
 - **HTTP requests**: Respostas de APIs e serviços
 - **Sistema de arquivos**: Leitura/escrita de arquivos
@@ -150,6 +165,7 @@ tests/integration/
 - **Funções assíncronas**: Simulação de operações I/O
 
 ### Bibliotecas utilizadas:
+
 - `pytest` - Framework de testes
 - `pytest-asyncio` - Suporte a testes assíncronos
 - `unittest.mock` - Sistema de mocks
@@ -159,15 +175,17 @@ tests/integration/
 ## Métricas e Cobertura
 
 ### Estatísticas atuais:
+
 - **Total de testes**: 59 testes de integração para scripts auxiliares
 - **Scripts cobertos**: 15+ scripts auxiliares
-- **Cobertura funcional**: 
+- **Cobertura funcional**:
   - Health checking: 100%
   - ETL/ELT: 85% (algumas funcionalidades específicas do BigQuery)
   - Monitoramento: 90%
   - Scripts auxiliares: 80%
 
 ### Relatórios:
+
 - Cobertura HTML gerada automaticamente
 - Relatórios XML para integração com ferramentas externas
 - Logs detalhados de execução no CI/CD
@@ -175,6 +193,7 @@ tests/integration/
 ## Validação Contínua
 
 ### Verificações automáticas:
+
 1. **Sintaxe**: Todos os scripts Python têm sintaxe válida
 2. **Estrutura**: Scripts seguem padrões de organização
 3. **Documentação**: Presença de docstrings e comentários
@@ -183,6 +202,7 @@ tests/integration/
 6. **Integração**: Compatibilidade com sistema principal
 
 ### Execução em paralelo:
+
 - Testes podem ser executados simultaneamente com outros PRs
 - Não há dependências diretas entre diferentes conjuntos de testes
 - Execução isolada garante não interferência
@@ -192,6 +212,7 @@ tests/integration/
 ### Problemas comuns:
 
 1. **Dependências faltando**:
+
    ```bash
    pip install -r requirements.txt
    pip install pytest pytest-cov pytest-asyncio
@@ -210,6 +231,7 @@ tests/integration/
    - Verificar configuração do event loop
 
 ### Debug:
+
 ```bash
 # Executar com saída detalhada
 python -m pytest tests/integration/test_health_check_script.py -v -s
@@ -221,12 +243,14 @@ python -m pytest tests/integration/test_health_check_script.py::TestHealthCheckI
 ## Próximos Passos
 
 ### Melhorias planejadas:
+
 1. **Cobertura adicional**: Incluir mais scripts auxiliares conforme são criados
 2. **Testes de performance**: Adicionar benchmarks para scripts críticos
 3. **Testes de integração real**: Incluir testes com serviços reais em ambiente de staging
 4. **Monitoramento de qualidade**: Alertas automáticos para degradação de testes
 
 ### Expansão:
+
 - Adicionar testes para novos scripts conforme são desenvolvidos
 - Integrar com ferramentas de qualidade de código
 - Implementar testes de regressão automatizados

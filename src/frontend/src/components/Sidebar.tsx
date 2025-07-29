@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Drawer,
   List,
@@ -7,8 +7,8 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-} from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+} from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dashboard as DashboardIcon,
   Payment as PaymentIcon,
@@ -16,17 +16,17 @@ import {
   Gavel as GavelIcon,
   Assessment as AuditIcon,
   Chat as ChatIcon,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 
 const drawerWidth = 240;
 
 const menuItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
-  { path: '/payroll', label: 'Folha de Pagamento', icon: <PaymentIcon /> },
-  { path: '/documents', label: 'Documentos', icon: <DocumentIcon /> },
-  { path: '/cct', label: 'CCT', icon: <GavelIcon /> },
-  { path: '/audit', label: 'Auditoria', icon: <AuditIcon /> },
-  { path: '/chatbot', label: 'Chatbot', icon: <ChatIcon /> },
+  { path: "/dashboard", label: "Dashboard", icon: <DashboardIcon /> },
+  { path: "/payroll", label: "Folha de Pagamento", icon: <PaymentIcon /> },
+  { path: "/documents", label: "Documentos", icon: <DocumentIcon /> },
+  { path: "/cct", label: "CCT", icon: <GavelIcon /> },
+  { path: "/audit", label: "Auditoria", icon: <AuditIcon /> },
+  { path: "/chatbot", label: "Chatbot", icon: <ChatIcon /> },
 ];
 
 const Sidebar: React.FC = () => {
@@ -39,12 +39,12 @@ const Sidebar: React.FC = () => {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
       }}
     >
       <Toolbar />
       <List>
-        {menuItems.map((item) => (
+        {menuItems.map(item => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
               selected={location.pathname.startsWith(item.path)}

@@ -13,24 +13,28 @@ The Model Context Protocol (MCP) is a standardized protocol that allows Large La
 The MCP integration consists of four main components:
 
 ### 1. MCP Server (`src/mcp/server.py`)
+
 - Exposes AUDITORIA360 tools and resources via the MCP protocol
 - Handles client connections and request processing
 - Manages tool execution and resource access
 - Provides secure, authenticated access to system capabilities
 
-### 2. MCP Client (`src/mcp/client.py`)  
+### 2. MCP Client (`src/mcp/client.py`)
+
 - Connects to external MCP servers for additional capabilities
 - Manages multiple server connections
 - Handles request/response protocols
 - Provides caching and connection management
 
 ### 3. Enhanced AI Agent (`src/ai_agent.py`)
+
 - Integrates MCP with the existing AI system
 - Maps natural language requests to MCP tools
 - Provides backwards compatibility with existing APIs
 - Manages tool execution and response formatting
 
 ### 4. Configuration System (`src/mcp/config.py`)
+
 - Manages MCP server and client configurations
 - Handles development environment setup
 - Provides Copilot integration configuration
@@ -39,6 +43,7 @@ The MCP integration consists of four main components:
 ## 🛠️ Available Tools
 
 ### 1. Payroll Calculator
+
 - **Tool Name**: `payroll_calculator`
 - **Description**: Calculate payroll with taxes, benefits, and deductions
 - **Parameters**:
@@ -50,6 +55,7 @@ The MCP integration consists of four main components:
   - `calculation_type`: Type of calculation (normal, 13th_salary, vacation, termination)
 
 **Example Usage**:
+
 ```json
 {
   "tool_name": "payroll_calculator",
@@ -57,7 +63,7 @@ The MCP integration consists of four main components:
     "employee_id": "EMP001",
     "month": 1,
     "year": 2024,
-    "base_salary": 5000.00,
+    "base_salary": 5000.0,
     "overtime_hours": 10,
     "calculation_type": "normal"
   }
@@ -65,6 +71,7 @@ The MCP integration consists of four main components:
 ```
 
 ### 2. Compliance Checker
+
 - **Tool Name**: `compliance_checker`
 - **Description**: Check compliance against labor laws and CCT requirements
 - **Parameters**:
@@ -74,6 +81,7 @@ The MCP integration consists of four main components:
   - `check_type`: Type of check (full, salary, benefits, working_hours, termination)
 
 ### 3. Document Analyzer
+
 - **Tool Name**: `document_analyzer`
 - **Description**: Analyze documents for information extraction and classification
 - **Parameters**:
@@ -83,6 +91,7 @@ The MCP integration consists of four main components:
   - `compare_with`: Document ID to compare with (optional)
 
 ### 4. Audit Executor
+
 - **Tool Name**: `audit_executor`
 - **Description**: Execute audit procedures and generate comprehensive reports
 - **Parameters**:
@@ -94,6 +103,7 @@ The MCP integration consists of four main components:
   - `specific_rules`: Specific rules to check (optional)
 
 ### 5. CCT Comparator
+
 - **Tool Name**: `cct_comparator`
 - **Description**: Compare collective bargaining agreements and identify differences
 - **Parameters**:
@@ -106,26 +116,31 @@ The MCP integration consists of four main components:
 ## 📚 Available Resources
 
 ### 1. Payroll Data
+
 - **URI**: `auditoria://payroll/data`
 - **Description**: Access to payroll data including employees, competencies, and calculations
 - **Content Type**: `application/json`
 
 ### 2. Employee Information
+
 - **URI**: `auditoria://employees/info`
 - **Description**: Detailed employee information and records
 - **Content Type**: `application/json`
 
 ### 3. CCT Documents
+
 - **URI**: `auditoria://cct/documents`
 - **Description**: Collective bargaining agreements and related documents
 - **Content Type**: `application/json`
 
 ### 4. Compliance Rules
+
 - **URI**: `auditoria://compliance/rules`
 - **Description**: Active compliance rules and regulations
 - **Content Type**: `application/json`
 
 ### 5. Knowledge Base
+
 - **URI**: `auditoria://knowledge/base`
 - **Description**: Searchable knowledge base articles and documentation
 - **Content Type**: `application/json`
@@ -141,6 +156,7 @@ Run the automated setup script to configure the complete MCP development environ
 ```
 
 This script will:
+
 - Create necessary directory structures
 - Install MCP dependencies
 - Generate configuration files
@@ -353,18 +369,20 @@ copilot:
 ### Common Issues
 
 1. **MCP Server Not Starting**
+
    ```bash
    # Check Python path
    export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-   
+
    # Verify dependencies
    pip install -r requirements.txt
-   
+
    # Check configuration
    python -c "from src.mcp.config import get_config_manager; print(get_config_manager().validate_config())"
    ```
 
 2. **Tool Execution Errors**
+
    ```bash
    # Check database connection
    # Verify tool parameters
@@ -413,18 +431,21 @@ else:
 ## 🚧 Next Steps
 
 ### Immediate Enhancements
+
 1. **Database Integration**: Connect tools to actual database for real data
 2. **Authentication**: Add proper user authentication and authorization
 3. **Caching**: Implement resource caching for better performance
 4. **Monitoring**: Add comprehensive logging and metrics
 
 ### Advanced Features
+
 1. **Custom Prompts**: Create specialized prompts for different audit scenarios
 2. **Workflow Automation**: Implement automated compliance checking workflows
 3. **Real-time Updates**: Add real-time notifications for compliance violations
 4. **Advanced Analytics**: Implement ML-based risk assessment and prediction
 
 ### Integration Expansions
+
 1. **External APIs**: Connect to government compliance APIs
 2. **Document OCR**: Enhanced document processing with AI-powered OCR
 3. **Report Generation**: Automated report generation with custom templates

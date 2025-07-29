@@ -126,38 +126,38 @@ class OCRService:
             lang='pt',  # Português
             show_log=False
         )
-    
+
     async def extract_text_from_image(self, image_path: str) -> Dict[str, Any]:
         """Extrair texto de uma imagem"""
         try:
             # Processar imagem
             result = self.ocr.ocr(image_path, cls=True)
-            
+
             # Extrair texto e coordenadas
             extracted_data = {
                 'text': '',
                 'blocks': [],
                 'confidence': 0.0
             }
-            
+
             if result and len(result) > 0:
                 for line in result[0]:
                     bbox, (text, confidence) = line
-                    
+
                     extracted_data['blocks'].append({
                         'text': text,
                         'confidence': confidence,
                         'bbox': bbox
                     })
-                    
+
                     extracted_data['text'] += text + ' '
-                
+
                 # Calcular confiança média
                 confidences = [block['confidence'] for block in extracted_data['blocks']]
                 extracted_data['confidence'] = sum(confidences) / len(confidences) if confidences else 0.0
-            
+
             return extracted_data
-            
+
         except Exception as e:
             raise Exception(f"Erro no OCR: {str(e)}")
 
@@ -168,15 +168,15 @@ ocr_service = OCRService()
 async def process_document_ocr(file: UploadFile):
     # Salvar arquivo temporário
     temp_path = f"/tmp/{file.filename}"
-    
+
     with open(temp_path, "wb") as buffer:
         content = await file.read()
         buffer.write(content)
-    
+
     try:
         # Extrair texto
         result = await ocr_service.extract_text_from_image(temp_path)
-        
+
         # Salvar resultado no banco
         document = Document(
             filename=file.filename,
@@ -185,14 +185,14 @@ async def process_document_ocr(file: UploadFile):
             ocr_blocks=result['blocks']
         )
         db.save(document)
-        
+
         return {
             "message": "Documento processado com sucesso",
             "document_id": document.id,
             "extracted_text": result['text'],
             "confidence": result['confidence']
         }
-        
+
     finally:
         # Limpar arquivo temporário
         os.remove(temp_path)
@@ -204,19 +204,19 @@ async def process_document_ocr(file: UploadFile):
 class CCTProcessor:
     def __init__(self, ocr_service: OCRService):
         self.ocr_service = ocr_service
-    
+
     async def process_cct_document(self, file_path: str, empresa_id: int) -> Dict[str, Any]:
         """Processar documento CCT completo"""
-        
+
         # 1. Extrair texto com OCR
         ocr_result = await self.ocr_service.extract_text_from_image(file_path)
-        
+
         # 2. Identificar seções importantes
         sections = self._identify_cct_sections(ocr_result['text'])
-        
+
         # 3. Extrair dados estruturados
         structured_data = self._extract_structured_data(sections)
-        
+
         # 4. Salvar no banco
         cct = CCTDocument(
             empresa_id=empresa_id,
@@ -224,20 +224,20 @@ class CCTProcessor:
             structured_data=structured_data,
             confidence=ocr_result['confidence']
         )
-        
+
         return {
             "cct_id": cct.id,
             "sections_found": list(sections.keys()),
             "structured_data": structured_data,
             "confidence": ocr_result['confidence']
         }
-    
+
     def _identify_cct_sections(self, text: str) -> Dict[str, str]:
         """Identificar seções da CCT usando regex"""
         import re
-        
+
         sections = {}
-        
+
         # Padrões para seções típicas de CCT
         patterns = {
             'salario_minimo': r'salário mínimo.*?(\d+[,.]?\d*)',
@@ -245,12 +245,12 @@ class CCTProcessor:
             'ferias': r'férias.*?([\s\S]*?)(?=\n\n|\nartigo|\ncláusula)',
             'rescisao': r'rescisão.*?([\s\S]*?)(?=\n\n|\nartigo|\ncláusula)'
         }
-        
+
         for section_name, pattern in patterns.items():
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
                 sections[section_name] = match.group(0)
-        
+
         return sections
 ```
 
@@ -272,7 +272,7 @@ class AuditStatus(enum.Enum):
 
 class Audit(Base):
     __tablename__ = "audits"
-    
+
     id = Column(Integer, primary_key=True)
     empresa_id = Column(Integer, nullable=False)
     tipo_auditoria = Column(String(100), nullable=False)
@@ -286,7 +286,7 @@ class Audit(Base):
 class AuditService:
     def __init__(self, db_session):
         self.db = db_session
-    
+
     async def create_audit(self, empresa_id: int, tipo: str) -> Audit:
         """Criar nova auditoria"""
         audit = Audit(
@@ -294,21 +294,21 @@ class AuditService:
             tipo_auditoria=tipo,
             status=AuditStatus.PENDING
         )
-        
+
         self.db.add(audit)
         self.db.commit()
-        
+
         # Iniciar processamento assíncrono
         await self._start_audit_processing(audit.id)
-        
+
         return audit
-    
+
     async def _start_audit_processing(self, audit_id: int):
         """Iniciar processamento da auditoria"""
         audit = self.db.get(Audit, audit_id)
         audit.status = AuditStatus.IN_PROGRESS
         self.db.commit()
-        
+
         try:
             # Executar verificações específicas do tipo
             if audit.tipo_auditoria == "folha_pagamento":
@@ -317,29 +317,29 @@ class AuditService:
                 results = await self._audit_cct_compliance(audit.empresa_id)
             else:
                 results = await self._audit_general(audit.empresa_id)
-            
+
             # Salvar resultados
             audit.results = results
             audit.status = AuditStatus.COMPLETED
             audit.completed_at = datetime.utcnow()
-            
+
         except Exception as e:
             audit.status = AuditStatus.FAILED
             audit.results = {"error": str(e)}
-        
+
         self.db.commit()
-    
+
     async def _audit_folha_pagamento(self, empresa_id: int) -> Dict[str, Any]:
         """Auditoria específica de folha de pagamento"""
         issues = []
-        
+
         # Verificar cálculos INSS
         folhas = self.db.query(FolhaPagamento).filter_by(empresa_id=empresa_id).all()
-        
+
         for folha in folhas:
             # Recalcular INSS
             inss_expected = calcular_inss(folha.salario_base)
-            
+
             if abs(folha.desconto_inss - inss_expected) > 0.01:
                 issues.append({
                     "tipo": "calculo_inss_incorreto",
@@ -348,7 +348,7 @@ class AuditService:
                     "valor_esperado": inss_expected,
                     "diferenca": folha.desconto_inss - inss_expected
                 })
-        
+
         return {
             "total_folhas_verificadas": len(folhas),
             "issues_encontradas": len(issues),
@@ -363,7 +363,7 @@ async def create_audit(audit_request: AuditCreateRequest):
         empresa_id=audit_request.empresa_id,
         tipo=audit_request.tipo_auditoria
     )
-    
+
     return {
         "audit_id": audit.id,
         "status": audit.status.value,
@@ -399,6 +399,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ### Principais Endpoints
 
 #### Auditorias
+
 ```python
 # Listar auditorias
 GET /api/v1/audits?empresa_id=123&status=completed
@@ -418,6 +419,7 @@ GET /api/v1/audits/456/results
 ```
 
 #### Documentos e OCR
+
 ```python
 # Upload de documento
 POST /api/v1/documents/upload
@@ -434,6 +436,7 @@ GET /api/v1/documents/456/extracted-text
 ```
 
 #### Folha de Pagamento
+
 ```python
 # Importar folha
 POST /api/v1/payroll/import
@@ -468,16 +471,16 @@ graph TB
     API --> Storage[Cloudflare R2]
     API --> Analytics[(DuckDB)]
     API --> ML[PaddleOCR + AI]
-    
+
     API --> Monitor[Monitoring System]
     Monitor --> Alerts[Email/Slack Alerts]
     Monitor --> Metrics[Prometheus Metrics]
-    
+
     subgraph "Vercel Functions"
         API
         Jobs[Background Jobs]
     end
-    
+
     subgraph "Data Layer"
         DB
         Storage
@@ -575,6 +578,7 @@ logger.debug("Processando documento...")
 ### Desenvolvimento
 
 1. **Code Style**
+
    ```bash
    # Usar formatação automática
    black src/
@@ -583,13 +587,14 @@ logger.debug("Processando documento...")
    ```
 
 2. **Testing**
+
    ```bash
    # Testes unitários
    pytest tests/unit/ -v
-   
+
    # Testes de integração
    pytest tests/integration/ -v
-   
+
    # Cobertura
    pytest --cov=src tests/
    ```
@@ -643,8 +648,8 @@ logger.debug("Processando documento...")
 
 ---
 
-*Última atualização: 2025-01-28*
-*Versão: 1.0.0*
+_Última atualização: 2025-01-28_
+_Versão: 1.0.0_
 
 ---
 

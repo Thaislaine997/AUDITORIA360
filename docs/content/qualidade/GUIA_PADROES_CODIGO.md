@@ -14,6 +14,7 @@ pre-commit install
 ## Comandos Diários
 
 ### Antes de Commit
+
 ```bash
 # Formatar código
 make format
@@ -25,6 +26,7 @@ autoflake --in-place --remove-all-unused-imports --recursive .
 ```
 
 ### Verificar Qualidade
+
 ```bash
 # Verificar violações
 flake8 .
@@ -37,19 +39,21 @@ isort --check-only .
 ## Configuração do Editor
 
 ### VSCode
+
 ```json
 {
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": ["--line-length=88"],
-    "python.sortImports.args": ["--profile", "black"],
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": true
-    }
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length=88"],
+  "python.sortImports.args": ["--profile", "black"],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }
 ```
 
 ### PyCharm
+
 1. Settings → Tools → External Tools
 2. Adicionar Black e isort como ferramentas externas
 3. Configurar shortcuts para formatação
@@ -57,6 +61,7 @@ isort --check-only .
 ## Padrões do Projeto
 
 ### Imports
+
 ```python
 # ✅ Correto
 import os
@@ -71,6 +76,7 @@ from .utils import helper_function
 ```
 
 ### Formatação
+
 ```python
 # ✅ Correto - linha <= 88 caracteres
 long_variable_name = some_function_with_long_name(
@@ -88,6 +94,7 @@ log_message = "Starting process"   # ✅ Melhor
 ```
 
 ### Variáveis
+
 ```python
 # ✅ Correto
 def process_data(data: List[dict]) -> dict:
@@ -105,6 +112,7 @@ def process_data(data: List[dict]) -> dict:
 ## Integração CI/CD
 
 ### GitHub Actions
+
 ```yaml
 - name: Python Code Quality
   run: |
@@ -114,6 +122,7 @@ def process_data(data: List[dict]) -> dict:
 ```
 
 ### Makefile
+
 ```makefile
 format:
 	black .
@@ -131,13 +140,13 @@ check:
 
 ## Violações Comuns e Soluções
 
-| Código | Problema | Solução |
-|--------|----------|---------|
-| E501 | Linha muito longa | `black .` resolve automaticamente |
-| F401 | Import não utilizado | `autoflake` remove automaticamente |
-| E302 | Faltam linhas em branco | `black .` adiciona automaticamente |
-| W293 | Linha em branco com espaços | `black .` limpa automaticamente |
-| F811 | Nome redefinido | Verificar se é intencional ou remover |
+| Código | Problema                    | Solução                               |
+| ------ | --------------------------- | ------------------------------------- |
+| E501   | Linha muito longa           | `black .` resolve automaticamente     |
+| F401   | Import não utilizado        | `autoflake` remove automaticamente    |
+| E302   | Faltam linhas em branco     | `black .` adiciona automaticamente    |
+| W293   | Linha em branco com espaços | `black .` limpa automaticamente       |
+| F811   | Nome redefinido             | Verificar se é intencional ou remover |
 
 ## Comandos Úteis
 
@@ -159,4 +168,5 @@ git diff --name-only --cached | grep '\.py$' | xargs black
 - 🤝 Dúvidas: Abrir issue ou contatar equipe de desenvolvimento
 
 ---
-*Atualizado em conjunto com a padronização do projeto AUDITORIA360*
+
+_Atualizado em conjunto com a padronização do projeto AUDITORIA360_

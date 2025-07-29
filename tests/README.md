@@ -19,6 +19,7 @@ tests/
 ## Execução de Testes
 
 **Todos os testes:**
+
 ```bash
 pytest tests/
 # ou
@@ -26,9 +27,10 @@ make test
 ```
 
 **Por categoria:**
+
 ```bash
 pytest tests/unit/          # Testes unitários
-pytest tests/integration/   # Testes de integração  
+pytest tests/integration/   # Testes de integração
 pytest tests/e2e/          # Testes end-to-end
 pytest tests/performance/  # Testes de performance
 ```

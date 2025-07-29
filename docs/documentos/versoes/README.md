@@ -7,6 +7,7 @@ Esta pasta centraliza toda a documentação relacionada ao controle de versões 
 ## 📁 Estrutura de Versões
 
 ### 🎯 **Versão Atual: 1.0.0**
+
 - **Status**: ✅ **CONCLUÍDA** (100%)
 - **Data de Lançamento**: 29 de Julho de 2024
 - **Marco**: Primeira versão completa do sistema
@@ -36,6 +37,7 @@ versoes/
 - ✅ **CI/CD pipeline funcional**
 
 **Arquivos Relacionados:**
+
 - [📋 Changelog Completo](../../../CHANGELOG.md)
 - [📊 Relatório Final de Refatoração](../../content/RELATORIO_FINAL_REFATORACAO.md)
 - [🎉 Projeto 100% Concluído](../../content/PROJETO_100_CONCLUIDO.md)
@@ -44,18 +46,21 @@ versoes/
 ## 📈 **Próximas Versões (Planejamento)**
 
 ### [1.1.0] - Melhorias e Otimizações
+
 - Otimizações de performance adicionais
 - Novos relatórios de auditoria
 - Melhorias na interface do usuário
 - Integrações com sistemas externos
 
 ### [1.2.0] - Funcionalidades Avançadas
+
 - Análise preditiva com IA
 - Dashboard analytics avançado
 - Automação de processos
 - Notificações em tempo real
 
 ### [2.0.0] - Próxima Major Release
+
 - Arquitetura de microserviços
 - Interface web moderna (React/Vue)
 - API GraphQL
@@ -64,6 +69,7 @@ versoes/
 ## 🔄 **Processo de Versionamento**
 
 ### **Semantic Versioning (SemVer)**
+
 Seguimos o padrão [Semantic Versioning](https://semver.org/):
 
 - **MAJOR.MINOR.PATCH** (ex: 1.0.0)
@@ -97,19 +103,20 @@ Seguimos o padrão [Semantic Versioning](https://semver.org/):
 
 ### **v1.0.0 Statistics**
 
-| Métrica | Valor |
-|---------|-------|
-| **Commits Totais** | 500+ |
-| **Pull Requests** | 50+ |
-| **Arquivos Alterados** | 200+ |
-| **Linhas de Código** | 50,000+ |
-| **Testes Implementados** | 300+ |
-| **Bugs Corrigidos** | 150+ |
-| **Features Implementadas** | 25+ |
+| Métrica                    | Valor   |
+| -------------------------- | ------- |
+| **Commits Totais**         | 500+    |
+| **Pull Requests**          | 50+     |
+| **Arquivos Alterados**     | 200+    |
+| **Linhas de Código**       | 50,000+ |
+| **Testes Implementados**   | 300+    |
+| **Bugs Corrigidos**        | 150+    |
+| **Features Implementadas** | 25+     |
 
 ## 🔍 **Navegação Rápida**
 
 ### **Documentação por Categoria**
+
 - 📋 **[Changelog Principal](../../../CHANGELOG.md)** - Histórico completo de mudanças
 - 📊 **[Relatórios de Status](../relatorios/)** - Relatórios detalhados de progresso
 - 🏗️ **[Arquitetura](../arquitetura/)** - Documentação técnica
@@ -117,6 +124,7 @@ Seguimos o padrão [Semantic Versioning](https://semver.org/):
 - 👥 **[Manuais](../manuais/)** - Guias para usuários
 
 ### **Documentação Técnica**
+
 - 🛠️ **[Desenvolvimento](../../content/tecnico/desenvolvimento/)** - Guias técnicos
 - 🧪 **[Testes](../../content/qualidade/)** - Documentação de testes
 - 🚀 **[Deploy](../../content/tecnico/deploy/)** - Guias de deployment
@@ -125,6 +133,7 @@ Seguimos o padrão [Semantic Versioning](https://semver.org/):
 ## 🔗 **Sincronização**
 
 Esta documentação está sincronizada com:
+
 - ✅ **CHANGELOG.md principal**
 - ✅ **Documentação técnica**
 - ✅ **Relatórios de progresso**

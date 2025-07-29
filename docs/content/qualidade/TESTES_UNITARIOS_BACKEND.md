@@ -8,20 +8,20 @@ Esta documentação descreve as melhorias implementadas nos testes unitários do
 
 ### Cobertura de Testes Alcançada
 
-- **Cobertura geral**: Melhorada de 15% para 23%+ 
+- **Cobertura geral**: Melhorada de 15% para 23%+
 - **Módulos core**: 90%+ de cobertura
 - **Testes funcionais**: 82 testes passando
 
 ### Módulos com Cobertura Completa
 
-| Módulo | Cobertura | Status |
-|--------|-----------|--------|
-| `src/core/validators.py` | 98% | ✅ Completo |
-| `src/models/database.py` | 95% | ✅ Completo |
-| `src/core/security.py` | 100% | ✅ Completo |
-| `src/core/config.py` | 100% | ✅ Completo |
-| `services/ingestion/entity_schema.py` | 89% | ✅ Completo |
-| `services/core/validators.py` | 92% | ✅ Completo |
+| Módulo                                | Cobertura | Status      |
+| ------------------------------------- | --------- | ----------- |
+| `src/core/validators.py`              | 98%       | ✅ Completo |
+| `src/models/database.py`              | 95%       | ✅ Completo |
+| `src/core/security.py`                | 100%      | ✅ Completo |
+| `src/core/config.py`                  | 100%      | ✅ Completo |
+| `services/ingestion/entity_schema.py` | 89%       | ✅ Completo |
+| `services/core/validators.py`         | 92%       | ✅ Completo |
 
 ## Estrutura de Testes Implementada
 
@@ -34,6 +34,7 @@ Esta documentação descreve as melhorias implementadas nos testes unitários do
 ```
 
 **Melhorias implementadas:**
+
 - Correção de paths de importação
 - Configuração de ambiente de teste
 - Mocks para dependências externas
@@ -41,6 +42,7 @@ Esta documentação descreve as melhorias implementadas nos testes unitários do
 ### 2. Testes dos Módulos Core
 
 #### `tests/unit/test_core_config.py`
+
 - **Funcionalidades testadas:**
   - Carregamento de configurações de arquivos JSON
   - Tratamento de arquivos inválidos ou inexistentes
@@ -51,15 +53,16 @@ Esta documentação descreve as melhorias implementadas nos testes unitários do
 class TestConfigManager:
     def test_load_config_existing_file(self):
         # Testa carregamento de arquivo válido
-    
+
     def test_load_config_invalid_json(self):
         # Testa tratamento de JSON inválido
-    
+
     def test_save_config_success(self):
         # Testa salvamento de configurações
 ```
 
 #### `tests/unit/test_core_security.py`
+
 - **Funcionalidades testadas:**
   - Hashing e verificação de senhas (bcrypt)
   - Criação e validação de tokens JWT
@@ -70,15 +73,16 @@ class TestConfigManager:
 class TestSecurityManager:
     def test_verify_password_correct(self):
         # Testa verificação de senha correta
-    
+
     def test_create_access_token_default_expiry(self):
         # Testa criação de token com expiração padrão
-    
+
     def test_verify_token_expired(self):
         # Testa rejeição de token expirado
 ```
 
 #### `tests/unit/test_core_validators.py`
+
 - **Funcionalidades testadas:**
   - Validação de CPF (com e sem formatação)
   - Validação de CNPJ (com e sem formatação)
@@ -89,7 +93,7 @@ class TestSecurityManager:
 class TestValidateCPF:
     def test_valid_cpf_with_formatting(self):
         # Testa CPF válido com pontuação
-    
+
     def test_invalid_cpf_wrong_check_digits(self):
         # Testa CPF com dígitos verificadores incorretos
 ```
@@ -97,6 +101,7 @@ class TestValidateCPF:
 ### 3. Testes de Modelos de Banco
 
 #### `tests/unit/test_models_database.py`
+
 - **Funcionalidades testadas:**
   - Configuração de conexão com banco de dados
   - Classe BaseModel e seu método `__repr__`
@@ -107,7 +112,7 @@ class TestValidateCPF:
 class TestBaseModel:
     def test_base_model_repr_priority_order(self):
         # Testa ordem de prioridade de campos no __repr__
-    
+
     def test_base_model_repr_none_values_skipped(self):
         # Testa que valores None são ignorados
 ```
@@ -115,6 +120,7 @@ class TestBaseModel:
 ### 4. Testes de Schemas de Validação
 
 #### `tests/unit/ingestion/test_entity_schema.py`
+
 - **Funcionalidades testadas:**
   - Validação de entidades extraídas por OCR
   - Sanitização de CPF (remoção de formatação)
@@ -124,6 +130,7 @@ class TestBaseModel:
 ## Correções Implementadas
 
 ### 1. Problemas de Importação
+
 ```python
 # Antes (falha)
 from services.ingestion.entity_schema import Entity
@@ -135,6 +142,7 @@ sys.path.insert(0, os.path.join(project_root, 'services'))
 ```
 
 ### 2. Atualização para Pydantic v2
+
 ```python
 # Antes (deprecado)
 @validator("cpf")
@@ -149,6 +157,7 @@ def cpf_valido(cls, v):
 ```
 
 ### 3. Correção de Validação de Campos
+
 ```python
 # Antes (incorreto - rejeitava 0 e False)
 elif not data[field] or (
@@ -189,6 +198,7 @@ elif data[field] is None or (
 ## Execução dos Testes
 
 ### Comandos Básicos
+
 ```bash
 # Todos os testes unitários
 pytest tests/unit/ -v
@@ -201,6 +211,7 @@ pytest tests/unit/test_core_config.py -v
 ```
 
 ### Configuração CI/CD
+
 ```yaml
 # Configuração para GitHub Actions
 - name: Run Unit Tests
@@ -223,11 +234,13 @@ pytest tests/unit/test_core_config.py -v
 A implementação dos testes unitários representa um avanço significativo na qualidade do código do sistema AUDITORIA360. Com a cobertura atual de 23%+ e os módulos core com 90%+ de cobertura, estabelecemos uma base sólida para o desenvolvimento contínuo e manutenção do sistema.
 
 A estrutura implementada facilita:
+
 - Detecção precoce de bugs
 - Refatoração segura
 - Documentação viva do comportamento esperado
 - Melhoria contínua da qualidade
 
 ---
+
 **Última atualização**: 2024-07-29  
 **Responsável**: Equipe de Desenvolvimento AUDITORIA360

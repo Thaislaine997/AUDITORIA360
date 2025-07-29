@@ -11,6 +11,7 @@ Este documento descreve a estrutura e implementação dos testes unitários para
 **Localização**: `src/frontend/src/test/`
 
 **Estrutura**:
+
 ```
 src/frontend/src/test/
 ├── setup.ts                     # Configuração global dos testes
@@ -25,6 +26,7 @@ src/frontend/src/test/
 ```
 
 **Tecnologias Utilizadas**:
+
 - **Vitest**: Framework de testes
 - **Testing Library**: Utilitários para testes de componentes React
 - **jsdom**: Ambiente DOM para testes
@@ -34,12 +36,14 @@ src/frontend/src/test/
 **Localização**: `tests/frontend/`
 
 **Estrutura**:
+
 ```
 tests/frontend/
 └── test_html_templates.py      # Testes para templates HTML
 ```
 
 **Tecnologias Utilizadas**:
+
 - **pytest**: Framework de testes Python
 - **BeautifulSoup**: Parser HTML para validação de estrutura
 
@@ -48,6 +52,7 @@ tests/frontend/
 ### Frontend React/TypeScript
 
 1. **Dependências instaladas**:
+
    ```json
    {
      "vitest": "^3.2.4",
@@ -59,16 +64,17 @@ tests/frontend/
    ```
 
 2. **Configuração no `vite.config.ts`**:
+
    ```typescript
    export default defineConfig({
      plugins: [react()],
      test: {
        globals: true,
-       environment: 'jsdom',
-       setupFiles: ['./src/test/setup.ts'],
+       environment: "jsdom",
+       setupFiles: ["./src/test/setup.ts"],
        css: true,
-     }
-   })
+     },
+   });
    ```
 
 3. **Scripts disponíveis**:
@@ -81,6 +87,7 @@ tests/frontend/
 ### Templates HTML
 
 1. **Dependências Python**:
+
    ```bash
    pip install pytest beautifulsoup4
    ```
@@ -95,21 +102,25 @@ tests/frontend/
 ### 1. Testes de Componentes React
 
 #### Navbar Component
+
 - ✅ Renderização básica
 - ✅ Conteúdo do título
 - ✅ Estrutura com Material-UI
 
-#### Sidebar Component  
+#### Sidebar Component
+
 - ✅ Renderização de itens de menu
 - ✅ Navegação por clique
 - ✅ Estado ativo do menu
 
 #### Dashboard Page
+
 - ✅ Estados de carregamento
 - ✅ Renderização de métricas
 - ✅ Tratamento de erros
 
 #### useAuth Hook
+
 - ✅ Estados de autenticação
 - ✅ Carregamento inicial
 - ✅ Tratamento de erros
@@ -117,16 +128,19 @@ tests/frontend/
 ### 2. Testes de Templates HTML
 
 #### Estrutura e Sintaxe
+
 - ✅ Validação de elementos HTML
 - ✅ Sintaxe Handlebars correta
 - ✅ Atributos obrigatórios
 
 #### Acessibilidade
+
 - ✅ Atributos ARIA
 - ✅ Roles semânticos
 - ✅ Estrutura de navegação
 
 #### Integração
+
 - ✅ Existência de todos os templates
 - ✅ Codificação UTF-8
 - ✅ Consistência entre arquivos
@@ -134,12 +148,14 @@ tests/frontend/
 ## Cobertura de Testes
 
 ### Componentes Testados
+
 - **Navbar**: 3 testes ✅
 - **Sidebar**: 5 testes (4 ✅, 1 em ajuste)
 - **Dashboard**: 5 testes (4 ✅, 1 em ajuste)
 - **useAuth**: 4 testes (3 ✅, 1 em ajuste)
 
 ### Templates Testados
+
 - **navigation.html**: ✅ Estrutura, sintaxe e acessibilidade
 - **header.html**: ✅ Existência e estrutura básica
 - **footer.html**: ✅ Existência e estrutura básica
@@ -157,22 +173,23 @@ O arquivo `.github/workflows/ci-cd.yml` foi atualizado para incluir:
 frontend-tests:
   runs-on: ubuntu-latest
   steps:
-  - uses: actions/checkout@v4
-  - name: Set up Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version: '20'
-  - name: Install frontend dependencies
-    run: cd src/frontend && npm ci
-  - name: Run frontend linting
-    run: cd src/frontend && npm run lint
-  - name: Run frontend tests
-    run: cd src/frontend && npm test -- --run
-  - name: Build frontend
-    run: cd src/frontend && npm run build
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+    - name: Install frontend dependencies
+      run: cd src/frontend && npm ci
+    - name: Run frontend linting
+      run: cd src/frontend && npm run lint
+    - name: Run frontend tests
+      run: cd src/frontend && npm test -- --run
+    - name: Build frontend
+      run: cd src/frontend && npm run build
 ```
 
 ### Validações Automáticas
+
 - **Linting**: ESLint para código TypeScript/React
 - **Testes**: Execução automática em PRs e pushes
 - **Build**: Verificação de que o projeto compila
@@ -183,6 +200,7 @@ frontend-tests:
 ### Localmente
 
 1. **Testes React**:
+
    ```bash
    cd src/frontend
    npm install
@@ -198,18 +216,21 @@ frontend-tests:
 ### No CI/CD
 
 Os testes são executados automaticamente em:
+
 - Pull Requests para `main`
 - Pushes para `main` e `develop`
 
 ## Próximos Passos
 
 ### Melhorias Planejadas
+
 1. **Cobertura de Código**: Configurar relatórios de cobertura
 2. **Testes E2E**: Implementar testes end-to-end com Playwright
 3. **Visual Regression**: Testes de regressão visual
 4. **Performance**: Testes de performance frontend
 
 ### Expansão dos Testes
+
 1. **Mais Componentes**: Testar todos os componentes do sistema
 2. **Integração**: Testes de integração entre componentes
 3. **Acessibilidade**: Testes automatizados de acessibilidade
@@ -218,11 +239,13 @@ Os testes são executados automaticamente em:
 ## Manutenção
 
 ### Atualizando Testes
+
 - Manter testes sincronizados com mudanças nos componentes
 - Atualizar mocks quando APIs mudarem
 - Revisar cobertura periodicamente
 
 ### Boas Práticas
+
 - Testes devem ser independentes
 - Usar dados mock realistas
 - Manter testes rápidos e focados

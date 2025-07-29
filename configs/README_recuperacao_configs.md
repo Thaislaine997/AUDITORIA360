@@ -11,5 +11,6 @@ python3 configs/decrypt_configs.py
 4. Os arquivos `.enc` serão restaurados para o formato original.
 
 **Atenção:**
+
 - Nunca compartilhe a senha ou o arquivo `configs.key` fora do ambiente seguro.
 - Após a recuperação, reexecute o script de criptografia se precisar proteger novamente.

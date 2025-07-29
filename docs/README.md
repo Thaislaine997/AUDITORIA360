@@ -61,12 +61,14 @@ cd docs/sphinx && sphinx-build -b html . _build/html
 ## 📚 Tipos de Documentação
 
 ### 1. Documentação da API (Sphinx)
+
 - **Localização**: `docs/sphinx/_build/html/`
 - **Fonte**: Docstrings do código-fonte
 - **Conteúdo**: APIs, modelos, serviços, utilitários
 - **Atualização**: Automática a partir do código
 
 ### 2. Documentação de Usuário
+
 - **Localização**: `docs/content/`
 - **Fonte**: Markdown files
 - **Conteúdo**: Manuais, guias, tutoriais
@@ -75,12 +77,14 @@ cd docs/sphinx && sphinx-build -b html . _build/html
 ## 🔧 Configuração
 
 ### Sphinx (API Documentation)
+
 - **Configuração**: `docs/sphinx/conf.py`
 - **Tema**: Alabaster
 - **Idioma**: Português (pt_BR)
 - **Extensions**: autodoc, napoleon, viewcode
 
 ### MkDocs (User Documentation)
+
 - **Configuração**: `docs/mkdocs.yml`
 - **Tema**: Material
 - **Plugins**: mkdocstrings para integração Python
@@ -90,24 +94,26 @@ cd docs/sphinx && sphinx-build -b html . _build/html
 ### Para Desenvolvedores
 
 1. **Sempre documente funções e classes**:
+
    ```python
    def minha_funcao(param1: str, param2: int) -> bool:
        """
        Descrição breve da função.
-       
+
        Args:
            param1: Descrição do parâmetro 1
            param2: Descrição do parâmetro 2
-           
+
        Returns:
            Descrição do retorno
-           
+
        Raises:
            ValueError: Quando param2 é negativo
        """
    ```
 
 2. **Execute a build após mudanças**:
+
    ```bash
    make docs-build
    ```
@@ -132,6 +138,7 @@ cd docs/sphinx && sphinx-build -b html . _build/html
 ## 🌐 Acesso à Documentação
 
 ### Local Development
+
 ```bash
 # Servir documentação na porta 8080
 make docs-serve
@@ -143,6 +150,7 @@ make docs-serve
 ```
 
 ### Production
+
 A documentação pode ser servida diretamente dos arquivos estáticos gerados ou integrada a serviços como GitHub Pages, Netlify, etc.
 
 ## 🔄 Sincronização Automática

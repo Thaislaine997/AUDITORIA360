@@ -14,6 +14,7 @@ Para acessar o relatório unificado completo, clique no link acima ou navegue pa
 ## Estrutura de Relatórios
 
 Todos os relatórios estão organizados em:
+
 - 📊 **Status do Projeto**: [`../../relatorios/status-projeto.md`](../../relatorios/status-projeto.md)
 - 📈 **Performance**: [`../../relatorios/performance.md`](../../relatorios/performance.md)
 - 🧪 **Testes**: [`../../relatorios/reorganizacao-testes-relatorio.md`](../../relatorios/reorganizacao-testes-relatorio.md)

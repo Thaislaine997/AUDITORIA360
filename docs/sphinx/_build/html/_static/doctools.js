@@ -10,7 +10,7 @@ const BLACKLISTED_KEY_CONTROL_ELEMENTS = new Set([
   "BUTTON",
 ]);
 
-const _ready = (callback) => {
+const _ready = callback => {
   if (document.readyState !== "loading") {
     callback();
   } else {
@@ -31,12 +31,12 @@ const Documentation = {
    * i18n support
    */
   TRANSLATIONS: {},
-  PLURAL_EXPR: (n) => (n === 1 ? 0 : 1),
+  PLURAL_EXPR: n => (n === 1 ? 0 : 1),
   LOCALE: "unknown",
 
   // gettext and ngettext don't access this so that the functions
   // can safely bound to a different name (_ = Documentation.gettext)
-  gettext: (string) => {
+  gettext: string => {
     const translated = Documentation.TRANSLATIONS[string];
     switch (typeof translated) {
       case "undefined":
@@ -55,7 +55,7 @@ const Documentation = {
     return n === 1 ? singular : plural;
   },
 
-  addTranslations: (catalog) => {
+  addTranslations: catalog => {
     Object.assign(Documentation.TRANSLATIONS, catalog.messages);
     Documentation.PLURAL_EXPR = new Function(
       "n",
@@ -75,23 +75,23 @@ const Documentation = {
    * Initialise the domain index toggle buttons
    */
   initDomainIndexTable: () => {
-    const toggler = (el) => {
+    const toggler = el => {
       const idNumber = el.id.substr(7);
       const toggledRows = document.querySelectorAll(`tr.cg-${idNumber}`);
       if (el.src.substr(-9) === "minus.png") {
         el.src = `${el.src.substr(0, el.src.length - 9)}plus.png`;
-        toggledRows.forEach((el) => (el.style.display = "none"));
+        toggledRows.forEach(el => (el.style.display = "none"));
       } else {
         el.src = `${el.src.substr(0, el.src.length - 8)}minus.png`;
-        toggledRows.forEach((el) => (el.style.display = ""));
+        toggledRows.forEach(el => (el.style.display = ""));
       }
     };
 
     const togglerElements = document.querySelectorAll("img.toggler");
-    togglerElements.forEach((el) =>
-      el.addEventListener("click", (event) => toggler(event.currentTarget))
+    togglerElements.forEach(el =>
+      el.addEventListener("click", event => toggler(event.currentTarget))
     );
-    togglerElements.forEach((el) => (el.style.display = ""));
+    togglerElements.forEach(el => (el.style.display = ""));
     if (DOCUMENTATION_OPTIONS.COLLAPSE_INDEX) togglerElements.forEach(toggler);
   },
 
@@ -103,9 +103,10 @@ const Documentation = {
     )
       return;
 
-    document.addEventListener("keydown", (event) => {
+    document.addEventListener("keydown", event => {
       // bail for input elements
-      if (BLACKLISTED_KEY_CONTROL_ELEMENTS.has(document.activeElement.tagName)) return;
+      if (BLACKLISTED_KEY_CONTROL_ELEMENTS.has(document.activeElement.tagName))
+        return;
       // bail with special keys
       if (event.altKey || event.ctrlKey || event.metaKey) return;
 

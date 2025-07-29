@@ -9,6 +9,7 @@ Este documento fornece uma visão detalhada de todos os módulos principais do s
 ## 📁 Estrutura de Módulos
 
 ### 🧠 **src/ai_agent.py**
+
 **Responsabilidade**: Agente de IA principal com integração MCP
 
 ```python
@@ -20,6 +21,7 @@ response = await agent.process_query("Calcular folha de pagamento do funcionári
 ```
 
 **Funcionalidades**:
+
 - Processamento de consultas em linguagem natural
 - Integração com Model Context Protocol (MCP)
 - Execução de ferramentas especializadas
@@ -30,6 +32,7 @@ response = await agent.process_query("Calcular folha de pagamento do funcionári
 ### 🔐 **src/auth/** - Módulo de Autenticação
 
 #### `src/auth/unified_auth.py`
+
 **Responsabilidade**: Sistema unificado de autenticação
 
 ```python
@@ -42,6 +45,7 @@ if user:
 ```
 
 **Funcionalidades**:
+
 - Autenticação JWT
 - Gerenciamento de sessões
 - Controle de permissões
@@ -52,6 +56,7 @@ if user:
 ### 🏗️ **src/core/** - Núcleo do Sistema
 
 #### `src/core/config.py`
+
 **Responsabilidade**: Gerenciamento centralizado de configurações
 
 ```python
@@ -62,6 +67,7 @@ database_url = config.get('DATABASE_URL')
 ```
 
 #### `src/core/exceptions.py`
+
 **Responsabilidade**: Exceções customizadas do sistema
 
 ```python
@@ -75,6 +81,7 @@ except ValidationError as e:
 ```
 
 #### `src/core/security.py`
+
 **Responsabilidade**: Funcionalidades de segurança
 
 ```python
@@ -89,6 +96,7 @@ encrypted_data = security.encrypt_sensitive_data(data)
 ### 🔌 **src/mcp/** - Model Context Protocol
 
 #### `src/mcp/server.py`
+
 **Responsabilidade**: Servidor MCP para integração com Copilot
 
 ```python
@@ -99,6 +107,7 @@ await server.start()
 ```
 
 #### `src/mcp/client.py`
+
 **Responsabilidade**: Cliente MCP para conexões externas
 
 ```python
@@ -109,9 +118,11 @@ result = await client.call_tool("calculate_payroll", params)
 ```
 
 #### `src/mcp/tools.py`
+
 **Responsabilidade**: Ferramentas MCP disponíveis
 
 **Ferramentas Disponíveis**:
+
 - `payroll_calculator`: Cálculo de folha de pagamento
 - `compliance_checker`: Verificação de conformidade
 - `audit_executor`: Execução de auditorias
@@ -122,6 +133,7 @@ result = await client.call_tool("calculate_payroll", params)
 ### 📊 **src/models/** - Modelos de Dados
 
 #### `src/models/auth_models.py`
+
 **Responsabilidade**: Modelos de autenticação e usuários
 
 ```python
@@ -131,6 +143,7 @@ user = User(email="user@example.com", role="admin")
 ```
 
 #### `src/models/payroll_models.py`
+
 **Responsabilidade**: Modelos de folha de pagamento
 
 ```python
@@ -140,6 +153,7 @@ employee = Employee(name="João Silva", cpf="123.456.789-00")
 ```
 
 #### `src/models/document_models.py`
+
 **Responsabilidade**: Modelos para gestão de documentos
 
 ```python
@@ -149,6 +163,7 @@ doc = Document(title="CCT 2024", type="convention")
 ```
 
 #### `src/models/audit_models.py`
+
 **Responsabilidade**: Modelos para auditoria e compliance
 
 ```python
@@ -162,6 +177,7 @@ audit = AuditExecution(type="monthly", status="running")
 ### 🔧 **src/services/** - Serviços de Negócio
 
 #### `src/services/ocr/`
+
 **Responsabilidade**: Serviços de OCR (Optical Character Recognition)
 
 ```python
@@ -172,6 +188,7 @@ text = await ocr.extract_text_from_pdf("document.pdf")
 ```
 
 #### `src/services/storage/`
+
 **Responsabilidade**: Gerenciamento de armazenamento
 
 ```python
@@ -186,6 +203,7 @@ url = await storage.upload_file("file.pdf", bucket="documents")
 ### 🛠️ **src/utils/** - Utilitários
 
 #### `src/utils/monitoring.py`
+
 **Responsabilidade**: Monitoramento e métricas
 
 ```python
@@ -196,6 +214,7 @@ monitor.track_api_call("payroll_calculation", duration=1.5)
 ```
 
 #### `src/utils/performance.py`
+
 **Responsabilidade**: Otimização de performance
 
 ```python
@@ -213,6 +232,7 @@ def expensive_calculation():
 ## 🚀 **API Principal**
 
 ### `api/index.py`
+
 **Responsabilidade**: API principal FastAPI
 
 ```python
@@ -224,6 +244,7 @@ def expensive_calculation():
 ```
 
 ### `api/dashboard.py`
+
 **Responsabilidade**: Dashboard e métricas
 
 ```python
@@ -239,6 +260,7 @@ def expensive_calculation():
 ### `scripts/python/`
 
 #### `deploy_production.py`
+
 **Responsabilidade**: Deploy em produção
 
 ```bash
@@ -246,6 +268,7 @@ python scripts/python/deploy_production.py --environment prod
 ```
 
 #### `setup_monitoring.py`
+
 **Responsabilidade**: Configuração de monitoramento
 
 ```bash
@@ -253,6 +276,7 @@ python scripts/python/setup_monitoring.py --enable-alerts
 ```
 
 #### `demo_mcp_integration.py`
+
 **Responsabilidade**: Demonstração da integração MCP
 
 ```bash
@@ -260,6 +284,7 @@ python scripts/python/demo_mcp_integration.py
 ```
 
 #### `onboarding_cliente.py`
+
 **Responsabilidade**: Onboarding de novos clientes
 
 ```bash
@@ -290,11 +315,13 @@ python scripts/python/onboarding_cliente.py --client-id new-client
 ## 📚 **Próximos Passos**
 
 ### Para Desenvolvedores
+
 1. Consulte o [Guia de Desenvolvimento](desenvolvimento/dev-guide.md)
 2. Veja exemplos práticos em [APIs](apis/exemplos-praticos.md)
 3. Configure o ambiente seguindo [Setup](desenvolvimento/setup-ambiente.md)
 
 ### Para Contribuições
+
 1. Siga os padrões em [Padrões de Código](../../qualidade/PADRONIZACAO_PYTHON.md)
 2. Execute testes com `make test`
 3. Use pre-commit hooks: `make setup-hooks`

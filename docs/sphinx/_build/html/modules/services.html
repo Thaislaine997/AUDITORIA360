@@ -1,14 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="pt-BR" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Serviços de Negócio &#8212; Documentação AUDITORIA360 1.0.0</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../_static/pygments.css?v=d1102ebc"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../_static/basic.css?v=b08954a9"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../_static/alabaster.css?v=27fed22d"
+    />
     <script src="../_static/documentation_options.js?v=c0c8e3fa"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
@@ -17,354 +30,2220 @@
     <link rel="search" title="Buscar" href="../search.html" />
     <link rel="next" title="APIs REST" href="api.html" />
     <link rel="prev" title="Modelos de Dados" href="models.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
 
-  
-  
-
-  </head><body>
-  
-
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  </head>
+  <body>
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
-            
-  <section id="servicos-de-negocio">
-<h1>Serviços de Negócio<a class="headerlink" href="#servicos-de-negocio" title="Link para este cabeçalho">¶</a></h1>
-<p>Este módulo contém todos os serviços que implementam a lógica de negócio do sistema.</p>
-<section id="module-src.services.payroll_service">
-<span id="servico-de-folha-de-pagamento"></span><h2>Serviço de Folha de Pagamento<a class="headerlink" href="#module-src.services.payroll_service" title="Link para este cabeçalho">¶</a></h2>
-<p>Payroll service for AUDITORIA360</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.create_employee">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">create_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.EmployeeCreate" title="src.schemas.payroll_schemas.EmployeeCreate"><span class="pre">EmployeeCreate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_by_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.payroll_models.Employee" title="src.models.payroll_models.Employee"><span class="pre">Employee</span></a></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#create_employee"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.create_employee" title="Link para esta definição">¶</a></dt>
-<dd><p>Create a new employee</p>
-</dd></dl>
+            <section id="servicos-de-negocio">
+              <h1>
+                Serviços de Negócio<a
+                  class="headerlink"
+                  href="#servicos-de-negocio"
+                  title="Link para este cabeçalho"
+                  >¶</a
+                >
+              </h1>
+              <p>
+                Este módulo contém todos os serviços que implementam a lógica de
+                negócio do sistema.
+              </p>
+              <section id="module-src.services.payroll_service">
+                <span id="servico-de-folha-de-pagamento"></span>
+                <h2>
+                  Serviço de Folha de Pagamento<a
+                    class="headerlink"
+                    href="#module-src.services.payroll_service"
+                    title="Link para este cabeçalho"
+                    >¶</a
+                  >
+                </h2>
+                <p>Payroll service for AUDITORIA360</p>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.create_employee"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">create_employee</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">employee_data</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.EmployeeCreate"
+                          title="src.schemas.payroll_schemas.EmployeeCreate"
+                          ><span class="pre">EmployeeCreate</span></a
+                        ></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">created_by_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.Employee"
+                          title="src.models.payroll_models.Employee"
+                          ><span class="pre">Employee</span></a
+                        ></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#create_employee"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.create_employee"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Create a new employee</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.get_employees">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">get_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_active</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">department</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#src.models.payroll_models.Employee" title="src.models.payroll_models.Employee"><span class="pre">Employee</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#get_employees"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.get_employees" title="Link para esta definição">¶</a></dt>
-<dd><p>Get list of employees with optional filtering</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.get_employees"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">get_employees</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">skip</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">0</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">limit</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">100</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">is_active</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">bool</span><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">None</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">department</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">str</span><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">None</span></span
+                      ></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><span class="pre">List</span
+                        ><span class="p"><span class="pre">[</span></span
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.Employee"
+                          title="src.models.payroll_models.Employee"
+                          ><span class="pre">Employee</span></a
+                        ><span class="p"><span class="pre">]</span></span></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#get_employees"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.get_employees"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Get list of employees with optional filtering</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.get_employee_by_id">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">get_employee_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.payroll_models.Employee" title="src.models.payroll_models.Employee"><span class="pre">Employee</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#get_employee_by_id"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.get_employee_by_id" title="Link para esta definição">¶</a></dt>
-<dd><p>Get employee by ID</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.get_employee_by_id"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">get_employee_by_id</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">employee_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.Employee"
+                          title="src.models.payroll_models.Employee"
+                          ><span class="pre">Employee</span></a
+                        ><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#get_employee_by_id"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.get_employee_by_id"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Get employee by ID</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.update_employee">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">update_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.EmployeeUpdate" title="src.schemas.payroll_schemas.EmployeeUpdate"><span class="pre">EmployeeUpdate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.payroll_models.Employee" title="src.models.payroll_models.Employee"><span class="pre">Employee</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#update_employee"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.update_employee" title="Link para esta definição">¶</a></dt>
-<dd><p>Update employee by ID</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.update_employee"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">update_employee</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">employee_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">employee_update</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.EmployeeUpdate"
+                          title="src.schemas.payroll_schemas.EmployeeUpdate"
+                          ><span class="pre">EmployeeUpdate</span></a
+                        ></span
+                      ></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.Employee"
+                          title="src.models.payroll_models.Employee"
+                          ><span class="pre">Employee</span></a
+                        ><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#update_employee"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.update_employee"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Update employee by ID</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.create_payroll_competency">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">create_payroll_competency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">competency_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollCompetencyCreate" title="src.schemas.payroll_schemas.PayrollCompetencyCreate"><span class="pre">PayrollCompetencyCreate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_by_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.payroll_models.PayrollCompetency" title="src.models.payroll_models.PayrollCompetency"><span class="pre">PayrollCompetency</span></a></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#create_payroll_competency"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.create_payroll_competency" title="Link para esta definição">¶</a></dt>
-<dd><p>Create a new payroll competency</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.create_payroll_competency"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">create_payroll_competency</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">competency_data</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollCompetencyCreate"
+                          title="src.schemas.payroll_schemas.PayrollCompetencyCreate"
+                          ><span class="pre">PayrollCompetencyCreate</span></a
+                        ></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">created_by_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.PayrollCompetency"
+                          title="src.models.payroll_models.PayrollCompetency"
+                          ><span class="pre">PayrollCompetency</span></a
+                        ></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#create_payroll_competency"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.create_payroll_competency"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Create a new payroll competency</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.get_payroll_competencies">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">get_payroll_competencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#src.models.payroll_models.PayrollCompetency" title="src.models.payroll_models.PayrollCompetency"><span class="pre">PayrollCompetency</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#get_payroll_competencies"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.get_payroll_competencies" title="Link para esta definição">¶</a></dt>
-<dd><p>Get list of payroll competencies with optional filtering</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.get_payroll_competencies"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">get_payroll_competencies</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">skip</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">0</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">limit</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">100</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">year</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">int</span><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">None</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">month</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">int</span><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">None</span></span
+                      ></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><span class="pre">List</span
+                        ><span class="p"><span class="pre">[</span></span
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.PayrollCompetency"
+                          title="src.models.payroll_models.PayrollCompetency"
+                          ><span class="pre">PayrollCompetency</span></a
+                        ><span class="p"><span class="pre">]</span></span></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#get_payroll_competencies"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.get_payroll_competencies"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd>
+                    <p>
+                      Get list of payroll competencies with optional filtering
+                    </p>
+                  </dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.get_payroll_competency_by_id">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">get_payroll_competency_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">competency_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.payroll_models.PayrollCompetency" title="src.models.payroll_models.PayrollCompetency"><span class="pre">PayrollCompetency</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#get_payroll_competency_by_id"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.get_payroll_competency_by_id" title="Link para esta definição">¶</a></dt>
-<dd><p>Get payroll competency by ID</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.get_payroll_competency_by_id"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre"
+                        >get_payroll_competency_by_id</span
+                      ></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">competency_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">include_items</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">bool</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">False</span></span
+                      ></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.PayrollCompetency"
+                          title="src.models.payroll_models.PayrollCompetency"
+                          ><span class="pre">PayrollCompetency</span></a
+                        ><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#get_payroll_competency_by_id"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.get_payroll_competency_by_id"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Get payroll competency by ID</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.update_payroll_competency">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">update_payroll_competency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">competency_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">competency_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollCompetencyUpdate" title="src.schemas.payroll_schemas.PayrollCompetencyUpdate"><span class="pre">PayrollCompetencyUpdate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#src.models.payroll_models.PayrollCompetency" title="src.models.payroll_models.PayrollCompetency"><span class="pre">PayrollCompetency</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#update_payroll_competency"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.update_payroll_competency" title="Link para esta definição">¶</a></dt>
-<dd><p>Update payroll competency by ID</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.update_payroll_competency"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">update_payroll_competency</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">competency_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">competency_update</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollCompetencyUpdate"
+                          title="src.schemas.payroll_schemas.PayrollCompetencyUpdate"
+                          ><span class="pre">PayrollCompetencyUpdate</span></a
+                        ></span
+                      ></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="models.html#src.models.payroll_models.PayrollCompetency"
+                          title="src.models.payroll_models.PayrollCompetency"
+                          ><span class="pre">PayrollCompetency</span></a
+                        ><span class="w"> </span
+                        ><span class="p"><span class="pre">|</span></span
+                        ><span class="w"> </span
+                        ><span class="pre">None</span></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#update_payroll_competency"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.update_payroll_competency"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Update payroll competency by ID</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.calculate_payroll">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">calculate_payroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollCalculationRequest" title="src.schemas.payroll_schemas.PayrollCalculationRequest"><span class="pre">PayrollCalculationRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollCalculationResult" title="src.schemas.payroll_schemas.PayrollCalculationResult"><span class="pre">PayrollCalculationResult</span></a></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#calculate_payroll"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.calculate_payroll" title="Link para esta definição">¶</a></dt>
-<dd><p>Calculate payroll for a competency</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.calculate_payroll"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">calculate_payroll</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">calculation_request</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollCalculationRequest"
+                          title="src.schemas.payroll_schemas.PayrollCalculationRequest"
+                          ><span class="pre">PayrollCalculationRequest</span></a
+                        ></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">user_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollCalculationResult"
+                          title="src.schemas.payroll_schemas.PayrollCalculationResult"
+                          ><span class="pre">PayrollCalculationResult</span></a
+                        ></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#calculate_payroll"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.calculate_payroll"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Calculate payroll for a competency</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.validate_payroll">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">validate_payroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollValidationRequest" title="src.schemas.payroll_schemas.PayrollValidationRequest"><span class="pre">PayrollValidationRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollValidationResult" title="src.schemas.payroll_schemas.PayrollValidationResult"><span class="pre">PayrollValidationResult</span></a></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#validate_payroll"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.validate_payroll" title="Link para esta definição">¶</a></dt>
-<dd><p>Validate payroll calculations</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.validate_payroll"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">validate_payroll</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">validation_request</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollValidationRequest"
+                          title="src.schemas.payroll_schemas.PayrollValidationRequest"
+                          ><span class="pre">PayrollValidationRequest</span></a
+                        ></span
+                      ></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollValidationResult"
+                          title="src.schemas.payroll_schemas.PayrollValidationResult"
+                          ><span class="pre">PayrollValidationResult</span></a
+                        ></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#validate_payroll"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.validate_payroll"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Validate payroll calculations</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.import_payroll_data">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">import_payroll_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">competency_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/payroll_service.html#import_payroll_data"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.import_payroll_data" title="Link para esta definição">¶</a></dt>
-<dd><p>Import payroll data from file</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.import_payroll_data"
+                  >
+                    <em class="property"
+                      ><span class="k"><span class="pre">async</span></span
+                      ><span class="w"> </span></em
+                    ><span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">import_payroll_data</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">file</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">competency_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">user_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    ><span class="sig-paren">)</span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#import_payroll_data"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.import_payroll_data"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Import payroll data from file</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.payroll_service.generate_payroll_report">
-<span class="sig-prename descclassname"><span class="pre">src.services.payroll_service.</span></span><span class="sig-name descname"><span class="pre">generate_payroll_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.orm.Session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollReportRequest" title="src.schemas.payroll_schemas.PayrollReportRequest"><span class="pre">PayrollReportRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="schemas.html#src.schemas.payroll_schemas.PayrollReportResponse" title="src.schemas.payroll_schemas.PayrollReportResponse"><span class="pre">PayrollReportResponse</span></a></span></span><a class="reference internal" href="../_modules/src/services/payroll_service.html#generate_payroll_report"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.payroll_service.generate_payroll_report" title="Link para esta definição">¶</a></dt>
-<dd><p>Generate payroll report</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.payroll_service.generate_payroll_report"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.payroll_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">generate_payroll_report</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><span class="pre">sqlalchemy.orm.Session</span></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">report_request</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollReportRequest"
+                          title="src.schemas.payroll_schemas.PayrollReportRequest"
+                          ><span class="pre">PayrollReportRequest</span></a
+                        ></span
+                      ></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"><span class="pre">user_id</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span></em
+                    ><span class="sig-paren">)</span>
+                    <span class="sig-return"
+                      ><span class="sig-return-icon">&#x2192;</span>
+                      <span class="sig-return-typehint"
+                        ><a
+                          class="reference internal"
+                          href="schemas.html#src.schemas.payroll_schemas.PayrollReportResponse"
+                          title="src.schemas.payroll_schemas.PayrollReportResponse"
+                          ><span class="pre">PayrollReportResponse</span></a
+                        ></span
+                      ></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/payroll_service.html#generate_payroll_report"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.payroll_service.generate_payroll_report"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Generate payroll report</p></dd>
+                </dl>
+              </section>
+              <section id="servico-de-cache">
+                <h2>
+                  Serviço de Cache<a
+                    class="headerlink"
+                    href="#servico-de-cache"
+                    title="Link para este cabeçalho"
+                    >¶</a
+                  >
+                </h2>
+                <p id="module-src.services.cache_service">
+                  Redis Cache Service for AUDITORIA360 Performance optimization
+                  for reports and heavy queries
+                </p>
+                <dl class="py class">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.cache_service.CacheService"
+                  >
+                    <em class="property"
+                      ><span class="k"><span class="pre">class</span></span
+                      ><span class="w"> </span></em
+                    ><span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.cache_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">CacheService</span></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/cache_service.html#CacheService"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.cache_service.CacheService"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd>
+                    <p>
+                      Base:
+                      <code
+                        class="xref py py-class docutils literal notranslate"
+                        ><span class="pre">object</span></code
+                      >
+                    </p>
+                    <p>
+                      Redis-based caching service for performance optimization
+                    </p>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheService.__init__"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">__init__</span></span
+                        ><span class="sig-paren">(</span
+                        ><span class="sig-paren">)</span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheService.__init__"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheService.__init__"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd>
+                        <p>
+                          Initialize Redis connection with fallback to in-memory
+                          cache
+                        </p>
+                      </dd>
+                    </dl>
 
-</section>
-<section id="servico-de-cache">
-<h2>Serviço de Cache<a class="headerlink" href="#servico-de-cache" title="Link para este cabeçalho">¶</a></h2>
-<p id="module-src.services.cache_service">Redis Cache Service for AUDITORIA360
-Performance optimization for reports and heavy queries</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.services.cache_service.</span></span><span class="sig-name descname"><span class="pre">CacheService</span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService" title="Link para esta definição">¶</a></dt>
-<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Redis-based caching service for performance optimization</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService.__init__" title="Link para esta definição">¶</a></dt>
-<dd><p>Initialize Redis connection with fallback to in-memory cache</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheService.get"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">get</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">key</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">Any</span><span class="w"> </span
+                            ><span class="p"><span class="pre">|</span></span
+                            ><span class="w"> </span
+                            ><span class="pre">None</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheService.get"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheService.get"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Get value from cache</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService.get"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService.get" title="Link para esta definição">¶</a></dt>
-<dd><p>Get value from cache</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheService.set"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">set</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">key</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"><span class="pre">value</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">Any</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">ttl_seconds</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">int</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">300</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">bool</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheService.set"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheService.set"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Set value in cache with TTL</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService.set"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService.set" title="Link para esta definição">¶</a></dt>
-<dd><p>Set value in cache with TTL</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheService.delete"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">delete</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">key</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">bool</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheService.delete"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheService.delete"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Delete key from cache</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService.delete"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService.delete" title="Link para esta definição">¶</a></dt>
-<dd><p>Delete key from cache</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheService.clear_pattern"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">clear_pattern</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">pattern</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">int</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheService.clear_pattern"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheService.clear_pattern"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Clear all keys matching pattern</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService.clear_pattern">
-<span class="sig-name descname"><span class="pre">clear_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService.clear_pattern"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService.clear_pattern" title="Link para esta definição">¶</a></dt>
-<dd><p>Clear all keys matching pattern</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheService.invalidate_reports_cache"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre"
+                            >invalidate_reports_cache</span
+                          ></span
+                        ><span class="sig-paren">(</span
+                        ><span class="sig-paren">)</span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheService.invalidate_reports_cache"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheService.invalidate_reports_cache"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Invalidate all report-related caches</p></dd>
+                    </dl>
+                  </dd>
+                </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheService.invalidate_reports_cache">
-<span class="sig-name descname"><span class="pre">invalidate_reports_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheService.invalidate_reports_cache"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheService.invalidate_reports_cache" title="Link para esta definição">¶</a></dt>
-<dd><p>Invalidate all report-related caches</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.cache_service.cached_response"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.cache_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">cached_response</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">key_prefix</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">str</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">ttl_seconds</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">300</span></span
+                      ></em
+                    ><span class="sig-paren">)</span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/cache_service.html#cached_response"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.cache_service.cached_response"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Decorator for caching API responses</p></dd>
+                </dl>
 
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.cache_service.cached_query"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.cache_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">cached_query</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">key_prefix</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">str</span></span></em
+                    >,
+                    <em class="sig-param"
+                      ><span class="n"
+                        ><span class="pre">ttl_seconds</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">int</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">300</span></span
+                      ></em
+                    ><span class="sig-paren">)</span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/cache_service.html#cached_query"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.cache_service.cached_query"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Decorator for caching database query results</p></dd>
+                </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.cache_service.cached_response">
-<span class="sig-prename descclassname"><span class="pre">src.services.cache_service.</span></span><span class="sig-name descname"><span class="pre">cached_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/cache_service.html#cached_response"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.cached_response" title="Link para esta definição">¶</a></dt>
-<dd><p>Decorator for caching API responses</p>
-</dd></dl>
+                <dl class="py class">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.cache_service.CacheKeys"
+                  >
+                    <em class="property"
+                      ><span class="k"><span class="pre">class</span></span
+                      ><span class="w"> </span></em
+                    ><span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.cache_service.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">CacheKeys</span></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/cache_service.html#CacheKeys"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.cache_service.CacheKeys"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd>
+                    <p>
+                      Base:
+                      <code
+                        class="xref py py-class docutils literal notranslate"
+                        ><span class="pre">object</span></code
+                      >
+                    </p>
+                    <p>Standard cache key patterns for the application</p>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheKeys.audit_report"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre">audit_report</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">audit_id</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">int</span><span class="w"> </span
+                            ><span class="p"><span class="pre">|</span></span
+                            ><span class="w"> </span
+                            ><span class="pre">None</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">None</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"><span class="pre">period</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">str</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">None</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheKeys.audit_report"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheKeys.audit_report"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd></dd>
+                    </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.cache_service.cached_query">
-<span class="sig-prename descclassname"><span class="pre">src.services.cache_service.</span></span><span class="sig-name descname"><span class="pre">cached_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/cache_service.html#cached_query"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.cached_query" title="Link para esta definição">¶</a></dt>
-<dd><p>Decorator for caching database query results</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheKeys.compliance_check"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre">compliance_check</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">entity_type</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">entity_id</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheKeys.compliance_check"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheKeys.compliance_check"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd></dd>
+                    </dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheKeys">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.services.cache_service.</span></span><span class="sig-name descname"><span class="pre">CacheKeys</span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheKeys"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheKeys" title="Link para esta definição">¶</a></dt>
-<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Standard cache key patterns for the application</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheKeys.audit_report">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">audit_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheKeys.audit_report"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheKeys.audit_report" title="Link para esta definição">¶</a></dt>
-<dd></dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheKeys.portal_stats"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre">portal_stats</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">filters</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">str</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">None</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheKeys.portal_stats"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheKeys.portal_stats"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheKeys.compliance_check">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compliance_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheKeys.compliance_check"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheKeys.compliance_check" title="Link para esta definição">¶</a></dt>
-<dd></dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.cache_service.CacheKeys.query_result"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre">query_result</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">table</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">conditions</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">str</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">None</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/cache_service.html#CacheKeys.query_result"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.cache_service.CacheKeys.query_result"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd></dd>
+                    </dl>
+                  </dd>
+                </dl>
+              </section>
+              <section id="otimizador-duckdb">
+                <h2>
+                  Otimizador DuckDB<a
+                    class="headerlink"
+                    href="#otimizador-duckdb"
+                    title="Link para este cabeçalho"
+                    >¶</a
+                  >
+                </h2>
+                <p id="module-src.services.duckdb_optimizer">
+                  DuckDB Query Optimization Service Performance optimizations
+                  for analytical queries in AUDITORIA360
+                </p>
+                <dl class="py class">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.duckdb_optimizer.DuckDBOptimizer"
+                  >
+                    <em class="property"
+                      ><span class="k"><span class="pre">class</span></span
+                      ><span class="w"> </span></em
+                    ><span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.duckdb_optimizer.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">DuckDBOptimizer</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">db_path</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">str</span></span
+                      ><span class="w"> </span
+                      ><span class="o"><span class="pre">=</span></span
+                      ><span class="w"> </span
+                      ><span class="default_value"
+                        ><span class="pre">':memory:'</span></span
+                      ></em
+                    ><span class="sig-paren">)</span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.duckdb_optimizer.DuckDBOptimizer"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd>
+                    <p>
+                      Base:
+                      <code
+                        class="xref py py-class docutils literal notranslate"
+                        ><span class="pre">object</span></code
+                      >
+                    </p>
+                    <p>DuckDB query optimizer for analytics and reporting</p>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.__init__"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">__init__</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">db_path</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">str</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">':memory:'</span></span
+                          ></em
+                        ><span class="sig-paren">)</span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.__init__"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.__init__"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd>
+                        <p>
+                          Initialize DuckDB connection with performance settings
+                        </p>
+                      </dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheKeys.portal_stats">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">portal_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheKeys.portal_stats"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheKeys.portal_stats" title="Link para esta definição">¶</a></dt>
-<dd></dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.execute_optimized_query"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre"
+                            >execute_optimized_query</span
+                          ></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">query</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"><span class="pre">params</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">Dict</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">None</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">List</span
+                            ><span class="p"><span class="pre">[</span></span
+                            ><span class="pre">Dict</span
+                            ><span class="p"
+                              ><span class="pre">]</span></span
+                            ></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.execute_optimized_query"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.execute_optimized_query"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Execute query with optimization and timing</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.cache_service.CacheKeys.query_result">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conditions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/cache_service.html#CacheKeys.query_result"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.cache_service.CacheKeys.query_result" title="Link para esta definição">¶</a></dt>
-<dd></dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.get_audit_report_data"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">get_audit_report_data</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">period_start</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">period_end</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">Dict</span
+                            ><span class="p"><span class="pre">[</span></span
+                            ><span class="pre">str</span
+                            ><span class="p"><span class="pre">,</span></span
+                            ><span class="w"> </span><span class="pre">Any</span
+                            ><span class="p"
+                              ><span class="pre">]</span></span
+                            ></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.get_audit_report_data"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.get_audit_report_data"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Optimized audit report data query</p></dd>
+                    </dl>
 
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.get_compliance_metrics"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">get_compliance_metrics</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"
+                            ><span class="pre">entity_type</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">str</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">None</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">Dict</span
+                            ><span class="p"><span class="pre">[</span></span
+                            ><span class="pre">str</span
+                            ><span class="p"><span class="pre">,</span></span
+                            ><span class="w"> </span><span class="pre">Any</span
+                            ><span class="p"
+                              ><span class="pre">]</span></span
+                            ></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.get_compliance_metrics"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.get_compliance_metrics"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Optimized compliance metrics query</p></dd>
+                    </dl>
 
-</section>
-<section id="otimizador-duckdb">
-<h2>Otimizador DuckDB<a class="headerlink" href="#otimizador-duckdb" title="Link para este cabeçalho">¶</a></h2>
-<p id="module-src.services.duckdb_optimizer">DuckDB Query Optimization Service
-Performance optimizations for analytical queries in AUDITORIA360</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.services.duckdb_optimizer.</span></span><span class="sig-name descname"><span class="pre">DuckDBOptimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">':memory:'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer" title="Link para esta definição">¶</a></dt>
-<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>DuckDB query optimizer for analytics and reporting</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">':memory:'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.__init__"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.__init__" title="Link para esta definição">¶</a></dt>
-<dd><p>Initialize DuckDB connection with performance settings</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.get_performance_analytics"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre"
+                            >get_performance_analytics</span
+                          ></span
+                        ><span class="sig-paren">(</span
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">Dict</span
+                            ><span class="p"><span class="pre">[</span></span
+                            ><span class="pre">str</span
+                            ><span class="p"><span class="pre">,</span></span
+                            ><span class="w"> </span><span class="pre">Any</span
+                            ><span class="p"
+                              ><span class="pre">]</span></span
+                            ></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.get_performance_analytics"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.get_performance_analytics"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Get analytics on query performance</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.execute_optimized_query">
-<span class="sig-name descname"><span class="pre">execute_optimized_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.execute_optimized_query"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.execute_optimized_query" title="Link para esta definição">¶</a></dt>
-<dd><p>Execute query with optimization and timing</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.create_indexes"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">create_indexes</span></span
+                        ><span class="sig-paren">(</span
+                        ><span class="sig-paren">)</span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.create_indexes"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.create_indexes"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd>
+                        <p>Create indexes for better query performance</p>
+                      </dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.get_audit_report_data">
-<span class="sig-name descname"><span class="pre">get_audit_report_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.get_audit_report_data"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.get_audit_report_data" title="Link para esta definição">¶</a></dt>
-<dd><p>Optimized audit report data query</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.DuckDBOptimizer.close"
+                      >
+                        <span class="sig-name descname"
+                          ><span class="pre">close</span></span
+                        ><span class="sig-paren">(</span
+                        ><span class="sig-paren">)</span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.close"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.DuckDBOptimizer.close"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Close database connection</p></dd>
+                    </dl>
+                  </dd>
+                </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.get_compliance_metrics">
-<span class="sig-name descname"><span class="pre">get_compliance_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.get_compliance_metrics"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.get_compliance_metrics" title="Link para esta definição">¶</a></dt>
-<dd><p>Optimized compliance metrics query</p>
-</dd></dl>
+                <dl class="py function">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.duckdb_optimizer.optimized_query"
+                  >
+                    <span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.duckdb_optimizer.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">optimized_query</span></span
+                    ><span class="sig-paren">(</span
+                    ><em class="sig-param"
+                      ><span class="n"><span class="pre">query_type</span></span
+                      ><span class="p"><span class="pre">:</span></span
+                      ><span class="w"> </span
+                      ><span class="n"><span class="pre">str</span></span></em
+                    ><span class="sig-paren">)</span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/duckdb_optimizer.html#optimized_query"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.duckdb_optimizer.optimized_query"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd><p>Decorator for DuckDB query optimization</p></dd>
+                </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.get_performance_analytics">
-<span class="sig-name descname"><span class="pre">get_performance_analytics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.get_performance_analytics"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.get_performance_analytics" title="Link para esta definição">¶</a></dt>
-<dd><p>Get analytics on query performance</p>
-</dd></dl>
+                <dl class="py class">
+                  <dt
+                    class="sig sig-object py"
+                    id="src.services.duckdb_optimizer.QueryOptimizer"
+                  >
+                    <em class="property"
+                      ><span class="k"><span class="pre">class</span></span
+                      ><span class="w"> </span></em
+                    ><span class="sig-prename descclassname"
+                      ><span class="pre"
+                        >src.services.duckdb_optimizer.</span
+                      ></span
+                    ><span class="sig-name descname"
+                      ><span class="pre">QueryOptimizer</span></span
+                    ><a
+                      class="reference internal"
+                      href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer"
+                      ><span class="viewcode-link"
+                        ><span class="pre">[código-fonte]</span></span
+                      ></a
+                    ><a
+                      class="headerlink"
+                      href="#src.services.duckdb_optimizer.QueryOptimizer"
+                      title="Link para esta definição"
+                      >¶</a
+                    >
+                  </dt>
+                  <dd>
+                    <p>
+                      Base:
+                      <code
+                        class="xref py py-class docutils literal notranslate"
+                        ><span class="pre">object</span></code
+                      >
+                    </p>
+                    <p>Utility class for query optimization strategies</p>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.QueryOptimizer.optimize_large_result_set"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre"
+                            >optimize_large_result_set</span
+                          ></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">query</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"><span class="pre">limit</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"><span class="pre">int</span></span
+                          ><span class="w"> </span
+                          ><span class="o"><span class="pre">=</span></span
+                          ><span class="w"> </span
+                          ><span class="default_value"
+                            ><span class="pre">1000</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer.optimize_large_result_set"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.QueryOptimizer.optimize_large_result_set"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd>
+                        <p>
+                          Add LIMIT to queries that might return large result
+                          sets
+                        </p>
+                      </dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.create_indexes">
-<span class="sig-name descname"><span class="pre">create_indexes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.create_indexes"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.create_indexes" title="Link para esta definição">¶</a></dt>
-<dd><p>Create indexes for better query performance</p>
-</dd></dl>
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.QueryOptimizer.add_query_hints"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre">add_query_hints</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">query</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        >,
+                        <em class="sig-param"
+                          ><span class="n"><span class="pre">hints</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">List</span
+                            ><span class="p"><span class="pre">[</span></span
+                            ><span class="pre">str</span
+                            ><span class="p"
+                              ><span class="pre">]</span></span
+                            ></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer.add_query_hints"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.QueryOptimizer.add_query_hints"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Add query optimization hints</p></dd>
+                    </dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.DuckDBOptimizer.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#DuckDBOptimizer.close"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.DuckDBOptimizer.close" title="Link para esta definição">¶</a></dt>
-<dd><p>Close database connection</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.optimized_query">
-<span class="sig-prename descclassname"><span class="pre">src.services.duckdb_optimizer.</span></span><span class="sig-name descname"><span class="pre">optimized_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#optimized_query"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.optimized_query" title="Link para esta definição">¶</a></dt>
-<dd><p>Decorator for DuckDB query optimization</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.QueryOptimizer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.services.duckdb_optimizer.</span></span><span class="sig-name descname"><span class="pre">QueryOptimizer</span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.QueryOptimizer" title="Link para esta definição">¶</a></dt>
-<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Utility class for query optimization strategies</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.QueryOptimizer.optimize_large_result_set">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimize_large_result_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer.optimize_large_result_set"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.QueryOptimizer.optimize_large_result_set" title="Link para esta definição">¶</a></dt>
-<dd><p>Add LIMIT to queries that might return large result sets</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.QueryOptimizer.add_query_hints">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_query_hints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer.add_query_hints"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.QueryOptimizer.add_query_hints" title="Link para esta definição">¶</a></dt>
-<dd><p>Add query optimization hints</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="src.services.duckdb_optimizer.QueryOptimizer.optimize_joins">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimize_joins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer.optimize_joins"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#src.services.duckdb_optimizer.QueryOptimizer.optimize_joins" title="Link para esta definição">¶</a></dt>
-<dd><p>Optimize JOIN operations</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-</section>
-
-
+                    <dl class="py method">
+                      <dt
+                        class="sig sig-object py"
+                        id="src.services.duckdb_optimizer.QueryOptimizer.optimize_joins"
+                      >
+                        <em class="property"
+                          ><span class="k"><span class="pre">static</span></span
+                          ><span class="w"> </span></em
+                        ><span class="sig-name descname"
+                          ><span class="pre">optimize_joins</span></span
+                        ><span class="sig-paren">(</span
+                        ><em class="sig-param"
+                          ><span class="n"><span class="pre">query</span></span
+                          ><span class="p"><span class="pre">:</span></span
+                          ><span class="w"> </span
+                          ><span class="n"
+                            ><span class="pre">str</span></span
+                          ></em
+                        ><span class="sig-paren">)</span>
+                        <span class="sig-return"
+                          ><span class="sig-return-icon">&#x2192;</span>
+                          <span class="sig-return-typehint"
+                            ><span class="pre">str</span></span
+                          ></span
+                        ><a
+                          class="reference internal"
+                          href="../_modules/src/services/duckdb_optimizer.html#QueryOptimizer.optimize_joins"
+                          ><span class="viewcode-link"
+                            ><span class="pre">[código-fonte]</span></span
+                          ></a
+                        ><a
+                          class="headerlink"
+                          href="#src.services.duckdb_optimizer.QueryOptimizer.optimize_joins"
+                          title="Link para esta definição"
+                          >¶</a
+                        >
+                      </dt>
+                      <dd><p>Optimize JOIN operations</p></dd>
+                    </dl>
+                  </dd>
+                </dl>
+              </section>
+            </section>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">AUDITORIA360</a></h1>
+          <h1 class="logo"><a href="../index.html">AUDITORIA360</a></h1>
 
+          <search id="searchbox" style="display: none" role="search">
+            <div class="searchformwrapper">
+              <form class="search" action="../search.html" method="get">
+                <input
+                  type="text"
+                  name="q"
+                  aria-labelledby="searchlabel"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  placeholder="Search"
+                />
+                <input type="submit" value="Ir" />
+              </form>
+            </div>
+          </search>
+          <script>
+            document.getElementById("searchbox").style.display = "block";
+          </script>
+          <h3>Navegação</h3>
+          <p class="caption" role="heading">
+            <span class="caption-text">Módulos da API:</span>
+          </p>
+          <ul class="current">
+            <li class="toctree-l1">
+              <a class="reference internal" href="auth.html"
+                >Módulo de Autenticação</a
+              >
+            </li>
+            <li class="toctree-l1">
+              <a class="reference internal" href="models.html"
+                >Modelos de Dados</a
+              >
+            </li>
+            <li class="toctree-l1 current">
+              <a class="current reference internal" href="#"
+                >Serviços de Negócio</a
+              >
+              <ul>
+                <li class="toctree-l2">
+                  <a
+                    class="reference internal"
+                    href="#module-src.services.payroll_service"
+                    >Serviço de Folha de Pagamento</a
+                  >
+                </li>
+                <li class="toctree-l2">
+                  <a class="reference internal" href="#servico-de-cache"
+                    >Serviço de Cache</a
+                  >
+                </li>
+                <li class="toctree-l2">
+                  <a class="reference internal" href="#otimizador-duckdb"
+                    >Otimizador DuckDB</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toctree-l1">
+              <a class="reference internal" href="api.html">APIs REST</a>
+            </li>
+            <li class="toctree-l1">
+              <a class="reference internal" href="core.html">Módulo Central</a>
+            </li>
+            <li class="toctree-l1">
+              <a class="reference internal" href="utils.html">Utilitários</a>
+            </li>
+            <li class="toctree-l1">
+              <a class="reference internal" href="schemas.html"
+                >Esquemas Pydantic</a
+              >
+            </li>
+            <li class="toctree-l1">
+              <a class="reference internal" href="mcp.html">Integração MCP</a>
+            </li>
+          </ul>
 
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Ir" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
-<p class="caption" role="heading"><span class="caption-text">Módulos da API:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="auth.html">Módulo de Autenticação</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Modelos de Dados</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Serviços de Negócio</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-src.services.payroll_service">Serviço de Folha de Pagamento</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#servico-de-cache">Serviço de Cache</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#otimizador-duckdb">Otimizador DuckDB</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">APIs REST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core.html">Módulo Central</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilitários</a></li>
-<li class="toctree-l1"><a class="reference internal" href="schemas.html">Esquemas Pydantic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mcp.html">Integração MCP</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="models.html" title="capítulo anterior">Modelos de Dados</a></li>
-      <li>Next: <a href="api.html" title="próximo capítulo">APIs REST</a></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
+          <div class="relations">
+            <h3>Related Topics</h3>
+            <ul>
+              <li>
+                <a href="../index.html">Documentation overview</a>
+                <ul>
+                  <li>
+                    Previous:
+                    <a href="models.html" title="capítulo anterior"
+                      >Modelos de Dados</a
+                    >
+                  </li>
+                  <li>
+                    Next:
+                    <a href="api.html" title="próximo capítulo">APIs REST</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, AUDITORIA360 Team.
-      
+      &#169;2024, AUDITORIA360 Team. | Powered by
+      <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a> &amp;
+      <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-      |
-      <a href="../_sources/modules/services.rst.txt"
-          rel="nofollow">Page source</a>
+      <a href="../_sources/modules/services.rst.txt" rel="nofollow"
+        >Page source</a
+      >
     </div>
-
-    
-
-    
   </body>
 </html>

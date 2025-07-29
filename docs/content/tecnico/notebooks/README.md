@@ -13,6 +13,7 @@ Esta seção contém os notebooks Jupyter utilizados para análise de dados, pro
 **Objetivo**: Análise exploratória de dados de folha de pagamento e prototipagem de modelos de machine learning.
 
 **Funcionalidades**:
+
 - ✅ Análise exploratória de dados com visualizações avançadas
 - ✅ Detecção de anomalias usando Isolation Forest
 - ✅ Segmentação de funcionários com K-Means
@@ -20,17 +21,20 @@ Esta seção contém os notebooks Jupyter utilizados para análise de dados, pro
 - ✅ Pipeline completo de machine learning para auditoria
 
 **Pré-requisitos**:
+
 - Python 3.8+
 - pandas, numpy, matplotlib, seaborn, scikit-learn
 - Dados de folha de pagamento (exemplo incluído automaticamente)
 
 **Como usar**:
+
 1. Execute as células sequencialmente na ordem apresentada
 2. O notebook criará dados de exemplo automaticamente se não encontrar arquivos
 3. Ajuste parâmetros de modelagem conforme necessário
 4. Analise resultados, visualizações e relatório final gerado
 
 **Melhorias Recentes**:
+
 - ✅ Instruções de uso mais detalhadas e estruturadas
 - ✅ Conclusões organizadas com cronograma de próximos passos
 - ✅ Links para documentação relacionada
@@ -41,6 +45,7 @@ Esta seção contém os notebooks Jupyter utilizados para análise de dados, pro
 **Objetivo**: Demonstração completa do processamento de PDFs de folha de pagamento com validação automática.
 
 **Funcionalidades**:
+
 - ✅ Upload e processamento assíncrono de PDFs
 - ✅ Monitoramento de jobs em tempo real com status detalhado
 - ✅ Validação abrangente e mapeamento inteligente de dados
@@ -49,12 +54,14 @@ Esta seção contém os notebooks Jupyter utilizados para análise de dados, pro
 - ✅ Sistema de logs estruturado para rastreabilidade
 
 **Pré-requisitos**:
+
 - Python 3.8+
 - requests, pandas, streamlit, matplotlib
 - API AUDITORIA360 em execução (porta 8000)
 - Arquivos PDF de folha de pagamento
 
 **Como usar**:
+
 1. Configure as variáveis de ambiente (API_BASE_URL, CLIENT_ID)
 2. Execute as células sequencialmente na ordem apresentada
 3. Faça upload do arquivo PDF através da interface
@@ -62,6 +69,7 @@ Esta seção contém os notebooks Jupyter utilizados para análise de dados, pro
 5. Visualize e valide os dados extraídos automaticamente
 
 **Melhorias Recentes**:
+
 - ✅ Instruções passo a passo mais detalhadas
 - ✅ Requisitos técnicos claramente especificados
 - ✅ Cronograma estruturado de próximos passos e melhorias
@@ -109,10 +117,10 @@ CLIENT_ID=12345
       "nome": "João Silva Santos",
       "cpf": "123.456.789-00",
       "cargo": "Analista",
-      "salario_base": 5000.00,
-      "horas_extras": 300.00,
-      "descontos": 850.00,
-      "salario_liquido": 4450.00
+      "salario_base": 5000.0,
+      "horas_extras": 300.0,
+      "descontos": 850.0,
+      "salario_liquido": 4450.0
     }
   ]
 }
@@ -136,22 +144,26 @@ CLIENT_ID=12345
 ## 🎯 Casos de Uso
 
 ### 1. Auditoria Mensal
+
 - Carregar dados da folha do mês
 - Executar análise exploratória
 - Identificar anomalias e inconsistências
 - Gerar relatório de auditoria
 
 ### 2. Análise de Tendências
+
 - Comparar dados de múltiplos meses
 - Identificar padrões sazonais
 - Detectar mudanças estruturais
 
 ### 3. Detecção de Fraudes
+
 - Aplicar modelos de machine learning
 - Identificar comportamentos suspeitos
 - Validar com regras de negócio
 
 ### 4. Processamento de PDFs
+
 - Upload automático de extratos
 - Extração e validação de dados
 - Integração com sistemas existentes
@@ -159,11 +171,13 @@ CLIENT_ID=12345
 ## 📈 Métricas e KPIs
 
 ### Métricas de Qualidade
+
 - **Taxa de Validação**: % de registros válidos
 - **Taxa de Anomalias**: % de anomalias detectadas
 - **Cobertura de Dados**: % de campos preenchidos
 
 ### Métricas de Performance
+
 - **Tempo de Processamento**: Tempo médio por arquivo
 - **Throughput**: Arquivos processados por hora
 - **Taxa de Erro**: % de falhas no processamento
@@ -173,17 +187,20 @@ CLIENT_ID=12345
 ### Problemas Comuns
 
 **Erro de Dependências**:
+
 ```bash
 # Reinstalar dependências
 pip install --upgrade -r requirements.txt
 ```
 
 **Erro de Conexão com API**:
+
 - Verificar se a API está rodando
 - Conferir variáveis de ambiente
 - Testar conectividade de rede
 
 **Dados Não Carregando**:
+
 - Verificar formato dos dados
 - Conferir permissões de arquivo
 - Usar dados de exemplo incluídos

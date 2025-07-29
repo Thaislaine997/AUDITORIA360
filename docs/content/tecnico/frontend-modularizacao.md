@@ -78,18 +78,21 @@ templates/
 ## 🎯 Principais Melhorias
 
 ### ✅ CSS Modularizado
+
 - **Variáveis e Temas**: Centralizados em `styles/themes/`
 - **Componentes**: Separados por funcionalidade em `styles/components/`
 - **Layout**: Organizados em `styles/layout/`
 - **Importação**: Sistema de importação centralizado via `styles/index.css`
 
 ### ✅ JavaScript/TypeScript Modular
+
 - **Serviços**: Módulos independentes para auth, dashboard e monitoring
 - **Componentes React**: Organizados por funcionalidade
 - **Hooks**: Customizados e reutilizáveis
 - **Types**: TypeScript para type safety
 
 ### ✅ Templates HTML Reutilizáveis
+
 - **Base Layout**: Template comum para todas as páginas
 - **Componentes**: Templates de componentes reutilizáveis
 - **Scripts**: Módulos JavaScript independentes
@@ -117,38 +120,41 @@ npm run lint
 
 ```typescript
 // Importar serviços
-import { authService } from '../modules/auth/authService';
-import { dashboardService } from '../modules/dashboard/dashboardService';
+import { authService } from "../modules/auth/authService";
+import { dashboardService } from "../modules/dashboard/dashboardService";
 
 // Importar tipos
-import type { User } from '../modules/auth/authService';
-import type { DashboardMetric } from '../modules/dashboard/dashboardService';
+import type { User } from "../modules/auth/authService";
+import type { DashboardMetric } from "../modules/dashboard/dashboardService";
 ```
 
 ### 🎨 Importação de Estilos
 
 ```css
 /* Importar todos os estilos */
-@import './styles/index.css';
+@import "./styles/index.css";
 
 /* Ou importar módulos específicos */
-@import './styles/components/cards.css';
-@import './styles/themes/variables.css';
+@import "./styles/components/cards.css";
+@import "./styles/themes/variables.css";
 ```
 
 ## 📊 Benefícios da Modularização
 
 ### 🎯 Manutenibilidade
+
 - **Separação de responsabilidades**: Cada módulo tem uma função específica
 - **Código limpo**: Estrutura organizada e fácil de navegar
 - **Reutilização**: Componentes e serviços reutilizáveis
 
 ### 🚀 Performance
+
 - **Bundle otimizado**: Tree-shaking automático
 - **CSS otimizado**: Carregamento apenas dos estilos necessários
 - **Code splitting**: Carregamento sob demanda
 
 ### 👥 Colaboração
+
 - **Desenvolvimento paralelo**: Diferentes devs podem trabalhar em módulos independentes
 - **Padrões consistentes**: Design system unificado
 - **Documentação clara**: Estrutura autodocumentada
@@ -156,14 +162,17 @@ import type { DashboardMetric } from '../modules/dashboard/dashboardService';
 ## 🔄 Migração dos Arquivos Existentes
 
 ### ✅ CSS
+
 - ✅ `assets/style.css` → Separado em módulos em `src/frontend/src/styles/`
 - ✅ `assets/monitoring.css` → Mantido para compatibilidade
 
 ### ✅ HTML
+
 - ✅ `monitoring/dashboard.html` → `templates/monitoring/dashboard-modular.html`
 - ✅ `monitoring/basic_dashboard.html` → `templates/monitoring/basic-monitor-modular.html`
 
 ### ✅ JavaScript
+
 - ✅ Scripts inline → Módulos separados em `templates/monitoring/scripts/`
 
 ## 📝 Próximos Passos

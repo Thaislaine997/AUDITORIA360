@@ -18,18 +18,18 @@ SERVICE_ACCOUNT=333253866645-compute@developer.gserviceaccount.com
 
 - **Rede VPC:** `datastream-vpc`
 - **Sub-redes:**
-    - `subnet-us-central1` (us-central1) — 10.128.0.0/24
-    - `psc-range` (us-central1) — 10.200.0.0/22
-    - Conector VPC Serverless: `connector-auditoria360` (10.8.0.0/28, f1-micro, us-central1)
+  - `subnet-us-central1` (us-central1) — 10.128.0.0/24
+  - `psc-range` (us-central1) — 10.200.0.0/22
+  - Conector VPC Serverless: `connector-auditoria360` (10.8.0.0/28, f1-micro, us-central1)
 
 - **Regra de firewall:**
-    - Nome: `allow-datastream-postgres`
-    - Prioridade: 1000
-    - Direção: Entrada
-    - Destino: Tag `postgres-source`
-    - Origem: 10.8.0.0/28
-    - Porta: tcp:5432
-    - Aplicação: Ativado
+  - Nome: `allow-datastream-postgres`
+  - Prioridade: 1000
+  - Direção: Entrada
+  - Destino: Tag `postgres-source`
+  - Origem: 10.8.0.0/28
+  - Porta: tcp:5432
+  - Aplicação: Ativado
 
 **Observação:** O conector VPC Serverless permite que o Cloud Run acesse o banco PostgreSQL via IP privado, respeitando as regras de firewall da VPC.
 
@@ -49,6 +49,7 @@ SERVICE_ACCOUNT=333253866645-compute@developer.gserviceaccount.com
 ## 3. Exemplos Práticos
 
 ### Python (SQLAlchemy)
+
 ```python
 import os
 from sqlalchemy import create_engine
@@ -58,28 +59,33 @@ print(conn.execute('SELECT 1'))
 ```
 
 ### Docker
+
 ```dockerfile
 # Dockerfile
 ENV DATABASE_URL=postgresql+psycopg2://datastream_user:41283407@10.128.0.4:5432/auditoria_db
 ```
 
 ### Cloud Run
+
 - Adicione as variáveis do `.env.cloudsql` nas configurações do serviço.
 - Configure a conexão ao Cloud SQL com o nome da instância.
 
 ### Datastream
+
 - Origem: perfil `auditoria360portal` (PostgreSQL)
 - Destino: perfil `auditoria360` (BigQuery)
 - Inclui todas as tabelas e esquemas
 - Modo de gravação: Mesclar
 
 ## 4. Segurança
+
 - Use IP privado e Service Account.
 - Proteja variáveis sensíveis com Secret Manager.
 - Restrinja acesso via firewall.
 - Nunca exponha senhas em repositórios públicos.
 
 ## 5. Checklist de Deploy
+
 - [x] Instância Cloud SQL criada
 - [x] Banco e usuário configurados
 - [x] Variáveis de ambiente definidas
@@ -89,4 +95,5 @@ ENV DATABASE_URL=postgresql+psycopg2://datastream_user:41283407@10.128.0.4:5432/
 - [x] Datastream configurado para BigQuery
 
 ---
+
 Este documento serve como referência única para integração, automação e segurança do banco Cloud SQL no AUDITORIA360.

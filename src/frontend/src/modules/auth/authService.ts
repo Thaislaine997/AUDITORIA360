@@ -10,7 +10,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'user' | 'auditor';
+  role: "admin" | "user" | "auditor";
 }
 
 export interface AuthTokens {
@@ -39,28 +39,28 @@ export class AuthService {
       // In a real app, this would make an API call
       const mockResponse = {
         user: {
-          id: '1',
-          name: 'Demo User',
-          email: 'demo@auditoria360.com',
-          role: 'admin' as const,
+          id: "1",
+          name: "Demo User",
+          email: "demo@auditoria360.com",
+          role: "admin" as const,
         },
         tokens: {
-          accessToken: 'mock-access-token',
-          refreshToken: 'mock-refresh-token',
+          accessToken: "mock-access-token",
+          refreshToken: "mock-refresh-token",
           expiresAt: Date.now() + 3600000, // 1 hour
         },
       };
 
       this.user = mockResponse.user;
       this.tokens = mockResponse.tokens;
-      
+
       // Store in localStorage
-      localStorage.setItem('authTokens', JSON.stringify(this.tokens));
-      localStorage.setItem('user', JSON.stringify(this.user));
-      
+      localStorage.setItem("authTokens", JSON.stringify(this.tokens));
+      localStorage.setItem("user", JSON.stringify(this.user));
+
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       return false;
     }
   }
@@ -69,8 +69,8 @@ export class AuthService {
   logout(): void {
     this.user = null;
     this.tokens = null;
-    localStorage.removeItem('authTokens');
-    localStorage.removeItem('user');
+    localStorage.removeItem("authTokens");
+    localStorage.removeItem("user");
   }
 
   // Check if user is authenticated
@@ -78,7 +78,7 @@ export class AuthService {
     if (!this.tokens) {
       this.loadFromStorage();
     }
-    
+
     if (!this.tokens) {
       return false;
     }
@@ -111,15 +111,15 @@ export class AuthService {
   // Load auth data from localStorage
   private loadFromStorage(): void {
     try {
-      const tokensJson = localStorage.getItem('authTokens');
-      const userJson = localStorage.getItem('user');
+      const tokensJson = localStorage.getItem("authTokens");
+      const userJson = localStorage.getItem("user");
 
       if (tokensJson && userJson) {
         this.tokens = JSON.parse(tokensJson);
         this.user = JSON.parse(userJson);
       }
     } catch (error) {
-      console.error('Error loading auth data from storage:', error);
+      console.error("Error loading auth data from storage:", error);
       this.logout();
     }
   }

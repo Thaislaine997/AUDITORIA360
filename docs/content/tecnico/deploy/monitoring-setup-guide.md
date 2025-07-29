@@ -40,9 +40,10 @@ monitoring.start()
 ### 1. Tipos de Métricas
 
 #### Counter (Contador)
+
 ```python
 # Incrementar contador de requests
-monitoring.metrics.increment_counter("api_requests_total", 
+monitoring.metrics.increment_counter("api_requests_total",
                                     labels={"endpoint": "/api/v1/auditorias"})
 
 # Incrementar contador de erros
@@ -51,6 +52,7 @@ monitoring.metrics.increment_counter("api_errors_total",
 ```
 
 #### Gauge (Medidor)
+
 ```python
 # Métricas de sistema (coletadas automaticamente)
 monitoring.metrics.set_gauge("system_cpu_percent", 45.2)
@@ -62,6 +64,7 @@ monitoring.metrics.set_gauge("pending_audits", 23)
 ```
 
 #### Histogram (Histograma)
+
 ```python
 # Tempo de resposta
 monitoring.metrics.record_histogram("api_response_time_ms", 250.5,
@@ -76,15 +79,15 @@ monitoring.metrics.record_histogram("upload_size_bytes", 1024000,
 
 O sistema coleta automaticamente:
 
-| Métrica | Descrição | Labels |
-|---------|-----------|--------|
-| `system_cpu_percent` | Uso de CPU do sistema | `type: overall` |
-| `system_memory_percent` | Uso de memória | `type: virtual` |
-| `system_disk_percent` | Uso de disco | `mountpoint: /` |
-| `system_network_bytes_sent` | Bytes enviados | `direction: sent` |
-| `system_network_bytes_recv` | Bytes recebidos | `direction: received` |
-| `process_memory_percent` | Memória do processo | `type: current_process` |
-| `process_cpu_percent` | CPU do processo | `type: current_process` |
+| Métrica                     | Descrição             | Labels                  |
+| --------------------------- | --------------------- | ----------------------- |
+| `system_cpu_percent`        | Uso de CPU do sistema | `type: overall`         |
+| `system_memory_percent`     | Uso de memória        | `type: virtual`         |
+| `system_disk_percent`       | Uso de disco          | `mountpoint: /`         |
+| `system_network_bytes_sent` | Bytes enviados        | `direction: sent`       |
+| `system_network_bytes_recv` | Bytes recebidos       | `direction: received`   |
+| `process_memory_percent`    | Memória do processo   | `type: current_process` |
+| `process_cpu_percent`       | CPU do processo       | `type: current_process` |
 
 ### 3. Métricas Específicas do AUDITORIA360
 
@@ -150,6 +153,7 @@ monitoring.alert_manager.add_alert_rule(
 ### 2. Canais de Notificação
 
 #### Email
+
 ```python
 email_config = {
     'from_email': 'alerts@auditoria360.com',
@@ -164,6 +168,7 @@ monitoring.alert_manager.add_notification_channel('email', email_config)
 ```
 
 #### Slack
+
 ```python
 slack_config = {
     'webhook_url': 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
@@ -173,6 +178,7 @@ monitoring.alert_manager.add_notification_channel('slack', slack_config)
 ```
 
 #### Webhook Customizado
+
 ```python
 webhook_config = {
     'url': 'https://api.empresa.com/alerts',
@@ -302,34 +308,34 @@ import requests
 
 def create_monitoring_dashboard():
     st.set_page_config(page_title="AUDITORIA360 Monitoring", layout="wide")
-    
+
     st.title("🔧 AUDITORIA360 - Sistema de Monitoramento")
-    
+
     # Carregar dados
     dashboard_data = requests.get("http://localhost:8000/api/v1/monitoring/dashboard").json()
-    
+
     # Status geral
     col1, col2, col3, col4 = st.columns(4)
-    
+
     with col1:
         st.metric("Status do Sistema", dashboard_data['system_status'].upper())
-    
+
     with col2:
         active_alerts = len(dashboard_data['active_alerts'])
         st.metric("Alertas Ativos", active_alerts)
-    
+
     with col3:
         healthy_checks = len([h for h in dashboard_data['health_checks'] if h['status'] == 'healthy'])
         total_checks = len(dashboard_data['health_checks'])
         st.metric("Health Checks", f"{healthy_checks}/{total_checks}")
-    
+
     with col4:
         cpu_usage = dashboard_data['metrics_summary'].get('system_cpu_percent', {}).get('latest', 0)
         st.metric("CPU Usage", f"{cpu_usage:.1f}%")
-    
+
     # Gráficos de métricas
     st.subheader("📈 Métricas do Sistema")
-    
+
     # Implementar gráficos com Plotly
     # ... código dos gráficos ...
 
@@ -370,14 +376,14 @@ from src.utils.monitoring import MonitoringSystem
 
 def setup_monitoring():
     monitoring = MonitoringSystem()
-    
+
     # Configurar intervalos
     monitoring.system_monitor.interval = int(os.getenv('MONITORING_INTERVAL', 30))
     monitoring.alert_manager.evaluation_interval = int(os.getenv('ALERT_INTERVAL', 60))
-    
+
     # Configurar retenção
     monitoring.metrics.retention_hours = int(os.getenv('METRICS_RETENTION_HOURS', 24))
-    
+
     # Configurar notificações se habilitadas
     if os.getenv('ALERT_EMAIL_ENABLED', 'false').lower() == 'true':
         email_config = {
@@ -389,13 +395,13 @@ def setup_monitoring():
             'password': os.getenv('SMTP_PASSWORD')
         }
         monitoring.alert_manager.add_notification_channel('email', email_config)
-    
+
     if os.getenv('ALERT_SLACK_ENABLED', 'false').lower() == 'true':
         slack_config = {
             'webhook_url': os.getenv('SLACK_WEBHOOK_URL')
         }
         monitoring.alert_manager.add_notification_channel('slack', slack_config)
-    
+
     return monitoring
 ```
 
@@ -412,31 +418,31 @@ import time
 @app.middleware("http")
 async def monitoring_middleware(request: Request, call_next):
     start_time = time.time()
-    
+
     # Incrementar contador de requests
-    monitoring.metrics.increment_counter("api_requests_total", 
-                                        labels={"method": request.method, 
+    monitoring.metrics.increment_counter("api_requests_total",
+                                        labels={"method": request.method,
                                                "endpoint": request.url.path})
-    
+
     # Processar request
     response = await call_next(request)
-    
+
     # Calcular tempo de resposta
     process_time = (time.time() - start_time) * 1000
-    
+
     # Registrar métricas
     monitoring.metrics.record_histogram("api_response_time_ms", process_time,
-                                      labels={"method": request.method, 
+                                      labels={"method": request.method,
                                              "endpoint": request.url.path,
                                              "status": str(response.status_code)})
-    
+
     # Incrementar contador de respostas por status
     monitoring.metrics.increment_counter("api_responses_total",
                                         labels={"status": str(response.status_code)})
-    
+
     # Adicionar header com tempo de resposta
     response.headers["X-Process-Time"] = str(process_time)
-    
+
     return response
 ```
 
@@ -450,29 +456,29 @@ def monitor_endpoint(endpoint_name: str):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             start_time = time.time()
-            
+
             try:
                 result = await func(*args, **kwargs)
-                
+
                 # Registrar sucesso
                 monitoring.metrics.increment_counter("endpoint_success_total",
                                                    labels={"endpoint": endpoint_name})
                 return result
-                
+
             except Exception as e:
                 # Registrar erro
                 monitoring.metrics.increment_counter("endpoint_error_total",
                                                    labels={"endpoint": endpoint_name,
                                                           "error_type": type(e).__name__})
                 raise
-                
+
             finally:
                 # Registrar tempo de execução
                 execution_time = (time.time() - start_time) * 1000
-                monitoring.metrics.record_histogram("endpoint_execution_time_ms", 
+                monitoring.metrics.record_histogram("endpoint_execution_time_ms",
                                                    execution_time,
                                                    labels={"endpoint": endpoint_name})
-        
+
         return wrapper
     return decorator
 
@@ -489,30 +495,35 @@ async def create_auditoria(auditoria_data: AuditoriaCreate):
 ## 📋 Checklist de Monitoramento
 
 ### ✅ Configuração Inicial
+
 - [ ] Sistema de monitoramento inicializado
 - [ ] Métricas de sistema coletadas
 - [ ] Health checks configurados
 - [ ] Alertas básicos criados
 
 ### ✅ Métricas
+
 - [ ] Métricas de API (tempo resposta, erros)
 - [ ] Métricas de negócio (auditorias, OCR, folha)
 - [ ] Métricas de sistema (CPU, memória, disco)
 - [ ] Métricas customizadas por módulo
 
 ### ✅ Alertas
+
 - [ ] Alertas de infraestrutura configurados
 - [ ] Alertas de aplicação configurados
 - [ ] Canais de notificação testados
 - [ ] Thresholds apropriados definidos
 
 ### ✅ Health Checks
+
 - [ ] Database connectivity
-- [ ] Storage connectivity  
+- [ ] Storage connectivity
 - [ ] External APIs
 - [ ] Background jobs
 
 ### ✅ Dashboard
+
 - [ ] Endpoint de métricas exposto
 - [ ] Dashboard frontend criado
 - [ ] Gráficos de tendência implementados
@@ -523,18 +534,21 @@ async def create_auditoria(auditoria_data: AuditoriaCreate):
 ## 🎯 Métricas Importantes para Acompanhar
 
 ### Infraestrutura
+
 - CPU, memória, disco, rede
 - Tempo de resposta da aplicação
 - Rate de erros HTTP
 - Tempo de conexão com banco
 
 ### Negócio
+
 - Número de auditorias processadas
 - Tempo médio de processamento OCR
 - Quantidade de usuários ativos
 - Documentos CCT processados
 
 ### Performance
+
 - Tempo de resposta da API
 - Queries mais lentas
 - Cache hit rate
@@ -563,5 +577,5 @@ async def create_auditoria(auditoria_data: AuditoriaCreate):
 
 ---
 
-*Última atualização: 2025-01-28*
-*Versão: 1.0.0*
+_Última atualização: 2025-01-28_
+_Versão: 1.0.0_

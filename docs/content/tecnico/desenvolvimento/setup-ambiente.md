@@ -7,11 +7,13 @@
 ## 📋 **PRÉ-REQUISITOS**
 
 ### 💻 **Sistema Operacional**
+
 - **Windows**: 10/11 (64-bit)
 - **macOS**: 10.15+ (Catalina ou superior)
 - **Linux**: Ubuntu 20.04+, CentOS 8+, Debian 11+
 
 ### 🛠️ **Ferramentas Essenciais**
+
 ```yaml
 Git: "v2.40+"
 Node.js: "v18.x LTS"
@@ -22,6 +24,7 @@ VS_Code: "Latest" # Recomendado
 ```
 
 ### 🔑 **Credenciais Necessárias**
+
 - **GitHub**: Acesso ao repositório
 - **Neon**: Database credentials
 - **Cloudflare**: R2 storage keys
@@ -33,6 +36,7 @@ VS_Code: "Latest" # Recomendado
 ## 🚀 **INSTALAÇÃO PASSO A PASSO**
 
 ### 1️⃣ **Clone do Repositório**
+
 ```bash
 # Clone do repositório principal
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
@@ -44,6 +48,7 @@ git remote -v
 ```
 
 ### 2️⃣ **Python Environment**
+
 ```bash
 # Criar ambiente virtual
 python -m venv venv
@@ -59,6 +64,7 @@ pip install -r requirements.txt
 ```
 
 ### 3️⃣ **Node.js Dependencies**
+
 ```bash
 # Frontend (React)
 cd dashboards
@@ -69,6 +75,7 @@ cd ..
 ```
 
 ### 4️⃣ **Configuração de Ambiente**
+
 ```bash
 # Copiar template de configuração
 cp .env.example .env
@@ -85,6 +92,7 @@ nano .env
 ## ⚙️ **CONFIGURAÇÃO DE VARIÁVEIS**
 
 ### 🔐 **Arquivo .env Principal**
+
 ```bash
 # Database (Neon PostgreSQL)
 DATABASE_URL="postgresql://username:password@host:5432/database?sslmode=require"
@@ -121,6 +129,7 @@ GRAFANA_URL=""
 ```
 
 ### 🗄️ **Database Configuration**
+
 ```bash
 # Local PostgreSQL (alternativa ao Neon)
 LOCAL_DATABASE_URL="postgresql://postgres:password@localhost:5432/auditoria360_dev"
@@ -135,8 +144,9 @@ BIGQUERY_DATASET="auditoria360_dev"
 ## 🐳 **DOCKER SETUP (Recomendado)**
 
 ### 📄 **docker-compose.dev.yml**
+
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -156,7 +166,7 @@ services:
       - "6379:6379"
 
   api:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.dev
     ports:
@@ -174,6 +184,7 @@ volumes:
 ```
 
 ### 🚀 **Comandos Docker**
+
 ```bash
 # Subir ambiente completo
 docker-compose -f docker-compose.dev.yml up -d
@@ -193,6 +204,7 @@ docker-compose -f docker-compose.dev.yml up --build
 ## 🗄️ **DATABASE SETUP**
 
 ### 📊 **Migração Inicial**
+
 ```bash
 # Ativar ambiente Python
 source venv/bin/activate  # ou venv\Scripts\activate no Windows
@@ -205,6 +217,7 @@ python scripts/seed_database.py
 ```
 
 ### 🔧 **Scripts Úteis**
+
 ```bash
 # Backup database
 python scripts/backup_database.py
@@ -233,6 +246,7 @@ Get-Help .\scripts\powershell\setup_dev_env.ps1 -Full
 ## 🚀 **EXECUTANDO O SISTEMA**
 
 ### 1️⃣ **Backend (API)**
+
 ```bash
 # Ativar ambiente
 source venv/bin/activate
@@ -245,6 +259,7 @@ python scripts/run_api.py
 ```
 
 ### 2️⃣ **Frontend (Dashboard)**
+
 ```bash
 # Ir para pasta frontend
 cd dashboards
@@ -257,6 +272,7 @@ npm run build
 ```
 
 ### 3️⃣ **Verificar Setup**
+
 ```bash
 # API Health Check
 curl http://localhost:8000/health
@@ -273,6 +289,7 @@ python scripts/test_connections.py
 ## 🧪 **TESTES E VALIDAÇÃO**
 
 ### ✅ **Executar Suite de Testes**
+
 ```bash
 # Todos os testes
 pytest
@@ -289,6 +306,7 @@ pytest tests/e2e/
 ```
 
 ### 🔍 **Linting e Formatação**
+
 ```bash
 # Python - Black formatter
 black src/ tests/
@@ -310,6 +328,7 @@ npm run format
 ## 🛠️ **FERRAMENTAS DE DESENVOLVIMENTO**
 
 ### 💻 **VS Code Extensions**
+
 ```json
 {
   "recommendations": [
@@ -325,6 +344,7 @@ npm run format
 ```
 
 ### 📄 **VS Code Settings**
+
 ```json
 {
   "python.defaultInterpreterPath": "./venv/bin/python",
@@ -336,16 +356,14 @@ npm run format
 ```
 
 ### 🐳 **Dev Containers (Opcional)**
+
 ```json
 {
   "name": "AUDITORIA360 Dev",
   "dockerComposeFile": "docker-compose.dev.yml",
   "service": "api",
   "workspaceFolder": "/app",
-  "extensions": [
-    "ms-python.python",
-    "ms-python.black-formatter"
-  ]
+  "extensions": ["ms-python.python", "ms-python.black-formatter"]
 }
 ```
 
@@ -356,6 +374,7 @@ npm run format
 ### ❌ **Problemas Comuns**
 
 #### 🐍 **Python Issues**
+
 ```bash
 # ModuleNotFoundError
 pip install -r requirements.txt --force-reinstall
@@ -368,6 +387,7 @@ pip install -r requirements.txt
 ```
 
 #### 📦 **Node.js Issues**
+
 ```bash
 # Node modules corruption
 rm -rf node_modules package-lock.json
@@ -379,6 +399,7 @@ nvm use 18  # Se usando nvm
 ```
 
 #### 🗄️ **Database Issues**
+
 ```bash
 # Connection refused
 docker-compose -f docker-compose.dev.yml up postgres -d
@@ -389,6 +410,7 @@ alembic upgrade head
 ```
 
 ### 🔍 **Debug Mode**
+
 ```bash
 # API com debug verbose
 uvicorn src.main:app --reload --log-level debug
@@ -407,6 +429,7 @@ python scripts/test_database.py
 ## 📚 **PRÓXIMOS PASSOS**
 
 ### 🎯 **Após Setup Completo**
+
 1. **Explore codebase**: Veja [Guia de Desenvolvimento](dev-guide.md)
 2. **Rode testes**: Garanta que tudo funciona
 3. **Faça primeiro commit**: Teste workflow
@@ -414,6 +437,7 @@ python scripts/test_database.py
 5. **Leia APIs**: [Documentação de APIs](../apis/api-documentation.md)
 
 ### 🤝 **Para Contribuir**
+
 1. **Fork repositório**: Crie sua cópia
 2. **Crie branch**: `git checkout -b feature/nova-funcionalidade`
 3. **Desenvolva**: Siga padrões estabelecidos
@@ -425,6 +449,7 @@ python scripts/test_database.py
 ## 📞 **SUPORTE SETUP**
 
 ### 🆘 **Se precisar de ajuda**
+
 - **Documentação**: [FAQ](../usuario/faq.md) | [Troubleshooting](../usuario/troubleshooting.md)
 - **Issues**: Abra issue no GitHub com tag "setup"
 - **Discussões**: GitHub Discussions para dúvidas

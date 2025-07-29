@@ -7,64 +7,64 @@
  */
 
 export class MonitoringAPI {
-  constructor(baseUrl = '/api') {
+  constructor(baseUrl = "/api") {
     this.baseUrl = baseUrl;
   }
 
   // Get system metrics
   async getMetrics() {
     // Mock data for demo - in real app, this would fetch from actual API
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve([
           {
-            id: 'system-status',
-            title: 'System Status',
-            value: 'Online',
-            type: 'success',
-            status: 'All Systems Operational',
-            icon: '🔧'
+            id: "system-status",
+            title: "System Status",
+            value: "Online",
+            type: "success",
+            status: "All Systems Operational",
+            icon: "🔧",
           },
           {
-            id: 'response-time',
-            title: 'API Response Time',
-            value: '156ms',
-            type: 'success',
-            status: 'Excellent Performance',
-            icon: '📊'
+            id: "response-time",
+            title: "API Response Time",
+            value: "156ms",
+            type: "success",
+            status: "Excellent Performance",
+            icon: "📊",
           },
           {
-            id: 'database-status',
-            title: 'Database Status',
-            value: 'Connected',
-            type: 'success',
-            status: '12 Active Connections',
-            icon: '💾'
+            id: "database-status",
+            title: "Database Status",
+            value: "Connected",
+            type: "success",
+            status: "12 Active Connections",
+            icon: "💾",
           },
           {
-            id: 'audits-today',
-            title: 'Auditorias Hoje',
-            value: '247',
-            type: 'info',
-            status: '+15% vs ontem',
-            icon: '🎯'
+            id: "audits-today",
+            title: "Auditorias Hoje",
+            value: "247",
+            type: "info",
+            status: "+15% vs ontem",
+            icon: "🎯",
           },
           {
-            id: 'compliance-score',
-            title: 'Compliance Score',
-            value: '98.5%',
-            type: 'success',
-            status: 'LGPD Compliant',
-            icon: '🔒'
+            id: "compliance-score",
+            title: "Compliance Score",
+            value: "98.5%",
+            type: "success",
+            status: "LGPD Compliant",
+            icon: "🔒",
           },
           {
-            id: 'active-users',
-            title: 'Usuários Ativos',
-            value: '89',
-            type: 'info',
-            status: 'Online agora',
-            icon: '👥'
-          }
+            id: "active-users",
+            title: "Usuários Ativos",
+            value: "89",
+            type: "info",
+            status: "Online agora",
+            icon: "👥",
+          },
         ]);
       }, 500);
     });
@@ -73,7 +73,7 @@ export class MonitoringAPI {
   // Get alerts
   async getAlerts() {
     // Mock data for demo - in real app, this would fetch from actual API
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve([]); // No alerts for demo
       }, 300);
@@ -83,12 +83,12 @@ export class MonitoringAPI {
   // Get health checks
   async getHealthChecks() {
     // Mock data for demo
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve([
-          { service: 'Sistema', status: 'ok', message: 'Operacional' },
-          { service: 'API', status: 'ok', message: 'Funcionando' },
-          { service: 'Database', status: 'ok', message: 'Conectado' }
+          { service: "Sistema", status: "ok", message: "Operacional" },
+          { service: "API", status: "ok", message: "Funcionando" },
+          { service: "Database", status: "ok", message: "Conectado" },
         ]);
       }, 200);
     });
@@ -99,10 +99,10 @@ export class MonitoringAPI {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         headers: {
-          'Content-Type': 'application/json',
-          ...options.headers
+          "Content-Type": "application/json",
+          ...options.headers,
         },
-        ...options
+        ...options,
       });
 
       if (!response.ok) {
@@ -111,7 +111,7 @@ export class MonitoringAPI {
 
       return await response.json();
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error("API request failed:", error);
       throw error;
     }
   }

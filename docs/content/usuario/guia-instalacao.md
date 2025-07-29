@@ -16,12 +16,14 @@
 ## 🚀 **Instalação Rápida**
 
 ### Pré-requisitos Mínimos
+
 ```yaml
 Python: "3.11+"
 Git: "2.40+"
 ```
 
 ### Passos Rápidos
+
 ```bash
 # 1. Clone o repositório
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
@@ -39,6 +41,7 @@ make run
 ```
 
 ### Acesso
+
 - **API**: http://localhost:8000
 - **Documentação**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
@@ -48,6 +51,7 @@ make run
 ## 👨‍💻 **Instalação para Desenvolvimento**
 
 ### Pré-requisitos Completos
+
 ```yaml
 # Essenciais
 Python: "3.11+"
@@ -60,6 +64,7 @@ VS Code: "Latest"
 ```
 
 ### 1. Clone e Setup Inicial
+
 ```bash
 # Clone do repositório
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
@@ -70,6 +75,7 @@ git remote add upstream https://github.com/Thaislaine997/AUDITORIA360.git
 ```
 
 ### 2. Ambiente Python
+
 ```bash
 # Criar ambiente virtual
 python -m venv venv
@@ -85,6 +91,7 @@ make install-dev
 ```
 
 ### 3. Configuração do Ambiente
+
 ```bash
 # Copiar arquivo de configuração
 cp .env.example .env
@@ -94,6 +101,7 @@ nano .env
 ```
 
 **Variáveis Obrigatórias**:
+
 ```bash
 # Database
 DATABASE_URL=postgresql://user:pass@host:5432/db
@@ -113,6 +121,7 @@ OPENAI_API_KEY=your_openai_key
 ```
 
 ### 4. Setup de Qualidade de Código
+
 ```bash
 # Instalar pre-commit hooks
 make setup-hooks
@@ -122,6 +131,7 @@ make check
 ```
 
 ### 5. Frontend (Opcional)
+
 ```bash
 # Navegar para frontend
 cd src/frontend
@@ -134,6 +144,7 @@ npm run dev
 ```
 
 ### 6. Verificação da Instalação
+
 ```bash
 # Executar testes
 make test
@@ -150,6 +161,7 @@ make run
 ## 🏭 **Instalação para Produção**
 
 ### Pré-requisitos de Produção
+
 ```yaml
 # Servidor
 Linux: "Ubuntu 20.04+"
@@ -167,6 +179,7 @@ Grafana: "9.0+"
 ```
 
 ### 1. Preparação do Servidor
+
 ```bash
 # Atualizar sistema
 sudo apt update && sudo apt upgrade -y
@@ -180,6 +193,7 @@ sudo su - auditoria360
 ```
 
 ### 2. Deploy da Aplicação
+
 ```bash
 # Clone em produção
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
@@ -196,6 +210,7 @@ cp .env.production .env
 ```
 
 ### 3. Configuração do Nginx
+
 ```nginx
 # /etc/nginx/sites-available/auditoria360
 server {
@@ -213,6 +228,7 @@ server {
 ```
 
 ### 4. Configuração do Supervisor
+
 ```ini
 # /etc/supervisor/conf.d/auditoria360.conf
 [program:auditoria360]
@@ -226,6 +242,7 @@ stderr_logfile=/var/log/auditoria360_error.log
 ```
 
 ### 5. Deploy com Script
+
 ```bash
 # Usar script de deploy automatizado
 python scripts/python/deploy_production.py --environment prod
@@ -236,6 +253,7 @@ python scripts/python/deploy_production.py --environment prod
 ## 🐳 **Instalação com Docker**
 
 ### Usando Docker Compose
+
 ```bash
 # Clone do repositório
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
@@ -250,6 +268,7 @@ docker-compose up -d
 ```
 
 ### Docker Personalizado
+
 ```dockerfile
 # Build da imagem
 docker build -t auditoria360 .
@@ -267,6 +286,7 @@ docker run -d \
 ## ✅ **Verificação da Instalação**
 
 ### Health Check Básico
+
 ```bash
 # Verificar se a API está rodando
 curl http://localhost:8000/health
@@ -280,6 +300,7 @@ curl http://localhost:8000/health
 ```
 
 ### Testes Funcionais
+
 ```bash
 # Executar suite completa de testes
 make test
@@ -292,6 +313,7 @@ pytest tests/performance/ -v
 ```
 
 ### Verificação de Endpoints
+
 ```bash
 # Listar todos os endpoints
 curl http://localhost:8000/docs
@@ -307,6 +329,7 @@ curl -X POST http://localhost:8000/api/v1/auth/login \
 ## 🛠️ **Configurações Avançadas**
 
 ### Configuração de Monitoramento
+
 ```bash
 # Setup completo de monitoramento
 python scripts/python/setup_monitoring.py --enable-alerts
@@ -317,6 +340,7 @@ echo "PROMETHEUS_PORT=9090" >> .env
 ```
 
 ### Integração com MCP (GitHub Copilot)
+
 ```bash
 # Configurar integração MCP
 echo "MCP_ENABLED=true" >> .env
@@ -327,6 +351,7 @@ python scripts/python/demo_mcp_integration.py
 ```
 
 ### Configuração de SSL/TLS
+
 ```bash
 # Obter certificado SSL (certbot)
 sudo apt install certbot python3-certbot-nginx
@@ -345,6 +370,7 @@ sudo crontab -e
 ### Problemas Comuns
 
 #### 1. Erro de Dependências
+
 ```bash
 # Limpar cache do pip
 pip cache purge
@@ -354,6 +380,7 @@ pip install -r requirements.txt --force-reinstall
 ```
 
 #### 2. Erro de Banco de Dados
+
 ```bash
 # Verificar conectividade
 python -c "from src.models.database import engine; print(engine.url)"
@@ -363,6 +390,7 @@ python scripts/python/migrate_database.py
 ```
 
 #### 3. Erro de Permissões
+
 ```bash
 # Corrigir permissões de arquivos
 sudo chown -R auditoria360:auditoria360 /home/auditoria360/AUDITORIA360
@@ -370,6 +398,7 @@ chmod +x scripts/python/*.py
 ```
 
 ### Logs e Debugging
+
 ```bash
 # Ver logs da aplicação
 tail -f /var/log/auditoria360.log
@@ -387,11 +416,13 @@ make run
 ## 📞 **Suporte**
 
 ### Documentação
+
 - **[Troubleshooting](troubleshooting.md)** - Solução de problemas
 - **[FAQ](faq.md)** - Perguntas frequentes
 - **[Manual do Usuário](manual-usuario.md)** - Guia completo de uso
 
 ### Contato
+
 - **Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
 - **Documentação**: [Portal de Docs](../00-INDICE_PRINCIPAL.md)
 - **Email**: support@auditoria360.com

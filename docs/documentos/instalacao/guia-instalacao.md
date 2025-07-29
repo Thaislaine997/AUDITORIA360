@@ -7,17 +7,20 @@ Este manual fornece instruções detalhadas para instalar e configurar o sistema
 ## 📋 Pré-requisitos
 
 ### Sistema Operacional
+
 - Ubuntu 20.04+ / macOS 11+ / Windows 10+ (com WSL2)
 - Mínimo 4GB RAM, recomendado 8GB+
 - 10GB espaço livre em disco
 
 ### Software Base
+
 - **Python 3.12+** - Linguagem principal
 - **Node.js 18+** - Frontend e ferramentas
 - **Git** - Controle de versão
 - **Docker** (opcional) - Para containers
 
 ### Contas de Serviços
+
 - **Neon Database** - PostgreSQL serverless
 - **Cloudflare R2** - Armazenamento de arquivos
 - **OpenAI** (opcional) - Funcionalidades de IA
@@ -26,12 +29,14 @@ Este manual fornece instruções detalhadas para instalar e configurar o sistema
 ## 🚀 Instalação Rápida
 
 ### 1. Clonar Repositório
+
 ```bash
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
 cd AUDITORIA360
 ```
 
 ### 2. Instalar Dependências
+
 ```bash
 # Python
 pip install --upgrade pip
@@ -45,6 +50,7 @@ cd ../..
 ```
 
 ### 3. Configurar Ambiente
+
 ```bash
 # Copiar arquivo de configuração
 cp .env.example .env
@@ -54,6 +60,7 @@ nano .env
 ```
 
 ### 4. Verificar Instalação
+
 ```bash
 # Verificar API
 python -c "from api.index import app; print('✅ API OK')"
@@ -123,6 +130,7 @@ TWILIO_AUTH_TOKEN=your-twilio-token
 ## 🏃‍♂️ Execução
 
 ### Desenvolvimento Local
+
 ```bash
 # Backend
 make run
@@ -135,6 +143,7 @@ npm run dev
 ```
 
 ### Produção
+
 ```bash
 # Build frontend
 cd src/frontend
@@ -147,6 +156,7 @@ vercel --prod
 ## 🧪 Validação da Instalação
 
 ### Testes Básicos
+
 ```bash
 # Testes unitários
 pytest tests/unit/ -v
@@ -159,6 +169,7 @@ pytest --cov=src --cov-report=html
 ```
 
 ### Health Checks
+
 ```bash
 # API Health
 curl http://localhost:8000/health
@@ -175,6 +186,7 @@ python -c "from src.services.storage_service import test_connection; test_connec
 ### Problemas Comuns
 
 #### Erro de Conexão com Banco
+
 ```bash
 # Verificar conexão
 ping your-neon-host.com
@@ -184,6 +196,7 @@ openssl s_client -connect your-host:5432 -servername your-host
 ```
 
 #### Problemas com Dependências
+
 ```bash
 # Limpar cache pip
 pip cache purge
@@ -193,6 +206,7 @@ pip install --force-reinstall -r requirements.txt
 ```
 
 #### Erro no Frontend
+
 ```bash
 # Limpar node_modules
 cd src/frontend
@@ -201,6 +215,7 @@ npm install
 ```
 
 ### Logs e Debugging
+
 ```bash
 # Logs da API
 tail -f logs/api.log

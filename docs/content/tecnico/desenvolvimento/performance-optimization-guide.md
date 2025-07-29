@@ -39,7 +39,7 @@ monitoring.start()
 
 # Métricas disponíveis automaticamente:
 # - CPU usage
-# - Memory usage  
+# - Memory usage
 # - Disk usage
 # - Network I/O
 ```
@@ -70,15 +70,15 @@ for suggestion in optimizations['suggestions']:
 
 ```sql
 -- Para consultas frequentes de auditoria
-CREATE INDEX CONCURRENTLY idx_auditorias_empresa_data 
+CREATE INDEX CONCURRENTLY idx_auditorias_empresa_data
 ON auditorias(empresa_id, data_auditoria);
 
 -- Para filtros por status
-CREATE INDEX CONCURRENTLY idx_auditorias_status 
+CREATE INDEX CONCURRENTLY idx_auditorias_status
 ON auditorias(status) WHERE status IN ('pendente', 'em_andamento');
 
 -- Para pesquisas de texto
-CREATE INDEX CONCURRENTLY idx_cct_texto_busca 
+CREATE INDEX CONCURRENTLY idx_cct_texto_busca
 ON cct USING gin(to_tsvector('portuguese', texto_cct));
 ```
 
@@ -104,7 +104,7 @@ conn = duckdb.connect()
 
 # Exportar para Parquet
 conn.execute("""
-    COPY (SELECT * FROM read_csv('dados.csv')) 
+    COPY (SELECT * FROM read_csv('dados.csv'))
     TO 'dados_otimizados.parquet' (FORMAT PARQUET)
 """)
 
@@ -117,8 +117,8 @@ conn.execute("SELECT * FROM read_parquet('dados_otimizados.parquet')")
 ```python
 # Projeção de colunas
 query_otimizada = """
-SELECT 
-    empresa_id, 
+SELECT
+    empresa_id,
     SUM(valor_auditoria) as total,
     COUNT(*) as quantidade
 FROM read_parquet('auditorias.parquet')
@@ -159,14 +159,14 @@ from src.utils.performance import cache
 # Uso manual do cache
 def processo_complexo(parametros):
     cache_key = f"resultado_{hash(str(parametros))}"
-    
+
     resultado = cache.get(cache_key)
     if resultado is not None:
         return resultado
-    
+
     # Processar dados
     resultado = realizar_calculo_complexo(parametros)
-    
+
     # Cachear resultado
     cache.set(cache_key, resultado)
     return resultado
@@ -188,11 +188,11 @@ print(f"Memory usage: {stats['memory_usage_mb']:.2f}MB")
 def processar_documento_ocr(documento_path):
     # Cache de resultados OCR por hash do arquivo
     file_hash = calcular_hash_arquivo(documento_path)
-    
+
     @cached(ttl_seconds=86400, key_func=lambda _: f"ocr_{file_hash}")
     def extrair_texto_cached():
         return paddleocr_extrair_texto(documento_path)
-    
+
     return extrair_texto_cached()
 ```
 
@@ -206,12 +206,12 @@ def calcular_folha_pagamento(empresa_id, mes_ano):
     with optimizer.profile_query("folha_calculo"):
         funcionarios = buscar_funcionarios(empresa_id)
         parametros = buscar_parametros_legais(mes_ano)
-        
+
         resultados = []
         for funcionario in funcionarios:
             calculo = processar_calculo_funcionario(funcionario, parametros)
             resultados.append(calculo)
-        
+
         return resultados
 ```
 
@@ -222,17 +222,17 @@ def calcular_folha_pagamento(empresa_id, mes_ano):
 def comparar_cct_empresas(empresa_ids):
     # Paralelizar comparações
     import concurrent.futures
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = []
         for empresa_id in empresa_ids:
             future = executor.submit(buscar_cct_empresa, empresa_id)
             futures.append((empresa_id, future))
-        
+
         resultados = {}
         for empresa_id, future in futures:
             resultados[empresa_id] = future.result()
-    
+
     return analisar_diferencas_cct(resultados)
 ```
 
@@ -285,17 +285,17 @@ import pstats
 def profile_function():
     profiler = cProfile.Profile()
     profiler.enable()
-    
+
     # Sua função aqui
     resultado = funcao_para_profile()
-    
+
     profiler.disable()
-    
+
     # Analisar resultados
     stats = pstats.Stats(profiler)
     stats.sort_stats('cumulative')
     stats.print_stats(10)  # Top 10 funções
-    
+
     return resultado
 ```
 
@@ -317,19 +317,22 @@ def funcao_memory_intensive():
 ## 📋 Checklist de Otimização
 
 ### ✅ Banco de Dados
+
 - [ ] Queries com índices apropriados
-- [ ] Evitar SELECT * desnecessário
+- [ ] Evitar SELECT \* desnecessário
 - [ ] Paginação implementada
 - [ ] Connection pooling configurado
 - [ ] Queries parametrizadas (evitar SQL injection)
 
 ### ✅ Cache
+
 - [ ] Cache implementado para operações custosas
 - [ ] TTL apropriado configurado
 - [ ] Cache invalidation strategy definida
 - [ ] Monitoring de hit rate
 
 ### ✅ Código
+
 - [ ] Profiling em funções críticas
 - [ ] Algoritmos otimizados
 - [ ] Evitar loops desnecessários
@@ -337,6 +340,7 @@ def funcao_memory_intensive():
 - [ ] Processamento assíncrono onde apropriado
 
 ### ✅ Infraestrutura
+
 - [ ] Monitoramento de recursos ativo
 - [ ] Alertas configurados
 - [ ] Logs de performance coletados
@@ -346,13 +350,13 @@ def funcao_memory_intensive():
 
 ## 🎯 Metas de Performance
 
-| Métrica | Meta | Atual | Status |
-|---------|------|-------|--------|
-| Tempo resposta API | < 200ms | - | ⏳ |
-| Query DB tempo médio | < 100ms | - | ⏳ |
-| Cache hit rate | > 80% | - | ⏳ |
-| Uso CPU | < 70% | - | ⏳ |
-| Uso memória | < 80% | - | ⏳ |
+| Métrica              | Meta    | Atual | Status |
+| -------------------- | ------- | ----- | ------ |
+| Tempo resposta API   | < 200ms | -     | ⏳     |
+| Query DB tempo médio | < 100ms | -     | ⏳     |
+| Cache hit rate       | > 80%   | -     | ⏳     |
+| Uso CPU              | < 70%   | -     | ⏳     |
+| Uso memória          | < 80%   | -     | ⏳     |
 
 ---
 
@@ -367,5 +371,5 @@ Para dúvidas sobre otimização de performance:
 
 ---
 
-*Última atualização: 2025-01-28*
-*Versão: 1.0.0*
+_Última atualização: 2025-01-28_
+_Versão: 1.0.0_

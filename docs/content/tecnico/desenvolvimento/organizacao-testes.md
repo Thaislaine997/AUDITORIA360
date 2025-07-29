@@ -57,6 +57,7 @@ Testes que verificam o comportamento de componentes individuais de forma isolada
 - **Serviços**: Lógica de negócio sem dependências externas
 
 **Exemplos:**
+
 - `test_auth_service.py` - Testes de autenticação
 - `test_gemini_utils.py` - Utilitários do Gemini
 - `test_ml_components_*.py` - Componentes de ML
@@ -74,6 +75,7 @@ Testes que verificam a interação entre múltiplos componentes:
 - **Fluxos Completos**: Processos de negócio end-to-end
 
 **Exemplos:**
+
 - `test_api_*.py` - Testes de APIs REST principais
 - `portal_demandas/test_api.py` - API do Portal de Demandas
 - `mcp/test_mcp_integration_simple.py` - Integração MCP
@@ -111,6 +113,7 @@ testpaths = unit integration e2e performance
 ```
 
 **Suporte a Async/Await:**
+
 - Testes assíncronos suportados via `pytest-asyncio`
 - Use o decorador `@pytest.mark.asyncio` para testes async
 - Configuração automática para testes MCP e componentes assíncronos
@@ -118,11 +121,13 @@ testpaths = unit integration e2e performance
 ### Comandos de Execução
 
 **Executar todos os testes:**
+
 ```bash
 pytest tests/
 ```
 
 **Executar por categoria:**
+
 ```bash
 # Apenas testes unitários
 pytest tests/unit/
@@ -144,6 +149,7 @@ pytest tests/performance/
 ```
 
 **Executar com coverage:**
+
 ```bash
 pytest tests/ --cov=src --cov-report=html
 ```
@@ -178,7 +184,7 @@ make test
 
 - **conftest.py**: Mantém configurações globais e mocks
 - **pytest.ini**: Configurado com `testpaths` para as categorias de teste
-- **__init__.py**: Criados em todas as subpastas para organização modular
+- ****init**.py**: Criados em todas as subpastas para organização modular
 - **Conversão para pytest**: Testes convertidos para usar decoradores `@pytest.mark.asyncio`
 
 ### Padronização de Scripts
@@ -204,8 +210,8 @@ make test
 ## Padrões de Nomenclatura
 
 - **Testes unitários**: `test_<componente>.py`
-- **Testes de integração**: 
-  - `test_<funcionalidade>_integration.py` 
+- **Testes de integração**:
+  - `test_<funcionalidade>_integration.py`
   - `test_api_<endpoint>.py` (para APIs)
   - Organizados em subpastas por módulo (`portal_demandas/`, `mcp/`)
 - **Testes E2E**: `test_e2e_<cenario>.py`

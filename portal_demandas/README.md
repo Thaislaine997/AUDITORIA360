@@ -5,6 +5,7 @@ Portal integrado para gerenciamento de demandas e tickets do AUDITORIA360, agora
 ## 🚀 Características
 
 ### ✅ **Migração Completa SQLAlchemy + Neon**
+
 - ✅ Modelos Pydantic robustos com validação
 - ✅ SQLAlchemy ORM com PostgreSQL otimizado
 - ✅ Conexão Neon PostgreSQL serverless
@@ -16,6 +17,7 @@ Portal integrado para gerenciamento de demandas e tickets do AUDITORIA360, agora
 - ✅ Tratamento robusto de erros
 
 ### 📊 **Funcionalidades**
+
 - **CRUD Completo**: Criar, listar, atualizar e deletar tickets
 - **Filtros Avançados**: Status, prioridade, categoria, responsável, etapa
 - **Busca Textual**: Busca no título e descrição
@@ -28,6 +30,7 @@ Portal integrado para gerenciamento de demandas e tickets do AUDITORIA360, agora
 ## 🏗️ Arquitetura
 
 ### Stack Tecnológica
+
 - **Backend**: FastAPI + SQLAlchemy
 - **Database**: Neon PostgreSQL (serverless)
 - **Validação**: Pydantic models
@@ -35,6 +38,7 @@ Portal integrado para gerenciamento de demandas e tickets do AUDITORIA360, agora
 - **Documentação**: OpenAPI/Swagger automática
 
 ### Estrutura de Arquivos
+
 ```
 portal_demandas/
 ├── __init__.py              # Módulo principal
@@ -52,6 +56,7 @@ portal_demandas/
 ## 📋 Modelos de Dados
 
 ### Ticket (Modelo Principal)
+
 ```python
 class Ticket:
     id: int                          # ID único
@@ -73,6 +78,7 @@ class Ticket:
 ```
 
 ### Enumerações
+
 - **TicketStatus**: `pendente`, `em_andamento`, `aguardando`, `concluido`, `cancelado`
 - **TicketPrioridade**: `baixa`, `media`, `alta`, `critica`
 - **TicketCategoria**: `geral`, `auditoria`, `folha`, `documentos`, `cct`, `sistema`
@@ -80,34 +86,39 @@ class Ticket:
 ## 🔌 API Endpoints
 
 ### Tickets
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `POST` | `/tickets/` | Criar novo ticket |
-| `GET` | `/tickets/` | Listar tickets (com filtros) |
-| `GET` | `/tickets/{id}` | Obter ticket específico |
-| `PATCH` | `/tickets/{id}` | Atualizar ticket |
-| `DELETE` | `/tickets/{id}` | Deletar ticket |
-| `PATCH` | `/tickets/bulk/status` | Atualizar status em lote |
+
+| Método   | Endpoint               | Descrição                    |
+| -------- | ---------------------- | ---------------------------- |
+| `POST`   | `/tickets/`            | Criar novo ticket            |
+| `GET`    | `/tickets/`            | Listar tickets (com filtros) |
+| `GET`    | `/tickets/{id}`        | Obter ticket específico      |
+| `PATCH`  | `/tickets/{id}`        | Atualizar ticket             |
+| `DELETE` | `/tickets/{id}`        | Deletar ticket               |
+| `PATCH`  | `/tickets/bulk/status` | Atualizar status em lote     |
 
 ### Comentários
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
+
+| Método | Endpoint                  | Descrição            |
+| ------ | ------------------------- | -------------------- |
 | `POST` | `/tickets/{id}/comments/` | Adicionar comentário |
-| `GET` | `/tickets/{id}/comments/` | Listar comentários |
+| `GET`  | `/tickets/{id}/comments/` | Listar comentários   |
 
 ### Estatísticas
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/stats/` | Obter estatísticas gerais |
+
+| Método | Endpoint  | Descrição                 |
+| ------ | --------- | ------------------------- |
+| `GET`  | `/stats/` | Obter estatísticas gerais |
 
 ### Utilitários
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/health` | Health check |
+
+| Método | Endpoint  | Descrição    |
+| ------ | --------- | ------------ |
+| `GET`  | `/health` | Health check |
 
 ## 📝 Exemplos de Uso
 
 ### 1. Criar Ticket
+
 ```bash
 curl -X POST "http://localhost:8001/tickets/" \
   -H "Content-Type: application/json" \
@@ -124,16 +135,19 @@ curl -X POST "http://localhost:8001/tickets/" \
 ```
 
 ### 2. Listar Tickets com Filtros
+
 ```bash
 curl "http://localhost:8001/tickets/?status=pendente&prioridade=alta&page=1&per_page=10"
 ```
 
 ### 3. Buscar Tickets
+
 ```bash
 curl "http://localhost:8001/tickets/?search=auditoria&sort_by=criado_em&sort_order=desc"
 ```
 
 ### 4. Atualizar Status
+
 ```bash
 curl -X PATCH "http://localhost:8001/tickets/1" \
   -H "Content-Type: application/json" \
@@ -144,6 +158,7 @@ curl -X PATCH "http://localhost:8001/tickets/1" \
 ```
 
 ### 5. Adicionar Comentário
+
 ```bash
 curl -X POST "http://localhost:8001/tickets/1/comments/" \
   -H "Content-Type: application/json" \
@@ -155,6 +170,7 @@ curl -X POST "http://localhost:8001/tickets/1/comments/" \
 ```
 
 ### 6. Obter Estatísticas
+
 ```bash
 curl "http://localhost:8001/stats/"
 ```
@@ -162,6 +178,7 @@ curl "http://localhost:8001/stats/"
 ## 🧪 Testes
 
 ### Executar Testes
+
 ```bash
 # Todos os testes
 pytest portal_demandas/tests/
@@ -175,6 +192,7 @@ pytest portal_demandas/tests/ --cov=portal_demandas --cov-report=html
 ```
 
 ### Estrutura de Testes
+
 - **test_api.py**: Testes de endpoints da API
 - **test_models.py**: Testes de validação dos models
 - **conftest.py**: Configuração de fixtures de teste
@@ -182,6 +200,7 @@ pytest portal_demandas/tests/ --cov=portal_demandas --cov-report=html
 ## 🔧 Configuração
 
 ### Variáveis de Ambiente
+
 ```bash
 # Database
 DATABASE_URL=postgresql://user:pass@host:5432/db
@@ -193,6 +212,7 @@ API_PORT=8001
 ```
 
 ### Configuração de Desenvolvimento
+
 ```python
 # .env.local
 DATABASE_URL=postgresql://dev_user:dev_pass@localhost:5432/portal_dev
@@ -203,6 +223,7 @@ LOG_LEVEL=INFO
 ## 🚀 Execução
 
 ### Servidor de Desenvolvimento
+
 ```bash
 # Usando uvicorn diretamente
 uvicorn portal_demandas.api:app --reload --host 0.0.0.0 --port 8001
@@ -215,6 +236,7 @@ make run-portal
 ```
 
 ### Docker (Opcional)
+
 ```dockerfile
 FROM python:3.11-slim
 WORKDIR /app
@@ -227,11 +249,13 @@ CMD ["uvicorn", "portal_demandas.api:app", "--host", "0.0.0.0", "--port", "8001"
 ## 📊 Monitoramento
 
 ### Health Check
+
 ```bash
 curl http://localhost:8001/health
 ```
 
 ### Métricas Disponíveis
+
 - Total de tickets por status
 - Distribuição por prioridade e categoria
 - Tempo médio de conclusão
@@ -241,6 +265,7 @@ curl http://localhost:8001/health
 ## 🔒 Segurança
 
 ### Implementado
+
 - ✅ Validação de entrada com Pydantic
 - ✅ Sanitização de queries SQL
 - ✅ CORS configurável
@@ -248,6 +273,7 @@ curl http://localhost:8001/health
 - ✅ Logs de auditoria
 
 ### Próximos Passos
+
 - [ ] Autenticação JWT
 - [ ] Rate limiting
 - [ ] Permissões baseadas em roles
@@ -256,6 +282,7 @@ curl http://localhost:8001/health
 ## 🚧 Roadmap
 
 ### v1.1 (Próxima Release)
+
 - [ ] Sistema de notificações
 - [ ] Upload de arquivos anexos
 - [ ] Templates de tickets
@@ -263,6 +290,7 @@ curl http://localhost:8001/health
 - [ ] Relatórios em PDF
 
 ### v1.2 (Futuro)
+
 - [ ] Integração com calendário
 - [ ] Automação de workflows
 - [ ] Integração com Slack/Teams
@@ -272,6 +300,7 @@ curl http://localhost:8001/health
 ## 🤝 Contribuição
 
 ### Como Contribuir
+
 1. Fork do repositório
 2. Criar branch para feature (`git checkout -b feature/nova-funcionalidade`)
 3. Commit das mudanças (`git commit -am 'Adiciona nova funcionalidade'`)
@@ -279,6 +308,7 @@ curl http://localhost:8001/health
 5. Criar Pull Request
 
 ### Padrões de Código
+
 - Seguir PEP 8
 - Usar type hints
 - Documentar funções públicas

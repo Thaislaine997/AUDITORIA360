@@ -9,23 +9,23 @@ Este arquivo documenta as principais consultas BigQuery geradas e executadas pel
 **Objetivo:** Lista todas as empresas para o `client_id` atual.
 
 ```sql
-SELECT 
-    codigo_empresa, 
-    cnpj, 
-    nome_empresa, 
-    contato, 
-    email, 
-    cidade, 
-    sindicato, 
-    particularidades, 
-    forma_envio, 
-    data_cadastro, 
-    id_contabilidade, 
-    id_sindicato, 
-    client_id 
-FROM 
-    `[PROJECT_ID].[DATASET_ID].empresas` 
-WHERE 
+SELECT
+    codigo_empresa,
+    cnpj,
+    nome_empresa,
+    contato,
+    email,
+    cidade,
+    sindicato,
+    particularidades,
+    forma_envio,
+    data_cadastro,
+    id_contabilidade,
+    id_sindicato,
+    client_id
+FROM
+    `[PROJECT_ID].[DATASET_ID].empresas`
+WHERE
     client_id = @client_id
 ```
 
@@ -38,23 +38,23 @@ WHERE
 **Objetivo:** Busca uma empresa específica pelo seu `codigo_empresa` e `client_id`.
 
 ```sql
-SELECT 
-    codigo_empresa, 
-    cnpj, 
-    nome_empresa, 
-    contato, 
-    email, 
-    cidade, 
-    sindicato, 
-    particularidades, 
-    forma_envio, 
-    data_cadastro, 
-    id_contabilidade, 
-    id_sindicato, 
-    client_id 
-FROM 
-    `[PROJECT_ID].[DATASET_ID].empresas` 
-WHERE 
+SELECT
+    codigo_empresa,
+    cnpj,
+    nome_empresa,
+    contato,
+    email,
+    cidade,
+    sindicato,
+    particularidades,
+    forma_envio,
+    data_cadastro,
+    id_contabilidade,
+    id_sindicato,
+    client_id
+FROM
+    `[PROJECT_ID].[DATASET_ID].empresas`
+WHERE
     codigo_empresa = @empresa_id AND client_id = @client_id
 ```
 
@@ -68,20 +68,20 @@ WHERE
 **Objetivo:** Busca uma folha de pagamento específica pelo seu `id_folha` e `client_id`.
 
 ```sql
-SELECT 
-    id_folha, 
-    codigo_empresa, 
-    cnpj_empresa, 
-    mes_ano, 
-    status, 
-    data_envio_cliente, 
-    data_guia_fgts, 
-    data_darf_inss, 
-    observacoes, 
-    client_id 
-FROM 
-    `[PROJECT_ID].[DATASET_ID].folhas` 
-WHERE 
+SELECT
+    id_folha,
+    codigo_empresa,
+    cnpj_empresa,
+    mes_ano,
+    status,
+    data_envio_cliente,
+    data_guia_fgts,
+    data_darf_inss,
+    observacoes,
+    client_id
+FROM
+    `[PROJECT_ID].[DATASET_ID].folhas`
+WHERE
     id_folha = @id_folha AND client_id = @client_id
 ```
 
@@ -95,11 +95,11 @@ WHERE
 **Objetivo:** Atualiza o status de uma folha de pagamento específica.
 
 ```sql
-UPDATE 
+UPDATE
     `[PROJECT_ID].[DATASET_ID].folhas`
-SET 
+SET
     status = @novo_status
-WHERE 
+WHERE
     id_folha = @id_folha AND client_id = @client_id
 ```
 
@@ -177,19 +177,19 @@ WHEN NOT MATCHED THEN
 **Objetivo:** Busca dados de pendências para o dashboard do cliente.
 
 ```sql
-SELECT 
-    tarefa, 
-    quantidade_concluida, 
-    percentual_concluido, 
-    quantidade_pendente, 
-    percentual_pendente, 
-    data_atualizacao, 
-    client_id 
-FROM 
-    `[PROJECT_ID].[DATASET_ID].dashboard` 
-WHERE 
-    client_id = @client_id 
-ORDER BY 
+SELECT
+    tarefa,
+    quantidade_concluida,
+    percentual_concluido,
+    quantidade_pendente,
+    percentual_pendente,
+    data_atualizacao,
+    client_id
+FROM
+    `[PROJECT_ID].[DATASET_ID].dashboard`
+WHERE
+    client_id = @client_id
+ORDER BY
     data_atualizacao DESC
 ```
 

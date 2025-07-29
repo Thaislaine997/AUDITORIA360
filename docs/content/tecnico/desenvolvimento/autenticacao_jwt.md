@@ -8,6 +8,7 @@
   - `password`: senha do usuário
 
 **Exemplo de requisição:**
+
 ```bash
 curl -X POST "http://localhost:8000/api/auth/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
@@ -15,6 +16,7 @@ curl -X POST "http://localhost:8000/api/auth/token" \
 ```
 
 **Resposta:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -32,6 +34,7 @@ curl -X POST "http://localhost:8000/api/auth/token" \
   ```
 
 **Exemplo de requisição:**
+
 ```bash
 curl -H "Authorization: Bearer <access_token>" \
   http://localhost:8000/api/auth/users/me/
@@ -42,6 +45,7 @@ curl -H "Authorization: Bearer <access_token>" \
 ## 3. Estrutura do Token JWT
 
 O token contém:
+
 - `sub`: id do usuário
 - `id_cliente`: id do cliente
 - `roles`: lista de papéis do usuário
