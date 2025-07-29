@@ -44,7 +44,12 @@ from src.schemas.predicao_risco_schemas import (
 
 from configs.settings import settings
 # Importar utilitários do frontend
-from dashboards.utils import display_user_info_sidebar, handle_api_error
+from dashboards.utils import (
+    display_user_info_sidebar, 
+    handle_api_error,
+    get_api_token,
+    get_current_client_id
+)
 # Importar verificação de sessão
 # Removido import quebrado
 
@@ -79,15 +84,7 @@ def initialize_session_state():
 # def login_user(username, password) -> bool: ... (Removido)
 # def logout_user(): ... (Removido - será tratado pelo painel.py ou navegação)
 
-def get_current_client_id() -> Optional[str]:
-    # Usa a função verify_session para obter cliente do usuário autenticado
-    if "user_details" in st.session_state:
-        return st.session_state["user_details"].get("cliente_id")
-    return None
-
-def get_api_token() -> Optional[str]:
-    # Usa a sessão autenticada
-    return st.session_state.get("api_token")
+# Use global functions from dashboards.utils - no need for local implementations
 
 def buscar_folhas_processadas_cliente(id_cliente: str, token: Optional[str]) -> list:
     headers: Dict[str, str] = {}

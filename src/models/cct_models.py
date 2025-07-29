@@ -66,8 +66,7 @@ class Union(Base):
     # Relationships
     ccts = relationship("CCT", back_populates="union")
     
-    def __repr__(self):
-        return f"<Union {self.name} - {self.category}>"
+    # Use default __repr__ from BaseModel
 
 class CCT(Base):
     __tablename__ = "ccts"
@@ -128,8 +127,7 @@ class CCT(Base):
     parent = relationship("CCT", remote_side=[id])
     comparisons = relationship("CCTComparison", foreign_keys="CCTComparison.cct_id")
     
-    def __repr__(self):
-        return f"<CCT {self.title} ({self.validity_start.year if self.validity_start else 'No date'})>"
+    # Use default __repr__ from BaseModel
 
 class CCTClause(Base):
     __tablename__ = "cct_clauses"
@@ -173,8 +171,7 @@ class CCTClause(Base):
     # Relationships
     cct = relationship("CCT", back_populates="clauses")
     
-    def __repr__(self):
-        return f"<CCTClause {self.clause_number}: {self.title}>"
+    # Use default __repr__ from BaseModel
 
 class CCTComparison(Base):
     __tablename__ = "cct_comparisons"
@@ -208,8 +205,7 @@ class CCTComparison(Base):
     compared_cct = relationship("CCT", foreign_keys=[compared_cct_id])
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<CCTComparison {self.cct.title} vs {self.compared_cct.title}>"
+    # Use default __repr__ from BaseModel
 
 class CCTUpdateLog(Base):
     __tablename__ = "cct_update_logs"
@@ -235,5 +231,4 @@ class CCTUpdateLog(Base):
     cct = relationship("CCT")
     updated_by = relationship("User")
     
-    def __repr__(self):
-        return f"<CCTUpdateLog {self.cct.title} - {self.update_type}>"
+    # Use default __repr__ from BaseModel

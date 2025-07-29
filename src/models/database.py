@@ -24,8 +24,36 @@ engine = create_engine(
 # Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Base class for all models with common functionality
+class BaseModel:
+    """Base model class with common functionality for all SQLAlchemy models."""
+    
+    def __repr__(self):
+        """
+        Standard representation for all models.
+        Uses class name and attempts to find a meaningful identifier.
+        """
+        class_name = self.__class__.__name__
+        
+        # Try common identifier fields in order of preference
+        identifier_fields = ['name', 'title', 'username', 'email', 'code', 'number', 'id']
+        identifier = None
+        
+        for field in identifier_fields:
+            if hasattr(self, field):
+                value = getattr(self, field)
+                if value is not None:
+                    identifier = str(value)
+                    break
+        
+        # If no common identifier found, use id
+        if identifier is None and hasattr(self, 'id'):
+            identifier = f"id={self.id}"
+        
+        return f"<{class_name} {identifier or 'Unknown'}>"
+
 # Base class for all models
-Base = declarative_base()
+Base = declarative_base(cls=BaseModel)
 
 def get_db():
     """Dependency to get database session"""
