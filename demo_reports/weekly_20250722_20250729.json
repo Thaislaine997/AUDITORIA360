@@ -2,9 +2,9 @@
   "id": "weekly_20250722_20250729",
   "type": "weekly",
   "title": "Relatório Weekly - AUDITORIA360",
-  "generated_at": "2025-07-29T12:19:16.695836",
-  "period_start": "2025-07-22T12:19:16.695795",
-  "period_end": "2025-07-29T12:19:16.695795",
+  "generated_at": "2025-07-29T18:23:54.192987",
+  "period_start": "2025-07-22T18:23:54.192951",
+  "period_end": "2025-07-29T18:23:54.192951",
   "metrics": {
     "total_audits": 150,
     "completed_audits": 135,
@@ -17,8 +17,8 @@
   },
   "details": {
     "period_summary": {
-      "start": "2025-07-22T12:19:16.695795",
-      "end": "2025-07-29T12:19:16.695795",
+      "start": "2025-07-22T18:23:54.192951",
+      "end": "2025-07-29T18:23:54.192951",
       "duration_days": 7
     },
     "audit_summary": {
