@@ -8,7 +8,6 @@ import os
 import sys
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean
-from sqlalchemy.ext.declarative import declarative_base
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,14 +18,12 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
 # Import centralized database configuration  
-from src.models.database import engine, SessionLocal, Base as MainBase
-
-# Use the centralized database engine and session
-# Create a local Base for portal-specific models if needed
-Base = declarative_base()
+from src.models.database import engine, SessionLocal, Base
 
 # Session factory using centralized config
 PortalSessionLocal = SessionLocal
+
+# Use the centralized get_db dependency
 
 class TicketDB(Base):
     """
@@ -54,8 +51,7 @@ class TicketDB(Base):
     tempo_estimado = Column(Integer)  # Estimated time in hours
     tempo_gasto = Column(Integer, default=0)  # Time spent in hours
     
-    def __repr__(self):
-        return f"<Ticket(id={self.id}, titulo='{self.titulo}', status='{self.status}')>"
+    # Remove custom __repr__ to use centralized BaseModel implementation
     
     def to_dict(self):
         """Convert model instance to dictionary"""
@@ -91,23 +87,10 @@ class TicketComment(Base):
     tipo = Column(String(20), default="comentario")  # comentario, status_change, system
     criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
     
-    def __repr__(self):
-        return f"<TicketComment(id={self.id}, ticket_id={self.ticket_id}, autor='{self.autor}')>"
+    # Remove custom __repr__ to use centralized BaseModel implementation
 
-def get_db():
-    """
-    Database dependency for portal_demandas
-    Provides a database session with proper cleanup
-    """
-    db = SessionLocal()
-    try:
-        yield db
-    except Exception as e:
-        logger.error(f"Database session error: {e}")
-        db.rollback()
-        raise
-    finally:
-        db.close()
+# Use centralized get_db function from src.models.database
+from src.models.database import get_db
 
 def init_portal_db():
     """
