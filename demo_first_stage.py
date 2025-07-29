@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """
+🧪 DEMO SCRIPT - NOT FOR PRODUCTION USE 🧪
+
 AUDITORIA360 - First Stage Integration Example
 Demonstrates the unified reporting system with dashboard integration
+
+⚠️  WARNING: This is a demonstration script only.
+⚠️  DO NOT use in production environments.
+⚠️  For production deployment, use the main application in src/
 
 This script shows how the first stage components work together:
 1. Generate unified reports

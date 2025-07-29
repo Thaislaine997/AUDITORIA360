@@ -1,3 +1,11 @@
+# 🧪 EXEMPLOS - CÓDIGO DE DEMONSTRAÇÃO APENAS
+
+> ⚠️  **AVISO: ESTES SÃO ARQUIVOS DE EXEMPLO PARA FINS DE DEMONSTRAÇÃO APENAS**
+> 
+> ⚠️  **NÃO USAR EM AMBIENTES DE PRODUÇÃO**
+> 
+> ⚠️  **Para deployment em produção, use a aplicação principal em `src/`**
+
 # Exemplos de Uso da Stack AUDITORIA360
 
 Esta pasta contém exemplos práticos e abrangentes demonstrando como usar todos os principais módulos do sistema AUDITORIA360.
