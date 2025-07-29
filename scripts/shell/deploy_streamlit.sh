@@ -1,78 +1,158 @@
 #!/bin/bash
+#
+# deploy_streamlit.sh - Script para deploy automatizado no Streamlit Cloud
+# 
+# Uso: ./deploy_streamlit.sh [opções]
+# Exemplo: ./deploy_streamlit.sh --validate-only --verbose
+#
+# Autor: Equipe AUDITORIA360
+# Data: Janeiro 2025
+# Versão: 2.0
 
-# 🚀 AUDITORIA360 - Streamlit Cloud Deployment Script
-# Automated deployment script for Streamlit Cloud
+# Configurações de segurança
+set -e          # Sair em caso de erro
+set -u          # Sair se variável não definida for usada  
+set -o pipefail # Falhar se qualquer comando no pipe falhar
 
-set -e  # Exit on any error
+# Configurações de script
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "🚀 AUDITORIA360 - Iniciando deploy para Streamlit Cloud..."
+# Cores para output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly NC='\033[0m' # No Color
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Variáveis globais
+VALIDATE_ONLY=false
+VERBOSE=false
+SKIP_TESTS=false
 
-# Function to print colored output
-print_step() {
-    echo -e "${BLUE}[STEP]${NC} $1"
+# Funções de logging padronizadas
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1" >&2
 }
 
-print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1" >&2
 }
 
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1" >&2
 }
 
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1" >&2
 }
 
-# Check if we're in the correct directory
-if [ ! -f "dashboards/app.py" ]; then
-    print_error "dashboards/app.py não encontrado. Execute este script na raiz do projeto."
-    exit 1
-fi
+# Função de ajuda
+show_help() {
+    cat << EOF
+${SCRIPT_NAME} - Deploy automatizado no Streamlit Cloud
 
-print_step "1. Verificando estrutura do projeto..."
+USO:
+    ${SCRIPT_NAME} [OPÇÕES]
 
-# Check required files
-REQUIRED_FILES=(
-    "dashboards/app.py"
-    "dashboards/requirements.txt"
-    ".streamlit/config.toml"
-    ".streamlit/secrets.toml"
-)
+OPÇÕES:
+    -h, --help          Mostra esta ajuda
+    -v, --verbose       Modo verboso
+    --validate-only     Apenas valida configuração sem fazer deploy
+    --skip-tests        Pula testes de importação Python
 
-for file in "${REQUIRED_FILES[@]}"; do
-    if [ -f "$file" ]; then
-        print_success "✓ $file encontrado"
-    else
-        print_error "✗ $file não encontrado"
+EXEMPLOS:
+    ${SCRIPT_NAME} --validate-only
+    ${SCRIPT_NAME} --verbose
+    ${SCRIPT_NAME} --skip-tests
+
+DESCRIÇÃO:
+    Este script valida e prepara o projeto AUDITORIA360 para deploy
+    no Streamlit Cloud, verificando dependências, estrutura de arquivos
+    e configurações necessárias.
+
+EOF
+}
+
+# Função de limpeza (executada ao sair)
+cleanup() {
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        log_error "Script finalizado com erro (código: $exit_code)"
+    fi
+    exit $exit_code
+}
+
+# Trap para executar cleanup ao sair
+trap cleanup EXIT
+
+# Validação de pré-requisitos
+validate_prerequisites() {
+    log_info "Validando pré-requisitos..."
+    
+    # Verificar se estamos no diretório correto do projeto
+    if [ ! -f "${PROJECT_ROOT}/dashboards/app.py" ]; then
+        log_error "Execute este script a partir da raiz do projeto AUDITORIA360"
+        log_info "Arquivo esperado: dashboards/app.py"
         exit 1
     fi
-done
+    
+    log_success "Pré-requisitos validados"
+}
 
-print_step "2. Validando requirements.txt..."
+# Verificar estrutura do projeto
+validate_project_structure() {
+    log_info "1. Verificando estrutura do projeto..."
 
-# Check if requirements.txt has required dependencies
-REQUIRED_DEPS=("streamlit" "pandas" "plotly" "requests")
-for dep in "${REQUIRED_DEPS[@]}"; do
-    if grep -q "$dep" dashboards/requirements.txt; then
-        print_success "✓ $dep encontrado em requirements.txt"
-    else
-        print_warning "⚠ $dep não encontrado em requirements.txt"
+    # Verificar arquivos obrigatórios
+    local required_files=(
+        "dashboards/app.py"
+        "dashboards/requirements.txt"
+        ".streamlit/config.toml"
+        ".streamlit/secrets.toml"
+    )
+
+    for file in "${required_files[@]}"; do
+        if [ -f "${PROJECT_ROOT}/$file" ]; then
+            log_success "✓ $file encontrado"
+        else
+            log_error "✗ $file não encontrado"
+            exit 1
+        fi
+    done
+}
+
+# Validar dependências Python
+validate_python_dependencies() {
+    log_info "2. Validando requirements.txt..."
+    
+    # Verificar dependências obrigatórias
+    local required_deps=("streamlit" "pandas" "plotly" "requests")
+    local requirements_file="${PROJECT_ROOT}/dashboards/requirements.txt"
+    
+    for dep in "${required_deps[@]}"; do
+        if grep -q "$dep" "$requirements_file"; then
+            log_success "✓ $dep encontrado em requirements.txt"
+        else
+            log_warning "⚠ $dep não encontrado em requirements.txt"
+        fi
+    done
+}
+
+# Testar importações Python
+test_python_imports() {
+    if [ "$SKIP_TESTS" = true ]; then
+        log_info "Pulando testes de importação Python (--skip-tests)"
+        return 0
     fi
-done
-
-print_step "3. Testando importações Python..."
-
-# Test Python imports
-cd dashboards/
-python3 -c "
+    
+    log_info "3. Testando importações Python..."
+    
+    cd "${PROJECT_ROOT}/dashboards/"
+    
+    # Testar importações de módulos obrigatórios
+    python3 -c "
 import sys
 import importlib.util
 
@@ -89,34 +169,38 @@ if missing_modules:
     sys.exit(1)
 else:
     print('Todas as dependências estão disponíveis.')
-"
+" && log_success "✓ Todas as dependências estão disponíveis" || {
+        log_warning "⚠ Algumas dependências não estão instaladas"
+        log_info "Execute: pip install -r dashboards/requirements.txt"
+        return 1
+    }
+    
+    cd "$PROJECT_ROOT"
+}
 
-if [ $? -eq 0 ]; then
-    print_success "✓ Todas as dependências estão disponíveis"
-else
-    print_warning "⚠ Algumas dependências não estão instaladas. Execute: pip install -r dashboards/requirements.txt"
-fi
-
-cd ..
-
-print_step "4. Verificando configuração da API..."
-
-# Check API configuration
-if [ -f ".env.production" ]; then
-    if grep -q "API_BASE_URL" .env.production; then
-        API_URL=$(grep "API_BASE_URL" .env.production | cut -d'=' -f2)
-        print_success "✓ API_BASE_URL configurado: $API_URL"
+# Verificar configuração da API
+validate_api_configuration() {
+    log_info "4. Verificando configuração da API..."
+    
+    # Verificar arquivo de configuração de produção
+    if [ -f "${PROJECT_ROOT}/.env.production" ]; then
+        if grep -q "API_BASE_URL" "${PROJECT_ROOT}/.env.production"; then
+            local api_url=$(grep "API_BASE_URL" "${PROJECT_ROOT}/.env.production" | cut -d'=' -f2)
+            log_success "✓ API_BASE_URL configurado: $api_url"
+        else
+            log_warning "⚠ API_BASE_URL não encontrado em .env.production"
+        fi
     else
-        print_warning "⚠ API_BASE_URL não encontrado em .env.production"
+        log_warning "⚠ .env.production não encontrado"
     fi
-else
-    print_warning "⚠ .env.production não encontrado"
-fi
+}
 
-print_step "5. Preparando arquivos para deploy..."
-
-# Create a deployment summary
-cat > DEPLOY_STATUS.md << EOF
+# Gerar arquivos de status e documentação
+generate_deployment_files() {
+    log_info "5. Preparando arquivos para deploy..."
+    
+    # Criar resumo de deploy
+    cat > "${PROJECT_ROOT}/DEPLOY_STATUS.md" << EOF
 # 📊 AUDITORIA360 - Status do Deploy
 
 ## ✅ Configuração Completa
@@ -160,27 +244,95 @@ cat > DEPLOY_STATUS.md << EOF
 **Data**: $(date)
 EOF
 
-print_success "✓ DEPLOY_STATUS.md criado"
+    log_success "✓ DEPLOY_STATUS.md criado"
+}
 
-print_step "6. Validação final..."
+# Mostrar instruções finais
+show_final_instructions() {
+    log_info "6. Validação final..."
+    
+    if [ "$VALIDATE_ONLY" = true ]; then
+        log_success "🎯 Validação completa! Projeto está pronto para deploy no Streamlit Cloud"
+        return 0
+    fi
+    
+    # Instruções completas para deploy
+    log_success "🎯 Projeto configurado com sucesso para Streamlit Cloud!"
+    echo ""
+    echo "📋 Próximos passos:"
+    echo "1. Acesse https://share.streamlit.io"
+    echo "2. Conecte com sua conta GitHub"
+    echo "3. Selecione o repositório: Thaislaine997/AUDITORIA360"
+    echo "4. Configure o main file: dashboards/app.py"
+    echo "5. Adicione os secrets do arquivo .streamlit/secrets.toml"
+    echo ""
+    log_success "✅ Deploy configurado! Execute o deploy no Streamlit Cloud."
+    
+    # Mostrar informações de deploy
+    echo ""
+    echo "🔗 Informações de Deploy:"
+    echo "   Repository: Thaislaine997/AUDITORIA360"
+    echo "   Branch: main"
+    echo "   App file: dashboards/app.py"
+    echo "   Python: 3.11"
+    echo ""
+}
 
-# Final validation
-print_success "🎯 Projeto configurado com sucesso para Streamlit Cloud!"
-echo ""
-echo "📋 Próximos passos:"
-echo "1. Acesse https://share.streamlit.io"
-echo "2. Conecte com sua conta GitHub"
-echo "3. Selecione o repositório: Thaislaine997/AUDITORIA360"
-echo "4. Configure o main file: dashboards/app.py"
-echo "5. Adicione os secrets do arquivo .streamlit/secrets.toml"
-echo ""
-print_success "✅ Deploy configurado! Execute o deploy no Streamlit Cloud."
+# Parse de argumentos
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            -v|--verbose)
+                VERBOSE=true
+                set -x  # Debug mode
+                shift
+                ;;
+            --validate-only)
+                VALIDATE_ONLY=true
+                shift
+                ;;
+            --skip-tests)
+                SKIP_TESTS=true
+                shift
+                ;;
+            *)
+                log_error "Opção desconhecida: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
 
-# Show deployment info
-echo ""
-echo "🔗 Informações de Deploy:"
-echo "   Repository: Thaislaine997/AUDITORIA360"
-echo "   Branch: main"
-echo "   App file: dashboards/app.py"
-echo "   Python: 3.11"
-echo ""
+# Função principal
+main() {
+    log_info "Iniciando ${SCRIPT_NAME}..."
+    
+    parse_arguments "$@"
+    
+    cd "$PROJECT_ROOT"
+    
+    validate_prerequisites
+    validate_project_structure
+    validate_python_dependencies
+    test_python_imports
+    validate_api_configuration
+    
+    if [ "$VALIDATE_ONLY" = false ]; then
+        generate_deployment_files
+    fi
+    
+    show_final_instructions
+    
+    log_success "${SCRIPT_NAME} executado com sucesso!"
+    log_info "Validação do projeto AUDITORIA360 para Streamlit Cloud concluída"
+}
+
+# Executar função principal se script foi chamado diretamente
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
