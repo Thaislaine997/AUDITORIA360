@@ -2,9 +2,9 @@
   "id": "daily_20250728_20250729",
   "type": "daily",
   "title": "Relatório Daily - AUDITORIA360",
-  "generated_at": "2025-07-29T12:19:16.695264",
-  "period_start": "2025-07-28T12:19:16.695215",
-  "period_end": "2025-07-29T12:19:16.695215",
+  "generated_at": "2025-07-29T18:23:54.192331",
+  "period_start": "2025-07-28T18:23:54.192289",
+  "period_end": "2025-07-29T18:23:54.192289",
   "metrics": {
     "total_audits": 150,
     "completed_audits": 135,
@@ -17,8 +17,8 @@
   },
   "details": {
     "period_summary": {
-      "start": "2025-07-28T12:19:16.695215",
-      "end": "2025-07-29T12:19:16.695215",
+      "start": "2025-07-28T18:23:54.192289",
+      "end": "2025-07-29T18:23:54.192289",
       "duration_days": 1
     },
     "audit_summary": {
