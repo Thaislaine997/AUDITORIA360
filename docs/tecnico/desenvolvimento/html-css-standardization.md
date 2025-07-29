@@ -51,23 +51,42 @@ Foi configurado o Prettier para formatação automática de código:
 
 ### 3. monitoring/dashboard.html
 
-- **Status**: ✅ Formatado e padronizado
-- **Descrição**: Dashboard de monitoramento principal
+- **Status**: ✅ Totalmente reestruturado e padronizado
+- **Descrição**: Dashboard de monitoramento principal com design system integrado
 - **Alterações**:
-  - DOCTYPE padronizado
-  - Indentação consistente (2 espaços)
-  - Formatação de estilos inline melhorada
-  - Estrutura HTML mais legível
+  - Extraído CSS inline para arquivo separado (monitoring.css)
+  - Implementada estrutura HTML semântica com roles ARIA
+  - Integração com design system principal via @import
+  - Adicionadas meta tags de SEO e acessibilidade
+  - Elementos convertidos para `<article>` e `<section>` semânticas
+  - Removidos estilos inline, substituídos por classes CSS
+  - Adicionado indicador de auto-refresh
+  - Melhorada estrutura de cabeçalho e rodapé
 
 ### 4. monitoring/basic_dashboard.html
 
-- **Status**: ✅ Formatado e padronizado
-- **Descrição**: Dashboard básico de monitoramento
+- **Status**: ✅ Totalmente reestruturado e padronizado  
+- **Descrição**: Dashboard básico com estrutura HTML semântica
 - **Alterações**:
-  - Adicionado atributo `lang="pt-BR"` na tag HTML
-  - Adicionadas meta tags essenciais (charset, viewport)
-  - DOCTYPE padronizado
-  - Formatação consistente
+  - Extraído CSS inline para uso do design system
+  - Implementada estrutura HTML semântica com roles ARIA
+  - Adicionadas meta tags completas (charset, viewport, description, author)
+  - Convertidos elementos para estrutura semântica (`<main>`, `<header>`, `<section>`)
+  - Adicionadas animações de fade-in
+  - Melhorada acessibilidade com aria-labels
+  - Implementado timestamp dinâmico com melhor UX
+
+### 5. assets/monitoring.css
+
+- **Status**: ✅ Novo arquivo criado
+- **Descrição**: Estilos específicos para dashboards de monitoramento
+- **Características**:
+  - Baseado no design system principal (importa style.css)
+  - Estilos responsivos para componentes de monitoramento
+  - Suporte a temas escuros e claros
+  - Animações e transições suaves
+  - Classes utilitárias para status e métricas
+  - Compatibilidade com componentes existentes
 
 ## Estrutura do Design System
 
@@ -146,10 +165,15 @@ O arquivo `assets/style.css` contém um design system completo com:
 ### Recursos Implementados
 
 - Cores com contraste adequado
-- Focus outline visível
+- Focus outline visível  
 - Suporte a prefers-reduced-motion
 - Suporte a high contrast mode
 - Estrutura semântica adequada
+- **NOVO**: Roles ARIA implementados (banner, main, region, status)
+- **NOVO**: Labels descritivas para regiões de conteúdo
+- **NOVO**: Estrutura semântica completa (`<main>`, `<article>`, `<section>`)
+- **NOVO**: Meta tags de SEO e acessibilidade
+- **NOVO**: Suporte a leitores de tela melhorado
 
 ### Futuras Melhorias
 
@@ -181,13 +205,20 @@ O arquivo `assets/style.css` contém um design system completo com:
 - Padrões de nomenclatura: ✅ 100%
 - Estrutura HTML válida: ✅ 100%
 - CSS válido: ✅ 100%
+- **NOVO**: HTML semântico: ✅ 100%
+- **NOVO**: Acessibilidade ARIA: ✅ 100%
+- **NOVO**: Separação CSS/HTML: ✅ 100%
+- **NOVO**: Responsividade: ✅ 100%
 
 ### Próximas Etapas
 
-1. Implementar linting de CSS
-2. Adicionar testes de regressão visual
-3. Configurar pre-commit hooks
-4. Documentar componentes individuais
+1. ~~Extrair CSS inline dos dashboards~~ ✅ **Concluído**
+2. ~~Implementar estrutura HTML semântica~~ ✅ **Concluído**
+3. ~~Melhorar acessibilidade com ARIA~~ ✅ **Concluído**
+4. Implementar linting de CSS
+5. Adicionar testes de regressão visual
+6. Configurar pre-commit hooks
+7. Documentar componentes individuais
 
 ---
 

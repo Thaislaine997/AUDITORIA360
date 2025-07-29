@@ -1,0 +1,299 @@
+/*
+ * ===================================================================
+ * MONITORING DASHBOARD STYLES - AUDITORIA 360
+ * ===================================================================
+ * Descrição: Estilos específicos para dashboards de monitoramento
+ * Baseado no design system principal (style.css)
+ * ===================================================================
+ */
+
+/* Import do design system principal */
+@import url("./style.css");
+
+/* -------------------------------------------------------------------
+ * Monitoring Specific Styles
+ * ------------------------------------------------------------------- */
+
+/* Monitoring Page Layout */
+.monitoring-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+  background: var(--background-color);
+  min-height: 100vh;
+}
+
+/* Monitoring Header */
+.monitoring-header {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-background-color),
+    var(--surface-color)
+  );
+  color: var(--text-color);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--spacing-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.monitoring-header h1 {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--primary-color);
+  font-size: var(--font-size-3xl);
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.monitoring-header p {
+  margin: 0;
+  color: var(--secondary-text-color);
+  font-size: var(--font-size-lg);
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* Metric Cards */
+.metric-card {
+  background: var(--secondary-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(10px);
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.metric-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  color: var(--secondary-text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.metric-value {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-color);
+}
+
+.metric-value.success {
+  color: var(--success-color);
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.metric-value.info {
+  color: var(--info-color);
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+}
+
+.metric-value.warning {
+  color: var(--warning-color);
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+}
+
+.metric-value.error {
+  color: var(--danger-color);
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Status Badges */
+.metric-status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.metric-status.status-ok {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.metric-status.status-warning {
+  background: rgba(250, 204, 21, 0.2);
+  color: var(--warning-color);
+  border: 1px solid var(--warning-color);
+}
+
+.metric-status.status-error {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
+/* Alerts Section */
+.alerts-section {
+  margin-top: var(--spacing-2xl);
+}
+
+.alerts-section h2 {
+  color: var(--primary-color);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.alert-container {
+  background: var(--secondary-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.alert-container.no-alerts {
+  border-color: var(--success-color);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.alert-container.no-alerts strong {
+  color: var(--success-color);
+  font-size: var(--font-size-lg);
+}
+
+.alert-item {
+  background: var(--secondary-background-color);
+  border: 1px solid var(--danger-color);
+  border-left: 4px solid var(--danger-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+}
+
+/* Basic Status Styles */
+.status-section {
+  max-width: 600px;
+  margin: 0 auto var(--spacing-2xl) auto;
+}
+
+.status {
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: var(--spacing-sm) 0;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  transition: all var(--transition-fast);
+}
+
+.status:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.status.ok {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: var(--success-color);
+  color: var(--success-color);
+}
+
+.status.warning {
+  background: rgba(250, 204, 21, 0.1);
+  border-color: var(--warning-color);
+  color: var(--warning-color);
+}
+
+.status.error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+}
+
+/* Monitoring Footer */
+.monitoring-footer {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--spacing-2xl);
+}
+
+/* Auto-refresh Indicator */
+.refresh-indicator {
+  position: fixed;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+  box-shadow: var(--shadow-sm);
+  opacity: 0.8;
+}
+
+/* Timestamp */
+.timestamp {
+  color: var(--secondary-text-color);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .monitoring-page {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .monitoring-header {
+    padding: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .monitoring-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .metric-value {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .metric-card {
+    padding: var(--spacing-md);
+  }
+
+  .metric-title {
+    font-size: var(--font-size-base);
+  }
+
+  .alerts-section h2 {
+    font-size: var(--font-size-xl);
+  }
+}
