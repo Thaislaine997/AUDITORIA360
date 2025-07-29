@@ -69,8 +69,7 @@ class Employee(Base):
     # Relationships
     payroll_items = relationship("PayrollItem", back_populates="employee")
     
-    def __repr__(self):
-        return f"<Employee {self.employee_id}: {self.full_name}>"
+    # Use default __repr__ from BaseModel
 
 class PayrollCompetency(Base):
     __tablename__ = "payroll_competencies"
@@ -112,8 +111,7 @@ class PayrollCompetency(Base):
     payroll_items = relationship("PayrollItem", back_populates="competency")
     parent = relationship("PayrollCompetency", remote_side=[id])
     
-    def __repr__(self):
-        return f"<PayrollCompetency {self.year}/{self.month:02d} ({self.type.value})>"
+    # Use default __repr__ from BaseModel
 
 class PayrollItem(Base):
     __tablename__ = "payroll_items"
@@ -184,8 +182,7 @@ class PayrollItem(Base):
     competency = relationship("PayrollCompetency", back_populates="payroll_items")
     employee = relationship("Employee", back_populates="payroll_items")
     
-    def __repr__(self):
-        return f"<PayrollItem {self.employee.full_name} - {self.competency.year}/{self.competency.month:02d}>"
+    # Use default __repr__ from BaseModel
 
 class PayrollImport(Base):
     __tablename__ = "payroll_imports"
@@ -212,5 +209,4 @@ class PayrollImport(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     imported_by_id = Column(Integer, ForeignKey("users.id"))
     
-    def __repr__(self):
-        return f"<PayrollImport {self.filename} - {self.status}>"
+    # Use default __repr__ from BaseModel

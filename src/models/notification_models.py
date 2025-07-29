@@ -84,8 +84,7 @@ class Notification(Base):
     # Relationships
     user = relationship("User", back_populates="notifications")
     
-    def __repr__(self):
-        return f"<Notification {self.title} to {self.user.username} ({self.type.value})>"
+    # Use default __repr__ from BaseModel
 
 class NotificationTemplate(Base):
     __tablename__ = "notification_templates"
@@ -122,8 +121,7 @@ class NotificationTemplate(Base):
     # Relationships
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<NotificationTemplate {self.name} ({self.type.value})>"
+    # Use default __repr__ from BaseModel
 
 class Event(Base):
     __tablename__ = "events"
@@ -158,8 +156,7 @@ class Event(Base):
     triggered_by = relationship("User")
     rules = relationship("NotificationRule", back_populates="event")
     
-    def __repr__(self):
-        return f"<Event {self.type.value}: {self.title}>"
+    # Use default __repr__ from BaseModel
 
 class NotificationRule(Base):
     __tablename__ = "notification_rules"
@@ -199,8 +196,7 @@ class NotificationRule(Base):
     event = relationship("Event", back_populates="rules")
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<NotificationRule {self.name} for {self.event_type.value}>"
+    # Use default __repr__ from BaseModel
 
 class NotificationPreference(Base):
     __tablename__ = "notification_preferences"
@@ -229,5 +225,4 @@ class NotificationPreference(Base):
     # Relationships
     user = relationship("User")
     
-    def __repr__(self):
-        return f"<NotificationPreference {self.user.username}: {self.event_type.value} via {self.notification_type.value}>"
+    # Use default __repr__ from BaseModel

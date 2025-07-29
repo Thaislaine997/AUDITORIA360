@@ -1,52 +1,32 @@
 """
 Portal Demandas Database Configuration
 SQLAlchemy models and database connection for the demands portal module
-Integrated with Neon PostgreSQL serverless database
+Uses centralized database configuration from src.models.database
 """
 
 import os
+import sys
 from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Database URL configuration with fallback
-DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("NEON_DATABASE_URL")
-if not DATABASE_URL:
-    # Fallback to SQLite for development
-    DATABASE_URL = "sqlite:///./portal_demandas.db"
-    logger.warning("Using SQLite fallback for portal_demandas")
+# Add project root to path to import centralized database config
+_project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
 
-# Create engine optimized for Neon PostgreSQL serverless
-if DATABASE_URL.startswith("postgresql"):
-    engine = create_engine(
-        DATABASE_URL,
-        poolclass=StaticPool,
-        pool_pre_ping=True,
-        pool_recycle=300,
-        connect_args={
-            "sslmode": "require",
-            "connect_timeout": 10,
-        },
-        echo=False
-    )
-else:
-    # SQLite configuration for development
-    engine = create_engine(
-        DATABASE_URL,
-        connect_args={"check_same_thread": False},
-        echo=False
-    )
+# Import centralized database configuration  
+from src.models.database import engine, SessionLocal, Base as MainBase
 
-# Session factory
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Base class for portal_demandas models
+# Use the centralized database engine and session
+# Create a local Base for portal-specific models if needed
 Base = declarative_base()
+
+# Session factory using centralized config
+PortalSessionLocal = SessionLocal
 
 class TicketDB(Base):
     """

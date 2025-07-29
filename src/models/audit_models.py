@@ -87,8 +87,7 @@ class AuditExecution(Base):
     created_by = relationship("User")
     findings = relationship("AuditFinding", back_populates="audit_execution")
     
-    def __repr__(self):
-        return f"<AuditExecution {self.name} ({self.status.value})>"
+    # Use default __repr__ from BaseModel
 
 class ComplianceRule(Base):
     __tablename__ = "compliance_rules"
@@ -131,8 +130,7 @@ class ComplianceRule(Base):
     parent_rule = relationship("ComplianceRule", remote_side=[id])
     findings = relationship("AuditFinding", back_populates="rule")
     
-    def __repr__(self):
-        return f"<ComplianceRule {self.code}: {self.name}>"
+    # Use default __repr__ from BaseModel
 
 class AuditFinding(Base):
     __tablename__ = "audit_findings"
@@ -186,8 +184,7 @@ class AuditFinding(Base):
     rule = relationship("ComplianceRule", back_populates="findings")
     resolved_by = relationship("User")
     
-    def __repr__(self):
-        return f"<AuditFinding {self.title} ({self.severity.value})>"
+    # Use default __repr__ from BaseModel
 
 class ComplianceReport(Base):
     __tablename__ = "compliance_reports"
@@ -235,8 +232,7 @@ class ComplianceReport(Base):
     audit_execution = relationship("AuditExecution")
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<ComplianceReport {self.title} ({self.period_start.strftime('%Y-%m') if self.period_start else 'No date'})>"
+    # Use default __repr__ from BaseModel
 
 class RiskAssessment(Base):
     __tablename__ = "risk_assessments"
@@ -276,5 +272,4 @@ class RiskAssessment(Base):
     # Relationships
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<RiskAssessment {self.name} ({self.risk_level})>"
+    # Use default __repr__ from BaseModel
