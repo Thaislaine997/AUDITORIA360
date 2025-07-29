@@ -19,5 +19,3 @@ __all__ = [
     "notification_router",
     "audit_router",
     "ai_router",
-    Principal,
-]
