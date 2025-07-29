@@ -33,7 +33,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest coverage pytest-cov pytest-mock pytest-asyncio
+        pip install pytest coverage pytest-cov pytest-mock pytest-asyncio beautifulsoup4
     
     - name: Run linting
       run: |
@@ -41,7 +41,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     
-    - name: Run tests with coverage
+    - name: Run Python tests with coverage
       run: |
         python -m pytest tests/ --cov=src --cov=api --cov=automation --cov=scripts --cov-report=xml --cov-report=term
     
@@ -56,6 +56,38 @@ jobs:
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: src/frontend/package-lock.json
+    
+    - name: Install frontend dependencies
+      run: |
+        cd src/frontend
+        npm ci
+    
+    - name: Run frontend linting
+      run: |
+        cd src/frontend
+        npm run lint || echo "Linting warnings found but continuing..."
+    
+    - name: Run frontend tests
+      run: |
+        cd src/frontend
+        npm test -- --run
+    
+    - name: Build frontend
+      run: |
+        cd src/frontend
+        npm run build
 
   automation-tests:
     runs-on: ubuntu-latest
@@ -106,7 +138,7 @@ jobs:
         python -m pytest tests/test_api_health.py tests/test_main.py -v
 
   deploy-staging:
-    needs: [test, automation-tests, api-health-check]
+    needs: [test, frontend-tests, automation-tests, api-health-check]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     
@@ -122,7 +154,7 @@ jobs:
         working-directory: ./
 
   deploy-production:
-    needs: [test, automation-tests, api-health-check]
+    needs: [test, frontend-tests, automation-tests, api-health-check]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
