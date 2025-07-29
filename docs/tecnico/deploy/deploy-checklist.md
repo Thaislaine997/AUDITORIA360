@@ -19,6 +19,17 @@
 
 ## 4. Build e Deploy
 
+### 4.1 Deploy Manual (Scripts PowerShell)
+
+- [ ] gcloud CLI autenticado e configurado
+- [ ] Scripts PowerShell executados com sucesso:
+  - [ ] Backend deploy: `.\deploy\cloudrun_deploy_backend.ps1 -ProjectId "PROJECT_ID" -ProcessorId "PROCESSOR_ID" -Verbose`
+  - [ ] Frontend deploy: `.\deploy\cloudrun_deploy_streamlit.ps1 -ProjectId "PROJECT_ID" -ApiBaseUrl "BACKEND_URL" -Verbose`
+- [ ] URLs dos serviços validadas e funcionando
+- [ ] Variáveis de ambiente configuradas corretamente
+
+### 4.2 Validação de Deploy
+
 - [ ] Build do backend (FastAPI) e frontend (Streamlit) realizado sem erros
 - [ ] Deploy em ambiente de staging/teste
 - [ ] Validação do ambiente de staging (login, filtros, PDF, branding)
@@ -33,7 +44,22 @@
 - [ ] Teste de login/logout em produção
 - [ ] Teste de geração de PDF em produção
 - [ ] Comunicação de release para clientes (se aplicável)
+- [ ] Verificação de saúde dos serviços Cloud Run:
+  - [ ] Backend: health check endpoint respondendo
+  - [ ] Frontend: interface carregando corretamente
+  - [ ] Conectividade entre frontend e backend funcionando
+
+## 6. Scripts PowerShell - Validação Técnica
+
+- [ ] Scripts refatorados seguindo padrões estabelecidos
+- [ ] Tratamento de erros implementado
+- [ ] Parâmetros validados e documentados
+- [ ] Output colorido e informativo funcionando
+- [ ] Documentação atualizada em `docs/tecnico/desenvolvimento/scripts-powershell.md`
+- [ ] Testes dos scripts em ambiente limpo (sem dependências pre-instaladas)
 
 ---
 
 > **Importante:** Execute este checklist antes de cada release em produção para garantir estabilidade e segurança do sistema white-label.
+
+> **Novo:** Os scripts PowerShell foram refatorados para maior robustez e padronização. Consulte a [documentação completa](../desenvolvimento/scripts-powershell.md) para detalhes de uso.

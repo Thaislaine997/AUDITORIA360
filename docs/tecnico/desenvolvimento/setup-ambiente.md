@@ -45,6 +45,10 @@ git remote -v
 
 ### 2️⃣ **Python Environment**
 ```bash
+# Usar script PowerShell automatizado (Windows - Recomendado)
+.\installers\setup_dev_env.ps1 -Verbose
+
+# OU configuração manual:
 # Criar ambiente virtual
 python -m venv venv
 
@@ -57,6 +61,8 @@ source venv/bin/activate
 # Instalar dependências
 pip install -r requirements.txt
 ```
+
+> 💡 **Dica Windows**: Use o [script PowerShell automatizado](scripts-powershell.md) para setup completo do ambiente.
 
 ### 3️⃣ **Node.js Dependencies**
 ```bash
@@ -407,6 +413,11 @@ python scripts/test_database.py
 3. **Desenvolva**: Siga padrões estabelecidos
 4. **Teste**: Execute suite completa
 5. **Pull Request**: Submeta para review
+
+### 🔧 **Scripts e Automação**
+- **Scripts PowerShell**: [Documentação completa](scripts-powershell.md) para Windows
+- **Deploy automatizado**: Scripts para Cloud Run
+- **Ambiente de desenvolvimento**: Setup automatizado
 
 ---
 

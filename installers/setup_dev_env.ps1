@@ -4,10 +4,10 @@
 param(
     [switch]$SkipPython,
     [switch]$SkipGit,
-    [switch]$Verbose
+    [switch]$VerboseOutput
 )
 
-# Set error action
+# Set error action preference
 $ErrorActionPreference = "Stop"
 
 # Color functions for output
