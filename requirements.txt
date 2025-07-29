@@ -12,6 +12,10 @@ pandas
 # Armazenamento de Arquivos (Cloudflare R2)
 boto3
 
+# AI/ML Dependencies
+openai>=1.0.0
+python-dotenv>=1.0.0
+
 # OCR (Substituto do Document AI)
 paddleocr
 paddlepaddle
