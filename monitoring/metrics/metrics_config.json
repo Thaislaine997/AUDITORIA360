@@ -1,0 +1,108 @@
+{
+  "collection_interval": "10s",
+  "retention_period": "30d",
+  "metrics": [
+    {
+      "name": "system_cpu_usage",
+      "type": "gauge",
+      "description": "CPU usage percentage",
+      "labels": [
+        "host",
+        "instance"
+      ]
+    },
+    {
+      "name": "system_memory_usage",
+      "type": "gauge",
+      "description": "Memory usage percentage",
+      "labels": [
+        "host",
+        "instance"
+      ]
+    },
+    {
+      "name": "http_requests_total",
+      "type": "counter",
+      "description": "Total HTTP requests",
+      "labels": [
+        "method",
+        "endpoint",
+        "status"
+      ]
+    },
+    {
+      "name": "http_request_duration_seconds",
+      "type": "histogram",
+      "description": "HTTP request duration",
+      "labels": [
+        "method",
+        "endpoint"
+      ],
+      "buckets": [
+        0.1,
+        0.5,
+        1.0,
+        2.0,
+        5.0,
+        10.0
+      ]
+    },
+    {
+      "name": "database_connections_active",
+      "type": "gauge",
+      "description": "Active database connections",
+      "labels": [
+        "database",
+        "pool"
+      ]
+    },
+    {
+      "name": "audit_process_duration_seconds",
+      "type": "histogram",
+      "description": "Audit process duration",
+      "labels": [
+        "audit_type",
+        "status"
+      ],
+      "buckets": [
+        1,
+        5,
+        10,
+        30,
+        60,
+        300,
+        600
+      ]
+    },
+    {
+      "name": "compliance_checks_total",
+      "type": "counter",
+      "description": "Total compliance checks",
+      "labels": [
+        "check_type",
+        "result"
+      ]
+    },
+    {
+      "name": "user_sessions_active",
+      "type": "gauge",
+      "description": "Active user sessions",
+      "labels": [
+        "user_type"
+      ]
+    }
+  ],
+  "exporters": [
+    {
+      "name": "prometheus",
+      "enabled": true,
+      "endpoint": "/metrics",
+      "port": 9090
+    },
+    {
+      "name": "grafana_cloud",
+      "enabled": false,
+      "api_key": "${GRAFANA_API_KEY}"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "version": "1.0",
+  "alerts": [
+    {
+      "name": "high_cpu_usage",
+      "description": "CPU usage above 80%",
+      "metric": "cpu_usage_percent",
+      "threshold": 80,
+      "severity": "warning",
+      "duration": "5m",
+      "actions": [
+        "email",
+        "slack"
+      ]
+    },
+    {
+      "name": "high_memory_usage",
+      "description": "Memory usage above 85%",
+      "metric": "memory_usage_percent",
+      "threshold": 85,
+      "severity": "warning",
+      "duration": "5m",
+      "actions": [
+        "email",
+        "slack"
+      ]
+    },
+    {
+      "name": "api_error_rate",
+      "description": "API error rate above 5%",
+      "metric": "api_error_rate",
+      "threshold": 5,
+      "severity": "critical",
+      "duration": "2m",
+      "actions": [
+        "email",
+        "slack",
+        "pagerduty"
+      ]
+    },
+    {
+      "name": "response_time_high",
+      "description": "API response time above 2s",
+      "metric": "api_response_time_ms",
+      "threshold": 2000,
+      "severity": "warning",
+      "duration": "3m",
+      "actions": [
+        "email"
+      ]
+    },
+    {
+      "name": "database_connection_failure",
+      "description": "Database connection failures",
+      "metric": "db_connection_errors",
+      "threshold": 1,
+      "severity": "critical",
+      "duration": "1m",
+      "actions": [
+        "email",
+        "slack",
+        "pagerduty"
+      ]
+    },
+    {
+      "name": "disk_space_low",
+      "description": "Disk space below 20%",
+      "metric": "disk_usage_percent",
+      "threshold": 80,
+      "severity": "warning",
+      "duration": "10m",
+      "actions": [
+        "email"
+      ]
+    },
+    {
+      "name": "user_session_anomaly",
+      "description": "Unusual user session patterns",
+      "metric": "session_anomaly_score",
+      "threshold": 0.8,
+      "severity": "medium",
+      "duration": "15m",
+      "actions": [
+        "email"
+      ]
+    }
+  ],
+  "notification_channels": {
+    "email": {
+      "enabled": true,
+      "recipients": [
+        "admin@auditoria360.com",
+        "devops@auditoria360.com"
+      ]
+    },
+    "slack": {
+      "enabled": true,
+      "webhook_url": "${SLACK_WEBHOOK_URL}",
+      "channel": "#auditoria360-alerts"
+    },
+    "pagerduty": {
+      "enabled": false,
+      "integration_key": "${PAGERDUTY_KEY}"
+    }
+  }
+}

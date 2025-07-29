@@ -1,0 +1,30 @@
+{
+  "name": "Business Overview",
+  "description": "Vis\u00e3o geral de m\u00e9tricas de neg\u00f3cio",
+  "panels": [
+    {
+      "title": "Auditorias Processadas",
+      "type": "counter",
+      "metric": "auditorias_processadas_total",
+      "time_range": "24h"
+    },
+    {
+      "title": "Tempo M\u00e9dio de Processamento",
+      "type": "gauge",
+      "metric": "tempo_medio_processamento_min",
+      "time_range": "1h"
+    },
+    {
+      "title": "Taxa de Sucesso",
+      "type": "percentage",
+      "metric": "taxa_sucesso_processamento",
+      "time_range": "24h"
+    },
+    {
+      "title": "Alertas de Compliance",
+      "type": "counter",
+      "metric": "alertas_compliance_total",
+      "time_range": "7d"
+    }
+  ]
+}
