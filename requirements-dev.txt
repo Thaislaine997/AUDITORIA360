@@ -1,0 +1,31 @@
+# Development and testing dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+pytest-html>=3.2.0
+pytest-xdist>=3.3.0
+
+# Code quality
+black>=25.1.0
+isort>=6.0.1
+flake8>=7.3.0
+autoflake>=2.3.1
+pre-commit>=4.5.0
+
+# Additional testing tools
+coverage>=7.3.0
+beautifulsoup4>=4.13.0
+responses>=0.24.0
+
+# Optional ML dependencies (for tests that use them)
+# Commented out to avoid CI failures when not needed
+# tensorflow>=2.13.0
+# shap>=0.42.0
+
+# Frontend testing
+playwright>=1.30.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.2.0
