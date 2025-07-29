@@ -3,11 +3,9 @@ Automation API endpoints for serverless execution
 Compatible with Vercel Cron Jobs and manual triggers
 """
 
-import asyncio
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
@@ -20,7 +18,7 @@ try:
     from cron_comunicados import gerar_comunicados
     from rpa_folha import run_payroll_automation
     from schedule_reports import run_scheduled_reports
-except ImportError as e:
+except ImportError:
     # Fallback imports with error handling
     run_payroll_automation = None
     run_scheduled_reports = None

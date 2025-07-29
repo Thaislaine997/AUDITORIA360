@@ -3,14 +3,12 @@ DuckDB Query Optimization Service
 Performance optimizations for analytical queries in AUDITORIA360
 """
 
-import json
 import logging
 import time
 from functools import wraps
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import duckdb
-import pandas as pd
 
 logger = logging.getLogger(__name__)
 

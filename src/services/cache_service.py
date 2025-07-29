@@ -6,9 +6,8 @@ Performance optimization for reports and heavy queries
 import json
 import logging
 import os
-from datetime import timedelta
 from functools import wraps
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import redis
 

@@ -3,28 +3,17 @@ MCP Server Implementation for AUDITORIA360
 Provides MCP server functionality for exposing system resources and tools
 """
 
-import asyncio
 import json
 import logging
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 from .protocol import (
-    CallToolRequest,
-    CallToolResponse,
     ErrorCode,
-    InitializeRequest,
-    InitializeResponse,
-    ListResourcesRequest,
-    ListResourcesResponse,
-    ListToolsRequest,
-    ListToolsResponse,
     MCPError,
     MCPNotification,
     MCPRequest,
     MCPResponse,
-    ReadResourceRequest,
-    ReadResourceResponse,
     ResourceInfo,
     ResourceUpdateNotification,
     ServerInfo,

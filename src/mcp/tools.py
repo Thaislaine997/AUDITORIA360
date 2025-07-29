@@ -3,11 +3,10 @@ MCP Tools Implementation for AUDITORIA360
 Provides computational tools accessible via MCP protocol
 """
 
-import json
 import logging
-from datetime import date, datetime
+from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from .protocol import ToolInfo
 from .server import MCPServer

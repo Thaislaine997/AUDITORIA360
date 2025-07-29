@@ -3,21 +3,18 @@ Integration module for performance monitoring and alerting in AUDITORIA360 API
 """
 
 import asyncio
-import json
 import time
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from datetime import datetime
+from typing import Any, Dict
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.middleware.base import BaseHTTPMiddleware
 from fastapi.requests import Request
-from fastapi.responses import Response
 
 # Import monitoring and performance utilities
 try:
     from src.utils.monitoring import (
         AlertSeverity,
-        MonitoringSystem,
         get_monitoring_system,
     )
     from src.utils.performance import DatabaseOptimizer, cached, profile, profiler
@@ -300,7 +297,7 @@ async def get_cache_stats():
 async def clear_cache():
     """Clear application cache (admin only)"""
     try:
-        from src.utils.performance import cache
+        pass
 
         # Clear cache implementation would go here
         # cache.clear_all()  # This method would need to be implemented

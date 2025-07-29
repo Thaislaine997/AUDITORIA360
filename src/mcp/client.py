@@ -3,7 +3,6 @@ MCP Client Implementation for AUDITORIA360
 Provides client functionality for connecting to external MCP servers
 """
 
-import asyncio
 import json
 import logging
 import uuid
@@ -12,12 +11,9 @@ from typing import Any, Callable, Dict, List, Optional
 from .protocol import (
     CallToolRequest,
     ClientInfo,
-    ErrorCode,
     InitializeRequest,
     ListResourcesRequest,
     ListToolsRequest,
-    MCPError,
-    MCPRequest,
     MCPResponse,
     ReadResourceRequest,
     ResourceInfo,

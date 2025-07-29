@@ -54,7 +54,6 @@ class UserInDB(UserBase):
 class User(UserInDB):
     """Public user schema (without sensitive data)"""
 
-    pass
 
 
 # Permission schemas

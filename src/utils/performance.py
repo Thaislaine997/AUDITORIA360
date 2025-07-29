@@ -4,20 +4,16 @@ Implements bottleneck analysis, query optimization, and performance monitoring.
 """
 
 import asyncio
-import json
 import logging
 import threading
 import time
 from contextlib import contextmanager
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional
 
-import duckdb
 import psutil
-import sqlalchemy
-from sqlalchemy import create_engine, text
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

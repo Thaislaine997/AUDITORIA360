@@ -1,8 +1,8 @@
 # Modelos para integração consultor de riscos
-from datetime import date, datetime
+from datetime import date
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel
 
 
 class ConsultorRiscosRequest(BaseModel):

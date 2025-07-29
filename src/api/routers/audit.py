@@ -6,14 +6,14 @@ Performance optimized with Redis caching
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from src.models import User, get_db
 from src.services.auth_service import get_current_user
-from src.services.cache_service import CacheKeys, cache_service, cached_response
+from src.services.cache_service import cache_service, cached_response
 from src.services.duckdb_optimizer import duckdb_optimizer, optimized_query
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ async def get_audit_report(
 
     try:
         # Build cache key based on parameters
-        cache_key_suffix = f"{audit_id}_{period_start}_{period_end}_{format}"
+        f"{audit_id}_{period_start}_{period_end}_{format}"
         logger.info(
             f"Generating audit report with params: audit_id={audit_id}, period={period_start} to {period_end}"
         )

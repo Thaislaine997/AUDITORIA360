@@ -8,12 +8,10 @@ import json
 import logging
 import os
 import sys
-from typing import Any, Dict
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from src.mcp.config import get_config_manager
 from src.mcp.server import AuditoriaResourceProvider, MCPServer
 from src.mcp.tools import AuditoriaToolProvider
 

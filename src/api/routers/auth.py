@@ -4,10 +4,10 @@ Módulo 8: Gestão de usuários e permissões
 """
 
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
 
 # Import models with fallbacks

@@ -2,7 +2,6 @@
 Módulo principal com funções de processamento de documentos e planilhas de controle.
 """
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 

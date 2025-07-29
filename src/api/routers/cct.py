@@ -3,7 +3,7 @@ CCT (Collective Labor Agreements) API Router
 Módulo 3: Base de Convenções Coletivas (CCTs)
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session

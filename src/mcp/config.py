@@ -3,7 +3,6 @@ MCP Configuration Management for AUDITORIA360
 Handles configuration for MCP servers, clients, and development environment
 """
 
-import json
 import os
 from enum import Enum
 from pathlib import Path

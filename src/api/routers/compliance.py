@@ -5,14 +5,14 @@ Performance optimized compliance checking endpoint
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from src.models import User, get_db
 from src.services.auth_service import get_current_user
-from src.services.cache_service import CacheKeys, cached_response
+from src.services.cache_service import cached_response
 
 logger = logging.getLogger(__name__)
 

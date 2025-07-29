@@ -3,7 +3,7 @@ Document Management API Router
 Módulo 2: Gestão de Documentos
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session

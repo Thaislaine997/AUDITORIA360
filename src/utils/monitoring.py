@@ -4,15 +4,12 @@ Implements comprehensive metrics collection, alerting, and real-time monitoring.
 """
 
 import asyncio
-import json
 import logging
-import os
 import threading
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 
 import psutil

@@ -3,7 +3,6 @@ Notifications and Events API Router
 Módulo 4: Notificações e Eventos
 """
 
-from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
