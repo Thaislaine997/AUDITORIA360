@@ -1,24 +1,39 @@
-
-<!DOCTYPE html>
-<html>
-<head>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AUDITORIA360 - Basic Monitor</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
-        .ok { background: #d4edda; }
-        .warning { background: #fff3cd; }
-        .error { background: #f8d7da; }
+      body {
+        font-family: Arial;
+        margin: 20px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .ok {
+        background: #d4edda;
+      }
+      .warning {
+        background: #fff3cd;
+      }
+      .error {
+        background: #f8d7da;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>🎯 AUDITORIA360 - Monitor Básico</h1>
     <div class="status ok">✅ Sistema: Operacional</div>
     <div class="status ok">✅ API: Funcionando</div>
     <div class="status ok">✅ Database: Conectado</div>
     <p>Última atualização: <span id="timestamp"></span></p>
     <script>
-        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+      document.getElementById("timestamp").textContent =
+        new Date().toLocaleString();
     </script>
-</body>
+  </body>
 </html>
