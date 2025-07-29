@@ -1,0 +1,65 @@
+version: "1.0.0"
+protocol_version: "1.0"
+
+servers:
+  auditoria360-main:
+    name: "auditoria360-main"
+    description: "Main AUDITORIA360 MCP server for payroll and compliance tools"
+    transport: "http"
+    host: "localhost"
+    port: 8001
+    path: "/mcp"
+    enabled: true
+    auto_start: true
+    timeout: 30
+
+clients:
+  auditoria360-client:
+    name: "auditoria360-client"
+    target_server: "auditoria360-main"
+    auto_connect: true
+    retry_attempts: 3
+    retry_delay: 5
+    enabled: true
+
+development:
+  debug_mode: true
+  log_level: "INFO"
+  log_file: "logs/mcp.log"
+  enable_metrics: true
+  metrics_port: 9090
+  enable_health_checks: true
+  health_check_interval: 60
+
+copilot:
+  enabled: true
+  mcp_server_url: "http://localhost:8001/mcp"
+  tools_enabled:
+    - "payroll_calculator"
+    - "compliance_checker"
+    - "document_analyzer"
+    - "audit_executor"
+    - "cct_comparator"
+  resources_enabled:
+    - "auditoria://payroll/data"
+    - "auditoria://employees/info"
+    - "auditoria://cct/documents"
+    - "auditoria://compliance/rules"
+    - "auditoria://knowledge/base"
+  context_window_size: 8000
+  max_tool_calls_per_request: 5
+  enable_streaming: true
+
+security:
+  require_authentication: false
+  allowed_origins:
+    - "*"
+  max_request_size: 10485760  # 10MB
+  rate_limit_requests_per_minute: 100
+
+features:
+  enable_caching: true
+  enable_compression: true
+  enable_encryption: false
+  enable_rate_limiting: true
+  enable_analytics: true
