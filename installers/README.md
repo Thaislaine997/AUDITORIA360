@@ -6,14 +6,14 @@ This directory contains automated scripts for setting up the AUDITORIA360 develo
 
 ### Linux/macOS
 ```bash
-chmod +x installers/setup_dev_env.sh
-./installers/setup_dev_env.sh
+chmod +x scripts/shell/setup_dev_env.sh
+./scripts/shell/setup_dev_env.sh
 ```
 
 ### Windows (PowerShell as Administrator)
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-.\installers\setup_dev_env.ps1
+.\scripts\powershell\setup_dev_env.ps1
 ```
 
 ### Manual Setup
@@ -39,13 +39,13 @@ If you prefer manual setup or encounter issues with the automated scripts:
 
 ## 📁 Files Overview
 
-| File | Description | OS Support |
-|------|-------------|------------|
-| `setup_dev_env.sh` | Main setup script for Unix systems | Linux, macOS |
-| `setup_dev_env.ps1` | Main setup script for Windows | Windows |
-| `.env.example` | Environment configuration template | All |
-| `init_db.py` | Database initialization script | All |
-| `compilar_instalador_windows.bat` | Legacy Windows installer | Windows |
+| File | Description | OS Support | Location |
+|------|-------------|------------|----------|
+| `setup_dev_env.sh` | Main setup script for Unix systems | Linux, macOS | `scripts/shell/` |
+| `setup_dev_env.ps1` | Main setup script for Windows | Windows | `scripts/powershell/` |
+| `.env.example` | Environment configuration template | All | `installers/` |
+| `init_db.py` | Database initialization script | All | `installers/` |
+| `compilar_instalador_windows.bat` | Legacy Windows installer | Windows | `scripts/batch/` |
 
 ## 🔧 What the Setup Scripts Do
 
@@ -157,7 +157,7 @@ PADDLE_OCR_LANG=pt
 
 **Permission Denied (Linux/macOS)**
 ```bash
-chmod +x installers/setup_dev_env.sh
+chmod +x scripts/shell/setup_dev_env.sh
 ```
 
 **PowerShell Execution Policy (Windows)**

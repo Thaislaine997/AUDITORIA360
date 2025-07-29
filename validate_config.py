@@ -154,7 +154,7 @@ def validate_deployment_scripts():
     print_status("Validando scripts de deploy...")
     
     deploy_files = [
-        'deploy_streamlit.sh',
+        'scripts/shell/deploy_streamlit.sh',
         'streamlit_config.toml'
     ]
     
@@ -162,12 +162,12 @@ def validate_deployment_scripts():
         check_file_exists(file, "Script de deploy")
     
     # Check if deploy script is executable
-    deploy_script = Path('deploy_streamlit.sh')
+    deploy_script = Path('scripts/shell/deploy_streamlit.sh')
     if deploy_script.exists():
         if os.access(deploy_script, os.X_OK):
             print_status("Script de deploy é executável", 'success')
         else:
-            print_status("Script de deploy não é executável (execute: chmod +x deploy_streamlit.sh)", 'warning')
+            print_status("Script de deploy não é executável (execute: chmod +x scripts/shell/deploy_streamlit.sh)", 'warning')
 
 def main():
     """Main validation function"""
@@ -209,7 +209,7 @@ def main():
         print_status("🎉 Todas as verificações passaram! Pronto para deploy.", 'success')
         print()
         print("📋 Próximos passos:")
-        print("1. Execute: ./deploy_streamlit.sh")
+        print("1. Execute: ./scripts/shell/deploy_streamlit.sh")
         print("2. Acesse: https://share.streamlit.io")
         print("3. Configure o repositório: Thaislaine997/AUDITORIA360")
         print("4. Defina o arquivo principal: dashboards/app.py")

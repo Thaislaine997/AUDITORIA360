@@ -69,8 +69,8 @@ git clone https://github.com/user/AUDITORIA360
 cd AUDITORIA360
 
 # Execute o instalador automatizado
-chmod +x installers/setup_dev_env.sh
-./installers/setup_dev_env.sh
+chmod +x scripts/shell/setup_dev_env.sh
+./scripts/shell/setup_dev_env.sh
 
 # Ou manualmente
 pip install -r requirements.txt

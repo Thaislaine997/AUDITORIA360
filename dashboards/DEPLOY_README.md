@@ -41,7 +41,7 @@ dashboards/
 #### Configuração Automática
 ```bash
 # Execute o script de deploy automático
-./deploy_streamlit.sh
+./scripts/shell/deploy_streamlit.sh
 ```
 
 #### Configuração Manual

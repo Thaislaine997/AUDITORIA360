@@ -15,6 +15,7 @@
 - [🔧 Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)
 - [🏗️ Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
 - [🔌 Documentação de APIs](tecnico/apis/api-documentation.md)
+- [🛠️ Scripts Auxiliares](tecnico/scripts-auxiliares.md)
 
 ### 👔 **Para Gestores e Executivos**
 - [📊 Análise Consolidada Estratégica](estrategico/analise-consolidada.md)
@@ -52,6 +53,7 @@ tecnico/
 │   ├── setup-ambiente.md           # Configuração do ambiente
 │   ├── padroes-codigo.md           # Padrões de código
 │   └── contribuicao.md             # Guia de contribuição
+├── scripts-auxiliares.md           # 🛠️ Scripts auxiliares organizados
 ├── deploy/
 │   ├── deploy-checklist.md         # Checklist de deploy
 │   ├── configuracao-prod.md        # Configuração produção
