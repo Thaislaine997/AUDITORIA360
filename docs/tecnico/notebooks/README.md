@@ -4,6 +4,8 @@
 
 Esta seção contém os notebooks Jupyter utilizados para análise de dados, prototipagem de modelos e demonstração das funcionalidades do sistema AUDITORIA360.
 
+> **🆕 Atualizações Recentes**: Os notebooks foram organizados e aprimorados com instruções mais detalhadas, conclusões estruturadas e roadmaps de desenvolvimento. Todas as células foram logicamente estruturadas e a documentação foi sincronizada.
+
 ## 📖 Notebooks Disponíveis
 
 ### 1. [Exploração e Prototipagem](../../../notebooks/exploracao_e_prototipagem.ipynb)
@@ -11,45 +13,60 @@ Esta seção contém os notebooks Jupyter utilizados para análise de dados, pro
 **Objetivo**: Análise exploratória de dados de folha de pagamento e prototipagem de modelos de machine learning.
 
 **Funcionalidades**:
-- ✅ Análise exploratória de dados
+- ✅ Análise exploratória de dados com visualizações avançadas
 - ✅ Detecção de anomalias usando Isolation Forest
 - ✅ Segmentação de funcionários com K-Means
-- ✅ Visualizações interativas
-- ✅ Relatório automático de auditoria
+- ✅ Relatório automático de auditoria com métricas detalhadas
+- ✅ Pipeline completo de machine learning para auditoria
 
 **Pré-requisitos**:
 - Python 3.8+
 - pandas, numpy, matplotlib, seaborn, scikit-learn
-- Dados de folha de pagamento (exemplo incluído)
+- Dados de folha de pagamento (exemplo incluído automaticamente)
 
 **Como usar**:
-1. Execute as células sequencialmente
-2. Ajuste parâmetros conforme necessário
-3. Analise os resultados e visualizações
+1. Execute as células sequencialmente na ordem apresentada
+2. O notebook criará dados de exemplo automaticamente se não encontrar arquivos
+3. Ajuste parâmetros de modelagem conforme necessário
+4. Analise resultados, visualizações e relatório final gerado
+
+**Melhorias Recentes**:
+- ✅ Instruções de uso mais detalhadas e estruturadas
+- ✅ Conclusões organizadas com cronograma de próximos passos
+- ✅ Links para documentação relacionada
+- ✅ Checklist de ações recomendadas para implementação
 
 ### 2. [Módulo 2: Folha Inteligente](../../../notebooks/modulo_2_folha_inteligente.ipynb)
 
-**Objetivo**: Demonstração completa do processamento de PDFs de folha de pagamento.
+**Objetivo**: Demonstração completa do processamento de PDFs de folha de pagamento com validação automática.
 
 **Funcionalidades**:
-- ✅ Upload e processamento de PDFs
-- ✅ Monitoramento de jobs assíncronos
-- ✅ Validação e mapeamento de dados
-- ✅ Armazenamento no banco de dados
-- ✅ Visualização de resultados
+- ✅ Upload e processamento assíncrono de PDFs
+- ✅ Monitoramento de jobs em tempo real com status detalhado
+- ✅ Validação abrangente e mapeamento inteligente de dados
+- ✅ Armazenamento seguro no banco de dados
+- ✅ Visualização de resultados com dashboards interativos
+- ✅ Sistema de logs estruturado para rastreabilidade
 
 **Pré-requisitos**:
 - Python 3.8+
 - requests, pandas, streamlit, matplotlib
-- API AUDITORIA360 em execução
+- API AUDITORIA360 em execução (porta 8000)
 - Arquivos PDF de folha de pagamento
 
 **Como usar**:
-1. Configure as variáveis de ambiente
-2. Execute as células sequencialmente
-3. Faça upload do arquivo PDF
-4. Monitore o processamento
-5. Visualize os resultados
+1. Configure as variáveis de ambiente (API_BASE_URL, CLIENT_ID)
+2. Execute as células sequencialmente na ordem apresentada
+3. Faça upload do arquivo PDF através da interface
+4. Monitore o processamento assíncrono em tempo real
+5. Visualize e valide os dados extraídos automaticamente
+
+**Melhorias Recentes**:
+- ✅ Instruções passo a passo mais detalhadas
+- ✅ Requisitos técnicos claramente especificados
+- ✅ Cronograma estruturado de próximos passos e melhorias
+- ✅ Links diretos para documentação técnica relacionada
+- ✅ Roadmap de desenvolvimento de curto, médio e longo prazo
 
 ## 🛠️ Configuração do Ambiente
 
