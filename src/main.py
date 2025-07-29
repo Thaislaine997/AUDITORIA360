@@ -7,8 +7,7 @@ import logging
 
 # Import from the new modular structure - only when needed to avoid breaking tests
 try:
-    from src.core.exceptions import ProcessingError
-    from src.services.ocr import OCRService
+    pass
 except ImportError:
     # Fallback for when modules are not yet fully configured
     pass
@@ -32,7 +31,7 @@ def process_document_ocr(file_name: str, bucket_name: str) -> dict:
 
         # Use the new OCR service from the modular structure
         # For now, return mock result to maintain compatibility with existing tests
-        
+
         return {
             "status": "success",
             "file_name": file_name,

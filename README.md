@@ -59,8 +59,8 @@ Desenvolver um portal completo que elimina processos manuais e riscos de não co
 - **[📊 Status do Projeto](docs/relatorios/status-projeto.md)** - Situação atual detalhada
 
 ### 👥 **Por Perfil de Usuário**
-- **👤 Usuários**: [Manual do Usuário](docs/usuario/manual-usuario.md) | [FAQ](docs/usuario/faq.md)
-- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [APIs](docs/tecnico/apis/api-documentation.md)
+- **👤 Usuários**: [Manual do Usuário](docs/usuario/manual-usuario.md) | [Guia de Instalação](docs/usuario/guia-instalacao.md) | [FAQ](docs/usuario/faq.md)
+- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [Exemplos](docs/tecnico/apis/exemplos-praticos.md)
 - **👔 Gestores**: [Análise Estratégica](docs/estrategico/analise-consolidada.md) | [Roadmap](docs/estrategico/roadmap-estrategico.md)
 - **🔍 Auditores**: [Compliance](docs/compliance/auditoria/checklist-auditoria.md) | [LGPD](docs/compliance/lgpd/)
 

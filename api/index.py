@@ -80,6 +80,7 @@ except ImportError as e:
     def payroll_health():
         return {"message": "Payroll module - ready", "status": "ok"}
 
+
 # Security
 security = HTTPBearer()
 
