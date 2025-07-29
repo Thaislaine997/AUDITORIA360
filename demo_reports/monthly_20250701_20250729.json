@@ -2,9 +2,9 @@
   "id": "monthly_20250701_20250729",
   "type": "monthly",
   "title": "Relatório Monthly - AUDITORIA360",
-  "generated_at": "2025-07-29T18:23:54.194128",
-  "period_start": "2025-07-01T18:23:54.194095",
-  "period_end": "2025-07-29T18:23:54.194095",
+  "generated_at": "2025-07-29T18:26:57.400073",
+  "period_start": "2025-07-01T18:26:57.400042",
+  "period_end": "2025-07-29T18:26:57.400042",
   "metrics": {
     "total_audits": 150,
     "completed_audits": 135,
@@ -17,8 +17,8 @@
   },
   "details": {
     "period_summary": {
-      "start": "2025-07-01T18:23:54.194095",
-      "end": "2025-07-29T18:23:54.194095",
+      "start": "2025-07-01T18:26:57.400042",
+      "end": "2025-07-29T18:26:57.400042",
       "duration_days": 28
     },
     "audit_summary": {
