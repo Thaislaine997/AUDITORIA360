@@ -5,6 +5,7 @@ Módulo 7: IA, Chatbot e Bots Inteligentes - Extended with Model Context Protoco
 
 import json
 import logging
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -64,27 +65,49 @@ async def chat_with_bot(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Enhanced chatbot interaction with MCP integration"""
+    """Enhanced chatbot interaction with OpenAI GPT integration"""
     try:
         agent = get_ai_agent()
 
-        # Process message using enhanced AI agent
-        result = await agent.executar_acao(
-            f"chat: {chat_request.message}", chat_request.context
-        )
+        # Use direct OpenAI chat for better responses
+        context_data = {
+            "session_id": chat_request.session_id,
+            "user_id": str(current_user.id),
+            "user_role": getattr(current_user, 'role', 'user'),
+        }
+        if chat_request.context:
+            context_data.update(chat_request.context)
+        
+        result = await agent.chat_with_openai(chat_request.message, context_data)
 
         if result.get("success"):
             return {
-                "response": result.get("result", "Processed successfully"),
+                "response": result.get("response", "Processed successfully"),
                 "session_id": chat_request.session_id,
+                "confidence": result.get("confidence", 0.8),
+                "suggestions": result.get("suggestions", []),
+                "usage": result.get("usage", {}),
+                "provider": "OpenAI GPT",
                 "timestamp": result.get("timestamp"),
-                "processed_via": result.get("processed_via", "Enhanced AI"),
             }
         else:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Chat processing failed: {result.get('error')}",
+            # Fallback to MCP processing
+            mcp_result = await agent.executar_acao(
+                f"chat: {chat_request.message}", chat_request.context
             )
+            
+            if mcp_result.get("success"):
+                return {
+                    "response": mcp_result.get("result", "Processed successfully"),
+                    "session_id": chat_request.session_id,
+                    "timestamp": mcp_result.get("timestamp"),
+                    "processed_via": "MCP Fallback",
+                }
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Chat processing failed: {result.get('error')}",
+                )
 
     except Exception as e:
         logger.error(f"Error in chat endpoint: {e}")
@@ -130,11 +153,31 @@ async def get_conversation(
 async def get_ai_recommendations(
     current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
-    """Get AI recommendations for user using MCP tools"""
+    """Get AI recommendations using OpenAI GPT"""
     try:
         agent = get_ai_agent()
 
-        # Use compliance checker and audit tools for recommendations
+        # Prepare user context for recommendations
+        user_context = {
+            "user_id": str(current_user.id),
+            "user_role": getattr(current_user, 'role', 'user'),
+            "username": getattr(current_user, 'username', 'unknown'),
+            "timestamp": datetime.now().isoformat()
+        }
+
+        # Try OpenAI recommendations first
+        ai_result = await agent.get_ai_recommendations(user_context)
+        
+        if ai_result.get("success"):
+            return {
+                "recommendations": ai_result.get("response", ""),
+                "user_id": current_user.id,
+                "generated_via": "OpenAI GPT",
+                "timestamp": datetime.now().isoformat(),
+                "usage": ai_result.get("usage", {}),
+            }
+
+        # Fallback to MCP compliance checker for recommendations
         compliance_result = await agent.executar_acao(
             "verificar compliance",
             {"employee_id": str(current_user.id), "check_type": "full"},
@@ -224,7 +267,44 @@ async def create_knowledge_base_entry(
     }
 
 
-# New MCP-specific endpoints
+# New OpenAI-specific endpoints
+
+@router.post("/analyze-document")
+async def analyze_document_with_ai(
+    document_content: str,
+    document_type: str = "general",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Analyze document content using OpenAI GPT"""
+    try:
+        agent = get_ai_agent()
+
+        result = await agent.analyze_document_with_ai(document_content, document_type)
+
+        if result.get("success"):
+            return {
+                "analysis": result.get("response", ""),
+                "document_type": document_type,
+                "analyzed_by": "OpenAI GPT",
+                "user_id": current_user.id,
+                "timestamp": datetime.now().isoformat(),
+                "usage": result.get("usage", {}),
+            }
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Document analysis failed: {result.get('error')}",
+            )
+
+    except Exception as e:
+        logger.error(f"Error in document analysis: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
+
+
+# Original MCP-specific endpoints
 
 
 @router.get("/mcp/capabilities")
@@ -382,18 +462,20 @@ async def execute_ai_action(
 
 @router.get("/status")
 async def get_ai_status(current_user: User = Depends(get_current_user)):
-    """Get AI agent and MCP status"""
+    """Get AI agent status including OpenAI integration"""
     try:
         agent = get_ai_agent()
+        
+        capabilities = await agent.get_mcp_capabilities()
 
         return {
             "ai_agent_status": agent.status,
-            "mcp_server_available": agent.mcp_server is not None,
-            "mcp_tools_count": len(agent.mcp_server._tools) if agent.mcp_server else 0,
-            "mcp_resources_count": (
-                len(agent.mcp_server._resources) if agent.mcp_server else 0
-            ),
-            "version": "1.0.0-mcp-enhanced",
+            "openai_available": capabilities.get("openai_integration", False),
+            "mcp_server_available": capabilities.get("mcp_integration", False),
+            "mcp_tools_count": len(capabilities.get("tools", [])),
+            "mcp_resources_count": len(capabilities.get("resources", [])),
+            "capabilities": capabilities.get("capabilities", {}),
+            "version": "1.0.0-openai-integrated",
         }
 
     except Exception as e:

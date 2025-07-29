@@ -1,5 +1,5 @@
 """
-Enhanced AI Agent with Model Context Protocol (MCP) Integration
+Enhanced AI Agent with Model Context Protocol (MCP) Integration and OpenAI GPT
 Extends Copilot coding agent capabilities with AUDITORIA360 specific tools and resources
 """
 
@@ -9,39 +9,71 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from .mcp.client import MCPClientManager
-from .mcp.config import MCPConfiguration, get_config_manager
-from .mcp.server import AuditoriaResourceProvider, MCPServer
-from .mcp.tools import AuditoriaToolProvider
+try:
+    from .mcp.client import MCPClientManager
+    from .mcp.config import MCPConfiguration, get_config_manager
+    from .mcp.server import AuditoriaResourceProvider, MCPServer
+    from .mcp.tools import AuditoriaToolProvider
+    MCP_AVAILABLE = True
+except ImportError:
+    MCP_AVAILABLE = False
+    logger = logging.getLogger(__name__)
+    logger.warning("MCP modules not available, using basic AI functionality")
+
+try:
+    from .services.openai_service import get_openai_service
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+    logger = logging.getLogger(__name__)
+    logger.warning("OpenAI service not available")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class EnhancedAIAgent:
-    """Enhanced AI Agent with MCP integration for AUDITORIA360"""
+    """Enhanced AI Agent with MCP integration and OpenAI GPT for AUDITORIA360"""
 
     def __init__(self, db_session_factory=None):
         self.status = "initializing"
         self.db_session_factory = db_session_factory
 
-        # MCP Components
+        # MCP Components (optional)
         self.mcp_server: Optional[MCPServer] = None
         self.mcp_client_manager: Optional[MCPClientManager] = None
         self.resource_provider: Optional[AuditoriaResourceProvider] = None
         self.tool_provider: Optional[AuditoriaToolProvider] = None
 
+        # OpenAI Service
+        self.openai_service = None
+        if OPENAI_AVAILABLE:
+            try:
+                self.openai_service = get_openai_service()
+                logger.info("OpenAI service initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize OpenAI service: {e}")
+
         # Configuration
-        self.config_manager = get_config_manager()
-        self.config: Optional[MCPConfiguration] = None
+        if MCP_AVAILABLE:
+            self.config_manager = get_config_manager()
+            self.config: Optional[MCPConfiguration] = None
+            # Initialize MCP components
+            asyncio.create_task(self._initialize_mcp())
+        else:
+            self.config_manager = None
+            self.config = None
+            self.status = "ready"
 
-        # Initialize MCP components
-        asyncio.create_task(self._initialize_mcp())
-
-        logger.info("Enhanced AI Agent with MCP integration initialized")
+        logger.info("Enhanced AI Agent with OpenAI GPT integration initialized")
 
     async def _initialize_mcp(self):
         """Initialize MCP server and client components"""
+        if not MCP_AVAILABLE:
+            logger.warning("MCP not available, skipping MCP initialization")
+            self.status = "ready"
+            return
+            
         try:
             # Load configuration
             self.config = self.config_manager.load_config()
@@ -65,7 +97,7 @@ class EnhancedAIAgent:
 
         except Exception as e:
             logger.error(f"Error initializing MCP components: {e}")
-            self.status = "error"
+            self.status = "ready"  # Continue without MCP
 
     async def executar_acao(
         self, acao: str, context: Dict[str, Any] = None
@@ -252,17 +284,46 @@ class EnhancedAIAgent:
         return result
 
     async def _general_ai_processing(self, action: str, context: Dict[str, Any]) -> str:
-        """General AI processing for actions not mapped to specific MCP tools"""
-        # This could integrate with OpenAI, Gemini, or other LLM services
-        logger.info(f"Processing general action: {action}")
-
-        return f"Processed action '{action}' with AI. Context: {json.dumps(context, indent=2)}"
+        """General AI processing using OpenAI GPT for actions not mapped to specific MCP tools"""
+        logger.info(f"Processing general action with OpenAI: {action}")
+        
+        if not OPENAI_AVAILABLE or not self.openai_service:
+            return f"Processed action '{action}' with basic AI. Context: {json.dumps(context, indent=2)}"
+        
+        try:
+            # Use OpenAI for chat-like interactions
+            if action.lower().startswith("chat:"):
+                message = action[5:].strip()  # Remove "chat:" prefix
+                result = await self.openai_service.get_auditoria_response(message, context)
+                
+                if result["success"]:
+                    return {
+                        "response": result["response"],
+                        "confidence": result.get("confidence", 0.8),
+                        "suggestions": result.get("suggestions", []),
+                        "source": "OpenAI GPT",
+                        "usage": result.get("usage", {})
+                    }
+                else:
+                    return f"Error processing with OpenAI: {result['error']}"
+            
+            # For other actions, use as general assistant
+            result = await self.openai_service.get_auditoria_response(action, context)
+            
+            if result["success"]:
+                return result["response"]
+            else:
+                return f"Error processing with OpenAI: {result['error']}"
+                
+        except Exception as e:
+            logger.error(f"Error in OpenAI processing: {e}")
+            return f"Error processing action with AI: {str(e)}"
 
     async def integrar_gemini(
         self, comando: str, context: Dict[str, Any] = None
     ) -> Dict[str, Any]:
-        """Enhanced Gemini/LLM integration with MCP context"""
-        logger.info(f"Integrating with Gemini/LLM: {comando}")
+        """Enhanced Gemini/LLM integration with MCP context and OpenAI fallback"""
+        logger.info(f"Integrating with LLM: {comando}")
 
         # Get available MCP resources and tools for context
         mcp_context = await self._get_mcp_context()
@@ -275,19 +336,40 @@ class EnhancedAIAgent:
             "timestamp": datetime.now().isoformat(),
         }
 
-        # Here you would integrate with actual Gemini/OpenAI API
-        # For now, return enhanced mock response
+        # Try OpenAI first if available
+        if OPENAI_AVAILABLE and self.openai_service:
+            try:
+                result = await self.openai_service.get_auditoria_response(comando, full_context)
+                
+                if result["success"]:
+                    return {
+                        "response": result["response"],
+                        "context_used": full_context,
+                        "mcp_tools_available": len(mcp_context.get("tools", [])),
+                        "mcp_resources_available": len(mcp_context.get("resources", [])),
+                        "provider": "OpenAI GPT",
+                        "confidence": result.get("confidence", 0.8),
+                        "suggestions": result.get("suggestions", []),
+                        "usage": result.get("usage", {})
+                    }
+                else:
+                    logger.warning(f"OpenAI integration failed: {result['error']}")
+            except Exception as e:
+                logger.error(f"Error in OpenAI integration: {e}")
 
+        # Fallback to mock response
         return {
-            "response": f"Enhanced Gemini response for: {comando}",
+            "response": f"Enhanced LLM response for: {comando}",
             "context_used": full_context,
             "mcp_tools_available": len(mcp_context.get("tools", [])),
             "mcp_resources_available": len(mcp_context.get("resources", [])),
+            "provider": "Fallback",
+            "note": "OpenAI integration not available"
         }
 
     async def _get_mcp_context(self) -> Dict[str, Any]:
         """Get current MCP context (available tools and resources)"""
-        if not self.mcp_server:
+        if not MCP_AVAILABLE or not self.mcp_server:
             return {"tools": [], "resources": []}
 
         tools = list(self.mcp_server._tools.keys())
@@ -301,37 +383,83 @@ class EnhancedAIAgent:
 
     async def get_mcp_capabilities(self) -> Dict[str, Any]:
         """Get MCP server capabilities for Copilot integration"""
-        if not self.mcp_server:
-            return {"error": "MCP server not initialized"}
-
-        tools = [tool.model_dump() for tool in self.mcp_server._tools.values()]
-        resources = [
-            resource.model_dump() for resource in self.mcp_server._resources.values()
-        ]
-
-        return {
+        capabilities = {
             "server_info": {
-                "name": self.mcp_server.name,
-                "version": self.mcp_server.version,
+                "name": "AUDITORIA360-Enhanced-Agent",
+                "version": "1.0.0",
                 "status": self.status,
             },
-            "tools": tools,
-            "resources": resources,
+            "openai_integration": OPENAI_AVAILABLE and self.openai_service is not None,
+            "mcp_integration": MCP_AVAILABLE and self.mcp_server is not None,
             "capabilities": {
-                "payroll_calculation": True,
-                "compliance_checking": True,
-                "document_analysis": True,
-                "audit_execution": True,
-                "cct_comparison": True,
+                "chat_completion": OPENAI_AVAILABLE,
+                "document_analysis": OPENAI_AVAILABLE,
+                "personalized_recommendations": OPENAI_AVAILABLE,
+                "payroll_calculation": MCP_AVAILABLE,
+                "compliance_checking": MCP_AVAILABLE,
+                "audit_execution": MCP_AVAILABLE,
+                "cct_comparison": MCP_AVAILABLE,
             },
         }
+        
+        if MCP_AVAILABLE and self.mcp_server:
+            tools = [tool.model_dump() for tool in self.mcp_server._tools.values()]
+            resources = [
+                resource.model_dump() for resource in self.mcp_server._resources.values()
+            ]
+            capabilities.update({
+                "tools": tools,
+                "resources": resources,
+            })
+        else:
+            capabilities.update({
+                "tools": [],
+                "resources": [],
+            })
+
+        return capabilities
 
     async def handle_mcp_request(self, request_data: str) -> str:
         """Handle incoming MCP requests"""
-        if not self.mcp_server:
-            raise Exception("MCP server not initialized")
+        if not MCP_AVAILABLE or not self.mcp_server:
+            raise Exception("MCP server not available")
 
         return await self.mcp_server.handle_request(request_data)
+
+    # New OpenAI-specific methods
+    
+    async def chat_with_openai(self, message: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Direct chat with OpenAI GPT"""
+        if not OPENAI_AVAILABLE or not self.openai_service:
+            return {
+                "success": False,
+                "error": "OpenAI service not available",
+                "response": None
+            }
+        
+        return await self.openai_service.get_auditoria_response(message, context)
+    
+    async def analyze_document_with_ai(self, content: str, doc_type: str = "general") -> Dict[str, Any]:
+        """Analyze document using OpenAI"""
+        if not OPENAI_AVAILABLE or not self.openai_service:
+            return {
+                "success": False,
+                "error": "OpenAI service not available",
+                "response": None
+            }
+        
+        return await self.openai_service.analyze_document_content(content, doc_type)
+    
+    async def get_ai_recommendations(self, user_context: Dict[str, Any]) -> Dict[str, Any]:
+        """Get AI-powered recommendations"""
+        if not OPENAI_AVAILABLE or not self.openai_service:
+            return {
+                "success": False,
+                "error": "OpenAI service not available",
+                "response": None
+            }
+        
+        return await self.openai_service.get_recommendations(user_context)
 
 
 # Backwards compatibility
