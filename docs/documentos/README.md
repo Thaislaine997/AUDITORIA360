@@ -16,6 +16,7 @@ Esta pasta centraliza toda a documentação técnica e de usuário do projeto AU
 - **[Relatório Unificado](relatorios/relatorio-unificado.md)** - Status consolidado do projeto
 - **[Status de Implementação](relatorios/status-implementacao.md)** - Progresso atual detalhado
 - **[Correções Pós-Revisão](relatorios/pos-revisao-correcoes.md)** - Documentação de correções implementadas
+- **[📋 Registros de Validação Final](relatorios/registros-validacao-final.md)** - ⭐ **NOVO** Evidências e aprovações finais
 - **[Relatórios de Testes](relatorios/)** - Cobertura e resultados de testes
 
 ### 🏗️ Arquitetura
@@ -35,6 +36,7 @@ Esta pasta centraliza toda a documentação técnica e de usuário do projeto AU
 
 ### ✅ Compliance
 - **[Auditoria](compliance/)** - Checklist e procedimentos
+- **[🎯 Checklist Final de Refatoração](compliance/checklist-final-refatoracao.md)** - ⭐ **NOVO** Validação final completa
 - **[LGPD](compliance/)** - Conformidade com proteção de dados
 - **[Segurança](compliance/)** - Políticas e protocolos
 
@@ -64,6 +66,8 @@ Esta estrutura deve ser mantida sempre sincronizada com o README.md principal do
 - ✅ **Estrutura Organizada**: 100% completa
 - ✅ **Controle de Versões**: 100% implementado ⭐ **NOVO**
 - ✅ **Changelog Detalhado**: Versão 1.0.0 documentada ⭐ **NOVO**  
+- ✅ **Checklist Final**: 100% validado ⭐ **NOVO**
+- ✅ **Registros de Validação**: Completos e aprovados ⭐ **NOVO**
 - ✅ **Índices Criados**: 100% completo
 - ✅ **Sincronização**: Ativa
 - ✅ **Conteúdo Detalhado**: 100% completo (anteriormente 95%)
