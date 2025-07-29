@@ -15,6 +15,8 @@
 ### 👨‍💻 **Para Desenvolvedores**
 - [🔧 Guia de Desenvolvimento](tecnico/desenvolvimento/dev-guide.md)
 - [🏗️ Arquitetura do Sistema](tecnico/arquitetura/visao-geral.md)
+- [📦 Modularização do Backend](tecnico/modularizacao-backend.md) **[NOVO]**
+- [🏗️ Estrutura do Backend](tecnico/desenvolvimento/backend-estrutura.md) **[NOVO]**
 - [🔌 Documentação de APIs](tecnico/apis/api-documentation.md)
 
 ### 👔 **Para Gestores e Executivos**
