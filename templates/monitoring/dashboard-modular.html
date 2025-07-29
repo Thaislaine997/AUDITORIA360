@@ -1,3 +1,52 @@
+<!--
+  ===================================================================
+  MONITORING DASHBOARD - AUDITORIA 360 
+  ===================================================================
+  Descrição: Template para dashboard de monitoramento usando base template
+  Versão: 2.0 - Refactored to use base template inheritance
+  ===================================================================
+-->
+
+<!-- Template Configuration (this would be processed by a template engine) -->
+{{#extend "layouts/base"}} {{#content "pageConfig"}} { "title": "Monitoring
+Dashboard", "description": "Dashboard de monitoramento em tempo real do
+AUDITORIA360 - Sistema de gestão de folha de pagamento", "keywords": "auditoria,
+monitoramento, dashboard, tempo real, métricas", "bodyClass": "monitoring-page
+dashboard-page", "mainClass": "monitoring-dashboard", "showHeader": true,
+"showFooter": false, "showRefreshIndicator": true, "refreshInterval": 30,
+"headerClass": "monitoring-header", "headerIcon": "🎯", "headerTitle":
+"AUDITORIA360 - Monitoring Dashboard", "headerSubtitle": "Sistema de
+Monitoramento Avançado em Tempo Real", "coreStyles": [
+"../../src/frontend/src/styles/index.css", "../../assets/monitoring.css" ],
+"pageScripts": [ "./scripts/monitoring-dashboard.js" ] } {{/content}} {{#content
+"main"}}
+<section
+  class="metrics-grid"
+  role="region"
+  aria-label="Métricas do sistema"
+  id="metrics-container"
+>
+  <!-- Métricas serão carregadas dinamicamente via JavaScript -->
+  <div class="loading-placeholder" aria-label="Carregando métricas...">
+    <div class="loading-spinner"></div>
+    <p>Carregando métricas...</p>
+  </div>
+</section>
+
+<section
+  class="alerts-section"
+  role="region"
+  aria-label="Alertas do sistema"
+  id="alerts-container"
+>
+  <!-- Alertas serão carregados dinamicamente via JavaScript -->
+  <div class="loading-placeholder" aria-label="Carregando alertas...">
+    <div class="loading-spinner"></div>
+    <p>Carregando alertas...</p>
+  </div>
+</section>
+{{/content}} {{/extend}}
+
 <!doctype html>
 <html lang="pt-BR">
   <head>
@@ -7,10 +56,14 @@
       name="description"
       content="Dashboard de monitoramento em tempo real do AUDITORIA360 - Sistema de gestão de folha de pagamento"
     />
+    <meta
+      name="keywords"
+      content="auditoria, monitoramento, dashboard, tempo real, métricas"
+    />
     <meta name="author" content="AUDITORIA360" />
-    <title>AUDITORIA360 - Monitoring Dashboard</title>
+    <title>Monitoring Dashboard - AUDITORIA360</title>
 
-    <!-- Stylesheets Modularizados -->
+    <!-- Core Stylesheets -->
     <link rel="stylesheet" href="../../src/frontend/src/styles/index.css" />
     <link rel="stylesheet" href="../../assets/monitoring.css" />
 
@@ -18,28 +71,72 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
-  <body>
-    <main class="monitoring-page" role="main">
-      <header class="monitoring-header" role="banner">
-        <h1>🎯 AUDITORIA360 - Monitoring Dashboard</h1>
-        <p>Sistema de Monitoramento Avançado em Tempo Real</p>
-      </header>
+  <body class="monitoring-page dashboard-page">
+    <!-- Skip navigation for accessibility -->
+    <a
+      href="#main-content"
+      class="skip-link"
+      aria-label="Ir para o conteúdo principal"
+    >
+      Pular para o conteúdo principal
+    </a>
 
-      <section class="metrics-grid" role="region" aria-label="System metrics" id="metrics-container">
-        <!-- Métricas serão carregadas dinamicamente via JavaScript -->
-      </section>
-
-      <section class="alerts-section" role="region" aria-label="System alerts" id="alerts-container">
-        <!-- Alertas serão carregados dinamicamente via JavaScript -->
-      </section>
-
-      <!-- Auto-refresh indicator -->
-      <div class="refresh-indicator" role="status" aria-live="polite">
-        Auto-refresh: <span id="refresh-countdown">30</span>s
+    <!-- Header -->
+    <header class="monitoring-header" role="banner">
+      <div class="header-icon" aria-hidden="true">🎯</div>
+      <div class="header-content">
+        <h1 class="header-title">AUDITORIA360 - Monitoring Dashboard</h1>
+        <p class="header-subtitle">
+          Sistema de Monitoramento Avançado em Tempo Real
+        </p>
       </div>
+    </header>
+
+    <!-- Main Content -->
+    <main
+      id="main-content"
+      class="monitoring-dashboard"
+      role="main"
+      tabindex="-1"
+    >
+      <section
+        class="metrics-grid"
+        role="region"
+        aria-label="Métricas do sistema"
+        id="metrics-container"
+      >
+        <!-- Métricas serão carregadas dinamicamente via JavaScript -->
+        <div class="loading-placeholder" aria-label="Carregando métricas...">
+          <div class="loading-spinner"></div>
+          <p>Carregando métricas...</p>
+        </div>
+      </section>
+
+      <section
+        class="alerts-section"
+        role="region"
+        aria-label="Alertas do sistema"
+        id="alerts-container"
+      >
+        <!-- Alertas serão carregados dinamicamente via JavaScript -->
+        <div class="loading-placeholder" aria-label="Carregando alertas...">
+          <div class="loading-spinner"></div>
+          <p>Carregando alertas...</p>
+        </div>
+      </section>
     </main>
 
-    <!-- Scripts Modularizados -->
+    <!-- Auto-refresh indicator -->
+    <div
+      class="refresh-indicator"
+      role="status"
+      aria-live="polite"
+      aria-label="Indicador de atualização automática"
+    >
+      Auto-refresh: <span id="refresh-countdown">30</span>s
+    </div>
+
+    <!-- Scripts -->
     <script type="module" src="./scripts/monitoring-dashboard.js"></script>
   </body>
 </html>

@@ -3,10 +3,56 @@
   METRIC CARD COMPONENT - AUDITORIA 360
   ===================================================================
   Descrição: Componente reutilizável para cards de métricas
+  Versão: 2.0 - Enhanced with improved accessibility
+  Uso: {{> metric-card context}}
   ===================================================================
 -->
-<article class="metric-card" data-metric-id="{{id}}">
-  <h2 class="metric-title">{{icon}} {{title}}</h2>
-  <div class="metric-value {{type}}">{{value}}</div>
-  <span class="metric-status status-{{statusType}}">{{status}}</span>
+<article
+  class="metric-card {{cardClass}}"
+  data-metric-id="{{id}}"
+  role="article"
+  aria-labelledby="metric-title-{{id}}"
+  aria-describedby="metric-status-{{id}}"
+>
+  <header class="metric-header">
+    <h2 id="metric-title-{{id}}" class="metric-title">
+      {{#if icon}}<span class="metric-icon" aria-hidden="true">{{icon}}</span
+      >{{/if}} {{title}}
+    </h2>
+  </header>
+
+  <div class="metric-content">
+    <div class="metric-value {{type}}" role="presentation">
+      {{value}} {{#if unit}}<span class="metric-unit">{{unit}}</span>{{/if}}
+    </div>
+
+    {{#if trend}}
+    <div
+      class="metric-trend trend-{{trend.direction}}"
+      aria-label="Tendência: {{trend.description}}"
+    >
+      <span aria-hidden="true">{{trend.icon}}</span>
+      <span class="trend-text">{{trend.text}}</span>
+    </div>
+    {{/if}}
+  </div>
+
+  <footer class="metric-footer">
+    <span
+      id="metric-status-{{id}}"
+      class="metric-status status-{{statusType}}"
+      role="status"
+    >
+      {{status}}
+    </span>
+    {{#if lastUpdate}}
+    <time
+      class="metric-timestamp"
+      datetime="{{lastUpdate}}"
+      title="Última atualização"
+    >
+      {{lastUpdateFormatted}}
+    </time>
+    {{/if}}
+  </footer>
 </article>

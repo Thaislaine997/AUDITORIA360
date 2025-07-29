@@ -3,6 +3,7 @@
   BASE LAYOUT TEMPLATE - AUDITORIA 360
   ===================================================================
   Descrição: Template base reutilizável para todas as páginas
+  Versão: 2.0 - Enhanced with improved reusability and accessibility
   ===================================================================
 -->
 <!doctype html>
@@ -12,42 +13,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="{{description}}" />
     <meta name="author" content="AUDITORIA360" />
+    <meta name="keywords" content="{{keywords}}" />
     <title>{{title}} - AUDITORIA360</title>
 
-    <!-- Stylesheets -->
+    <!-- Core Stylesheets -->
+    {{#each coreStyles}}
+    <link rel="stylesheet" href="{{this}}" />
+    {{/each}}
+
+    <!-- Page-specific Stylesheets -->
+    {{#each pageStyles}}
+    <link rel="stylesheet" href="{{this}}" />
+    {{/each}}
+
+    <!-- Legacy single CSS support -->
+    {{#if cssPath}}
     <link rel="stylesheet" href="{{cssPath}}" />
+    {{/if}}
 
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
+
     <!-- Custom head content -->
     {{customHead}}
   </head>
-  <body>
+  <body class="{{bodyClass}}">
+    <!-- Skip navigation for accessibility -->
+    <a
+      href="#main-content"
+      class="skip-link"
+      aria-label="Ir para o conteúdo principal"
+      >Pular para o conteúdo principal</a
+    >
+
     <!-- Header Component -->
     {{#if showHeader}}
-    <header class="monitoring-header" role="banner">
-      <h1>{{headerTitle}}</h1>
-      <p>{{headerSubtitle}}</p>
+    <header class="{{headerClass}}" role="banner">
+      {{#if headerIcon}}
+      <div class="header-icon" aria-hidden="true">{{headerIcon}}</div>
+      {{/if}}
+      <div class="header-content">
+        <h1 class="header-title">{{headerTitle}}</h1>
+        {{#if headerSubtitle}}
+        <p class="header-subtitle">{{headerSubtitle}}</p>
+        {{/if}}
+      </div>
+      {{#if headerActions}}
+      <div class="header-actions">{{headerActions}}</div>
+      {{/if}}
     </header>
     {{/if}}
 
+    <!-- Navigation Component -->
+    {{#if showNavigation}}
+    <nav
+      class="main-navigation"
+      role="navigation"
+      aria-label="Navegação principal"
+    >
+      {{navigation}}
+    </nav>
+    {{/if}}
+
     <!-- Main Content -->
-    <main class="{{mainClass}}" role="main">
+    <main id="main-content" class="{{mainClass}}" role="main" tabindex="-1">
       {{content}}
     </main>
 
+    <!-- Auto-refresh indicator -->
+    {{#if showRefreshIndicator}}
+    <div
+      class="refresh-indicator"
+      role="status"
+      aria-live="polite"
+      aria-label="Indicador de atualização automática"
+    >
+      Auto-refresh: <span id="refresh-countdown">{{refreshInterval}}</span>s
+    </div>
+    {{/if}}
+
     <!-- Footer Component -->
     {{#if showFooter}}
-    <footer class="monitoring-footer">
+    <footer class="{{footerClass}}" role="contentinfo">
+      {{#if showTimestamp}}
       <p class="timestamp">
-        Última atualização: <span id="timestamp"></span>
+        Última atualização:
+        <time id="timestamp" datetime="{{lastUpdate}}"></time>
       </p>
+      {{/if}} {{footerContent}}
     </footer>
     {{/if}}
 
-    <!-- Scripts -->
-    {{scripts}}
+    <!-- Core Scripts -->
+    {{#each coreScripts}}
+    <script type="module" src="{{this}}"></script>
+    {{/each}}
+
+    <!-- Page-specific Scripts -->
+    {{#each pageScripts}}
+    <script type="module" src="{{this}}"></script>
+    {{/each}}
+
+    <!-- Legacy single script support -->
+    {{#if scripts}} {{scripts}} {{/if}}
   </body>
 </html>
