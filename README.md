@@ -60,7 +60,7 @@ Desenvolver um portal completo que elimina processos manuais e riscos de não co
 
 ### 👥 **Por Perfil de Usuário**
 - **👤 Usuários**: [Manual do Usuário](docs/usuario/manual-usuario.md) | [Guia de Instalação](docs/usuario/guia-instalacao.md) | [FAQ](docs/usuario/faq.md)
-- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [Exemplos](docs/tecnico/apis/exemplos-praticos.md)
+- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [**Exemplos Práticos**](docs/tecnico/exemplos-praticos-uso.md)
 - **👔 Gestores**: [Análise Estratégica](docs/estrategico/analise-consolidada.md) | [Roadmap](docs/estrategico/roadmap-estrategico.md)
 - **🔍 Auditores**: [Compliance](docs/compliance/auditoria/checklist-auditoria.md) | [LGPD](docs/compliance/lgpd/)
 
@@ -135,6 +135,34 @@ Executar aplicação:
 npm run dev
 Acessar aplicação:
 Frontend: http://localhost:3000
+
+### 📋 Exemplos Práticos
+
+**Executar exemplos de uso:**
+```bash
+# Exemplo básico de autenticação
+python examples/api_authentication_example.py
+
+# Exemplo de gestão de folha de pagamento
+python examples/api_payroll_example.py
+
+# Exemplo de processamento de documentos
+python examples/api_documents_example.py
+
+# Exemplo de IA e chatbot
+python examples/ai_chatbot_example.py
+
+# Exemplo de analytics avançado
+python examples/duckdb_example.py
+
+# Exemplo de OCR
+python examples/ocr_paddle_example.py caminho/para/imagem.png
+
+# Workflow completo de auditoria
+python examples/complete_workflow_example.py
+```
+
+**Documentação completa de exemplos:** [**Exemplos Práticos de Uso**](docs/tecnico/exemplos-praticos-uso.md)
 📊 Endpoints da API
 Autenticação
 POST /api/v1/auth/login - Login de usuário
