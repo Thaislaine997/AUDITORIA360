@@ -36,18 +36,67 @@ dashboards/
 
 ## ⚙️ Configuração de Deploy
 
-### 🔧 Streamlit Cloud (Recomendado)
-```bash
-# 1. Push dos dashboards para repositório
-git add dashboards/
-git commit -m "Deploy dashboards"
-git push
+### 🚀 Streamlit Cloud (Recomendado)
 
-# 2. Configurar no Streamlit Cloud:
+#### Configuração Automática
+```bash
+# Execute o script de deploy automático
+./deploy_streamlit.sh
+```
+
+#### Configuração Manual
+```bash
+# 1. Preparar o ambiente
+cd dashboards/
+pip install -r requirements.txt
+
+# 2. Testar localmente
+streamlit run app.py
+
+# 3. Configurar no Streamlit Cloud:
 # URL: https://share.streamlit.io
 # Repository: Thaislaine997/AUDITORIA360
 # Branch: main
 # Main file: dashboards/app.py
+# Python version: 3.11
+```
+
+#### ⚙️ Configuração de Secrets
+No Streamlit Cloud, vá em **Advanced settings** → **Secrets** e adicione:
+
+```toml
+# API Configuration
+[api]
+base_url = "https://auditoria360-api.vercel.app"
+timeout = 30
+retry_attempts = 3
+
+# Database Configuration
+[database]
+url = "postgresql://username:password@ep-example-123456.us-east-1.aws.neon.tech/auditoria360?sslmode=require"
+
+# Authentication
+[auth]
+jwt_secret_key = "your-production-jwt-secret"
+jwt_algorithm = "HS256"
+
+# Storage (Cloudflare R2)
+[storage]
+r2_access_key_id = "your_r2_access_key"
+r2_secret_access_key = "your_r2_secret"
+r2_endpoint_url = "https://account_id.r2.cloudflarestorage.com"
+r2_bucket_name = "auditoria360-storage"
+
+# AI Services
+[ai]
+openai_api_key = "sk-your-openai-key"
+openai_model = "gpt-4"
+
+# Application Settings
+[app]
+environment = "production"
+debug = false
+log_level = "INFO"
 ```
 
 ### 🐳 Docker Deploy (Alternativo)
@@ -80,18 +129,55 @@ CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0
 
 ## 🔑 Variáveis de Ambiente
 
-### Produção
+### 📋 Configuração de Produção
+
+#### Environment Variables (.env.production)
 ```env
-API_BASE_URL=https://auditoria360-api.vercel.app
+# Core Configuration
 ENVIRONMENT=production
-SECRET_KEY=<your_secret_key>
+DEBUG=false
+API_BASE_URL=https://auditoria360-api.vercel.app
+
+# Database
+DATABASE_URL=postgresql://username:password@ep-example-123456.us-east-1.aws.neon.tech/auditoria360?sslmode=require
+
+# Security
+JWT_SECRET_KEY=your-super-secret-jwt-key-change-this-in-production
+CORS_ORIGINS=https://auditoria360-dashboards.streamlit.app,https://auditoria360-api.vercel.app
+
+# Storage (Cloudflare R2)
+R2_ACCESS_KEY_ID=your_r2_access_key_id
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
+R2_ENDPOINT_URL=https://account_id.r2.cloudflarestorage.com
+R2_BUCKET_NAME=auditoria360-storage
+
+# AI Services
+OPENAI_API_KEY=sk-your-openai-api-key-here
+OPENAI_MODEL=gpt-4
+
+# Features
+FEATURE_AI_CHATBOT=true
+FEATURE_OCR_PROCESSING=true
+FEATURE_ANALYTICS_DASHBOARD=true
 ```
 
-### Desenvolvimento
-```env
-API_BASE_URL=http://localhost:8000
-ENVIRONMENT=development
-SECRET_KEY=dev_secret_key
+#### Streamlit Secrets (secrets.toml)
+```toml
+# Este arquivo deve ser configurado no Streamlit Cloud
+# Seção Advanced Settings → Secrets
+[api]
+base_url = "https://auditoria360-api.vercel.app"
+timeout = 30
+
+[database]
+url = "postgresql://username:password@ep-example-123456.us-east-1.aws.neon.tech/auditoria360?sslmode=require"
+
+[auth]
+jwt_secret_key = "your-production-jwt-secret"
+
+[app]
+environment = "production"
+debug = false
 ```
 
 ## 🧪 Teste Local
