@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 from services.core.validators import is_iso_date, is_valid_cpf
 
@@ -14,15 +14,19 @@ class Entity(BaseModel):
     salario: Optional[float] = None
     descontos: Optional[float] = None
 
-    @validator("cpf")
+    @field_validator("cpf")
+    @classmethod
     def cpf_valido(cls, v):
         if v is None:
             return v
         if not is_valid_cpf(v):
             raise ValueError("CPF inválido")
-        return v
+        # Return cleaned CPF (numbers only)
+        import re
+        return re.sub(r"\D", "", v)
 
-    @validator("data")
+    @field_validator("data")
+    @classmethod
     def data_iso(cls, v):
         if v is None:
             return v
