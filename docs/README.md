@@ -7,6 +7,7 @@
 ### 📋 **Acesso Rápido**
 - **[📋 ÍNDICE PRINCIPAL](00-INDICE_PRINCIPAL.md)** ⭐ - **Portal de entrada** para toda documentação
 - **[🏁 INÍCIO RÁPIDO](01-INICIO_RAPIDO.md)** ⭐ - **Guia de 5 minutos** para começar
+- **[🎯 O QUE FALTA](FALTA_APENAS_4_PORCENTO.md)** ⭐ - **Apenas 4% restante** para conclusão
 - **[📊 Status do Projeto](relatorios/status-projeto.md)** - **96% concluído**
 
 ### 🎯 **Documentação Estratégica** 
