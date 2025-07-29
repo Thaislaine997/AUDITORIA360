@@ -1,85 +1,143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AUDITORIA360 - Monitoring Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .metric-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .metric-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
-        .metric-value { font-size: 32px; font-weight: bold; margin-bottom: 5px; }
-        .metric-status { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-        .status-ok { background: #d4edda; color: #155724; }
-        .status-warning { background: #fff3cd; color: #856404; }
-        .status-error { background: #f8d7da; color: #721c24; }
-        .alerts-section { margin-top: 30px; }
-        .alert-item { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #dc3545; }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .header {
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+      .metric-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .metric-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+      .metric-value {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .metric-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+      .status-ok {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status-warning {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .alerts-section {
+        margin-top: 30px;
+      }
+      .alert-item {
+        background: white;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <h1>🎯 AUDITORIA360 - Monitoring Dashboard</h1>
-        <p>Sistema de Monitoramento Avançado em Tempo Real</p>
+      <h1>🎯 AUDITORIA360 - Monitoring Dashboard</h1>
+      <p>Sistema de Monitoramento Avançado em Tempo Real</p>
     </div>
-    
+
     <div class="metrics-grid">
-        <div class="metric-card">
-            <div class="metric-title">🔧 System Status</div>
-            <div class="metric-value" style="color: #28a745;">Online</div>
-            <span class="metric-status status-ok">All Systems Operational</span>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-title">📊 API Response Time</div>
-            <div class="metric-value" style="color: #28a745;">156ms</div>
-            <span class="metric-status status-ok">Excellent Performance</span>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-title">💾 Database Status</div>
-            <div class="metric-value" style="color: #28a745;">Connected</div>
-            <span class="metric-status status-ok">12 Active Connections</span>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-title">🎯 Auditorias Hoje</div>
-            <div class="metric-value" style="color: #007bff;">247</div>
-            <span class="metric-status status-ok">+15% vs ontem</span>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-title">🔒 Compliance Score</div>
-            <div class="metric-value" style="color: #28a745;">98.5%</div>
-            <span class="metric-status status-ok">LGPD Compliant</span>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-title">👥 Usuários Ativos</div>
-            <div class="metric-value" style="color: #007bff;">89</div>
-            <span class="metric-status status-ok">Online agora</span>
-        </div>
+      <div class="metric-card">
+        <div class="metric-title">🔧 System Status</div>
+        <div class="metric-value" style="color: #28a745">Online</div>
+        <span class="metric-status status-ok">All Systems Operational</span>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">📊 API Response Time</div>
+        <div class="metric-value" style="color: #28a745">156ms</div>
+        <span class="metric-status status-ok">Excellent Performance</span>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">💾 Database Status</div>
+        <div class="metric-value" style="color: #28a745">Connected</div>
+        <span class="metric-status status-ok">12 Active Connections</span>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">🎯 Auditorias Hoje</div>
+        <div class="metric-value" style="color: #007bff">247</div>
+        <span class="metric-status status-ok">+15% vs ontem</span>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">🔒 Compliance Score</div>
+        <div class="metric-value" style="color: #28a745">98.5%</div>
+        <span class="metric-status status-ok">LGPD Compliant</span>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">👥 Usuários Ativos</div>
+        <div class="metric-value" style="color: #007bff">89</div>
+        <span class="metric-status status-ok">Online agora</span>
+      </div>
     </div>
-    
+
     <div class="alerts-section">
-        <h2>🚨 Active Alerts</h2>
-        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; color: #28a745;">
-            <strong>✅ No active alerts</strong><br>
-            System running smoothly
-        </div>
+      <h2>🚨 Active Alerts</h2>
+      <div
+        style="
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          text-align: center;
+          color: #28a745;
+        "
+      >
+        <strong>✅ No active alerts</strong><br />
+        System running smoothly
+      </div>
     </div>
-    
+
     <script>
-        // Auto-refresh every 30 seconds
-        setTimeout(() => location.reload(), 30000);
-        
-        // Update timestamp
-        document.addEventListener('DOMContentLoaded', function() {
-            const now = new Date().toLocaleString('pt-BR');
-            console.log('Dashboard loaded at:', now);
-        });
+      // Auto-refresh every 30 seconds
+      setTimeout(() => location.reload(), 30000);
+
+      // Update timestamp
+      document.addEventListener("DOMContentLoaded", function () {
+        const now = new Date().toLocaleString("pt-BR");
+        console.log("Dashboard loaded at:", now);
+      });
     </script>
-</body>
+  </body>
 </html>
