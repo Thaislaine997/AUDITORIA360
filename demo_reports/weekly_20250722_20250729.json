@@ -1,0 +1,178 @@
+{
+  "id": "weekly_20250722_20250729",
+  "type": "weekly",
+  "title": "Relatório Weekly - AUDITORIA360",
+  "generated_at": "2025-07-29T12:19:16.695836",
+  "period_start": "2025-07-22T12:19:16.695795",
+  "period_end": "2025-07-29T12:19:16.695795",
+  "metrics": {
+    "total_audits": 150,
+    "completed_audits": 135,
+    "pending_audits": 15,
+    "compliance_score": 94.2,
+    "critical_issues": 3,
+    "resolved_issues": 47,
+    "performance_score": 87.5,
+    "risk_score": 12.3
+  },
+  "details": {
+    "period_summary": {
+      "start": "2025-07-22T12:19:16.695795",
+      "end": "2025-07-29T12:19:16.695795",
+      "duration_days": 7
+    },
+    "audit_summary": {
+      "completion_rate": 90.0,
+      "average_duration": 3.4,
+      "efficiency_improvement": 15.2
+    },
+    "compliance_breakdown": {
+      "excellent": 85,
+      "good": 45,
+      "needs_improvement": 15,
+      "critical": 5
+    },
+    "risk_categories": {
+      "financial": 25,
+      "operational": 18,
+      "regulatory": 12,
+      "security": 8
+    }
+  },
+  "charts_data": {
+    "audit_trends": {
+      "config": {
+        "type": "line",
+        "title": "Tendência de Auditorias",
+        "x_axis": "Data",
+        "y_axis": "Quantidade",
+        "color_scheme": [
+          "#1f77b4",
+          "#ff7f0e",
+          "#2ca02c"
+        ]
+      },
+      "data": {
+        "labels": [
+          "Semana 1",
+          "Semana 2",
+          "Semana 3",
+          "Semana 4"
+        ],
+        "datasets": [
+          {
+            "label": "Auditorias Concluídas",
+            "data": [
+              32,
+              41,
+              35,
+              42
+            ],
+            "borderColor": "#1f77b4",
+            "fill": false
+          },
+          {
+            "label": "Auditorias Pendentes",
+            "data": [
+              8,
+              6,
+              9,
+              4
+            ],
+            "borderColor": "#ff7f0e",
+            "fill": false
+          }
+        ]
+      }
+    },
+    "compliance_score": {
+      "config": {
+        "type": "gauge",
+        "title": "Score de Conformidade",
+        "min_value": 0,
+        "max_value": 100,
+        "thresholds": [
+          70,
+          85,
+          95
+        ]
+      },
+      "data": {
+        "value": 94.2,
+        "title": "Score Atual: 94.2%",
+        "color": "#ff7f0e"
+      }
+    },
+    "issue_distribution": {
+      "config": {
+        "type": "pie",
+        "title": "Distribuição de Problemas",
+        "colors": [
+          "#ff9999",
+          "#66b3ff",
+          "#99ff99",
+          "#ffcc99"
+        ]
+      },
+      "data": {
+        "labels": [
+          "excellent",
+          "good",
+          "needs_improvement",
+          "critical"
+        ],
+        "values": [
+          85,
+          45,
+          15,
+          5
+        ],
+        "colors": [
+          "#ff9999",
+          "#66b3ff",
+          "#99ff99",
+          "#ffcc99"
+        ]
+      }
+    },
+    "risk_heatmap": {
+      "config": {
+        "type": "heatmap",
+        "title": "Mapa de Riscos",
+        "color_scale": "RdYlBu_r"
+      },
+      "data": {
+        "z": [
+          [
+            8,
+            12,
+            15
+          ],
+          [
+            10,
+            18,
+            22
+          ],
+          [
+            5,
+            9,
+            14
+          ]
+        ],
+        "x": [
+          "Financeiro",
+          "Operacional",
+          "Regulatório"
+        ],
+        "y": [
+          "Alto",
+          "Médio",
+          "Baixo"
+        ],
+        "colorscale": "RdYlBu"
+      }
+    }
+  },
+  "recommendations": [],
+  "status": "generated"
+}
