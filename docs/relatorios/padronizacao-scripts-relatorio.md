@@ -174,14 +174,14 @@ param(
 ### ✅ **Funcionalidade dos Scripts**
 ```bash
 # Todos os scripts testados com --help
-./scripts/git_update_all.sh --help ✓
-./scripts/deploy_vercel.sh --help ✓
-./scripts/restore_db.sh --help ✓
-./deploy/cloudrun_deploy.sh --help ✓
-./auditoria_gcp.sh --help ✓
+./scripts/shell/git_update_all.sh --help ✓
+./scripts/shell/deploy_vercel.sh --help ✓
+./scripts/shell/restore_db.sh --help ✓
+./scripts/shell/cloudrun_deploy.sh --help ✓
+./scripts/shell/auditoria_gcp.sh --help ✓
 
 # Teste com modo dry-run
-./scripts/git_update_all.sh --dry-run "Test" ✓
+./scripts/shell/git_update_all.sh --dry-run "Test" ✓
 ```
 
 ### ✅ **Validação de Estrutura**

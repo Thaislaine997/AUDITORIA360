@@ -217,15 +217,15 @@ python scripts/test_database.py
 
 # Scripts padronizados (todos com --help para documentação)
 ./scripts/git_update_all.sh --help
-./scripts/deploy_vercel.sh --help
-./scripts/restore_db.sh --help
-./deploy/cloudrun_deploy.sh --help
-./auditoria_gcp.sh --help
+./scripts/shell/deploy_vercel.sh --help
+./scripts/shell/restore_db.sh --help
+./scripts/shell/cloudrun_deploy.sh --help
+./scripts/shell/auditoria_gcp.sh --help
 
 # Scripts PowerShell padronizados
-Get-Help .\deploy\cloudrun_deploy_backend.ps1 -Full
-Get-Help .\deploy\cloudrun_deploy_streamlit.ps1 -Full
-Get-Help .\installers\setup_dev_env.ps1 -Full
+Get-Help .\scripts\powershell\cloudrun_deploy_backend.ps1 -Full
+Get-Help .\scripts\powershell\cloudrun_deploy_streamlit.ps1 -Full
+Get-Help .\scripts\powershell\setup_dev_env.ps1 -Full
 ```
 
 ---
