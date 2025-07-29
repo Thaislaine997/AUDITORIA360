@@ -1,0 +1,30 @@
+{
+  "name": "Technical Performance",
+  "description": "M\u00e9tricas t\u00e9cnicas e performance",
+  "panels": [
+    {
+      "title": "CPU Usage",
+      "type": "line_chart",
+      "metric": "cpu_usage_percent",
+      "time_range": "1h"
+    },
+    {
+      "title": "Memory Usage",
+      "type": "line_chart",
+      "metric": "memory_usage_percent",
+      "time_range": "1h"
+    },
+    {
+      "title": "API Response Time",
+      "type": "line_chart",
+      "metric": "api_response_time_ms",
+      "time_range": "1h"
+    },
+    {
+      "title": "Database Connections",
+      "type": "gauge",
+      "metric": "database_connections_active",
+      "time_range": "5m"
+    }
+  ]
+}

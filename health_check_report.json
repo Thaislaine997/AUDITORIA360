@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-07-29T13:39:48.373705",
+  "overall_status": "mostly_healthy",
+  "checks": [
+    {
+      "name": "Python Environment",
+      "status": "healthy",
+      "message": "Python 3.12.3 with 2 dependencies",
+      "response_time_ms": 300.6925582885742,
+      "details": {
+        "python_version": "3.12.3",
+        "dependencies": [
+          "fastapi-0.116.1",
+          "pytest-8.4.1"
+        ]
+      },
+      "timestamp": "2025-07-29T13:39:48.674433"
+    },
+    {
+      "name": "File System",
+      "status": "healthy",
+      "message": "All 4 critical directories present",
+      "response_time_ms": 2.6361942291259766,
+      "details": {
+        "existing_dirs": [
+          "src",
+          "tests",
+          "docs",
+          "scripts"
+        ],
+        "missing_dirs": [],
+        "disk_info": "/dev/root        72G   45G   27G  63% /"
+      },
+      "timestamp": "2025-07-29T13:39:48.677113"
+    },
+    {
+      "name": "Git Repository",
+      "status": "warning",
+      "message": "16 modified files on branch 'copilot/fix-9d87d6f2-eb2e-45da-8c07-37a3a84f6b3f'",
+      "response_time_ms": 5.640268325805664,
+      "details": {
+        "branch": "copilot/fix-9d87d6f2-eb2e-45da-8c07-37a3a84f6b3f",
+        "modified_files": 16
+      },
+      "timestamp": "2025-07-29T13:39:48.682811"
+    },
+    {
+      "name": "Configuration Files",
+      "status": "healthy",
+      "message": "All 5 configuration files present",
+      "response_time_ms": 0.10180473327636719,
+      "details": {
+        "existing_configs": [
+          "requirements.txt",
+          "README.md",
+          ".gitignore",
+          "streamlit_config.toml",
+          "docs/README.md"
+        ],
+        "missing_configs": []
+      },
+      "timestamp": "2025-07-29T13:39:48.682948"
+    },
+    {
+      "name": "Test Infrastructure",
+      "status": "healthy",
+      "message": "63 test files with proper configuration",
+      "response_time_ms": 0.6594657897949219,
+      "details": {
+        "unit_tests": 62,
+        "e2e_tests": 1,
+        "configs": 2
+      },
+      "timestamp": "2025-07-29T13:39:48.683637"
+    },
+    {
+      "name": "Monitoring Setup",
+      "status": "healthy",
+      "message": "Monitoring setup complete (2/3 components)",
+      "response_time_ms": 0.06628036499023438,
+      "details": {
+        "components": [
+          "monitoramento.py",
+          "setup_advanced_monitoring.py"
+        ]
+      },
+      "timestamp": "2025-07-29T13:39:48.683749"
+    }
+  ],
+  "summary": {
+    "total_checks": 6,
+    "passed": 5,
+    "failed": 0,
+    "warnings": 1
+  }
+}

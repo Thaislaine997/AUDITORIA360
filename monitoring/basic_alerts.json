@@ -1,0 +1,19 @@
+{
+  "basic_alerts": [
+    {
+      "name": "system_down",
+      "description": "Sistema fora do ar",
+      "threshold": "service_unavailable",
+      "severity": "critical"
+    },
+    {
+      "name": "high_error_rate",
+      "description": "Taxa de erro elevada",
+      "threshold": "error_rate > 10%",
+      "severity": "warning"
+    }
+  ],
+  "notification": {
+    "email": "admin@auditoria360.com"
+  }
+}

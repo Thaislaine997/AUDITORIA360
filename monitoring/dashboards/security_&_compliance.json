@@ -1,0 +1,30 @@
+{
+  "name": "Security & Compliance",
+  "description": "M\u00e9tricas de seguran\u00e7a e compliance",
+  "panels": [
+    {
+      "title": "Login Attempts",
+      "type": "counter",
+      "metric": "login_attempts_total",
+      "time_range": "24h"
+    },
+    {
+      "title": "Failed Authentications",
+      "type": "counter",
+      "metric": "failed_auth_total",
+      "time_range": "24h"
+    },
+    {
+      "title": "LGPD Compliance Score",
+      "type": "gauge",
+      "metric": "lgpd_compliance_score",
+      "time_range": "1d"
+    },
+    {
+      "title": "Data Encryption Status",
+      "type": "status",
+      "metric": "data_encryption_status",
+      "time_range": "5m"
+    }
+  ]
+}
