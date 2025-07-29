@@ -21,6 +21,9 @@
 - [🔌 Documentação de APIs](tecnico/apis/api-documentation.md)
 - [🧪 Testes Frontend](tecnico/frontend-tests.md) **[NOVO]**
 - [📋 Integração MCP](MCP_INTEGRATION.md)
+- [⚙️ Configuração CI/CD](ci-cd-configuration.md) **[NOVO]**
+- [🚀 Guia CI/CD para Desenvolvedores](ci-cd-developer-guide.md) **[NOVO]**
+- [🛠️ Solução de Problemas CI/CD](ci-cd-troubleshooting.md) **[NOVO]**
 
 ### 👔 **Para Gestores e Executivos**
 - [📊 Análise Consolidada Estratégica](estrategico/analise-consolidada.md)
@@ -174,6 +177,9 @@ qualidade/
 2. [Monitoramento](tecnico/deploy/monitoramento.md)
 3. [Performance Guide](relatorios/performance.md)
 4. [Backup & Recovery](tecnico/deploy/backup-recovery.md)
+5. [Configuração CI/CD](ci-cd-configuration.md) **[NOVO]**
+6. [Guia CI/CD para Desenvolvedores](ci-cd-developer-guide.md) **[NOVO]**
+7. [Solução de Problemas CI/CD](ci-cd-troubleshooting.md) **[NOVO]**
 
 ### 👥 **Usuários Finais**
 1. [Manual do Usuário](usuario/manual-usuario.md)
