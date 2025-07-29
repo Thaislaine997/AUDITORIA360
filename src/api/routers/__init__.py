@@ -10,7 +10,14 @@ from .cct import router as cct_router
 from .notifications import router as notification_router
 from .audit import router as audit_router
 from .ai import router as ai_router
- Principal
+from .automation import router as automation_router
+
+# We need to create the compliance router if it doesn't exist
+try:
+    from .compliance import router as compliance_router
+except ImportError:
+    from fastapi import APIRouter
+    compliance_router = APIRouter()
 
 __all__ = [
     "auth_router",
@@ -20,5 +27,6 @@ __all__ = [
     "notification_router",
     "audit_router",
     "ai_router",
- Principal
+    "automation_router",
+    "compliance_router"
 ]
