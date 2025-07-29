@@ -79,8 +79,7 @@ class KnowledgeBase(Base):
     created_by = relationship("User", foreign_keys=[created_by_id])
     verified_by = relationship("User", foreign_keys=[verified_by_id])
     
-    def __repr__(self):
-        return f"<KnowledgeBase {self.title} ({self.category})>"
+    # Use default __repr__ from BaseModel
 
 class Conversation(Base):
     __tablename__ = "conversations"
@@ -125,8 +124,7 @@ class Conversation(Base):
     escalated_to = relationship("User", foreign_keys=[escalated_to_user_id])
     messages = relationship("Message", back_populates="conversation")
     
-    def __repr__(self):
-        return f"<Conversation {self.session_id} ({self.bot_type.value})>"
+    # Use default __repr__ from BaseModel
 
 class Message(Base):
     __tablename__ = "messages"
@@ -163,8 +161,7 @@ class Message(Base):
     # Relationships
     conversation = relationship("Conversation", back_populates="messages")
     
-    def __repr__(self):
-        return f"<Message {self.message_type.value}: {self.content[:50]}...>"
+    # Use default __repr__ from BaseModel
 
 class BotConfiguration(Base):
     __tablename__ = "bot_configurations"
@@ -212,8 +209,7 @@ class BotConfiguration(Base):
     # Relationships
     created_by = relationship("User")
     
-    def __repr__(self):
-        return f"<BotConfiguration {self.name} ({self.bot_type.value})>"
+    # Use default __repr__ from BaseModel
 
 class AIRecommendation(Base):
     __tablename__ = "ai_recommendations"
@@ -266,8 +262,7 @@ class AIRecommendation(Base):
     # Relationships
     user = relationship("User")
     
-    def __repr__(self):
-        return f"<AIRecommendation {self.title} for {self.user.username}>"
+    # Use default __repr__ from BaseModel
 
 class LearningLog(Base):
     __tablename__ = "learning_logs"
@@ -305,5 +300,4 @@ class LearningLog(Base):
     conversation = relationship("Conversation")
     user = relationship("User")
     
-    def __repr__(self):
-        return f"<LearningLog {self.event_type} for {self.bot_type.value}>"
+    # Use default __repr__ from BaseModel

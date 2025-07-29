@@ -31,7 +31,7 @@ load_css()  # Carrega os estilos do Design System
 from configs.settings import settings
 # Importar utilitários do frontend
 from dashboards.utils import (
-    display_user_info_sidebar, 
+    display_user_info_sidebar as global_display_user_info_sidebar, 
     handle_api_error, 
     get_api_token as get_global_api_token, # Renomeado para evitar conflito se houver um local
     get_current_client_id as get_global_current_client_id # Renomeado
@@ -47,13 +47,10 @@ def initialize_session_state_checklist():
     if "dica_ia_cache" not in st.session_state:
          st.session_state.dica_ia_cache = {} # Inicializado como dict vazio
 
-# Funções para obter token e client_id da sessão principal (st.session_state)
-# Usando os globais importados e renomeados para clareza
-def get_api_token() -> Optional[str]:
-    return get_global_api_token()
-
-def get_current_client_id() -> Optional[str]:
-    return get_global_current_client_id()
+# Use global functions directly - no need for local wrappers
+get_api_token = get_global_api_token
+get_current_client_id = get_global_current_client_id
+display_user_info_sidebar = global_display_user_info_sidebar
 
 def get_current_folha_id_for_checklist() -> Optional[str]:
     return st.session_state.get("current_folha_id_for_checklist")

@@ -35,15 +35,10 @@ from dashboards.utils import (
 )
 from services.core.log_utils import logger # Corrigido caminho do logger
 
-# Funções wrapper locais para consistência
-def get_api_token() -> Optional[str]:
-    return get_global_api_token()
-
-def get_current_client_id() -> Optional[str]:
-    return get_global_current_client_id()
-
-def display_user_info_sidebar():
-    global_display_user_info_sidebar()
+# Use global functions directly - no need for local wrappers
+get_api_token = get_global_api_token
+get_current_client_id = get_global_current_client_id
+display_user_info_sidebar = global_display_user_info_sidebar
 
 def get_auth_headers_sugestoes(): # Wrapper local para headers
     token = get_api_token()
