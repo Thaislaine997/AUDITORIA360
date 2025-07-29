@@ -1,6 +1,12 @@
 """
+🧪 DEMO SCRIPT - NOT FOR PRODUCTION USE 🧪
+
 Demo script to showcase the modular backend structure in action.
 This script demonstrates how different modules work together.
+
+⚠️  WARNING: This is a demonstration script only.
+⚠️  DO NOT use in production environments.
+⚠️  For production deployment, use the main application in src/
 
 Melhorias na refatoração:
 - Tratamento de erros aprimorado
