@@ -3,7 +3,36 @@ import requests
 import pandas as pd
 import streamlit as st
 
-API_BASE_URL = os.environ.get("API_BASE_URL") or "http://localhost:8000"
+# Configuration for production and development environments
+def get_api_base_url():
+    """Get API base URL from environment or Streamlit secrets."""
+    # Try to get from Streamlit secrets first (production)
+    try:
+        if hasattr(st, 'secrets') and 'api' in st.secrets:
+            return st.secrets['api']['base_url']
+    except (KeyError, AttributeError):
+        pass
+    
+    # Fallback to environment variable
+    api_url = os.environ.get("API_BASE_URL")
+    if api_url:
+        return api_url
+    
+    # Default for development
+    return "http://localhost:8000"
+
+def get_api_timeout():
+    """Get API timeout from configuration."""
+    try:
+        if hasattr(st, 'secrets') and 'api' in st.secrets:
+            return st.secrets['api'].get('timeout', 30)
+    except (KeyError, AttributeError):
+        pass
+    
+    return int(os.environ.get("API_TIMEOUT", "30"))
+
+API_BASE_URL = get_api_base_url()
+API_TIMEOUT = get_api_timeout()
 
 def api_login(username: str, password: str) -> str | None:
     """Autentica na API e retorna o token JWT."""
@@ -11,7 +40,7 @@ def api_login(username: str, password: str) -> str | None:
         response = requests.post(
             f"{API_BASE_URL}/auth/login",
             json={"username": username, "password": password},
-            timeout=10
+            timeout=API_TIMEOUT
         )
         response.raise_for_status()
         data = response.json()
@@ -35,7 +64,7 @@ def get_dashboard_data(id_empresa: int, token: str) -> pd.DataFrame:
     headers = {"Authorization": f"Bearer {token}"}
     params = {"id_empresa": id_empresa}
     try:
-        response = requests.get(endpoint, params=params, headers=headers, timeout=30)
+        response = requests.get(endpoint, params=params, headers=headers, timeout=API_TIMEOUT)
         response.raise_for_status()
         return pd.DataFrame(response.json())
     except requests.exceptions.HTTPError as err:

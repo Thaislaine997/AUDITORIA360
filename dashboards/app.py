@@ -4,6 +4,23 @@ import plotly.express as px
 import os
 import sys
 
+# Environment detection and configuration
+def get_environment():
+    """Detect the current environment (development, production, etc.)"""
+    try:
+        # Try Streamlit secrets first
+        if hasattr(st, 'secrets') and 'app' in st.secrets:
+            return st.secrets['app'].get('environment', 'development')
+    except (KeyError, AttributeError):
+        pass
+    
+    # Fallback to environment variable
+    return os.environ.get('ENVIRONMENT', 'development')
+
+def is_production():
+    """Check if running in production environment"""
+    return get_environment().lower() == 'production'
+
 # Configure page
 st.set_page_config(
     page_title="AUDITORIA360 - Dashboard",
@@ -16,6 +33,12 @@ st.set_page_config(
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
+
+# Environment indicator
+if not is_production():
+    st.sidebar.warning(f"🔧 Ambiente: {get_environment().upper()}")
+else:
+    st.sidebar.success("🚀 Ambiente: PRODUÇÃO")
 
 # Main dashboard
 def main():
