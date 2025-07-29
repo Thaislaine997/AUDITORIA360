@@ -1,0 +1,106 @@
+/*
+ * ===================================================================
+ * AUDITORIA360 - Basic Dashboard Styles
+ * ===================================================================
+ * Estilos específicos para dashboard básico
+ * ===================================================================
+ */
+
+/* -------------------------------------------------------------------
+ * Basic Layout
+ * ------------------------------------------------------------------- */
+.basic-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--secondary-background-color);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.basic-header h1 {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    color: var(--primary-color);
+}
+
+/* -------------------------------------------------------------------
+ * Simplified Status List
+ * ------------------------------------------------------------------- */
+.status-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: var(--font-size-lg);
+    transition: all var(--transition-fast);
+}
+
+.status-item.status-ok {
+    background: var(--success-color);
+    color: white;
+}
+
+.status-item.status-warning {
+    background: var(--warning-color);
+    color: var(--background-color);
+}
+
+.status-item.status-error {
+    background: var(--danger-color);
+    color: white;
+}
+
+.status-item:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-md);
+}
+
+.status-icon {
+    font-size: var(--font-size-xl);
+}
+
+/* -------------------------------------------------------------------
+ * Basic Timestamp
+ * ------------------------------------------------------------------- */
+.timestamp-display {
+    text-align: center;
+    font-size: var(--font-size-lg);
+    color: var(--secondary-text-color);
+    padding: var(--spacing-lg);
+    background: var(--surface-color);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.timestamp-display time {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* -------------------------------------------------------------------
+ * Mobile Responsive
+ * ------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .basic-header {
+        padding: var(--spacing-md);
+    }
+    
+    .basic-header h1 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .status-item {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+}
