@@ -11,7 +11,7 @@ import subprocess
 import time
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-from e2e_config import e2e_context_instance
+from e2e.e2e_config import e2e_context_instance
 
 # Adiciona o diretório raiz do projeto (onde este conftest.py está) ao sys.path.
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
