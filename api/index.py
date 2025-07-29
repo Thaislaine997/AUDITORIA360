@@ -44,7 +44,8 @@ try:
         cct_router,
         notification_router,
         audit_router,
-        ai_router
+        ai_router,
+        compliance_router
     )
     ROUTERS_AVAILABLE = True
 except ImportError as e:
@@ -59,6 +60,7 @@ except ImportError as e:
     notification_router = APIRouter()
     audit_router = APIRouter()
     ai_router = APIRouter()
+    compliance_router = APIRouter()
     
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
@@ -68,6 +70,10 @@ except ImportError as e:
     @payroll_router.get("/health")
     def payroll_health():
         return {"message": "Payroll module - ready", "status": "ok"}
+    
+    @compliance_router.get("/check")
+    def compliance_check():
+        return {"message": "Compliance check endpoint - implementation in progress", "status": "placeholder"}
     
     ROUTERS_AVAILABLE = False
 
@@ -255,7 +261,8 @@ app.include_router(payroll_router, prefix="/api/v1/payroll", tags=["Payroll Mana
 app.include_router(document_router, prefix="/api/v1/documents", tags=["Document Management"])
 app.include_router(cct_router, prefix="/api/v1/cct", tags=["Collective Labor Agreements"])
 app.include_router(notification_router, prefix="/api/v1/notifications", tags=["Notifications"])
-app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit & Compliance"])
+app.include_router(audit_router, prefix="/api/v1/auditorias", tags=["Audit & Compliance"])
+app.include_router(compliance_router, prefix="/api/v1/compliance", tags=["Compliance Check"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["AI & Chatbot"])
 
 # Enhanced demonstration endpoints
