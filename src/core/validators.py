@@ -282,45 +282,6 @@ def validate_payroll_data(data: dict) -> tuple[bool, list[str]]:
                     errors.append(f"Benefit '{benefit_type}' must have non-negative amount")
     
     return len(errors) == 0, errors
-    """
-    Validate Brazilian CNPJ number.
-    """
-    if not cnpj or not isinstance(cnpj, str):
-        return False
-
-    # Remove non-numeric characters
-    cnpj = re.sub(r"[^0-9]", "", cnpj)
-
-    # CNPJ must have 14 digits
-    if len(cnpj) != 14:
-        return False
-
-    # Check for repeated digits
-    if cnpj == cnpj[0] * 14:
-        return False
-
-    # Validate check digits
-    def calculate_digit(cnpj_digits, weights):
-        sum_digits = sum(
-            int(digit) * weight for digit, weight in zip(cnpj_digits, weights)
-        )
-        remainder = sum_digits % 11
-        return 0 if remainder < 2 else 11 - remainder
-
-    # Check first digit
-    weights_1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-    first_digit = calculate_digit(cnpj[:12], weights_1)
-    if first_digit != int(cnpj[12]):
-        return False
-
-    # Check second digit
-    weights_2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-    second_digit = calculate_digit(cnpj[:13], weights_2)
-    if second_digit != int(cnpj[13]):
-        return False
-
-    return True
-
 
 def validate_email(email: str) -> bool:
     """

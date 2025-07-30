@@ -3,6 +3,7 @@ Authentication and User Management API Router
 Módulo 8: Gestão de usuários e permissões
 """
 
+import os
 from datetime import datetime
 from typing import List
 
@@ -124,14 +125,18 @@ try:
 
     SERVICES_AVAILABLE = True
 except ImportError:
-    # Create mock functions
+    # Create mock functions that use environment variables for security
     def authenticate_user(db, username, password):
-        if username == "admin" and password == "password":
+        # Use environment variables for test credentials instead of hardcoded values
+        test_username = os.getenv("TEST_USERNAME", "admin")
+        test_password = os.getenv("TEST_PASSWORD")
+        
+        if test_password and username == test_username and password == test_password:
             from unittest.mock import Mock
 
             user = Mock()
             user.username = username
-            user.email = "admin@example.com"
+            user.email = f"{username}@example.com"
             user.id = 1
             return user
         return None

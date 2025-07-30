@@ -3,6 +3,7 @@ Authentication service for AUDITORIA360
 """
 
 import os
+import logging
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -14,6 +15,9 @@ from sqlalchemy.orm import Session
 
 from src.models import Permission, User, get_db
 from src.schemas.auth_schemas import PermissionCreate, UserCreate, UserUpdate
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 # Security configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
@@ -63,15 +67,20 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
             return None
 
         return user
-    except Exception:
-        # If database is not available, return mock user for testing
-        if username in ["admin", "user", "test_user"] and password == "password":
+    except Exception as e:
+        logger.warning(f"Database authentication failed: {e}")
+        # For development/testing only - use environment variables for mock credentials
+        test_username = os.getenv("TEST_USERNAME")
+        test_password = os.getenv("TEST_PASSWORD") 
+        
+        if test_username and test_password and username == test_username and password == test_password:
             from unittest.mock import Mock
-
+            logger.info("Using test authentication - development mode only")
+            
             mock_user = Mock()
             mock_user.username = username
             mock_user.email = f"{username}@example.com"
-            mock_user.id = 1 if username == "admin" else 2
+            mock_user.id = 1
             return mock_user
         return None
 
@@ -240,15 +249,6 @@ def get_permissions(db: Session) -> List[Permission]:
             mock_permission.name = name
             permissions.append(mock_permission)
         return permissions
-
-    if not user:
-        return None
-    if not verify_password(password, user.hashed_password):
-        return None
-    if user.status != "active":
-        return None
-
-    return user
 
 
 async def get_current_user(
