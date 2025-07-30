@@ -1,16 +1,20 @@
 """
 Notifications and Events API Router
 Módulo 4: Notificações e Eventos
-Enhanced with real-time notification system
+Enhanced with real-time notification system and Communication Gateway
 """
 
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List, Optional, Dict, Any
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime
+import logging
 
 from src.models import get_db
+from src.services.enhanced_notification_service import EnhancedNotificationService
+
+logger = logging.getLogger(__name__)
 
 # Mock User for testing without auth
 class MockUser:
@@ -276,3 +280,159 @@ async def send_test_notification(
             "sent_at": datetime.now().isoformat()
         }
     }
+
+
+# Communication Gateway endpoints
+@router.post("/webhook/twilio")
+async def twilio_webhook(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """
+    Webhook endpoint for receiving messages from Twilio
+    Endpoint para receber mensagens do Twilio via webhook
+    """
+    try:
+        # Parse form data from Twilio webhook
+        form_data = await request.form()
+        webhook_data = dict(form_data)
+        
+        logger.info(f"Received Twilio webhook: {webhook_data}")
+        
+        # TODO: Add webhook signature validation for security
+        # For now, process the webhook data directly
+        
+        # Initialize notification service (in production, this should be dependency injected)
+        notification_service = EnhancedNotificationService()
+        
+        # Process the incoming message
+        result = notification_service.process_incoming_message(
+            webhook_data=webhook_data,
+            provider_name="twilio"
+        )
+        
+        if result.get("success"):
+            return {
+                "status": "success",
+                "message": "Webhook processed successfully",
+                "data": result
+            }
+        else:
+            logger.error(f"Failed to process webhook: {result.get('error')}")
+            return {
+                "status": "error", 
+                "message": result.get("error", "Unknown error")
+            }
+            
+    except Exception as e:
+        logger.error(f"Webhook processing error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to process webhook: {str(e)}"
+        )
+
+
+@router.get("/gateway/status")
+async def get_gateway_status(
+    current_user: MockUser = Depends(get_current_user_mock)
+):
+    """
+    Get status of communication gateway and providers
+    Obter status do gateway de comunicação e provedores
+    """
+    try:
+        # Initialize notification service
+        notification_service = EnhancedNotificationService()
+        
+        # Get gateway status
+        status_info = notification_service.get_gateway_status()
+        
+        return {
+            "status": "success",
+            "data": status_info
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get gateway status: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get gateway status: {str(e)}"
+        )
+
+
+@router.post("/send-enhanced")
+async def send_enhanced_notification(
+    notification_data: Dict[str, Any],
+    current_user: MockUser = Depends(get_current_user_mock),
+    db: Session = Depends(get_db)
+):
+    """
+    Send notification using the enhanced communication gateway
+    Enviar notificação usando o gateway de comunicação aprimorado
+    """
+    if not hasattr(current_user, 'role') or current_user.role not in ["super_admin", "administrador"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    try:
+        # Initialize notification service
+        notification_service = EnhancedNotificationService()
+        
+        # Extract required fields
+        user_id = notification_data.get("user_id", current_user.id)
+        title = notification_data.get("title", "Notificação")
+        message = notification_data.get("message", "")
+        destination = notification_data.get("destination", "")
+        provider_name = notification_data.get("provider")
+        
+        # Map notification type
+        from ..models.notification_models import NotificationType, NotificationPriority
+        type_mapping = {
+            "email": NotificationType.EMAIL,
+            "sms": NotificationType.SMS,
+            "system": NotificationType.SYSTEM
+        }
+        
+        notification_type = type_mapping.get(
+            notification_data.get("type", "system"),
+            NotificationType.SYSTEM
+        )
+        
+        priority_mapping = {
+            "low": NotificationPriority.LOW,
+            "medium": NotificationPriority.MEDIUM,
+            "high": NotificationPriority.HIGH,
+            "critical": NotificationPriority.CRITICAL
+        }
+        
+        priority = priority_mapping.get(
+            notification_data.get("priority", "medium"),
+            NotificationPriority.MEDIUM
+        )
+        
+        # Send notification
+        result = notification_service.send_notification(
+            user_id=user_id,
+            title=title,
+            message=message,
+            notification_type=notification_type,
+            destination=destination,
+            priority=priority,
+            provider_name=provider_name,
+            db=db
+        )
+        
+        return {
+            "status": "success",
+            "message": "Enhanced notification sent successfully",
+            "data": result
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to send enhanced notification: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to send notification: {str(e)}"
+        )
