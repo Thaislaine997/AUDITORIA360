@@ -105,7 +105,7 @@
 
       .user-type-selector {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: var(--spacing-sm);
         margin-bottom: var(--spacing-lg);
       }
@@ -326,6 +326,35 @@
         .user-type-selector {
           grid-template-columns: 1fr;
         }
+        
+        .login-card {
+          margin: var(--spacing-sm);
+        }
+        
+        .user-type-btn {
+          padding: var(--spacing-sm);
+          font-size: var(--font-size-sm);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .logo-title {
+          font-size: var(--font-size-2xl);
+        }
+        
+        .welcome-title {
+          font-size: var(--font-size-2xl);
+        }
+        
+        .header-bar {
+          padding: var(--spacing-sm);
+          flex-direction: column;
+          gap: var(--spacing-sm);
+        }
+        
+        .header-info {
+          justify-content: center;
+        }
       }
     </style>
   </head>
@@ -350,14 +379,18 @@
             <button
               type="button"
               class="user-type-btn active"
-              data-type="admin"
+              data-type="super_admin"
             >
-              <div>👑 Administrador</div>
-              <small>Acesso completo</small>
+              <div>👑 Super Admin</div>
+              <small>Acesso total ao sistema</small>
             </button>
-            <button type="button" class="user-type-btn" data-type="client">
-              <div>👤 Cliente</div>
-              <small>Consulta restrita</small>
+            <button type="button" class="user-type-btn" data-type="contabilidade">
+              <div>🏢 Contabilidade</div>
+              <small>Gestão de clientes</small>
+            </button>
+            <button type="button" class="user-type-btn" data-type="cliente_final">
+              <div>👤 Cliente Final</div>
+              <small>Consulta empresa</small>
             </button>
           </div>
 
@@ -527,11 +560,11 @@
             onerror="this.style.display='none'"
           />
           <span class="text-lg font-weight-600"
-            >AUDITORIA360 - Portal do Cliente</span
+            >AUDITORIA360 - Portal do Cliente Final</span
           >
         </div>
         <div class="user-info">
-          <span class="badge badge-info">👤 Cliente</span>
+          <span class="badge badge-info">👤 Cliente Final</span>
           <span id="clientUsername">Cliente</span>
           <button class="logout-btn" onclick="handleLogout()">Sair</button>
         </div>
@@ -539,21 +572,20 @@
 
       <div class="main-content">
         <aside class="sidebar">
-          <h3 class="sidebar-title">🔍 Consultas</h3>
+          <h3 class="sidebar-title">🔍 Minha Empresa</h3>
           <ul class="nav-menu">
-            <li><a href="#consulta-situacao">📊 Situação dos Clientes</a></li>
-            <li><a href="#relatorios-basicos">📋 Relatórios Básicos</a></li>
-            <li><a href="#documentos">📄 Documentos</a></li>
-            <li><a href="#suporte">💬 Suporte</a></li>
+            <li><a href="#meus-dados">📊 Meus Dados</a></li>
+            <li><a href="#documentos-empresa">📄 Documentos</a></li>
+            <li><a href="#relatorios-empresa">📋 Relatórios</a></li>
+            <li><a href="#suporte-empresa">💬 Suporte</a></li>
           </ul>
         </aside>
 
         <main class="content-area">
           <div class="welcome-section">
-            <h1 class="welcome-title">Portal do Cliente</h1>
+            <h1 class="welcome-title">Portal do Cliente Final</h1>
             <p class="text-muted">
-              Acesso simplificado para consulta da situação dos seus clientes e
-              relatórios básicos.
+              Acesso exclusivo aos dados da sua empresa com total privacidade e segurança.
             </p>
           </div>
 
@@ -561,18 +593,9 @@
             <div class="module-card">
               <div class="access-badge">✅ Acesso Liberado</div>
               <div class="module-icon">📊</div>
-              <h3 class="module-title">Situação dos Clientes</h3>
+              <h3 class="module-title">Dados da Empresa</h3>
               <p class="module-description">
-                Consulte o status atual e informações básicas dos seus clientes.
-              </p>
-            </div>
-
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📋</div>
-              <h3 class="module-title">Relatórios Básicos</h3>
-              <p class="module-description">
-                Acesse relatórios simplificados e dados essenciais.
+                Visualize informações e métricas exclusivas da sua empresa.
               </p>
             </div>
 
@@ -581,7 +604,27 @@
               <div class="module-icon">📄</div>
               <h3 class="module-title">Documentos</h3>
               <p class="module-description">
-                Baixe documentos e comprovantes relacionados aos seus clientes.
+                Acesse e baixe documentos relacionados à sua empresa.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📋</div>
+              <h3 class="module-title">Relatórios</h3>
+              <p class="module-description">
+                Relatórios personalizados e dados específicos da sua empresa.
+              </p>
+            </div>
+
+            <div class="module-card client-restricted">
+              <div class="access-badge restricted-badge">
+                🚫 Acesso Restrito
+              </div>
+              <div class="module-icon">👥</div>
+              <h3 class="module-title">Outras Empresas</h3>
+              <p class="module-description">
+                Acesso restrito - apenas dados da sua empresa são visíveis.
               </p>
             </div>
 
@@ -596,23 +639,118 @@
               </p>
             </div>
 
-            <div class="module-card client-restricted">
-              <div class="access-badge restricted-badge">
-                🚫 Acesso Restrito
-              </div>
-              <div class="module-icon">👥</div>
-              <h3 class="module-title">Gerenciamento</h3>
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">💬</div>
+              <h3 class="module-title">Suporte Especializado</h3>
               <p class="module-description">
-                Funcionalidade disponível apenas para administradores.
+                Suporte dedicado para questões específicas da sua empresa.
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Dashboard da Contabilidade -->
+    <div id="contabilidadeDashboard" class="dashboard-container">
+      <header class="header-bar">
+        <div class="header-info">
+          <img
+            src="./assets/logo.png"
+            alt="AUDITORIA360"
+            class="header-logo"
+            onerror="this.style.display='none'"
+          />
+          <span class="text-lg font-weight-600"
+            >AUDITORIA360 - Portal da Contabilidade</span
+          >
+        </div>
+        <div class="user-info">
+          <span class="badge badge-warning">🏢 Contabilidade</span>
+          <span id="contabilidadeUsername">Gestor</span>
+          <button class="logout-btn" onclick="handleLogout()">Sair</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <aside class="sidebar">
+          <h3 class="sidebar-title">🏢 Gestão</h3>
+          <ul class="nav-menu">
+            <li><a href="#meus-clientes">👥 Meus Clientes</a></li>
+            <li><a href="#folha-clientes">💼 Folha dos Clientes</a></li>
+            <li><a href="#relatorios-gestao">📊 Relatórios de Gestão</a></li>
+            <li><a href="#documentos-gestao">📄 Documentos</a></li>
+            <li><a href="#checklist-gestao">📝 Checklist</a></li>
+            <li><a href="#consultor-gestao">🤖 Consultor</a></li>
+            <li><a href="#suporte-gestao">💬 Suporte</a></li>
+          </ul>
+        </aside>
+
+        <main class="content-area">
+          <div class="welcome-section">
+            <h1 class="welcome-title">Portal da Contabilidade</h1>
+            <p class="text-muted">
+              Gerencie seus clientes e acesse dados restritos ao seu escopo de contabilidade.
+            </p>
+          </div>
+
+          <div class="modules-grid">
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">👥</div>
+              <h3 class="module-title">Meus Clientes</h3>
+              <p class="module-description">
+                Visualize e gerencie apenas os clientes da sua contabilidade.
               </p>
             </div>
 
             <div class="module-card">
               <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">💬</div>
-              <h3 class="module-title">Suporte</h3>
+              <div class="module-icon">💼</div>
+              <h3 class="module-title">Gestão da Folha</h3>
               <p class="module-description">
-                Entre em contato com nossa equipe de suporte especializada.
+                Processe e audite a folha de pagamento dos seus clientes.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">📊</div>
+              <h3 class="module-title">Relatórios Segmentados</h3>
+              <p class="module-description">
+                Relatórios restritos aos dados da sua carteira de clientes.
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="access-badge">✅ Acesso Liberado</div>
+              <div class="module-icon">🤖</div>
+              <h3 class="module-title">Consultor de Riscos</h3>
+              <p class="module-description">
+                IA para análise de riscos específicos dos seus clientes.
+              </p>
+            </div>
+
+            <div class="module-card client-restricted">
+              <div class="access-badge restricted-badge">
+                🚫 Acesso Restrito
+              </div>
+              <div class="module-icon">🌐</div>
+              <h3 class="module-title">Outras Contabilidades</h3>
+              <p class="module-description">
+                Acesso restrito - dados de outras contabilidades são protegidos.
+              </p>
+            </div>
+
+            <div class="module-card client-restricted">
+              <div class="access-badge restricted-badge">
+                🚫 Acesso Restrito
+              </div>
+              <div class="module-icon">⚙️</div>
+              <h3 class="module-title">Administração Global</h3>
+              <p class="module-description">
+                Configurações globais disponíveis apenas para super admin.
               </p>
             </div>
           </div>
@@ -622,8 +760,53 @@
 
     <script>
       // Variáveis globais
-      let currentUserType = "admin";
+      let currentUserType = "super_admin";
       let isLoggedIn = false;
+
+      // Credenciais de teste conforme especificação
+      const testCredentials = {
+        // Super Admin
+        "admin@auditoria360.com": {
+          password: "senha_admin",
+          userType: "super_admin",
+          name: "Super Administrator",
+          scope: "all"
+        },
+        // Contabilidade A - Gestor
+        "gestor@contabilidade-a.com": {
+          password: "senha_gestor_a", 
+          userType: "contabilidade",
+          name: "Gestor Contabilidade A",
+          scope: "CONTAB_A"
+        },
+        // Cliente da Contabilidade A
+        "contato@empresa-x.com": {
+          password: "senha_cliente_x",
+          userType: "cliente_final", 
+          name: "Cliente Empresa X",
+          scope: "EMPRESA_X"
+        },
+        // Contabilidade B - Gestor
+        "gestor@contabilidade-b.com": {
+          password: "senha_gestor_b",
+          userType: "contabilidade",
+          name: "Gestor Contabilidade B", 
+          scope: "CONTAB_B"
+        },
+        // Legacy credentials for compatibility
+        "admin": {
+          password: "admin123",
+          userType: "super_admin",
+          name: "Administrator",
+          scope: "all"
+        },
+        "contabilidade": {
+          password: "conta123",
+          userType: "contabilidade",
+          name: "Contabilidade User",
+          scope: "DEFAULT_CONTAB"
+        }
+      };
 
       // Inicialização
       document.addEventListener("DOMContentLoaded", function () {
@@ -636,8 +819,16 @@
         const savedSession = localStorage.getItem("auditoria360_session");
         if (savedSession) {
           const session = JSON.parse(savedSession);
-          if (session.userType && session.username) {
-            loginUser(session.userType, session.username);
+          if (session.userType && session.username && session.userData) {
+            // Check if session is still valid (24 hours)
+            const sessionAge = Date.now() - session.timestamp;
+            if (sessionAge < 24 * 60 * 60 * 1000) {
+              loginUser(session.userType, session.username, session.userData);
+            } else {
+              // Session expired, clear it
+              localStorage.removeItem("auditoria360_session");
+              showNotification("Sessão expirada. Faça login novamente.", "warning");
+            }
           }
         }
       }
@@ -670,47 +861,65 @@
           return;
         }
 
-        // Simulação de autenticação (em produção, seria uma chamada para API)
-        if (authenticateUser(username, password)) {
-          loginUser(currentUserType, username);
-          saveSession(currentUserType, username);
-          showNotification("Login realizado com sucesso!", "success");
+        // Enhanced authentication with user data
+        const userData = authenticateUser(username, password);
+        if (userData) {
+          // Use the actual user type from authentication, not the UI selection
+          const actualUserType = userData.userType;
+          loginUser(actualUserType, username, userData);
+          saveSession(actualUserType, username, userData);
+          showNotification(`Login realizado com sucesso! Bem-vindo(a), ${userData.name}`, "success");
+          
+          // Log for debugging
+          console.log(`Authenticated as: ${userData.name} (${actualUserType}) - Scope: ${userData.scope}`);
         } else {
-          showNotification("Usuário ou senha incorretos.", "danger");
+          showNotification("Credenciais inválidas. Verifique usuário e senha.", "danger");
+          console.log("Authentication failed for:", username);
         }
       }
 
       function authenticateUser(username, password) {
-        // Simulação - em produção, fazer chamada para API de autenticação
-        const validCredentials = {
-          admin: "admin123",
-          contabilidade: "conta123",
-          demo: "demo123",
-        };
-
-        return validCredentials[username] === password;
+        // Enhanced authentication with test credentials
+        const user = testCredentials[username];
+        if (user && user.password === password) {
+          return {
+            username: username,
+            name: user.name,
+            userType: user.userType,
+            scope: user.scope,
+            authenticated: true
+          };
+        }
+        return null;
       }
 
-      function loginUser(userType, username) {
+      function loginUser(userType, username, userData = null) {
         isLoggedIn = true;
         currentUserType = userType;
 
         // Esconder login
         document.getElementById("loginContainer").style.display = "none";
 
-        // Mostrar dashboard apropriado
-        if (userType === "admin") {
+        // Esconder todos os dashboards primeiro
+        document.getElementById("adminDashboard").classList.remove("active");
+        document.getElementById("clientDashboard").classList.remove("active");
+        document.getElementById("contabilidadeDashboard").classList.remove("active");
+
+        // Mostrar dashboard apropriado baseado no tipo de usuário
+        if (userType === "super_admin") {
           document.getElementById("adminDashboard").classList.add("active");
-          document.getElementById("adminUsername").textContent = username;
-        } else {
+          document.getElementById("adminUsername").textContent = userData?.name || username;
+        } else if (userType === "contabilidade") {
+          document.getElementById("contabilidadeDashboard").classList.add("active");
+          document.getElementById("contabilidadeUsername").textContent = userData?.name || username;
+        } else if (userType === "cliente_final") {
           document.getElementById("clientDashboard").classList.add("active");
-          document.getElementById("clientUsername").textContent = username;
+          document.getElementById("clientUsername").textContent = userData?.name || username;
         }
 
         // Animação de entrada
         setTimeout(() => {
-          document.querySelector(".dashboard-container.active").style.opacity =
-            "1";
+          document.querySelector(".dashboard-container.active").style.opacity = "1";
         }, 100);
       }
 
@@ -721,9 +930,10 @@
           // Limpar sessão
           localStorage.removeItem("auditoria360_session");
 
-          // Esconder dashboards
+          // Esconder todos os dashboards
           document.getElementById("adminDashboard").classList.remove("active");
           document.getElementById("clientDashboard").classList.remove("active");
+          document.getElementById("contabilidadeDashboard").classList.remove("active");
 
           // Mostrar login
           document.getElementById("loginContainer").style.display = "flex";
@@ -731,15 +941,21 @@
           // Limpar campos
           document.getElementById("username").value = "";
           document.getElementById("password").value = "";
+          
+          // Reset user type selector to default
+          document.querySelectorAll(".user-type-btn").forEach(btn => btn.classList.remove("active"));
+          document.querySelector("[data-type='super_admin']").classList.add("active");
+          currentUserType = "super_admin";
 
           showNotification("Logout realizado com sucesso!", "info");
         }
       }
 
-      function saveSession(userType, username) {
+      function saveSession(userType, username, userData) {
         const session = {
           userType: userType,
           username: username,
+          userData: userData,
           timestamp: Date.now(),
         };
         localStorage.setItem("auditoria360_session", JSON.stringify(session));
