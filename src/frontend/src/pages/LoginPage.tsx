@@ -6,19 +6,35 @@ import {
   Button,
   Typography,
   Box,
+  Alert,
 } from "@mui/material";
+import { useAuthStore } from "../stores/authStore";
 
 const LoginPage: React.FC = () => {
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuthStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For demo purposes, just store a token
-    localStorage.setItem("authToken", "demo-token");
-    window.location.reload();
+    setError(null);
+    setLoading(true);
+
+    try {
+      await login({
+        email: credentials.username,
+        password: credentials.password,
+      });
+      // Navigation will be handled by App.tsx when isAuthenticated becomes true
+    } catch (error) {
+      setError("Falha no login. Verifique suas credenciais.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,6 +54,11 @@ const LoginPage: React.FC = () => {
           <Typography variant="body2" align="center" sx={{ mt: 1, mb: 3 }}>
             Portal de Gestão da Folha
           </Typography>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -72,8 +93,9 @@ const LoginPage: React.FC = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
-              Entrar
+              {loading ? "Entrando..." : "Entrar"}
             </Button>
           </Box>
         </Paper>
