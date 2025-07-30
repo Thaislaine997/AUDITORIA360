@@ -17,14 +17,14 @@
   --bs-secondary: #0ea5e9;
   --bs-dark: #0a0d1f;
   --bs-dark-rgb: 10, 13, 31;
-  
+
   /* Custom Brand Variables */
   --auditoria-primary: #00d4ff;
   --auditoria-secondary: #0ea5e9;
   --auditoria-dark: #0a0d1f;
   --auditoria-surface: #1e2242;
   --auditoria-glass: rgba(30, 34, 66, 0.8);
-  
+
   /* Enhanced shadows for dark theme */
   --bs-box-shadow: 0 0.5rem 1rem rgba(0, 212, 255, 0.15);
   --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 212, 255, 0.075);
@@ -35,9 +35,19 @@
  * Global Overrides for Dark Theme
  * ------------------------------------------------------------------- */
 body {
-  background: linear-gradient(135deg, var(--auditoria-dark) 0%, var(--auditoria-surface) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--auditoria-dark) 0%,
+    var(--auditoria-surface) 100%
+  );
   color: #ffffff;
-  font-family: "Inter", "Segoe UI", "Roboto", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    "Segoe UI",
+    "Roboto",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   min-height: 100vh;
 }
 
@@ -256,16 +266,16 @@ body {
   .sidebar {
     display: none !important;
   }
-  
+
   .login-form {
     padding: 1.5rem;
   }
-  
+
   .user-type-btn {
     min-height: 60px;
     padding: 0.75rem;
   }
-  
+
   .navbar-brand span {
     font-size: 1rem !important;
   }
@@ -275,12 +285,12 @@ body {
   .login-form {
     padding: 1rem;
   }
-  
+
   .user-type-btn {
     min-height: 50px;
     font-size: 0.875rem;
   }
-  
+
   .display-6 {
     font-size: 1.5rem !important;
   }
@@ -294,14 +304,22 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(45deg, var(--auditoria-primary), var(--auditoria-secondary));
+  background: linear-gradient(
+    45deg,
+    var(--auditoria-primary),
+    var(--auditoria-secondary)
+  );
   border: none;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(45deg, var(--auditoria-secondary), var(--auditoria-primary));
+  background: linear-gradient(
+    45deg,
+    var(--auditoria-secondary),
+    var(--auditoria-primary)
+  );
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
 }
@@ -322,14 +340,15 @@ body {
  * Print Styles
  * ------------------------------------------------------------------- */
 @media print {
-  .sidebar, .navbar {
+  .sidebar,
+  .navbar {
     display: none !important;
   }
-  
+
   .login-container::before {
     display: none;
   }
-  
+
   body {
     background: white !important;
     color: black !important;
