@@ -119,4 +119,3 @@ describe('Dashboard Page', () => {
     expect(mockDashboardService.getTrendIcon).toHaveBeenCalledWith('up')
   })
 })
-})

@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useAuth } from "../../hooks/useAuth";
+import { useAuthStore } from "../../stores/authStore";
 
 // Mock authService
 vi.mock("../../modules/auth/authService", () => ({
   authService: {
     isAuthenticated: vi.fn(),
     getCurrentUser: vi.fn(),
+    login: vi.fn(),
+    logout: vi.fn(),
   },
 }));
 
@@ -17,6 +20,13 @@ const mockAuthService = authService as vi.Mocked<typeof authService>;
 describe("useAuth Hook", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset store state
+    useAuthStore.setState({
+      user: null,
+      isAuthenticated: false,
+      loading: true,
+      permissions: [],
+    });
   });
 
   it("returns initial loading state and completes auth check", async () => {
@@ -25,11 +35,13 @@ describe("useAuth Hook", () => {
 
     const { result } = renderHook(() => useAuth());
 
-    // The hook should eventually settle to not loading
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
+    // Initially loading should be true
+    expect(result.current.loading).toBe(true);
 
+    // Trigger auth check manually
+    await result.current.checkAuth();
+
+    expect(result.current.loading).toBe(false);
     expect(result.current.isAuthenticated).toBe(false);
   });
 
@@ -39,6 +51,7 @@ describe("useAuth Hook", () => {
       name: "Test User",
       email: "test@example.com",
       role: "admin" as const,
+      permissions: ["read", "write"],
     };
 
     mockAuthService.isAuthenticated.mockReturnValue(true);
@@ -46,10 +59,9 @@ describe("useAuth Hook", () => {
 
     const { result } = renderHook(() => useAuth());
 
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
+    await result.current.checkAuth();
 
+    expect(result.current.loading).toBe(false);
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.user).toEqual(mockUser);
   });
@@ -60,12 +72,11 @@ describe("useAuth Hook", () => {
 
     const { result } = renderHook(() => useAuth());
 
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
+    await result.current.checkAuth();
 
+    expect(result.current.loading).toBe(false);
     expect(result.current.isAuthenticated).toBe(false);
-    expect(result.current.user).toBeUndefined();
+    expect(result.current.user).toBe(null);
   });
 
   it("handles auth check errors gracefully", async () => {
@@ -77,10 +88,9 @@ describe("useAuth Hook", () => {
 
     const { result } = renderHook(() => useAuth());
 
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
+    await result.current.checkAuth();
 
+    expect(result.current.loading).toBe(false);
     expect(result.current.isAuthenticated).toBe(false);
     expect(consoleSpy).toHaveBeenCalledWith(
       "Auth check failed:",
