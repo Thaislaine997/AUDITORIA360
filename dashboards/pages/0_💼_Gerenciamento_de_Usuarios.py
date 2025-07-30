@@ -33,7 +33,7 @@ import pandas as pd
 import requests
 
 # Removido import quebrado
-from configs.settings import settings
+from config.settings import settings
 from services.core.log_utils import logger
 
 

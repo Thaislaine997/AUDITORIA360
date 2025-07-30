@@ -38,7 +38,7 @@ from typing import Any, Dict, Optional
 import pandas as pd
 import requests
 
-from configs.settings import settings
+from config.settings import settings
 
 # Importar utilitários do frontend
 from dashboards.utils import (

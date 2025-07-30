@@ -35,7 +35,7 @@ def load_css():
 load_css()  # Carrega os estilos do Design System
 # --- Fim do Carregamento do CSS ---
 
-from configs.settings import settings
+from config.settings import settings
 
 # Importar utilitários do frontend
 from dashboards.utils import (

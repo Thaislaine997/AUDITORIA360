@@ -30,7 +30,7 @@ def load_css():
 load_css()  # Carrega os estilos do Design System
 # --- Fim do Carregamento do CSS ---
 
-from configs.settings import settings
+from config.settings import settings
 from dashboards.utils import (
     display_user_info_sidebar as global_display_user_info_sidebar,  # Renomeado para evitar conflito
 )
