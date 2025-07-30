@@ -8,12 +8,15 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.orm import Session
 
 from .unified_auth import UnifiedAuthManager
+from ..core.tenant_middleware import TenantIsolationMiddleware, TenantScope
 
 # Initialize auth manager and security
 auth_manager = UnifiedAuthManager()
 security = HTTPBearer(auto_error=False)
+tenant_middleware = TenantIsolationMiddleware()
 
 
 class AuthorizationMiddleware:
@@ -53,6 +56,41 @@ class AuthorizationMiddleware:
                 detail=f"Token validation failed: {str(e)}",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+
+    async def get_current_user_with_tenant(
+        self, 
+        credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+        db: Session = None
+    ) -> Dict[str, Any]:
+        """Get current authenticated user with tenant scope and apply RLS"""
+        user_data = await self.get_current_user(credentials)
+        
+        # Extract tenant scope from user data
+        tenant_scope = tenant_middleware.extract_tenant_from_user(user_data)
+        
+        # Apply tenant-based filtering to database session if provided
+        if db:
+            tenant_middleware.apply_rls_filter(db, tenant_scope)
+        
+        # Add tenant scope to user data
+        user_data["tenant_scope"] = tenant_scope
+        
+        return user_data
+
+    def validate_tenant_operation(
+        self,
+        user_data: Dict[str, Any],
+        target_data: Dict[str, Any],
+        operation: str = "read"
+    ) -> bool:
+        """Validate if user can perform operation on target data within tenant scope"""
+        tenant_scope = user_data.get("tenant_scope")
+        if not tenant_scope:
+            tenant_scope = tenant_middleware.extract_tenant_from_user(user_data)
+        
+        return tenant_middleware.validate_tenant_access(
+            tenant_scope, target_data, operation
+        )
 
     def require_permission(self, required_permission: str):
         """Decorator to require specific permission"""
