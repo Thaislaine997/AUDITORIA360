@@ -16,6 +16,7 @@ import {
   Gavel as GavelIcon,
   Assessment as AuditIcon,
   Chat as ChatIcon,
+  Assignment as ReportIcon,
 } from "@mui/icons-material";
 
 const drawerWidth = 240;
@@ -26,6 +27,7 @@ const menuItems = [
   { path: "/documents", label: "Documentos", icon: <DocumentIcon /> },
   { path: "/cct", label: "CCT", icon: <GavelIcon /> },
   { path: "/audit", label: "Auditoria", icon: <AuditIcon /> },
+  { path: "/reports/templates", label: "Modelos de Relatório", icon: <ReportIcon /> },
   { path: "/chatbot", label: "Chatbot", icon: <ChatIcon /> },
 ];
 
@@ -47,7 +49,7 @@ const Sidebar: React.FC = () => {
         {menuItems.map(item => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
-              selected={location.pathname.startsWith(item.path)}
+              selected={location.pathname.startsWith(item.path.split('/')[0] + '/' + item.path.split('/')[1]) || location.pathname === item.path}
               onClick={() => navigate(item.path)}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>

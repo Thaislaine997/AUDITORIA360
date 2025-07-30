@@ -9,6 +9,7 @@ import DocumentsPage from "./pages/DocumentsPage";
 import CCTPage from "./pages/CCTPage";
 import AuditPage from "./pages/AuditPage";
 import ChatbotPage from "./pages/ChatbotPage";
+import ReportTemplatesPage from "./pages/ReportTemplatesPage";
 import LoginPage from "./pages/LoginPage";
 import { useAuth } from "./hooks/useAuth";
 
@@ -44,6 +45,7 @@ function App() {
           <Route path="/cct/*" element={<CCTPage />} />
           <Route path="/audit/*" element={<AuditPage />} />
           <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route path="/reports/templates" element={<ReportTemplatesPage />} />
         </Routes>
       </Box>
     </Box>

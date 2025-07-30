@@ -37,7 +37,70 @@ async def list_documents(
     db: Session = Depends(get_db),
 ):
     """List documents with filtering"""
-    return {"message": "Document list endpoint - implementation pending"}
+    # TODO: Implement actual database query
+    # Return sample data for now
+    return {
+        "documents": [
+            {
+                "id": 1,
+                "title": "Nota Fiscal 001.pdf",
+                "category": "fiscal",
+                "upload_date": "2024-01-10T09:30:00Z",
+                "size": "2.5 MB",
+                "uploaded_by": "Cliente ABC"
+            },
+            {
+                "id": 2,
+                "title": "Contrato Social.pdf",
+                "category": "legal",
+                "upload_date": "2024-01-08T14:15:00Z", 
+                "size": "1.8 MB",
+                "uploaded_by": "Empresa XYZ"
+            }
+        ],
+        "total": 2,
+        "skip": skip,
+        "limit": limit
+    }
+
+
+@router.get("/export/csv")
+async def export_documents_csv(
+    category: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Export documents list to CSV format"""
+    # TODO: Implement actual CSV generation using papaparse equivalent
+    csv_data = """ID,Title,Category,Upload Date,Size,Uploaded By
+1,Nota Fiscal 001.pdf,fiscal,2024-01-10T09:30:00Z,2.5 MB,Cliente ABC
+2,Contrato Social.pdf,legal,2024-01-08T14:15:00Z,1.8 MB,Empresa XYZ"""
+    
+    return {
+        "filename": "documents_export.csv",
+        "content_type": "text/csv",
+        "data": csv_data,
+        "exported_at": "2024-01-10T16:30:00Z",
+        "record_count": 2
+    }
+
+
+@router.get("/export/pdf")
+async def export_documents_pdf(
+    category: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Export documents list to PDF format"""
+    # TODO: Implement actual PDF generation using jspdf
+    return {
+        "filename": "documents_export.pdf",
+        "content_type": "application/pdf",
+        "message": "PDF export ready for download",
+        "exported_at": "2024-01-10T16:30:00Z",
+        "record_count": 2,
+        "download_url": "/api/v1/documents/download/documents_export.pdf"
+    }
 
 
 @router.get("/{document_id}")
