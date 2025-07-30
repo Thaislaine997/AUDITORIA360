@@ -43,23 +43,86 @@ class UnifiedAuthManager:
                 with open(yaml_path, "r", encoding="utf-8") as file:
                     self.yaml_config = yaml.safe_load(file)
             else:
-                # Default configuration
+                # Enhanced multi-level access configuration
                 self.yaml_config = {
                     "credentials": {
                         "usernames": {
+                            # Super Administrator - Full system access
+                            "admin@auditoria360.com": {
+                                "email": "admin@auditoria360.com",
+                                "name": "Super Administrator",
+                                "password": self.hash_password("senha_admin"),
+                                "user_type": "super_admin",
+                                "company_id": None,  # Access to all companies
+                                "client_id": "SUPER_ADMIN",
+                                "roles": ["super_admin", "admin", "user"],
+                                "permissions": ["full_access", "manage_users", "manage_companies", "view_all_data"],
+                            },
+                            # Contabilidade A - Gestor
+                            "gestor@contabilidade-a.com": {
+                                "email": "gestor@contabilidade-a.com", 
+                                "name": "Gestor Contabilidade A",
+                                "password": self.hash_password("senha_gestor_a"),
+                                "user_type": "contabilidade",
+                                "company_id": "CONTAB_A",  # Restricted to Contabilidade A
+                                "client_id": "CONTAB_A_GESTOR",
+                                "roles": ["gestor", "user"],
+                                "permissions": ["view_company_data", "manage_clients", "generate_reports"],
+                                "data_scope": {
+                                    "contabilidade": "CONTAB_A",
+                                    "clients": ["EMPRESA_X", "EMPRESA_Y"]
+                                }
+                            },
+                            # Cliente da Contabilidade A
+                            "contato@empresa-x.com": {
+                                "email": "contato@empresa-x.com",
+                                "name": "Cliente Empresa X", 
+                                "password": self.hash_password("senha_cliente_x"),
+                                "user_type": "cliente_final",
+                                "company_id": "EMPRESA_X",  # Restricted to specific company
+                                "client_id": "EMPRESA_X_USER",
+                                "roles": ["cliente", "user"],
+                                "permissions": ["view_own_data", "download_documents"],
+                                "data_scope": {
+                                    "empresa": "EMPRESA_X",
+                                    "contabilidade": "CONTAB_A"
+                                }
+                            },
+                            # Contabilidade B - Gestor
+                            "gestor@contabilidade-b.com": {
+                                "email": "gestor@contabilidade-b.com",
+                                "name": "Gestor Contabilidade B",
+                                "password": self.hash_password("senha_gestor_b"), 
+                                "user_type": "contabilidade",
+                                "company_id": "CONTAB_B",  # Restricted to Contabilidade B
+                                "client_id": "CONTAB_B_GESTOR",
+                                "roles": ["gestor", "user"],
+                                "permissions": ["view_company_data", "manage_clients", "generate_reports"],
+                                "data_scope": {
+                                    "contabilidade": "CONTAB_B",
+                                    "clients": ["EMPRESA_Z"]
+                                }
+                            },
+                            # Legacy users for compatibility
                             "admin": {
                                 "email": "admin@auditoria360.com",
                                 "name": "Administrator",
                                 "password": self.hash_password("admin123"),
+                                "user_type": "super_admin",
+                                "company_id": None,
                                 "client_id": "ADMIN001",
                                 "roles": ["admin", "user"],
+                                "permissions": ["full_access"],
                             },
-                            "user": {
-                                "email": "user@auditoria360.com",
-                                "name": "Regular User",
-                                "password": self.hash_password("user123"),
-                                "client_id": "USER001",
-                                "roles": ["user"],
+                            "contabilidade": {
+                                "email": "contabilidade@auditoria360.com",
+                                "name": "Contabilidade User",
+                                "password": self.hash_password("conta123"),
+                                "user_type": "contabilidade", 
+                                "company_id": "DEFAULT_CONTAB",
+                                "client_id": "CONTAB001",
+                                "roles": ["gestor", "user"],
+                                "permissions": ["view_company_data"],
                             },
                         }
                     },
@@ -110,7 +173,7 @@ class UnifiedAuthManager:
     def authenticate_user(
         self, username: str, password: str
     ) -> Optional[Dict[str, Any]]:
-        """Authenticate user with username/password (supports both DB and YAML)"""
+        """Enhanced authentication with multi-level access support"""
         # First try YAML authentication (for development/fallback)
         if self._authenticate_yaml_user(username, password):
             user_data = self.yaml_config["credentials"]["usernames"].get(username, {})
@@ -118,7 +181,11 @@ class UnifiedAuthManager:
                 "username": username,
                 "email": user_data.get("email", f"{username}@auditoria360.com"),
                 "name": user_data.get("name", username.title()),
+                "user_type": user_data.get("user_type", "user"),
+                "company_id": user_data.get("company_id"),
                 "roles": user_data.get("roles", ["user"]),
+                "permissions": user_data.get("permissions", []),
+                "data_scope": user_data.get("data_scope", {}),
                 "client_id": user_data.get("client_id", "DEFAULT"),
                 "auth_method": "yaml",
             }
@@ -128,6 +195,55 @@ class UnifiedAuthManager:
         #     return db_user_data
 
         return None
+
+    def check_permission(self, user: Dict[str, Any], permission: str) -> bool:
+        """Check if user has specific permission"""
+        user_permissions = user.get("permissions", [])
+        return permission in user_permissions or "full_access" in user_permissions
+
+    def get_user_data_scope(self, user: Dict[str, Any]) -> Dict[str, Any]:
+        """Get user's data access scope for query filtering"""
+        user_type = user.get("user_type", "user")
+        
+        if user_type == "super_admin":
+            return {"scope_type": "all", "filters": {}}
+        elif user_type == "contabilidade":
+            return {
+                "scope_type": "company",
+                "filters": {
+                    "contabilidade_id": user.get("company_id"),
+                    "client_ids": user.get("data_scope", {}).get("clients", [])
+                }
+            }
+        elif user_type == "cliente_final":
+            return {
+                "scope_type": "enterprise", 
+                "filters": {
+                    "empresa_id": user.get("company_id"),
+                    "contabilidade_id": user.get("data_scope", {}).get("contabilidade")
+                }
+            }
+        else:
+            return {"scope_type": "none", "filters": {}}
+
+    def authorize_data_access(self, user: Dict[str, Any], resource_type: str, resource_id: str = None) -> bool:
+        """Authorize user access to specific data resource"""
+        scope = self.get_user_data_scope(user)
+        
+        if scope["scope_type"] == "all":
+            return True
+        elif scope["scope_type"] == "company":
+            # Contabilidade users can access their company and clients
+            if resource_type == "contabilidade":
+                return resource_id == scope["filters"]["contabilidade_id"]
+            elif resource_type == "client":
+                return resource_id in scope["filters"]["client_ids"]
+        elif scope["scope_type"] == "enterprise":
+            # Cliente final can only access their own enterprise data
+            if resource_type == "empresa":
+                return resource_id == scope["filters"]["empresa_id"]
+        
+        return False
 
     def _authenticate_yaml_user(self, username: str, password: str) -> bool:
         """Authenticate against YAML configuration"""
