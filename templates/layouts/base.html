@@ -16,6 +16,8 @@
     <meta name="keywords" content="{{keywords}}" />
     <title>{{title}} - AUDITORIA360</title>
 
+    <!-- Bootstrap Grid & Components -->
+    <link rel="stylesheet" href="../../assets/bootstrap-grid.css" />
     <!-- Core Stylesheets -->
     {{#each coreStyles}}
     <link rel="stylesheet" href="{{this}}" />
@@ -30,6 +32,9 @@
     {{#if cssPath}}
     <link rel="stylesheet" href="{{cssPath}}" />
     {{/if}}
+
+    <!-- Custom Styles - Bootstrap Compatible -->
+    <link rel="stylesheet" href="../../assets/custom.css" />
 
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,19 +54,26 @@
 
     <!-- Header Component -->
     {{#if showHeader}}
-    <header class="{{headerClass}}" role="banner">
-      {{#if headerIcon}}
-      <div class="header-icon" aria-hidden="true">{{headerIcon}}</div>
-      {{/if}}
-      <div class="header-content">
-        <h1 class="header-title">{{headerTitle}}</h1>
-        {{#if headerSubtitle}}
-        <p class="header-subtitle">{{headerSubtitle}}</p>
+    <header
+      class="{{headerClass}} navbar navbar-expand-lg navbar-dark bg-dark shadow-sm"
+      role="banner"
+    >
+      <div class="container-fluid">
+        <div class="navbar-brand d-flex align-items-center">
+          {{#if headerIcon}}
+          <div class="header-icon me-2" aria-hidden="true">{{headerIcon}}</div>
+          {{/if}}
+          <div class="header-content">
+            <h1 class="fs-5 fw-semibold mb-0">{{headerTitle}}</h1>
+            {{#if headerSubtitle}}
+            <p class="small text-muted mb-0">{{headerSubtitle}}</p>
+            {{/if}}
+          </div>
+        </div>
+        {{#if headerActions}}
+        <div class="header-actions">{{headerActions}}</div>
         {{/if}}
       </div>
-      {{#if headerActions}}
-      <div class="header-actions">{{headerActions}}</div>
-      {{/if}}
     </header>
     {{/if}}
 
@@ -76,9 +88,16 @@
     </nav>
     {{/if}}
 
-    <!-- Main Content -->
-    <main id="main-content" class="{{mainClass}}" role="main" tabindex="-1">
-      {{content}}
+    <!-- Main Content with Bootstrap Container -->
+    <main
+      id="main-content"
+      class="{{mainClass}} container-fluid py-4"
+      role="main"
+      tabindex="-1"
+    >
+      <div class="row">
+        <div class="col-12">{{content}}</div>
+      </div>
     </main>
 
     <!-- Auto-refresh indicator -->
