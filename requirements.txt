@@ -53,3 +53,6 @@ redis>=4.0.0
 
 # Security Dependencies for input validation
 bleach>=6.0.0
+
+# Communication Gateway Dependencies
+twilio>=9.0.0
