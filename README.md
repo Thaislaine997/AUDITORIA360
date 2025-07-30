@@ -1,6 +1,6 @@
 # AUDITORIA360 - Portal de Gestão da Folha, Auditoria 360 e CCT
 
-> **🚀 PROJETO PRONTO PARA PRODUÇÃO** - ✅ **Validação Final Concluída** | **[📚 Documentação Unificada](docs/00-INDICE_PRINCIPAL.md)** para navegação completa | **[🚀 Início Rápido](docs/01-INICIO_RAPIDO.md)** para começar
+> **🚀 PROJETO PRONTO PARA PRODUÇÃO** - ✅ **Validação Final Concluída** | **[📚 Documentação Unificada](docs/content/00-INDICE_PRINCIPAL.md)** para navegação completa | **[🚀 Início Rápido](docs/content/01-INICIO_RAPIDO.md)** para começar
 
 Portal seguro, inteligente e integrado para centralizar, automatizar e auditar todos os processos de folha de pagamento, obrigações sindicais e convenções coletivas.
 
@@ -13,8 +13,8 @@ Portal seguro, inteligente e integrado para centralizar, automatizar e auditar t
 - ✅ **Validação Final**: 100% concluída
 
 **🔗 Relatórios de Validação:**
-- **[Validação Final](FINAL_VALIDATION_REPORT.md)** - Relatório completo de produção
-- **[Prontidão de Produção](PRODUCTION_READINESS.md)** - Checklist de deployment
+- **[Validação Final](docs/relatorios/FINAL_VALIDATION_REPORT.md)** - Relatório completo de produção
+- **[Prontidão de Produção](docs/manuais/PRODUCTION_READINESS.md)** - Checklist de deployment
 
 ## 📊 Status Anterior
 
@@ -34,7 +34,7 @@ python scripts/verificar_progresso.py
 pytest --cov=src --cov-report=html --cov-fail-under=90
 ```
 
-**📖 Documentação Unificada**: [**ÍNDICE PRINCIPAL**](docs/00-INDICE_PRINCIPAL.md) | [**Diagnóstico Inicial**](docs/diagnostico-inicial.md) | [**Status Detalhado**](docs/relatorios/status-projeto.md)
+**📖 Documentação Unificada**: [**ÍNDICE PRINCIPAL**](docs/content/00-INDICE_PRINCIPAL.md) | [**Diagnóstico Inicial**](docs/content/diagnostico-inicial.md) | [**Status Detalhado**](docs/content/relatorios/status-projeto.md)
 
 ## 🎯 Objetivo
 
@@ -71,17 +71,17 @@ Desenvolver um portal completo que elimina processos manuais e riscos de não co
 
 ### 🚀 **Acesso Rápido**
 
-- **[📋 Índice Principal](docs/00-INDICE_PRINCIPAL.md)** - Navegação completa da documentação
-- **[🏁 Início Rápido](docs/01-INICIO_RAPIDO.md)** - Guia para começar em 5 minutos
-- **[📊 Status do Projeto](docs/relatorios/status-projeto.md)** - Situação atual detalhada
-- **[📁 Documentos Organizados](docs/documentos/README.md)** - Estrutura centralizada de documentação
+- **[📋 Índice Principal](docs/content/00-INDICE_PRINCIPAL.md)** - Navegação completa da documentação
+- **[🏁 Início Rápido](docs/content/01-INICIO_RAPIDO.md)** - Guia para começar em 5 minutos
+- **[📊 Status do Projeto](docs/content/relatorios/status-projeto.md)** - Situação atual detalhada
+- **[📁 Documentos Organizados](docs/README.md)** - Estrutura centralizada de documentação
 
 ### 👥 **Por Perfil de Usuário**
 
-- **👤 Usuários**: [Manual do Usuário](docs/usuario/manual-usuario.md) | [Guia de Instalação](docs/usuario/guia-instalacao.md) | [FAQ](docs/usuario/faq.md)
-- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/tecnico/modulos-principais.md) | [APIs](docs/tecnico/apis/api-documentation.md) | [**Exemplos Práticos**](docs/tecnico/exemplos-praticos-uso.md)
-- **👔 Gestores**: [Análise Estratégica](docs/estrategico/analise-consolidada.md) | [Roadmap](docs/estrategico/roadmap-estrategico.md)
-- **🔍 Auditores**: [Compliance](docs/compliance/auditoria/checklist-auditoria.md) | [LGPD](docs/compliance/lgpd/)
+- **👤 Usuários**: [Manual do Usuário](docs/content/usuario/manual-usuario.md) | [Guia de Instalação](docs/content/usuario/guia-instalacao.md) | [FAQ](docs/content/usuario/faq.md)
+- **👨‍💻 Desenvolvedores**: [Guia Dev](docs/content/tecnico/desenvolvimento/dev-guide.md) | [Módulos](docs/content/tecnico/modulos-principais.md) | [APIs](docs/content/tecnico/apis/api-documentation.md) | [**Exemplos Práticos**](docs/content/tecnico/exemplos-praticos-uso.md)
+- **👔 Gestores**: [Análise Estratégica](docs/content/estrategico/analise-consolidada.md) | [Roadmap](docs/content/estrategico/roadmap-estrategico.md)
+- **🔍 Auditores**: [Compliance](docs/content/compliance/auditoria/checklist-auditoria.md) | [LGPD](docs/content/compliance/lgpd/)
 
 ## 💡 Exemplos de Uso e Fluxo Prático
 
