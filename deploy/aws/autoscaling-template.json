@@ -1,0 +1,309 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "AUDITORIA360 Auto-scaling Infrastructure for Performance Optimization",
+  "Parameters": {
+    "VpcId": {
+      "Type": "AWS::EC2::VPC::Id",
+      "Description": "VPC ID where resources will be created"
+    },
+    "SubnetIds": {
+      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Description": "List of subnet IDs for the application load balancer"
+    },
+    "KeyName": {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description": "EC2 Key Pair for SSH access"
+    },
+    "DatabaseUrl": {
+      "Type": "String",
+      "NoEcho": true,
+      "Description": "Neon PostgreSQL connection string"
+    },
+    "RedisEndpoint": {
+      "Type": "String",
+      "Description": "ElastiCache Redis endpoint"
+    }
+  },
+  "Resources": {
+    "ApplicationLoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "Name": "auditoria360-alb",
+        "Scheme": "internet-facing",
+        "Type": "application",
+        "Subnets": { "Ref": "SubnetIds" },
+        "SecurityGroups": [{ "Ref": "ALBSecurityGroup" }],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AUDITORIA360-ALB"
+          },
+          {
+            "Key": "Environment",
+            "Value": "production"
+          }
+        ]
+      }
+    },
+    "TargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "Name": "auditoria360-api-tg",
+        "Port": 8000,
+        "Protocol": "HTTP",
+        "VpcId": { "Ref": "VpcId" },
+        "HealthCheckPath": "/health",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckIntervalSeconds": 30,
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 2,
+        "UnhealthyThresholdCount": 3,
+        "TargetType": "instance",
+        "Matcher": {
+          "HttpCode": "200"
+        }
+      }
+    },
+    "ALBListener": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": { "Ref": "TargetGroup" }
+          }
+        ],
+        "LoadBalancerArn": { "Ref": "ApplicationLoadBalancer" },
+        "Port": 80,
+        "Protocol": "HTTP"
+      }
+    },
+    "LaunchTemplate": {
+      "Type": "AWS::EC2::LaunchTemplate",
+      "Properties": {
+        "LaunchTemplateName": "auditoria360-api-template",
+        "LaunchTemplateData": {
+          "ImageId": "ami-0c02fb55956c7d316",
+          "InstanceType": "t3.medium",
+          "KeyName": { "Ref": "KeyName" },
+          "SecurityGroupIds": [{ "Ref": "InstanceSecurityGroup" }],
+          "IamInstanceProfile": {
+            "Arn": { "GetAtt": ["InstanceProfile", "Arn"] }
+          },
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Sub": [
+                "#!/bin/bash\nyum update -y\nyum install -y docker\nsystemctl start docker\nsystemctl enable docker\nusermod -a -G docker ec2-user\n\n# Install Docker Compose\ncurl -L \"https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose\nchmod +x /usr/local/bin/docker-compose\n\n# Set environment variables\necho 'export DATABASE_URL=\"${DatabaseUrl}\"' >> /etc/environment\necho 'export REDIS_URL=\"redis://${RedisEndpoint}:6379\"' >> /etc/environment\necho 'export ENVIRONMENT=\"production\"' >> /etc/environment\n\n# Create application directory\nmkdir -p /opt/auditoria360\ncd /opt/auditoria360\n\n# Download and run the application\ncat > docker-compose.yml << 'EOF'\nversion: '3.8'\nservices:\n  api:\n    image: auditoria360/api:latest\n    ports:\n      - \"8000:8000\"\n    environment:\n      - DATABASE_URL=${DATABASE_URL}\n      - REDIS_URL=${REDIS_URL}\n      - ENVIRONMENT=${ENVIRONMENT}\n    restart: always\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:8000/health\"]\n      interval: 30s\n      timeout: 10s\n      retries: 3\nEOF\n\nsource /etc/environment\ndocker-compose up -d\n\n# Install CloudWatch agent\nwget https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm\nrpm -U ./amazon-cloudwatch-agent.rpm\n\n# Configure CloudWatch agent\ncat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << 'EOF'\n{\n  \"metrics\": {\n    \"namespace\": \"AUDITORIA360/Performance\",\n    \"metrics_collected\": {\n      \"cpu\": {\n        \"measurement\": [\n          \"cpu_usage_idle\",\n          \"cpu_usage_iowait\",\n          \"cpu_usage_user\",\n          \"cpu_usage_system\"\n        ],\n        \"metrics_collection_interval\": 60\n      },\n      \"disk\": {\n        \"measurement\": [\n          \"used_percent\"\n        ],\n        \"metrics_collection_interval\": 60,\n        \"resources\": [\n          \"*\"\n        ]\n      },\n      \"mem\": {\n        \"measurement\": [\n          \"mem_used_percent\"\n        ],\n        \"metrics_collection_interval\": 60\n      }\n    }\n  },\n  \"logs\": {\n    \"logs_collected\": {\n      \"files\": {\n        \"collect_list\": [\n          {\n            \"file_path\": \"/var/log/messages\",\n            \"log_group_name\": \"auditoria360-system\",\n            \"log_stream_name\": \"{instance_id}\"\n          }\n        ]\n      }\n    }\n  }\n}\nEOF\n\n/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s\n",
+                {
+                  "DatabaseUrl": { "Ref": "DatabaseUrl" },
+                  "RedisEndpoint": { "Ref": "RedisEndpoint" }
+                }
+              ]
+            }
+          },
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": "AUDITORIA360-API"
+                },
+                {
+                  "Key": "Environment",
+                  "Value": "production"
+                },
+                {
+                  "Key": "Application",
+                  "Value": "auditoria360"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AutoScalingGroupName": "auditoria360-api-asg",
+        "VPCZoneIdentifier": { "Ref": "SubnetIds" },
+        "LaunchTemplate": {
+          "LaunchTemplateId": { "Ref": "LaunchTemplate" },
+          "Version": { "GetAtt": ["LaunchTemplate", "LatestVersionNumber"] }
+        },
+        "MinSize": "2",
+        "MaxSize": "10",
+        "DesiredCapacity": "3",
+        "TargetGroupARNs": [{ "Ref": "TargetGroup" }],
+        "HealthCheckType": "ELB",
+        "HealthCheckGracePeriod": 300,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "AUDITORIA360-API-ASG",
+            "PropagateAtLaunch": true
+          }
+        ]
+      }
+    },
+    "ScaleUpPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": { "Ref": "AutoScalingGroup" },
+        "Cooldown": "300",
+        "ScalingAdjustment": "2",
+        "PolicyType": "SimpleScaling"
+      }
+    },
+    "ScaleDownPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": { "Ref": "AutoScalingGroup" },
+        "Cooldown": "300",
+        "ScalingAdjustment": "-1",
+        "PolicyType": "SimpleScaling"
+      }
+    },
+    "CPUAlarmHigh": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Scale up on high CPU",
+        "AlarmActions": [{ "Ref": "ScaleUpPolicy" }],
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "300",
+        "EvaluationPeriods": "2",
+        "Threshold": "70",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": { "Ref": "AutoScalingGroup" }
+          }
+        ]
+      }
+    },
+    "CPUAlarmLow": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Scale down on low CPU",
+        "AlarmActions": [{ "Ref": "ScaleDownPolicy" }],
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "300",
+        "EvaluationPeriods": "2",
+        "Threshold": "30",
+        "ComparisonOperator": "LessThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": { "Ref": "AutoScalingGroup" }
+          }
+        ]
+      }
+    },
+    "InstanceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "AUDITORIA360InstancePolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                    "cloudwatch:PutMetricData"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [{ "Ref": "InstanceRole" }]
+      }
+    },
+    "ALBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for Application Load Balancer",
+        "VpcId": { "Ref": "VpcId" },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for API instances",
+        "VpcId": { "Ref": "VpcId" },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 8000,
+            "ToPort": 8000,
+            "SourceSecurityGroupId": { "Ref": "ALBSecurityGroup" }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIp": "10.0.0.0/8"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "LoadBalancerDNS": {
+      "Description": "DNS name of the load balancer",
+      "Value": { "GetAtt": ["ApplicationLoadBalancer", "DNSName"] }
+    },
+    "AutoScalingGroupName": {
+      "Description": "Name of the Auto Scaling Group",
+      "Value": { "Ref": "AutoScalingGroup" }
+    }
+  }
+}

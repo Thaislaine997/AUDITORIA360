@@ -11,6 +11,7 @@ from .documents import router as document_router
 from .notifications import router as notification_router
 from .payroll import router as payroll_router
 from .reports import router as reports_router
+from .performance import router as performance_router
 
 __all__ = [
     "auth_router",
@@ -21,4 +22,5 @@ __all__ = [
     "audit_router",
     "ai_router",
     "reports_router",
+    "performance_router",
 ]

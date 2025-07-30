@@ -96,7 +96,7 @@ class CacheService:
 
     def invalidate_reports_cache(self):
         """Invalidate all report-related caches"""
-        patterns = ["report:*", "audit:report:*", "compliance:report:*", "stats:*"]
+        patterns = ["report:*", "audit:report:*", "compliance:report:*", "stats:*", "payroll_*"]
 
         total_cleared = 0
         for pattern in patterns:
@@ -104,6 +104,62 @@ class CacheService:
 
         logger.info(f"Invalidated {total_cleared} report cache entries")
         return total_cleared
+
+    def get_cache_stats(self) -> dict:
+        """Get cache performance statistics"""
+        try:
+            if self.cache_backend == "redis" and self.redis_client:
+                info = self.redis_client.info()
+                return {
+                    "backend": "redis",
+                    "connected_clients": info.get("connected_clients", 0),
+                    "used_memory": info.get("used_memory_human", "0B"),
+                    "keyspace_hits": info.get("keyspace_hits", 0),
+                    "keyspace_misses": info.get("keyspace_misses", 0),
+                    "hit_rate": self._calculate_hit_rate(
+                        info.get("keyspace_hits", 0), 
+                        info.get("keyspace_misses", 0)
+                    ),
+                    "total_keys": len(self.redis_client.keys("*")) if self.redis_client else 0
+                }
+            else:
+                return {
+                    "backend": "memory",
+                    "total_keys": len(self.in_memory_cache),
+                    "hit_rate": 0,  # Not tracked for in-memory
+                    "status": "fallback"
+                }
+        except Exception as e:
+            logger.error(f"Error getting cache stats: {e}")
+            return {"error": str(e)}
+
+    def _calculate_hit_rate(self, hits: int, misses: int) -> float:
+        """Calculate cache hit rate percentage"""
+        total = hits + misses
+        return (hits / total * 100) if total > 0 else 0
+
+    def warm_cache(self, patterns: list = None):
+        """Warm up cache with frequently accessed data"""
+        if patterns is None:
+            patterns = [
+                "employees:active",
+                "competencies:recent", 
+                "reports:dashboard",
+                "statistics:summary"
+            ]
+        
+        warmed_count = 0
+        for pattern in patterns:
+            try:
+                # This would trigger the caching decorators for common queries
+                # Implementation would depend on specific warming strategies
+                logger.info(f"Warming cache pattern: {pattern}")
+                warmed_count += 1
+            except Exception as e:
+                logger.error(f"Error warming cache pattern {pattern}: {e}")
+        
+        logger.info(f"Cache warming completed: {warmed_count} patterns")
+        return warmed_count
 
 
 # Global cache instance

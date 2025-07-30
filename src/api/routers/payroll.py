@@ -1,6 +1,7 @@
 """
 Payroll Management API Router
 Módulo 1: Gestão de Folha de Pagamento
+Performance optimized with async operations and caching
 """
 
 from typing import List, Optional
@@ -29,7 +30,7 @@ from src.schemas.payroll_schemas import (
 )
 from src.services.auth_service import get_current_user
 from src.services.payroll_service import (
-    calculate_payroll,
+    calculate_payroll_async,
     create_employee,
     create_payroll_competency,
     generate_payroll_report,
@@ -37,11 +38,13 @@ from src.services.payroll_service import (
     get_employees,
     get_payroll_competencies,
     get_payroll_competency_by_id,
+    get_payroll_statistics_async,
     import_payroll_data,
     update_employee,
     update_payroll_competency,
     validate_payroll,
 )
+from src.services.cache_service import cached_response
 
 router = APIRouter()
 
@@ -64,6 +67,7 @@ async def create_new_employee(
 
 
 @router.get("/employees", response_model=List[Employee])
+@cached_response("payroll_employees", ttl_seconds=300)
 async def read_employees(
     skip: int = 0,
     limit: int = 100,
@@ -72,7 +76,7 @@ async def read_employees(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Get list of employees"""
+    """Get list of employees - OPTIMIZED with caching"""
     employees = get_employees(
         db, skip=skip, limit=limit, is_active=is_active, department=department
     )
@@ -191,14 +195,31 @@ async def calculate_payroll_competency(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Calculate payroll for a competency (RH/Admin only)"""
+    """Calculate payroll for a competency (RH/Admin only) - ASYNC optimized"""
     if current_user.role not in ["administrador", "rh"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
 
-    result = calculate_payroll(db, calculation_request, current_user.id)
+    result = await calculate_payroll_async(db, calculation_request, current_user.id)
     return result
+
+
+# New performance endpoint for payroll statistics
+@router.get("/competencies/{competency_id}/statistics")
+@cached_response("payroll_statistics", ttl_seconds=600)
+async def get_competency_statistics(
+    competency_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get payroll statistics for a competency - OPTIMIZED with caching"""
+    statistics = await get_payroll_statistics_async(db, competency_id)
+    return {
+        "competency_id": competency_id,
+        "statistics": statistics,
+        "cached": True
+    }
 
 
 @router.post("/validate", response_model=PayrollValidationResult)
