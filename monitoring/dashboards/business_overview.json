@@ -1,30 +1,156 @@
 {
-  "name": "Business Overview",
-  "description": "Vis\u00e3o geral de m\u00e9tricas de neg\u00f3cio",
-  "panels": [
-    {
-      "title": "Auditorias Processadas",
-      "type": "counter",
-      "metric": "auditorias_processadas_total",
-      "time_range": "24h"
+  "dashboard": {
+    "id": null,
+    "title": "AUDITORIA360 - Business Overview",
+    "description": "Visão geral de métricas de negócio e KPIs",
+    "tags": ["auditoria360", "business", "kpi"],
+    "timezone": "browser",
+    "refresh": "1m",
+    "time": {
+      "from": "now-24h",
+      "to": "now"
     },
-    {
-      "title": "Tempo M\u00e9dio de Processamento",
-      "type": "gauge",
-      "metric": "tempo_medio_processamento_min",
-      "time_range": "1h"
-    },
-    {
-      "title": "Taxa de Sucesso",
-      "type": "percentage",
-      "metric": "taxa_sucesso_processamento",
-      "time_range": "24h"
-    },
-    {
-      "title": "Alertas de Compliance",
-      "type": "counter",
-      "metric": "alertas_compliance_total",
-      "time_range": "7d"
-    }
-  ]
+    "panels": [
+      {
+        "id": 1,
+        "title": "Auditorias Processadas (24h)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "increase(auditorias_processadas_total[24h])",
+            "legendFormat": "{{audit_type}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 50},
+                {"color": "red", "value": 100}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Tempo Médio de Processamento",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(auditoria_processamento_duracao_segundos_bucket[1h])) / 60",
+            "legendFormat": "Tempo Médio (min)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "m",
+            "min": 0,
+            "max": 30,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 10},
+                {"color": "red", "value": 20}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Taxa de Sucesso (%)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(auditorias_processadas_total{status=\"success\"}[24h]) / rate(auditorias_processadas_total[24h]) * 100",
+            "legendFormat": "Taxa de Sucesso"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 95},
+                {"color": "green", "value": 98}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Usuários Ativos",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(usuarios_ativos_total)",
+            "legendFormat": "Total"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 100},
+                {"color": "red", "value": 500}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Relatórios Gerados por Tipo",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum by (report_type) (increase(relatorios_gerados_total[24h]))",
+            "legendFormat": "{{report_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Alertas de Compliance (7 dias)",
+        "type": "bar",
+        "targets": [
+          {
+            "expr": "sum by (check_type) (increase(compliance_checks_total{result=\"failed\"}[7d]))",
+            "legendFormat": "{{check_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 7,
+        "title": "Processamento de Auditorias por Hora",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(auditorias_processadas_total[1h])",
+            "legendFormat": "{{audit_type}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "unit": "short",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+      }
+    ]
+  }
 }
