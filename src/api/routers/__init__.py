@@ -10,6 +10,7 @@ from .cct import router as cct_router
 from .documents import router as document_router
 from .notifications import router as notification_router
 from .payroll import router as payroll_router
+from .reports import router as reports_router
 
 __all__ = [
     "auth_router",
@@ -19,4 +20,5 @@ __all__ = [
     "notification_router",
     "audit_router",
     "ai_router",
+    "reports_router",
 ]
