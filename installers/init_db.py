@@ -14,17 +14,13 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 import logging
-from typing import List, Dict, Any
+from typing import List
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 # Import our new service layer and constants
-from src.core.constants import (
-    DatabaseTableNames, 
-    EnvironmentVariables,
-    SystemDefaults
-)
+from src.core.constants import DatabaseTableNames, EnvironmentVariables
 from src.services.user_service import UserService
 
 # Setup logging
@@ -35,7 +31,7 @@ logger = logging.getLogger(__name__)
 def get_database_url():
     """
     Get database URL from environment variables with secure fallback handling.
-    
+
     Returns:
         Database URL string
     """
@@ -110,7 +106,7 @@ def _create_basic_tables_sql() -> str:
     """
     Generate SQL for creating basic database tables.
     This function encapsulates table creation logic for better maintainability.
-    
+
     Returns:
         SQL string for creating basic tables
     """
@@ -171,15 +167,15 @@ def _create_companies_and_users_with_service(user_service: UserService) -> List[
     """
     Create companies and users using the service layer.
     This encapsulates the business logic for creating test data.
-    
+
     Args:
         user_service: UserService instance for business operations
-        
+
     Returns:
         List of SQL statements to execute
     """
     sql_statements = []
-    
+
     # Create companies table first
     companies_table_sql = f"""
     CREATE TABLE IF NOT EXISTS {DatabaseTableNames.COMPANIES} (
@@ -192,7 +188,7 @@ def _create_companies_and_users_with_service(user_service: UserService) -> List[
     );
     """
     sql_statements.append(companies_table_sql)
-    
+
     # Create enhanced users table
     enhanced_users_table_sql = f"""
     CREATE TABLE IF NOT EXISTS {DatabaseTableNames.USERS_ENHANCED} (
@@ -208,7 +204,7 @@ def _create_companies_and_users_with_service(user_service: UserService) -> List[
     );
     """
     sql_statements.append(enhanced_users_table_sql)
-    
+
     # Generate companies data
     companies = user_service.create_test_companies()
     for company in companies:
@@ -219,7 +215,7 @@ def _create_companies_and_users_with_service(user_service: UserService) -> List[
         ON CONFLICT (id) DO NOTHING;
         """
         sql_statements.append(company_sql)
-    
+
     # Generate super admin user
     try:
         admin_user = user_service.create_super_admin_user()
@@ -235,7 +231,7 @@ def _create_companies_and_users_with_service(user_service: UserService) -> List[
     except ValueError as e:
         logger.error(f"Failed to create super admin user: {e}")
         raise
-    
+
     # Generate test users
     try:
         test_users = user_service.create_test_users()
@@ -252,22 +248,22 @@ def _create_companies_and_users_with_service(user_service: UserService) -> List[
     except ValueError as e:
         logger.error(f"Failed to create test users: {e}")
         raise
-    
+
     return sql_statements
 
 
 def _create_notification_templates_with_service(user_service: UserService) -> List[str]:
     """
     Create notification templates using the service layer.
-    
+
     Args:
         user_service: UserService instance for business operations
-        
+
     Returns:
         List of SQL statements to execute
     """
     sql_statements = []
-    
+
     # Create notification templates table
     templates_table_sql = f"""
     CREATE TABLE IF NOT EXISTS {DatabaseTableNames.NOTIFICATION_TEMPLATES} (
@@ -280,7 +276,7 @@ def _create_notification_templates_with_service(user_service: UserService) -> Li
     );
     """
     sql_statements.append(templates_table_sql)
-    
+
     # Generate notification templates
     templates = user_service.create_notification_templates()
     for template in templates:
@@ -292,7 +288,7 @@ def _create_notification_templates_with_service(user_service: UserService) -> Li
         ON CONFLICT (name) DO NOTHING;
         """
         sql_statements.append(template_sql)
-    
+
     return sql_statements
 
 
@@ -304,7 +300,7 @@ def create_seed_data():
     try:
         # Initialize the user service for business operations
         user_service = UserService()
-        
+
         database_url = get_database_url()
         engine = create_engine(database_url)
 
@@ -312,12 +308,16 @@ def create_seed_data():
 
         # Generate all SQL statements using service layer
         all_sql_statements = []
-        
+
         # Add companies and users
-        all_sql_statements.extend(_create_companies_and_users_with_service(user_service))
-        
-        # Add notification templates  
-        all_sql_statements.extend(_create_notification_templates_with_service(user_service))
+        all_sql_statements.extend(
+            _create_companies_and_users_with_service(user_service)
+        )
+
+        # Add notification templates
+        all_sql_statements.extend(
+            _create_notification_templates_with_service(user_service)
+        )
 
         # Execute all statements in a transaction
         with engine.connect() as conn:
@@ -334,7 +334,9 @@ def create_seed_data():
 
     except ValueError as e:
         logger.error(f"Configuration error: {e}")
-        logger.error("Please check your .env file has all required password variables set")
+        logger.error(
+            "Please check your .env file has all required password variables set"
+        )
         return False
     except SQLAlchemyError as e:
         logger.error(f"Database error creating seed data: {e}")
@@ -390,7 +392,9 @@ def main():
     logger.info("Step 3: Creating seed data...")
     if not create_seed_data():
         logger.error("Failed to create seed data.")
-        logger.error("Check that all required environment variables are set in your .env file:")
+        logger.error(
+            "Check that all required environment variables are set in your .env file:"
+        )
         logger.error(f"- {EnvironmentVariables.DEFAULT_ADMIN_PASSWORD}")
         logger.error(f"- {EnvironmentVariables.DEFAULT_GESTOR_A_PASSWORD}")
         logger.error(f"- {EnvironmentVariables.DEFAULT_GESTOR_B_PASSWORD}")
@@ -398,7 +402,9 @@ def main():
         sys.exit(1)
 
     logger.info("🎉 Database initialization completed successfully!")
-    logger.info("✅ All users and companies have been created with secure passwords from environment variables")
+    logger.info(
+        "✅ All users and companies have been created with secure passwords from environment variables"
+    )
     logger.info("🔐 Check your .env file for the configured passwords")
     logger.info("📊 System ready for multi-tenant operations")
 
