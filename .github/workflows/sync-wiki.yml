@@ -1,0 +1,188 @@
+name: 🔄 Sync Documentation to Wiki
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'docs-source/**' ]
+  workflow_dispatch:
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    name: 📚 Synchronize docs-source to GitHub Wiki
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: 📥 Checkout Wiki Repository
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository }}.wiki
+        path: wiki
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: 🧹 Clean Wiki Directory
+      run: |
+        # Remove all existing wiki files except .git
+        find wiki -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+        
+    - name: 📋 Copy Documentation
+      run: |
+        # Copy all files from docs-source to wiki
+        cp -r docs-source/* wiki/
+        
+        # Ensure Home.md exists (required by GitHub Wiki)
+        if [ ! -f wiki/Home.md ]; then
+          echo "⚠️ Warning: Home.md not found, creating default"
+          echo "# AUDITORIA360 Documentation" > wiki/Home.md
+          echo "Welcome to the AUDITORIA360 documentation wiki." >> wiki/Home.md
+        fi
+        
+    - name: 📝 Create Wiki Navigation
+      run: |
+        cd wiki
+        
+        # Create _Sidebar.md for navigation
+        cat > _Sidebar.md << 'EOF'
+        ## 📚 Navigation
+        
+        ### 🏠 [Home](Home)
+        
+        ### 👤 User Guides
+        - [🚀 Getting Started](user-manuals/getting-started)
+        - [📖 User Manual](user-manuals/user-guide)
+        - [❓ FAQ](user-manuals/faq)
+        
+        ### 👨‍💻 Developer Guides  
+        - [🔧 Development Setup](developer-guides/development-setup)
+        - [🏗️ Architecture Overview](developer-guides/architecture-overview)
+        - [📡 API Documentation](developer-guides/api-documentation)
+        - [🤝 Contributing](developer-guides/contributing)
+        
+        ### 🏗️ Architecture
+        - [📋 ADR Index](architecture-decisions/README)
+        
+        ### 📡 API Reference
+        - [📚 API Docs](api-reference/README)
+        - [🔐 Authentication](api-reference/authentication)
+        
+        ### 📊 Strategic
+        - [📈 Project Status](strategic/project-status)
+        - [🗺️ Roadmap](strategic/roadmap)
+        - [📊 Metrics](strategic/performance-metrics)
+        EOF
+        
+        # Create _Footer.md
+        cat > _Footer.md << 'EOF'
+        ---
+        
+        **📅 Last Updated**: $(date '+%Y-%m-%d %H:%M:%S UTC')  
+        **🔄 Auto-synced** from [docs-source](https://github.com/${{ github.repository }}/tree/main/docs-source)  
+        **🐛 Found an issue?** [Report here](https://github.com/${{ github.repository }}/issues/new)
+        EOF
+        
+    - name: 🔍 Validate Markdown Files
+      run: |
+        cd wiki
+        
+        # Check for broken internal links
+        echo "🔍 Checking for potential broken links..."
+        
+        # Find all .md files and check for internal links
+        find . -name "*.md" -exec grep -l "\]\(" {} \; | while read file; do
+          echo "📄 Checking $file"
+          
+          # Extract markdown links and check if target files exist
+          grep -o '\[.*\]([^)]*\.md[^)]*)' "$file" | sed 's/.*(\([^)]*\)).*/\1/' | while read link; do
+            # Convert relative links to actual file paths
+            target_file=$(dirname "$file")/"$link"
+            target_file=$(realpath --relative-to=. "$target_file" 2>/dev/null || echo "$link")
+            
+            if [ ! -f "$target_file" ] && [[ "$link" != http* ]]; then
+              echo "⚠️  Potential broken link in $file: $link -> $target_file"
+            fi
+          done
+        done
+        
+    - name: 📊 Generate Documentation Stats
+      run: |
+        cd wiki
+        
+        # Count documentation files and generate stats
+        echo "📊 Documentation Statistics:" > _Stats.md
+        echo "" >> _Stats.md
+        echo "- **Total files**: $(find . -name '*.md' | wc -l)" >> _Stats.md
+        echo "- **User manuals**: $(find user-manuals -name '*.md' 2>/dev/null | wc -l)" >> _Stats.md
+        echo "- **Developer guides**: $(find developer-guides -name '*.md' 2>/dev/null | wc -l)" >> _Stats.md  
+        echo "- **API reference**: $(find api-reference -name '*.md' 2>/dev/null | wc -l)" >> _Stats.md
+        echo "- **Total words**: $(cat *.md */*.md 2>/dev/null | wc -w)" >> _Stats.md
+        echo "" >> _Stats.md
+        echo "**Last sync**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> _Stats.md
+        
+    - name: 🚀 Commit and Push to Wiki
+      run: |
+        cd wiki
+        
+        # Configure Git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add all changes
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "📝 No changes to commit"
+        else
+          # Create commit message with sync details
+          commit_msg="📚 Auto-sync from docs-source
+          
+          🔄 Synced at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          📝 Commit: ${{ github.sha }}
+          👤 Author: ${{ github.actor }}
+          🌿 Branch: ${{ github.ref_name }}
+          
+          Changes:
+          $(git diff --staged --name-only | sed 's/^/- /')"
+          
+          git commit -m "$commit_msg"
+          
+          # Push changes
+          echo "🚀 Pushing changes to wiki..."
+          git push origin master
+          
+          echo "✅ Wiki updated successfully!"
+        fi
+        
+    - name: 📋 Summary
+      run: |
+        echo "## 📚 Documentation Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ **Wiki synchronized successfully!**" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 Statistics" >> $GITHUB_STEP_SUMMARY
+        echo "- **Source directory**: \`docs-source/\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Target**: GitHub Wiki" >> $GITHUB_STEP_SUMMARY
+        echo "- **Files synced**: $(find docs-source -name '*.md' | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Sync time**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+        echo "- 📖 [View Wiki](https://github.com/${{ github.repository }}/wiki)" >> $GITHUB_STEP_SUMMARY
+        echo "- 📁 [Source Documentation](https://github.com/${{ github.repository }}/tree/main/docs-source)" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔄 [Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 🔔 Notify on Failure
+      if: failure()
+      run: |
+        echo "## ❌ Documentation Sync Failed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The documentation synchronization to Wiki failed." >> $GITHUB_STEP_SUMMARY
+        echo "Please check the workflow logs for details." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔧 Troubleshooting" >> $GITHUB_STEP_SUMMARY
+        echo "1. Check if all markdown files are valid" >> $GITHUB_STEP_SUMMARY
+        echo "2. Verify repository permissions" >> $GITHUB_STEP_SUMMARY
+        echo "3. Ensure Wiki is enabled for this repository" >> $GITHUB_STEP_SUMMARY
