@@ -20,7 +20,7 @@ class ProductionValidator:
     def __init__(self, verbose: bool = False, fix_issues: bool = False):
         self.verbose = verbose
         self.fix_issues = fix_issues
-        self.project_root = Path(__file__).parent
+        self.project_root = Path(__file__).parent.parent  # Go up from scripts/ to project root
         self.validation_results = {}
         self.critical_issues = []
         self.warnings = []
