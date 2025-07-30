@@ -1,0 +1,337 @@
+/*
+ * ===================================================================
+ * CUSTOM STYLES FOR AUDITORIA360 - BOOTSTRAP 5 INTEGRATION
+ * ===================================================================
+ * Description: Custom styles that work alongside Bootstrap 5
+ * Version: 1.0 - Bootstrap 5 Compatible
+ * ===================================================================
+ */
+
+/* -------------------------------------------------------------------
+ * CSS Custom Properties (Variables)
+ * ------------------------------------------------------------------- */
+:root {
+  /* Brand Colors - Updated for better contrast with Bootstrap */
+  --bs-primary: #00d4ff;
+  --bs-primary-rgb: 0, 212, 255;
+  --bs-secondary: #0ea5e9;
+  --bs-dark: #0a0d1f;
+  --bs-dark-rgb: 10, 13, 31;
+  
+  /* Custom Brand Variables */
+  --auditoria-primary: #00d4ff;
+  --auditoria-secondary: #0ea5e9;
+  --auditoria-dark: #0a0d1f;
+  --auditoria-surface: #1e2242;
+  --auditoria-glass: rgba(30, 34, 66, 0.8);
+  
+  /* Enhanced shadows for dark theme */
+  --bs-box-shadow: 0 0.5rem 1rem rgba(0, 212, 255, 0.15);
+  --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 212, 255, 0.075);
+  --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 212, 255, 0.175);
+}
+
+/* -------------------------------------------------------------------
+ * Global Overrides for Dark Theme
+ * ------------------------------------------------------------------- */
+body {
+  background: linear-gradient(135deg, var(--auditoria-dark) 0%, var(--auditoria-surface) 100%);
+  color: #ffffff;
+  font-family: "Inter", "Segoe UI", "Roboto", -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+
+/* -------------------------------------------------------------------
+ * Login Container Styling
+ * ------------------------------------------------------------------- */
+.login-container {
+  background: linear-gradient(
+    135deg,
+    var(--auditoria-dark) 0%,
+    var(--auditoria-surface) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(0, 212, 255, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 80%,
+      rgba(14, 165, 233, 0.1) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+}
+
+.login-form {
+  background: var(--auditoria-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: var(--bs-box-shadow-lg);
+}
+
+.logo-title {
+  color: var(--auditoria-primary);
+  text-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+}
+
+.logo-container img {
+  filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+}
+
+/* -------------------------------------------------------------------
+ * User Type Selector - Bootstrap Button Enhancement
+ * ------------------------------------------------------------------- */
+.user-type-btn {
+  padding: 1rem 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+  text-align: center;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-type-btn:hover {
+  border-color: var(--auditoria-primary);
+  color: var(--auditoria-primary);
+  background: rgba(0, 212, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.user-type-btn.active {
+  border-color: var(--auditoria-primary);
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--auditoria-primary);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+/* -------------------------------------------------------------------
+ * Bootstrap Form Controls - Dark Theme
+ * ------------------------------------------------------------------- */
+.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--auditoria-primary);
+  box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+  color: #ffffff;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-label {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* -------------------------------------------------------------------
+ * Dashboard Container Styling
+ * ------------------------------------------------------------------- */
+.dashboard-container {
+  background: var(--auditoria-dark);
+  min-height: 100vh;
+  display: none;
+}
+
+.dashboard-container.active {
+  display: block;
+}
+
+/* -------------------------------------------------------------------
+ * Bootstrap Navbar Dark Theme Enhancement
+ * ------------------------------------------------------------------- */
+.navbar-dark {
+  background: var(--auditoria-surface) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* -------------------------------------------------------------------
+ * Sidebar Dark Theme
+ * ------------------------------------------------------------------- */
+.sidebar {
+  background: var(--auditoria-surface) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  min-height: calc(100vh - 76px);
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background: rgba(0, 212, 255, 0.1) !important;
+  color: var(--auditoria-primary) !important;
+}
+
+/* -------------------------------------------------------------------
+ * Bootstrap Cards - Enhanced for Dark Theme
+ * ------------------------------------------------------------------- */
+.module-card {
+  background: var(--auditoria-surface) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.module-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--bs-box-shadow-lg) !important;
+  border-color: var(--auditoria-primary) !important;
+  background: rgba(30, 34, 66, 0.9) !important;
+}
+
+.card-body {
+  color: #ffffff;
+}
+
+.card-title {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.card-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* -------------------------------------------------------------------
+ * Bootstrap Badges Enhancement
+ * ------------------------------------------------------------------- */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.bg-success {
+  background-color: #22c55e !important;
+}
+
+.bg-warning {
+  background-color: #facc15 !important;
+  color: var(--auditoria-dark) !important;
+}
+
+.bg-danger {
+  background-color: #ef4444 !important;
+}
+
+/* -------------------------------------------------------------------
+ * Responsive Enhancements
+ * ------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none !important;
+  }
+  
+  .login-form {
+    padding: 1.5rem;
+  }
+  
+  .user-type-btn {
+    min-height: 60px;
+    padding: 0.75rem;
+  }
+  
+  .navbar-brand span {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-form {
+    padding: 1rem;
+  }
+  
+  .user-type-btn {
+    min-height: 50px;
+    font-size: 0.875rem;
+  }
+  
+  .display-6 {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* -------------------------------------------------------------------
+ * Animation and Interaction Enhancements
+ * ------------------------------------------------------------------- */
+.module-card:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--auditoria-primary), var(--auditoria-secondary));
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, var(--auditoria-secondary), var(--auditoria-primary));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+/* -------------------------------------------------------------------
+ * Accessibility Improvements
+ * ------------------------------------------------------------------- */
+.module-card:focus {
+  outline: 2px solid var(--auditoria-primary);
+  outline-offset: 2px;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.5);
+}
+
+/* -------------------------------------------------------------------
+ * Print Styles
+ * ------------------------------------------------------------------- */
+@media print {
+  .sidebar, .navbar {
+    display: none !important;
+  }
+  
+  .login-container::before {
+    display: none;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
