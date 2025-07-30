@@ -21,7 +21,7 @@
   - `.env.cloudsql` - Cloud SQL production configuration
 - [x] **Database Setup**: Production database schemas and connections configured
 - [x] **Security Settings**: Production-grade security configurations enabled
-- [x] **Logging Configuration**: Production logging setup in `logging_config.json`
+- [x] **Logging Configuration**: Production logging setup in `config/logging_config.json`
 
 ### ✅ Documentation and Compliance
 
@@ -52,7 +52,7 @@
 - `.env.production` - Production environment variables
 - `.env.cloudsql` - Production database configuration
 - `streamlit_config.toml` - Production Streamlit configuration
-- `logging_config.json` - Production logging setup
+- `config/logging_config.json` - Production logging setup
 
 ### 🧪 **DEMO/TEST DATA** (Not for Production)
 
@@ -105,7 +105,7 @@
 ├── Dockerfile                   # Container deployment
 ├── requirements.txt             # Production dependencies
 ├── streamlit_config.toml        # App configuration
-└── logging_config.json          # Logging setup
+└── config/logging_config.json          # Logging setup
 ```
 
 ### ❌ **DO NOT USE IN PRODUCTION**
