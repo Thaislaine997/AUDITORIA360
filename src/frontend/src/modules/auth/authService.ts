@@ -11,6 +11,7 @@ export interface User {
   name: string;
   email: string;
   role: "admin" | "user" | "auditor";
+  permissions?: string[];
 }
 
 export interface AuthTokens {
@@ -34,7 +35,7 @@ export class AuthService {
   }
 
   // Login
-  async login(username: string, password: string): Promise<boolean> {
+  async login(username: string, password: string): Promise<User> {
     try {
       // In a real app, this would make an API call
       const mockResponse = {
@@ -43,6 +44,7 @@ export class AuthService {
           name: "Demo User",
           email: "demo@auditoria360.com",
           role: "admin" as const,
+          permissions: ["read", "write", "admin"],
         },
         tokens: {
           accessToken: "mock-access-token",
@@ -58,10 +60,10 @@ export class AuthService {
       localStorage.setItem("authTokens", JSON.stringify(this.tokens));
       localStorage.setItem("user", JSON.stringify(this.user));
 
-      return true;
+      return mockResponse.user;
     } catch (error) {
       console.error("Login error:", error);
-      return false;
+      throw error;
     }
   }
 
