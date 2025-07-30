@@ -1,0 +1,20 @@
+# Optional ML dependencies for AUDITORIA360
+# These dependencies are required for full ML functionality
+# Install with: pip install -r requirements-ml.txt
+
+# Machine Learning Core
+tensorflow>=2.15.0
+scikit-learn>=1.3.0
+
+# Explainability and Model Interpretation
+shap>=0.43.0
+lime>=0.2.0
+
+# Additional ML utilities
+xgboost>=2.0.0
+lightgbm>=4.0.0
+optuna>=3.4.0
+
+# Data science and visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0

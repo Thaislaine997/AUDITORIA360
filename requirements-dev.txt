@@ -23,6 +23,11 @@ responses>=0.24.0
 # tensorflow>=2.13.0
 # shap>=0.42.0
 
+# Add missing dependencies for ML components (optional)
+# These are needed for full ML functionality
+# tensorflow>=2.15.0
+# shap>=0.43.0
+
 # Frontend testing
 playwright>=1.30.0
 
