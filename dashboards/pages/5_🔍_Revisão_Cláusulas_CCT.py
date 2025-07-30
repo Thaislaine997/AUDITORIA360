@@ -31,7 +31,7 @@ import json
 import pandas as pd
 import requests
 
-from configs.settings import settings
+from config.settings import settings
 
 # Ajustar import para usar os utilitários globais de forma consistente
 from dashboards.utils import (

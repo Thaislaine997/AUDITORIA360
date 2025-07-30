@@ -7,7 +7,7 @@ import yaml
 from streamlit_authenticator import Authenticate
 from yaml.loader import SafeLoader
 
-from configs.settings import settings
+from config.settings import settings
 
 # --- Path Setup ---
 # Add the project root to sys.path to allow imports like 'from src.core...'

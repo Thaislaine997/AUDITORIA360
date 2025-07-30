@@ -38,7 +38,7 @@ load_css()  # Carrega os estilos do Design System
 Página Streamlit para Gestão de Convenções Coletivas de Trabalho (CCTs)
 """
 
-from configs.settings import settings
+from config.settings import settings
 from dashboards.utils import (
     display_user_info_sidebar as global_display_user_info_sidebar,
 )
