@@ -14,6 +14,9 @@
 
     <!-- Estilos -->
     <link rel="stylesheet" href="./assets/style.css" />
+    
+    <!-- Navigation Logger -->
+    <script src="./frontend/src/utils/navigationLogger.js"></script>
 
     <style>
       /* Estilos específicos para a página inicial */
@@ -894,33 +897,52 @@
       }
 
       function loginUser(userType, username, userData = null) {
-        isLoggedIn = true;
-        currentUserType = userType;
+        try {
+          isLoggedIn = true;
+          currentUserType = userType;
 
-        // Esconder login
-        document.getElementById("loginContainer").style.display = "none";
+          // Log successful login
+          window.navigationLogger?.logRouteChange('/login', '/dashboard', {
+            userType: userType,
+            username: username,
+            loginMethod: 'credentials',
+            success: true
+          });
 
-        // Esconder todos os dashboards primeiro
-        document.getElementById("adminDashboard").classList.remove("active");
-        document.getElementById("clientDashboard").classList.remove("active");
-        document.getElementById("contabilidadeDashboard").classList.remove("active");
+          // Esconder login
+          document.getElementById("loginContainer").style.display = "none";
 
-        // Mostrar dashboard apropriado baseado no tipo de usuário
-        if (userType === "super_admin") {
-          document.getElementById("adminDashboard").classList.add("active");
-          document.getElementById("adminUsername").textContent = userData?.name || username;
-        } else if (userType === "contabilidade") {
-          document.getElementById("contabilidadeDashboard").classList.add("active");
-          document.getElementById("contabilidadeUsername").textContent = userData?.name || username;
-        } else if (userType === "cliente_final") {
-          document.getElementById("clientDashboard").classList.add("active");
-          document.getElementById("clientUsername").textContent = userData?.name || username;
+          // Esconder todos os dashboards primeiro
+          document.getElementById("adminDashboard").classList.remove("active");
+          document.getElementById("clientDashboard").classList.remove("active");
+          document.getElementById("contabilidadeDashboard").classList.remove("active");
+
+          // Mostrar dashboard apropriado baseado no tipo de usuário
+          if (userType === "super_admin") {
+            document.getElementById("adminDashboard").classList.add("active");
+            document.getElementById("adminUsername").textContent = userData?.name || username;
+          } else if (userType === "contabilidade") {
+            document.getElementById("contabilidadeDashboard").classList.add("active");
+            document.getElementById("contabilidadeUsername").textContent = userData?.name || username;
+          } else if (userType === "cliente_final") {
+            document.getElementById("clientDashboard").classList.add("active");
+            document.getElementById("clientUsername").textContent = userData?.name || username;
+          }
+
+          // Animação de entrada
+          setTimeout(() => {
+            document.querySelector(".dashboard-container.active").style.opacity = "1";
+          }, 100);
+        } catch (error) {
+          window.navigationLogger?.logNavigationError(error, '/dashboard', 'login', {
+            userType: userType,
+            username: username,
+            step: 'dashboard_display'
+          });
+          
+          console.error('Error in loginUser:', error);
+          showNotification("Erro ao carregar dashboard", "danger");
         }
-
-        // Animação de entrada
-        setTimeout(() => {
-          document.querySelector(".dashboard-container.active").style.opacity = "1";
-        }, 100);
       }
 
       function handleLogout() {
@@ -963,15 +985,53 @@
 
       function navigateToModule(path) {
         if (isLoggedIn) {
-          // Em produção, navegar para o módulo específico
-          console.log(`Navegando para: ${path}`);
-          showNotification(`Redirecionando para ${path}...`, "info");
+          try {
+            // Log navigation attempt
+            window.navigationLogger?.logNavigationSuccess(path, 'navigate', {
+              trigger: 'module_click',
+              userType: currentUserType,
+              authenticated: true
+            });
+            
+            // Em produção, navegar para o módulo específico
+            console.log(`Navegando para: ${path}`);
+            showNotification(`Redirecionando para ${path}...`, "info");
 
-          // Simulação de redirecionamento
-          setTimeout(() => {
-            // window.location.href = path;
-            console.log(`Módulo ${path} carregado`);
-          }, 1000);
+            // Simulação de redirecionamento
+            setTimeout(() => {
+              // window.location.href = path;
+              console.log(`Módulo ${path} carregado`);
+              
+              // Log successful load
+              window.navigationLogger?.logNavigationSuccess(path, 'load', {
+                loadTime: 1000,
+                success: true
+              });
+            }, 1000);
+          } catch (error) {
+            // Log navigation error
+            window.navigationLogger?.logNavigationError(error, path, 'navigate', {
+              trigger: 'module_click',
+              userType: currentUserType,
+              authenticated: isLoggedIn
+            });
+            
+            showNotification(`Erro ao navegar para ${path}`, "danger");
+            console.error('Navigation error:', error);
+          }
+        } else {
+          window.navigationLogger?.logNavigationError(
+            new Error('Unauthorized navigation attempt'),
+            path,
+            'navigate',
+            {
+              trigger: 'module_click',
+              userType: currentUserType,
+              authenticated: false
+            }
+          );
+          
+          showNotification("Faça login para acessar este módulo.", "warning");
         }
       }
 
