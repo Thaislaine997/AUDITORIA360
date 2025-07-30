@@ -3,6 +3,11 @@
 .env.*
 !.env.template
 !.env.example
+
+# Configurações de autenticação - SECURITY CRITICAL
+auth/gestor_contas.json
+auth/login.yaml
+!auth/*.example.*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -25,9 +30,16 @@ env/
 # Credentials / Secrets
 *.json # Cuidado: Seja mais específico se precisar versionar alguns JSONs
 application_default_credentials.json
-auth/gestor_contas.json # Se contiver segredos
 *.pem
 *.key
+*.cert
+*.p12
+*.jks
+
+# Streamlit secrets - keep only templates
+.streamlit/secrets.toml
+!.streamlit/secrets.toml.template
+!.streamlit/*.example.*
 
 # VS Code
 .vscode/

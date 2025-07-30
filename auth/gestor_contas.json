@@ -6,10 +6,10 @@
         "disabled": false,
         "is_admin": false
     },
-    "contato@dpeixerassessoria.com.br": {
-        "username": "contato@dpeixerassessoria.com.br",
+    "admin@empresa-exemplo.com": {
+        "username": "admin@empresa-exemplo.com",
         "hashed_password": "$2b$12$kYRv5ElaFRib5Gn5K/r28O9/2ZrzahmN8EXm/Yqs1vFQa9C0yXN12",
-        "client_id": "dpeixer_admin",
+        "client_id": "empresa_exemplo_admin",
         "disabled": false,
         "is_admin": true
     }

@@ -13,11 +13,11 @@ credentials:
       password: '$2b$12$PrIVMKyLwu59bOmafn7g/.lYsS2AUDwJm2MGLZYIXby/CdOX395u2' # Senha hasheada para user
       client_id: "CLIENTE001"
       roles: ["user"]
-    dpeixer_master:
-      email: CONTATO@DPEIXERASSESSORIA.COM.BR
-      name: DPEIXER ASSESSORIA
+    empresa_exemplo_master:
+      email: contato@empresa-exemplo.com.br
+      name: EMPRESA EXEMPLO ASSESSORIA
       password: '$2b$12$PrIVMKyLwu59bOmafn7g/.lYsS2AUDwJm2MGLZYIXby/CdOX395u2'
-      client_id: "DPEIXER001"
+      client_id: "EXEMPLO001"
       roles: ["admin", "user"]
 cookie:
   expiry_days: 30

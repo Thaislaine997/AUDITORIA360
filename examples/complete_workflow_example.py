@@ -489,7 +489,7 @@ def example_integration_workflow():
     # 1. Criar funcionário via API
     employee_data = {
         "name": "João Integration Test",
-        "cpf": "987.654.321-00",
+        "cpf": "123.456.789-00",
         "department": "TI",
         "salary": 5000.00
     }

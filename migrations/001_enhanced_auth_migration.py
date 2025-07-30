@@ -173,11 +173,11 @@ async def insert_initial_data():
     data_sql = f"""
     -- Insert companies
     INSERT INTO companies (id, name, company_type, contact_email) VALUES
-    ('CONTAB_A', 'Contabilidade A Ltda', 'contabilidade', 'contato@contabilidade-a.com'),
-    ('CONTAB_B', 'Contabilidade B Ltda', 'contabilidade', 'contato@contabilidade-b.com'),
-    ('EMPRESA_X', 'Empresa X S.A.', 'empresa', 'contato@empresa-x.com'),
-    ('EMPRESA_Y', 'Empresa Y Ltda', 'empresa', 'contato@empresa-y.com'),
-    ('EMPRESA_Z', 'Empresa Z EIRELI', 'empresa', 'contato@empresa-z.com')
+    ('CONTAB_A', 'Contabilidade Exemplo A Ltda', 'contabilidade', 'contato@contabilidade-exemplo-a.com'),
+    ('CONTAB_B', 'Contabilidade Exemplo B Ltda', 'contabilidade', 'contato@contabilidade-exemplo-b.com'),
+    ('EMPRESA_X', 'Empresa Teste X S.A.', 'empresa', 'contato@empresa-teste-x.com'),
+    ('EMPRESA_Y', 'Empresa Teste Y Ltda', 'empresa', 'contato@empresa-teste-y.com'),
+    ('EMPRESA_Z', 'Empresa Teste Z EIRELI', 'empresa', 'contato@empresa-teste-z.com')
     ON CONFLICT (id) DO NOTHING;
 
     -- Set parent relationships (empresas belong to contabilidades)
@@ -186,10 +186,10 @@ async def insert_initial_data():
 
     -- Insert test users
     INSERT INTO users_enhanced (username, email, password_hash, full_name, user_type, company_id) VALUES
-    ('admin@auditoria360.com', 'admin@auditoria360.com', '{admin_password}', 'Super Administrator', 'super_admin', NULL),
-    ('gestor@contabilidade-a.com', 'gestor@contabilidade-a.com', '{gestor_a_password}', 'Gestor Contabilidade A', 'contabilidade', 'CONTAB_A'),
-    ('gestor@contabilidade-b.com', 'gestor@contabilidade-b.com', '{gestor_b_password}', 'Gestor Contabilidade B', 'contabilidade', 'CONTAB_B'),
-    ('contato@empresa-x.com', 'contato@empresa-x.com', '{cliente_x_password}', 'Cliente Empresa X', 'cliente_final', 'EMPRESA_X')
+    ('admin@auditoria360-exemplo.com', 'admin@auditoria360-exemplo.com', '{admin_password}', 'Super Administrator', 'super_admin', NULL),
+    ('gestor@contabilidade-exemplo-a.com', 'gestor@contabilidade-exemplo-a.com', '{gestor_a_password}', 'Gestor Contabilidade Exemplo A', 'contabilidade', 'CONTAB_A'),
+    ('gestor@contabilidade-exemplo-b.com', 'gestor@contabilidade-exemplo-b.com', '{gestor_b_password}', 'Gestor Contabilidade Exemplo B', 'contabilidade', 'CONTAB_B'),
+    ('contato@empresa-teste-x.com', 'contato@empresa-teste-x.com', '{cliente_x_password}', 'Cliente Empresa Teste X', 'cliente_final', 'EMPRESA_X')
     ON CONFLICT (username) DO NOTHING;
 
     -- Insert user roles
