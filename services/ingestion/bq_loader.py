@@ -407,6 +407,14 @@ class ControleFolhaLoader:
             logger.error("Cliente BigQuery não inicializado em atualizar_status_folha.")
             return [{"message": "Cliente BigQuery não inicializado."}]
 
+        # Import validation functions
+        from src.core.validation import InputValidator
+
+        # Validate table ID components
+        if not InputValidator.validate_sql_identifier(self.table_id):
+            logger.error(f"Invalid table ID: {self.table_id}")
+            return [{"message": "Invalid table identifier"}]
+
         now_utc_iso = datetime.now(timezone.utc).isoformat()
         set_clauses = [
             "status_processamento = @novo_status",
@@ -420,8 +428,29 @@ class ControleFolhaLoader:
             ),
         ]
 
+        # Whitelist of allowed columns for updates to prevent injection
+        ALLOWED_UPDATE_COLUMNS = {
+            'status_processamento',
+            'data_ultima_atualizacao_registro',
+            'observacoes',
+            'erro_processamento',
+            'dados_adicionais',
+            'usuario_responsavel',
+            'tentativas_processamento'
+        }
+
         if detalhes_adicionais:
             for key, value in detalhes_adicionais.items():
+                # Validate column name against whitelist
+                if key not in ALLOWED_UPDATE_COLUMNS:
+                    logger.warning(f"Column '{key}' not in allowed update columns, skipping")
+                    continue
+                    
+                # Validate column name format
+                if not InputValidator.validate_sql_identifier(key):
+                    logger.warning(f"Invalid column name format: {key}, skipping")
+                    continue
+                
                 param_name = f"param_{key}"
                 set_clauses.append(f"{key} = @{param_name}")
                 param_type = "STRING"
@@ -441,6 +470,7 @@ class ControleFolhaLoader:
                     bigquery.ScalarQueryParameter(param_name, param_type, value)
                 )
 
+        # Use the pre-validated full_table_id - it should be validated during initialization
         query = f"UPDATE `{self.full_table_id}` SET {', '.join(set_clauses)} WHERE id_folha = @id_folha_param"
         logger.debug(
             f"Executando atualização na tabela {self.full_table_id} para id_folha {id_folha}. Query: {query}"

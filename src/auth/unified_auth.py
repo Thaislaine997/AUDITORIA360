@@ -1,6 +1,6 @@
 """
 Unified Authentication System for AUDITORIA360
-Consolidates JWT and SSO authentication flows
+Consolidates JWT and SSO authentication flows with secure credential management
 """
 
 import os
@@ -15,8 +15,11 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-# Configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "auditoria360-secret-key-change-in-production")
+# Import secure secrets manager
+from src.core.secrets import secrets_manager
+
+# Configuration - using secure secrets manager
+SECRET_KEY = secrets_manager.get_secret_key()
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
@@ -43,7 +46,10 @@ class UnifiedAuthManager:
                 with open(yaml_path, "r", encoding="utf-8") as file:
                     self.yaml_config = yaml.safe_load(file)
             else:
-                # Enhanced multi-level access configuration
+                # Get secure passwords from secrets manager
+                secure_passwords = secrets_manager.get_default_passwords()
+                
+                # Enhanced multi-level access configuration with secure passwords
                 self.yaml_config = {
                     "credentials": {
                         "usernames": {
@@ -51,7 +57,7 @@ class UnifiedAuthManager:
                             "admin@auditoria360.com": {
                                 "email": "admin@auditoria360.com",
                                 "name": "Super Administrator",
-                                "password": self.hash_password("senha_admin"),
+                                "password": self.hash_password(secure_passwords["admin"]),
                                 "user_type": "super_admin",
                                 "company_id": None,  # Access to all companies
                                 "client_id": "SUPER_ADMIN",
@@ -62,7 +68,7 @@ class UnifiedAuthManager:
                             "gestor@contabilidade-a.com": {
                                 "email": "gestor@contabilidade-a.com", 
                                 "name": "Gestor Contabilidade A",
-                                "password": self.hash_password("senha_gestor_a"),
+                                "password": self.hash_password(secure_passwords["gestor_a"]),
                                 "user_type": "contabilidade",
                                 "company_id": "CONTAB_A",  # Restricted to Contabilidade A
                                 "client_id": "CONTAB_A_GESTOR",
@@ -77,7 +83,7 @@ class UnifiedAuthManager:
                             "contato@empresa-x.com": {
                                 "email": "contato@empresa-x.com",
                                 "name": "Cliente Empresa X", 
-                                "password": self.hash_password("senha_cliente_x"),
+                                "password": self.hash_password(secure_passwords["client_x"]),
                                 "user_type": "cliente_final",
                                 "company_id": "EMPRESA_X",  # Restricted to specific company
                                 "client_id": "EMPRESA_X_USER",
@@ -92,7 +98,7 @@ class UnifiedAuthManager:
                             "gestor@contabilidade-b.com": {
                                 "email": "gestor@contabilidade-b.com",
                                 "name": "Gestor Contabilidade B",
-                                "password": self.hash_password("senha_gestor_b"), 
+                                "password": self.hash_password(secure_passwords["gestor_b"]),
                                 "user_type": "contabilidade",
                                 "company_id": "CONTAB_B",  # Restricted to Contabilidade B
                                 "client_id": "CONTAB_B_GESTOR",
