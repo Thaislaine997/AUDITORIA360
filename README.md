@@ -21,6 +21,11 @@ Portal seguro, inteligente e integrado para centralizar, automatizar e auditar t
 **Estratégia**: Blue/Green Deployment (Zero Downtime)  
 **Status**: 🟡 Aguardando validação final do checklist
 
+**📋 Documentação de Deploy:**
+- **[🚀 Guia de Deploy](DEPLOYMENT_GUIDE.md)** - Procedimentos técnicos detalhados
+- **[📋 Checklist de Infraestrutura](DEPLOY_CHECKLIST.md)** - **OBRIGATÓRIO** antes de qualquer deploy
+- **[✅ Validação Pós-Deploy](POST_DEPLOYMENT_VALIDATION.md)** - Verificações após deploy
+
 ## 📚 **Nova Documentação Centralizada**
 
 **🌟 A documentação foi completamente reformulada!** Toda informação agora está centralizada na **[📖 Wiki do GitHub](../../wiki)** com:
