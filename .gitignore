@@ -1,5 +1,8 @@
-# Arquivos de ambiente
+# Arquivos de ambiente - SECURITY CRITICAL
 .env
+.env.*
+!.env.template
+!.env.example
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -18,7 +21,6 @@ yarn.lock
 venv/
 ENV/
 env/
-*.env
 
 # Credentials / Secrets
 *.json # Cuidado: Seja mais específico se precisar versionar alguns JSONs
@@ -70,10 +72,12 @@ logs/
 .streamlit/secrets.toml
 !.streamlit/secrets.toml.template
 
-# Database files (shouldn't be in repository)
+# Database files (SECURITY: should not be in repository)
 *.db
 *.sqlite
 *.sqlite3
+!**/schema/*.sql
+!**/migrations/*.sql
 
 # Python cache and compiled files (already covered by __pycache__ but being explicit)
 *.pyc
