@@ -20,12 +20,6 @@ Uma solução completa e moderna para auditoria de folha de pagamento, análise 
 
 ## 🏗️ Arquitetura
 
-### Backend
-- **FastAPI**: API moderna e performática
-- **PostgreSQL**: Banco de dados principal (Neon Cloud)
-- **DuckDB**: Analytics e processamento de dados
-- **Prefect**: Orquestração de workflows de ML
-- **OpenAI**: Integração com GPT para análises inteligentes
 
 ### Frontend
 - **React 18**: Interface moderna e responsiva

@@ -12,9 +12,12 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="./assets/logo.png" />
 
-    <!-- Estilos -->
-    <link rel="stylesheet" href="./assets/style.css" />
-    
+    <!-- Bootstrap-inspired Grid & Components -->
+    <link rel="stylesheet" href="./assets/bootstrap-grid.css" />
+
+    <!-- Custom Styles - Bootstrap Compatible -->
+    <link rel="stylesheet" href="./assets/custom.css" />
+
     <!-- Navigation Logger -->
     <script src="./frontend/src/utils/navigationLogger.js"></script>
 
@@ -329,32 +332,32 @@
         .user-type-selector {
           grid-template-columns: 1fr;
         }
-        
+
         .login-card {
           margin: var(--spacing-sm);
         }
-        
+
         .user-type-btn {
           padding: var(--spacing-sm);
           font-size: var(--font-size-sm);
         }
       }
-      
+
       @media (max-width: 480px) {
         .logo-title {
           font-size: var(--font-size-2xl);
         }
-        
+
         .welcome-title {
           font-size: var(--font-size-2xl);
         }
-        
+
         .header-bar {
           padding: var(--spacing-sm);
           flex-direction: column;
           gap: var(--spacing-sm);
         }
-        
+
         .header-info {
           justify-content: center;
         }
@@ -363,401 +366,785 @@
   </head>
   <body>
     <!-- Área de Login -->
-    <div id="loginContainer" class="login-container">
-      <div class="login-card">
-        <div class="logo-container">
-          <img
-            src="./assets/logo.png"
-            alt="AUDITORIA360 Logo"
-            onerror="this.style.display='none'"
-          />
-          <h1 class="logo-title">AUDITORIA360</h1>
-          <p class="logo-subtitle">Portal de Gestão da Folha</p>
-        </div>
+    <section id="loginContainer" class="login-container">
+      <div
+        class="container-fluid d-flex justify-content-center align-items-center min-vh-100"
+      >
+        <div class="row w-100 justify-content-center">
+          <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            <div class="login-card">
+              <header class="logo-container text-center mb-4">
+                <img
+                  src="./assets/logo.png"
+                  alt="AUDITORIA360 Logo"
+                  class="img-fluid mb-3"
+                  style="height: 80px; width: auto"
+                  onerror="this.style.display='none'"
+                />
+                <h1 class="logo-title h2 text-primary fw-bold">AUDITORIA360</h1>
+                <p class="logo-subtitle text-muted small">
+                  Portal de Gestão da Folha
+                </p>
+              </header>
 
-        <div class="login-form">
-          <h2 class="form-title">Acesso ao Sistema</h2>
+              <main class="login-form">
+                <h2 class="form-title h4 text-center mb-4">
+                  Acesso ao Sistema
+                </h2>
 
-          <div class="user-type-selector">
-            <button
-              type="button"
-              class="user-type-btn active"
-              data-type="super_admin"
-            >
-              <div>👑 Super Admin</div>
-              <small>Acesso total ao sistema</small>
-            </button>
-            <button type="button" class="user-type-btn" data-type="contabilidade">
-              <div>🏢 Contabilidade</div>
-              <small>Gestão de clientes</small>
-            </button>
-            <button type="button" class="user-type-btn" data-type="cliente_final">
-              <div>👤 Cliente Final</div>
-              <small>Consulta empresa</small>
-            </button>
-          </div>
+                <div class="user-type-selector mb-4">
+                  <div class="row g-2">
+                    <div class="col-12 col-md-4">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary w-100 user-type-btn active"
+                        data-type="super_admin"
+                      >
+                        <div class="fw-bold">👑 Super Admin</div>
+                        <small class="text-muted"
+                          >Acesso total ao sistema</small
+                        >
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary w-100 user-type-btn"
+                        data-type="contabilidade"
+                      >
+                        <div class="fw-bold">🏢 Contabilidade</div>
+                        <small class="text-muted">Gestão de clientes</small>
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary w-100 user-type-btn"
+                        data-type="cliente_final"
+                      >
+                        <div class="fw-bold">👤 Cliente Final</div>
+                        <small class="text-muted">Consulta empresa</small>
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-          <div class="form-group">
-            <label for="username" class="form-label">Usuário</label>
-            <input
-              type="text"
-              id="username"
-              class="form-input"
-              placeholder="Digite seu usuário"
-              required
-            />
-          </div>
+                <form>
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Usuário</label>
+                    <input
+                      type="text"
+                      id="username"
+                      class="form-control"
+                      placeholder="Digite seu usuário"
+                      required
+                    />
+                  </div>
 
-          <div class="form-group">
-            <label for="password" class="form-label">Senha</label>
-            <input
-              type="password"
-              id="password"
-              class="form-input"
-              placeholder="Digite sua senha"
-              required
-            />
-          </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Senha</label>
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control"
+                      placeholder="Digite sua senha"
+                      required
+                    />
+                  </div>
 
-          <button
-            type="button"
-            class="button button-primary w-full"
-            onclick="handleLogin()"
-          >
-            🔐 Entrar no Sistema
-          </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100 mb-3"
+                    onclick="handleLogin()"
+                  >
+                    🔐 Entrar no Sistema
+                  </button>
 
-          <div class="text-center mt-1">
-            <a href="#" class="text-small text-muted">Esqueceu sua senha?</a>
+                  <div class="text-center">
+                    <a href="#" class="text-decoration-none small text-muted"
+                      >Esqueceu sua senha?</a
+                    >
+                  </div>
+                </form>
+              </main>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Dashboard Administrativo -->
     <div id="adminDashboard" class="dashboard-container">
-      <header class="header-bar">
-        <div class="header-info">
-          <img
-            src="./assets/logo.png"
-            alt="AUDITORIA360"
-            class="header-logo"
-            onerror="this.style.display='none'"
-          />
-          <span class="text-lg font-weight-600"
-            >AUDITORIA360 - Visão Administrativa</span
-          >
-        </div>
-        <div class="user-info">
-          <span class="badge badge-success">👑 Administrador</span>
-          <span id="adminUsername">Admin</span>
-          <button class="logout-btn" onclick="handleLogout()">Sair</button>
+      <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+          <div class="navbar-brand d-flex align-items-center">
+            <img
+              src="./assets/logo.png"
+              alt="AUDITORIA360"
+              height="40"
+              class="me-2"
+              onerror="this.style.display='none'"
+            />
+            <span class="fs-5 fw-semibold"
+              >AUDITORIA360 - Visão Administrativa</span
+            >
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-success">👑 Administrador</span>
+            <span id="adminUsername" class="text-light">Admin</span>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              onclick="handleLogout()"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
-      <div class="main-content">
-        <aside class="sidebar">
-          <h3 class="sidebar-title">📊 Navegação</h3>
-          <ul class="nav-menu">
-            <li><a href="#dashboards">📈 Dashboards</a></li>
-            <li><a href="#folha">💼 Gestão da Folha</a></li>
-            <li><a href="#checklist">📝 Checklist</a></li>
-            <li><a href="#consultor">🤖 Consultor de Riscos</a></li>
-            <li><a href="#ccts">📊 Gestão de CCTs</a></li>
-            <li><a href="#revisao">🔍 Revisão Cláusulas</a></li>
-            <li><a href="#obrigacoes">🗓️ Obrigações e Prazos</a></li>
-            <li><a href="#parametros">⚙️ Parâmetros Legais</a></li>
-            <li><a href="#sugestoes">💡 Sugestões CCT</a></li>
-            <li><a href="#benchmarking">📊 Benchmarking</a></li>
-            <li><a href="#trilha">🔍 Trilha de Auditoria</a></li>
-            <li><a href="#portal-demandas">📋 Portal de Demandas</a></li>
-          </ul>
-        </aside>
+      <div class="container-fluid">
+        <div class="row">
+          <nav class="col-lg-2 col-md-3 d-md-block bg-dark sidebar collapse">
+            <div class="position-sticky pt-3">
+              <h3 class="text-primary border-bottom border-secondary pb-2 mb-3">
+                📊 Navegação
+              </h3>
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#dashboards">
+                    <i class="me-2">📈</i> Dashboards
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#folha">
+                    <i class="me-2">💼</i> Gestão da Folha
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#checklist">
+                    <i class="me-2">📝</i> Checklist
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#consultor">
+                    <i class="me-2">🤖</i> Consultor de Riscos
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#ccts">
+                    <i class="me-2">📊</i> Gestão de CCTs
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#revisao">
+                    <i class="me-2">🔍</i> Revisão Cláusulas
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#obrigacoes">
+                    <i class="me-2">🗓️</i> Obrigações e Prazos
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#parametros">
+                    <i class="me-2">⚙️</i> Parâmetros Legais
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#sugestoes">
+                    <i class="me-2">💡</i> Sugestões CCT
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#benchmarking">
+                    <i class="me-2">📊</i> Benchmarking
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#trilha">
+                    <i class="me-2">🔍</i> Trilha de Auditoria
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#portal-demandas">
+                    <i class="me-2">📋</i> Portal de Demandas
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
 
-        <main class="content-area">
-          <div class="welcome-section">
-            <h1 class="welcome-title">Bem-vindo ao AUDITORIA360</h1>
-            <p class="text-muted">
-              Sistema integrado de gestão e auditoria da folha de pagamento com
-              acesso completo a todos os módulos.
-            </p>
-          </div>
-
-          <div class="modules-grid">
-            <div
-              class="module-card"
-              onclick="navigateToModule('./dashboards/pages/')"
-            >
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📈</div>
-              <h3 class="module-title">Dashboards</h3>
-              <p class="module-description">
-                Visualize métricas, indicadores e relatórios detalhados da folha
-                de pagamento com dashboards interativos.
+          <main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
+            <div class="welcome-section mb-5">
+              <h1 class="display-6 text-primary mb-3">
+                Bem-vindo ao AUDITORIA360
+              </h1>
+              <p class="lead text-muted">
+                Sistema integrado de gestão e auditoria da folha de pagamento
+                com acesso completo a todos os módulos.
               </p>
             </div>
 
-            <div
-              class="module-card"
-              onclick="navigateToModule('./portal_demandas/')"
-            >
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📋</div>
-              <h3 class="module-title">Portal de Demandas</h3>
-              <p class="module-description">
-                Gerencie solicitações, tickets e demandas dos clientes de forma
-                centralizada e eficiente.
-              </p>
-            </div>
+            <div class="row g-4">
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  onclick="navigateToModule('./dashboards/pages/')"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📈</span>
+                    </div>
+                    <h3 class="card-title h5">Dashboards</h3>
+                    <p class="card-text text-muted">
+                      Visualize métricas, indicadores e relatórios detalhados da
+                      folha de pagamento com dashboards interativos.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">👥</div>
-              <h3 class="module-title">Gerenciamento de Usuários</h3>
-              <p class="module-description">
-                Controle completo de usuários, permissões e acessos ao sistema.
-              </p>
-            </div>
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  onclick="navigateToModule('./portal_demandas/')"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📋</span>
+                    </div>
+                    <h3 class="card-title h5">Portal de Demandas</h3>
+                    <p class="card-text text-muted">
+                      Gerencie solicitações, tickets e demandas dos clientes de
+                      forma centralizada e eficiente.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">🤖</div>
-              <h3 class="module-title">Consultor de Riscos</h3>
-              <p class="module-description">
-                IA avançada para identificação e análise de riscos na folha de
-                pagamento.
-              </p>
-            </div>
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">👥</span>
+                    </div>
+                    <h3 class="card-title h5">Gerenciamento de Usuários</h3>
+                    <p class="card-text text-muted">
+                      Controle completo de usuários, permissões e acessos ao
+                      sistema.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">⚙️</div>
-              <h3 class="module-title">Administração</h3>
-              <p class="module-description">
-                Configurações avançadas, parâmetros legais e customizações do
-                sistema.
-              </p>
-            </div>
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">🤖</span>
+                    </div>
+                    <h3 class="card-title h5">Consultor de Riscos</h3>
+                    <p class="card-text text-muted">
+                      IA avançada para identificação e análise de riscos na
+                      folha de pagamento.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📊</div>
-              <h3 class="module-title">Relatórios Avançados</h3>
-              <p class="module-description">
-                Relatórios detalhados e personalizáveis para análises profundas.
-              </p>
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">⚙️</span>
+                    </div>
+                    <h3 class="card-title h5">Administração</h3>
+                    <p class="card-text text-muted">
+                      Configurações avançadas, parâmetros legais e customizações
+                      do sistema.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📊</span>
+                    </div>
+                    <h3 class="card-title h5">Relatórios Avançados</h3>
+                    <p class="card-text text-muted">
+                      Relatórios detalhados e personalizáveis para análises
+                      profundas.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
     </div>
 
     <!-- Dashboard do Cliente -->
     <div id="clientDashboard" class="dashboard-container">
-      <header class="header-bar">
-        <div class="header-info">
-          <img
-            src="./assets/logo.png"
-            alt="AUDITORIA360"
-            class="header-logo"
-            onerror="this.style.display='none'"
-          />
-          <span class="text-lg font-weight-600"
-            >AUDITORIA360 - Portal do Cliente Final</span
-          >
-        </div>
-        <div class="user-info">
-          <span class="badge badge-info">👤 Cliente Final</span>
-          <span id="clientUsername">Cliente</span>
-          <button class="logout-btn" onclick="handleLogout()">Sair</button>
+      <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+          <div class="navbar-brand d-flex align-items-center">
+            <img
+              src="./assets/logo.png"
+              alt="AUDITORIA360"
+              height="40"
+              class="me-2"
+              onerror="this.style.display='none'"
+            />
+            <span class="fs-5 fw-semibold"
+              >AUDITORIA360 - Portal do Cliente Final</span
+            >
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-info">👤 Cliente Final</span>
+            <span id="clientUsername" class="text-light">Cliente</span>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              onclick="handleLogout()"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
-      <div class="main-content">
-        <aside class="sidebar">
-          <h3 class="sidebar-title">🔍 Minha Empresa</h3>
-          <ul class="nav-menu">
-            <li><a href="#meus-dados">📊 Meus Dados</a></li>
-            <li><a href="#documentos-empresa">📄 Documentos</a></li>
-            <li><a href="#relatorios-empresa">📋 Relatórios</a></li>
-            <li><a href="#suporte-empresa">💬 Suporte</a></li>
-          </ul>
-        </aside>
+      <div class="container-fluid">
+        <div class="row">
+          <nav class="col-lg-2 col-md-3 d-md-block bg-dark sidebar collapse">
+            <div class="position-sticky pt-3">
+              <h3 class="text-primary border-bottom border-secondary pb-2 mb-3">
+                🔍 Minha Empresa
+              </h3>
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#meus-dados">
+                    <i class="me-2">📊</i> Meus Dados
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#documentos-empresa">
+                    <i class="me-2">📄</i> Documentos
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#relatorios-empresa">
+                    <i class="me-2">📋</i> Relatórios
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#suporte-empresa">
+                    <i class="me-2">💬</i> Suporte
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
 
-        <main class="content-area">
-          <div class="welcome-section">
-            <h1 class="welcome-title">Portal do Cliente Final</h1>
-            <p class="text-muted">
-              Acesso exclusivo aos dados da sua empresa com total privacidade e segurança.
-            </p>
-          </div>
-
-          <div class="modules-grid">
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📊</div>
-              <h3 class="module-title">Dados da Empresa</h3>
-              <p class="module-description">
-                Visualize informações e métricas exclusivas da sua empresa.
+          <main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
+            <div class="welcome-section mb-5">
+              <h1 class="display-6 text-primary mb-3">
+                Portal do Cliente Final
+              </h1>
+              <p class="lead text-muted">
+                Acesso exclusivo aos dados da sua empresa com total privacidade
+                e segurança.
               </p>
             </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📄</div>
-              <h3 class="module-title">Documentos</h3>
-              <p class="module-description">
-                Acesse e baixe documentos relacionados à sua empresa.
-              </p>
-            </div>
-
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📋</div>
-              <h3 class="module-title">Relatórios</h3>
-              <p class="module-description">
-                Relatórios personalizados e dados específicos da sua empresa.
-              </p>
-            </div>
-
-            <div class="module-card client-restricted">
-              <div class="access-badge restricted-badge">
-                🚫 Acesso Restrito
+            <div class="row g-4">
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📊</span>
+                    </div>
+                    <h3 class="card-title h5">Dados da Empresa</h3>
+                    <p class="card-text text-muted">
+                      Visualize informações e métricas exclusivas da sua
+                      empresa.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div class="module-icon">👥</div>
-              <h3 class="module-title">Outras Empresas</h3>
-              <p class="module-description">
-                Acesso restrito - apenas dados da sua empresa são visíveis.
-              </p>
-            </div>
 
-            <div class="module-card client-restricted">
-              <div class="access-badge restricted-badge">
-                🚫 Acesso Restrito
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📄</span>
+                    </div>
+                    <h3 class="card-title h5">Documentos</h3>
+                    <p class="card-text text-muted">
+                      Acesse e baixe documentos relacionados à sua empresa.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div class="module-icon">⚙️</div>
-              <h3 class="module-title">Administração</h3>
-              <p class="module-description">
-                Funcionalidade disponível apenas para administradores.
-              </p>
-            </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">💬</div>
-              <h3 class="module-title">Suporte Especializado</h3>
-              <p class="module-description">
-                Suporte dedicado para questões específicas da sua empresa.
-              </p>
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📋</span>
+                    </div>
+                    <h3 class="card-title h5">Relatórios</h3>
+                    <p class="card-text text-muted">
+                      Relatórios personalizados e dados específicos da sua
+                      empresa.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm opacity-50"
+                  role="button"
+                  style="pointer-events: none"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-warning text-dark"
+                        >🚫 Acesso Restrito</span
+                      >
+                      <span class="display-6">👥</span>
+                    </div>
+                    <h3 class="card-title h5">Outras Empresas</h3>
+                    <p class="card-text text-muted">
+                      Acesso restrito - apenas dados da sua empresa são
+                      visíveis.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm opacity-50"
+                  role="button"
+                  style="pointer-events: none"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-warning text-dark"
+                        >🚫 Acesso Restrito</span
+                      >
+                      <span class="display-6">⚙️</span>
+                    </div>
+                    <h3 class="card-title h5">Administração</h3>
+                    <p class="card-text text-muted">
+                      Funcionalidade disponível apenas para administradores.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">💬</span>
+                    </div>
+                    <h3 class="card-title h5">Suporte Especializado</h3>
+                    <p class="card-text text-muted">
+                      Suporte dedicado para questões específicas da sua empresa.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
     </div>
 
     <!-- Dashboard da Contabilidade -->
     <div id="contabilidadeDashboard" class="dashboard-container">
-      <header class="header-bar">
-        <div class="header-info">
-          <img
-            src="./assets/logo.png"
-            alt="AUDITORIA360"
-            class="header-logo"
-            onerror="this.style.display='none'"
-          />
-          <span class="text-lg font-weight-600"
-            >AUDITORIA360 - Portal da Contabilidade</span
-          >
-        </div>
-        <div class="user-info">
-          <span class="badge badge-warning">🏢 Contabilidade</span>
-          <span id="contabilidadeUsername">Gestor</span>
-          <button class="logout-btn" onclick="handleLogout()">Sair</button>
+      <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+          <div class="navbar-brand d-flex align-items-center">
+            <img
+              src="./assets/logo.png"
+              alt="AUDITORIA360"
+              height="40"
+              class="me-2"
+              onerror="this.style.display='none'"
+            />
+            <span class="fs-5 fw-semibold"
+              >AUDITORIA360 - Portal da Contabilidade</span
+            >
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-warning text-dark">🏢 Contabilidade</span>
+            <span id="contabilidadeUsername" class="text-light">Gestor</span>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              onclick="handleLogout()"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
-      <div class="main-content">
-        <aside class="sidebar">
-          <h3 class="sidebar-title">🏢 Gestão</h3>
-          <ul class="nav-menu">
-            <li><a href="#meus-clientes">👥 Meus Clientes</a></li>
-            <li><a href="#folha-clientes">💼 Folha dos Clientes</a></li>
-            <li><a href="#relatorios-gestao">📊 Relatórios de Gestão</a></li>
-            <li><a href="#documentos-gestao">📄 Documentos</a></li>
-            <li><a href="#checklist-gestao">📝 Checklist</a></li>
-            <li><a href="#consultor-gestao">🤖 Consultor</a></li>
-            <li><a href="#suporte-gestao">💬 Suporte</a></li>
-          </ul>
-        </aside>
+      <div class="container-fluid">
+        <div class="row">
+          <nav class="col-lg-2 col-md-3 d-md-block bg-dark sidebar collapse">
+            <div class="position-sticky pt-3">
+              <h3 class="text-primary border-bottom border-secondary pb-2 mb-3">
+                🏢 Gestão
+              </h3>
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#meus-clientes">
+                    <i class="me-2">👥</i> Meus Clientes
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#folha-clientes">
+                    <i class="me-2">💼</i> Folha dos Clientes
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#relatorios-gestao">
+                    <i class="me-2">📊</i> Relatórios de Gestão
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#documentos-gestao">
+                    <i class="me-2">📄</i> Documentos
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#checklist-gestao">
+                    <i class="me-2">📝</i> Checklist
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#consultor-gestao">
+                    <i class="me-2">🤖</i> Consultor
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#suporte-gestao">
+                    <i class="me-2">💬</i> Suporte
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
 
-        <main class="content-area">
-          <div class="welcome-section">
-            <h1 class="welcome-title">Portal da Contabilidade</h1>
-            <p class="text-muted">
-              Gerencie seus clientes e acesse dados restritos ao seu escopo de contabilidade.
-            </p>
-          </div>
-
-          <div class="modules-grid">
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">👥</div>
-              <h3 class="module-title">Meus Clientes</h3>
-              <p class="module-description">
-                Visualize e gerencie apenas os clientes da sua contabilidade.
+          <main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
+            <div class="welcome-section mb-5">
+              <h1 class="display-6 text-primary mb-3">
+                Portal da Contabilidade
+              </h1>
+              <p class="lead text-muted">
+                Gerencie seus clientes e acesse dados restritos ao seu escopo de
+                contabilidade.
               </p>
             </div>
 
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">💼</div>
-              <h3 class="module-title">Gestão da Folha</h3>
-              <p class="module-description">
-                Processe e audite a folha de pagamento dos seus clientes.
-              </p>
-            </div>
-
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">📊</div>
-              <h3 class="module-title">Relatórios Segmentados</h3>
-              <p class="module-description">
-                Relatórios restritos aos dados da sua carteira de clientes.
-              </p>
-            </div>
-
-            <div class="module-card">
-              <div class="access-badge">✅ Acesso Liberado</div>
-              <div class="module-icon">🤖</div>
-              <h3 class="module-title">Consultor de Riscos</h3>
-              <p class="module-description">
-                IA para análise de riscos específicos dos seus clientes.
-              </p>
-            </div>
-
-            <div class="module-card client-restricted">
-              <div class="access-badge restricted-badge">
-                🚫 Acesso Restrito
+            <div class="row g-4">
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">👥</span>
+                    </div>
+                    <h3 class="card-title h5">Meus Clientes</h3>
+                    <p class="card-text text-muted">
+                      Visualize e gerencie apenas os clientes da sua
+                      contabilidade.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div class="module-icon">🌐</div>
-              <h3 class="module-title">Outras Contabilidades</h3>
-              <p class="module-description">
-                Acesso restrito - dados de outras contabilidades são protegidos.
-              </p>
-            </div>
 
-            <div class="module-card client-restricted">
-              <div class="access-badge restricted-badge">
-                🚫 Acesso Restrito
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">💼</span>
+                    </div>
+                    <h3 class="card-title h5">Gestão da Folha</h3>
+                    <p class="card-text text-muted">
+                      Processe e audite a folha de pagamento dos seus clientes.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div class="module-icon">⚙️</div>
-              <h3 class="module-title">Administração Global</h3>
-              <p class="module-description">
-                Configurações globais disponíveis apenas para super admin.
-              </p>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">📊</span>
+                    </div>
+                    <h3 class="card-title h5">Relatórios Segmentados</h3>
+                    <p class="card-text text-muted">
+                      Relatórios restritos aos dados da sua carteira de
+                      clientes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm module-card"
+                  role="button"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-success">✅ Acesso Liberado</span>
+                      <span class="display-6">🤖</span>
+                    </div>
+                    <h3 class="card-title h5">Consultor de Riscos</h3>
+                    <p class="card-text text-muted">
+                      IA para análise de riscos específicos dos seus clientes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm opacity-50"
+                  role="button"
+                  style="pointer-events: none"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-warning text-dark"
+                        >🚫 Acesso Restrito</span
+                      >
+                      <span class="display-6">🌐</span>
+                    </div>
+                    <h3 class="card-title h5">Outras Contabilidades</h3>
+                    <p class="card-text text-muted">
+                      Acesso restrito - dados de outras contabilidades são
+                      protegidos.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-lg-6 col-md-6">
+                <div
+                  class="card h-100 border-0 shadow-sm opacity-50"
+                  role="button"
+                  style="pointer-events: none"
+                >
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-start mb-3"
+                    >
+                      <span class="badge bg-warning text-dark"
+                        >🚫 Acesso Restrito</span
+                      >
+                      <span class="display-6">⚙️</span>
+                    </div>
+                    <h3 class="card-title h5">Administração Global</h3>
+                    <p class="card-text text-muted">
+                      Configurações globais disponíveis apenas para super admin.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
     </div>
 
@@ -773,42 +1160,42 @@
           password: "senha_admin",
           userType: "super_admin",
           name: "Super Administrator",
-          scope: "all"
+          scope: "all",
         },
         // Contabilidade A - Gestor
         "gestor@contabilidade-a.com": {
-          password: "senha_gestor_a", 
+          password: "senha_gestor_a",
           userType: "contabilidade",
           name: "Gestor Contabilidade A",
-          scope: "CONTAB_A"
+          scope: "CONTAB_A",
         },
         // Cliente da Contabilidade A
         "contato@empresa-x.com": {
           password: "senha_cliente_x",
-          userType: "cliente_final", 
+          userType: "cliente_final",
           name: "Cliente Empresa X",
-          scope: "EMPRESA_X"
+          scope: "EMPRESA_X",
         },
         // Contabilidade B - Gestor
         "gestor@contabilidade-b.com": {
           password: "senha_gestor_b",
           userType: "contabilidade",
-          name: "Gestor Contabilidade B", 
-          scope: "CONTAB_B"
+          name: "Gestor Contabilidade B",
+          scope: "CONTAB_B",
         },
         // Legacy credentials for compatibility
-        "admin": {
+        admin: {
           password: "admin123",
           userType: "super_admin",
           name: "Administrator",
-          scope: "all"
+          scope: "all",
         },
-        "contabilidade": {
+        contabilidade: {
           password: "conta123",
           userType: "contabilidade",
           name: "Contabilidade User",
-          scope: "DEFAULT_CONTAB"
-        }
+          scope: "DEFAULT_CONTAB",
+        },
       };
 
       // Inicialização
@@ -830,7 +1217,10 @@
             } else {
               // Session expired, clear it
               localStorage.removeItem("auditoria360_session");
-              showNotification("Sessão expirada. Faça login novamente.", "warning");
+              showNotification(
+                "Sessão expirada. Faça login novamente.",
+                "warning"
+              );
             }
           }
         }
@@ -871,12 +1261,20 @@
           const actualUserType = userData.userType;
           loginUser(actualUserType, username, userData);
           saveSession(actualUserType, username, userData);
-          showNotification(`Login realizado com sucesso! Bem-vindo(a), ${userData.name}`, "success");
-          
+          showNotification(
+            `Login realizado com sucesso! Bem-vindo(a), ${userData.name}`,
+            "success"
+          );
+
           // Log for debugging
-          console.log(`Authenticated as: ${userData.name} (${actualUserType}) - Scope: ${userData.scope}`);
+          console.log(
+            `Authenticated as: ${userData.name} (${actualUserType}) - Scope: ${userData.scope}`
+          );
         } else {
-          showNotification("Credenciais inválidas. Verifique usuário e senha.", "danger");
+          showNotification(
+            "Credenciais inválidas. Verifique usuário e senha.",
+            "danger"
+          );
           console.log("Authentication failed for:", username);
         }
       }
@@ -890,7 +1288,7 @@
             name: user.name,
             userType: user.userType,
             scope: user.scope,
-            authenticated: true
+            authenticated: true,
           };
         }
         return null;
@@ -902,11 +1300,11 @@
           currentUserType = userType;
 
           // Log successful login
-          window.navigationLogger?.logRouteChange('/login', '/dashboard', {
+          window.navigationLogger?.logRouteChange("/login", "/dashboard", {
             userType: userType,
             username: username,
-            loginMethod: 'credentials',
-            success: true
+            loginMethod: "credentials",
+            success: true,
           });
 
           // Esconder login
@@ -915,32 +1313,46 @@
           // Esconder todos os dashboards primeiro
           document.getElementById("adminDashboard").classList.remove("active");
           document.getElementById("clientDashboard").classList.remove("active");
-          document.getElementById("contabilidadeDashboard").classList.remove("active");
+          document
+            .getElementById("contabilidadeDashboard")
+            .classList.remove("active");
 
           // Mostrar dashboard apropriado baseado no tipo de usuário
           if (userType === "super_admin") {
             document.getElementById("adminDashboard").classList.add("active");
-            document.getElementById("adminUsername").textContent = userData?.name || username;
+            document.getElementById("adminUsername").textContent =
+              userData?.name || username;
           } else if (userType === "contabilidade") {
-            document.getElementById("contabilidadeDashboard").classList.add("active");
-            document.getElementById("contabilidadeUsername").textContent = userData?.name || username;
+            document
+              .getElementById("contabilidadeDashboard")
+              .classList.add("active");
+            document.getElementById("contabilidadeUsername").textContent =
+              userData?.name || username;
           } else if (userType === "cliente_final") {
             document.getElementById("clientDashboard").classList.add("active");
-            document.getElementById("clientUsername").textContent = userData?.name || username;
+            document.getElementById("clientUsername").textContent =
+              userData?.name || username;
           }
 
           // Animação de entrada
           setTimeout(() => {
-            document.querySelector(".dashboard-container.active").style.opacity = "1";
+            document.querySelector(
+              ".dashboard-container.active"
+            ).style.opacity = "1";
           }, 100);
         } catch (error) {
-          window.navigationLogger?.logNavigationError(error, '/dashboard', 'login', {
-            userType: userType,
-            username: username,
-            step: 'dashboard_display'
-          });
-          
-          console.error('Error in loginUser:', error);
+          window.navigationLogger?.logNavigationError(
+            error,
+            "/dashboard",
+            "login",
+            {
+              userType: userType,
+              username: username,
+              step: "dashboard_display",
+            }
+          );
+
+          console.error("Error in loginUser:", error);
           showNotification("Erro ao carregar dashboard", "danger");
         }
       }
@@ -955,7 +1367,9 @@
           // Esconder todos os dashboards
           document.getElementById("adminDashboard").classList.remove("active");
           document.getElementById("clientDashboard").classList.remove("active");
-          document.getElementById("contabilidadeDashboard").classList.remove("active");
+          document
+            .getElementById("contabilidadeDashboard")
+            .classList.remove("active");
 
           // Mostrar login
           document.getElementById("loginContainer").style.display = "flex";
@@ -963,10 +1377,14 @@
           // Limpar campos
           document.getElementById("username").value = "";
           document.getElementById("password").value = "";
-          
+
           // Reset user type selector to default
-          document.querySelectorAll(".user-type-btn").forEach(btn => btn.classList.remove("active"));
-          document.querySelector("[data-type='super_admin']").classList.add("active");
+          document
+            .querySelectorAll(".user-type-btn")
+            .forEach(btn => btn.classList.remove("active"));
+          document
+            .querySelector("[data-type='super_admin']")
+            .classList.add("active");
           currentUserType = "super_admin";
 
           showNotification("Logout realizado com sucesso!", "info");
@@ -987,12 +1405,12 @@
         if (isLoggedIn) {
           try {
             // Log navigation attempt
-            window.navigationLogger?.logNavigationSuccess(path, 'navigate', {
-              trigger: 'module_click',
+            window.navigationLogger?.logNavigationSuccess(path, "navigate", {
+              trigger: "module_click",
               userType: currentUserType,
-              authenticated: true
+              authenticated: true,
             });
-            
+
             // Em produção, navegar para o módulo específico
             console.log(`Navegando para: ${path}`);
             showNotification(`Redirecionando para ${path}...`, "info");
@@ -1001,36 +1419,41 @@
             setTimeout(() => {
               window.location.href = path;
               console.log(`Navegando para módulo ${path}`);
-              
+
               // Log successful load
-              window.navigationLogger?.logNavigationSuccess(path, 'load', {
+              window.navigationLogger?.logNavigationSuccess(path, "load", {
                 loadTime: 1000,
-                success: true
+                success: true,
               });
             }, 1000);
           } catch (error) {
             // Log navigation error
-            window.navigationLogger?.logNavigationError(error, path, 'navigate', {
-              trigger: 'module_click',
-              userType: currentUserType,
-              authenticated: isLoggedIn
-            });
-            
+            window.navigationLogger?.logNavigationError(
+              error,
+              path,
+              "navigate",
+              {
+                trigger: "module_click",
+                userType: currentUserType,
+                authenticated: isLoggedIn,
+              }
+            );
+
             showNotification(`Erro ao navegar para ${path}`, "danger");
-            console.error('Navigation error:', error);
+            console.error("Navigation error:", error);
           }
         } else {
           window.navigationLogger?.logNavigationError(
-            new Error('Unauthorized navigation attempt'),
+            new Error("Unauthorized navigation attempt"),
             path,
-            'navigate',
+            "navigate",
             {
-              trigger: 'module_click',
+              trigger: "module_click",
               userType: currentUserType,
-              authenticated: false
+              authenticated: false,
             }
           );
-          
+
           showNotification("Faça login para acessar este módulo.", "warning");
         }
       }
