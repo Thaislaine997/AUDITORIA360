@@ -54,7 +54,7 @@ def display_analysis_summary():
     
     print(f"\n📚 DOCUMENTAÇÃO CRIADA:")
     docs = [
-        "📄 REPOSITORY_ANALYSIS_REPORT.md - Relatório detalhado de análise",
+        "📄 docs/analises/REPOSITORY_ANALYSIS_REPORT.md - Relatório detalhado de análise",
         "🔧 scripts/repository_analysis.py - Ferramenta automatizada de análise", 
         "🧪 scripts/clean_test_runner.py - Executor de testes limpos",
         "📦 requirements-ml.txt - Dependências ML opcionais",

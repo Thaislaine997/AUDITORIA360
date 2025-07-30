@@ -38,7 +38,7 @@ versoes/
 
 **Arquivos Relacionados:**
 
-- [📋 Changelog Completo](../../../CHANGELOG.md)
+- [📋 Changelog Completo](../../relatorios/CHANGELOG.md)
 - [📊 Relatório Final de Refatoração](../../content/RELATORIO_FINAL_REFATORACAO.md)
 - [🎉 Projeto 100% Concluído](../../content/PROJETO_100_CONCLUIDO.md)
 - [🔧 Refatoração Backend Completa](../../content/REFATORACAO_BACKEND_COMPLETA.md)
@@ -117,7 +117,7 @@ Seguimos o padrão [Semantic Versioning](https://semver.org/):
 
 ### **Documentação por Categoria**
 
-- 📋 **[Changelog Principal](../../../CHANGELOG.md)** - Histórico completo de mudanças
+- 📋 **[Changelog Principal](../../relatorios/CHANGELOG.md)** - Histórico completo de mudanças
 - 📊 **[Relatórios de Status](../relatorios/)** - Relatórios detalhados de progresso
 - 🏗️ **[Arquitetura](../arquitetura/)** - Documentação técnica
 - 🔗 **[APIs](../apis/)** - Documentação de APIs
