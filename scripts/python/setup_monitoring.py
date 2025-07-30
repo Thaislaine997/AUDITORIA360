@@ -41,7 +41,7 @@ class BasicMonitoringSetup:
                     "severity": "warning",
                 },
             ],
-            "notification": {"email": "admin@auditoria360.com"},
+            "notification": {"email": "admin@auditoria360-exemplo.com"},
         }
 
         # Create monitoring directory

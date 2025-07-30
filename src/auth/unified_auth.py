@@ -54,8 +54,8 @@ class UnifiedAuthManager:
                     "credentials": {
                         "usernames": {
                             # Super Administrator - Full system access
-                            "admin@auditoria360.com": {
-                                "email": "admin@auditoria360.com",
+                            "admin@auditoria360-exemplo.com": {
+                                "email": "admin@auditoria360-exemplo.com",
                                 "name": "Super Administrator",
                                 "password": self.hash_password(secure_passwords["admin"]),
                                 "user_type": "super_admin",
@@ -80,8 +80,8 @@ class UnifiedAuthManager:
                                 }
                             },
                             # Cliente da Contabilidade A
-                            "contato@empresa-x.com": {
-                                "email": "contato@empresa-x.com",
+                            "contato@empresa-teste-x.com": {
+                                "email": "contato@empresa-teste-x.com",
                                 "name": "Cliente Empresa X", 
                                 "password": self.hash_password(secure_passwords["client_x"]),
                                 "user_type": "cliente_final",
@@ -111,7 +111,7 @@ class UnifiedAuthManager:
                             },
                             # Legacy users for compatibility
                             "admin": {
-                                "email": "admin@auditoria360.com",
+                                "email": "admin@auditoria360-exemplo.com",
                                 "name": "Administrator",
                                 "password": self.hash_password("admin123"),
                                 "user_type": "super_admin",

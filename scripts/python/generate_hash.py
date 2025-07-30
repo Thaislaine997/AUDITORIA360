@@ -1,8 +1,8 @@
 # generate_hash.py
 import streamlit_authenticator as stauth
 
-# Senha que você quer hashear
-plain_password = "41283407"
+# Senha que você quer hashear (EXEMPLO - substitua pela senha real)
+plain_password = "SENHA_DE_EXEMPLO_SUBSTITUA"
 
 print("Tentando hashear uma senha.")
 
