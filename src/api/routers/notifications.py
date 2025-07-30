@@ -388,7 +388,7 @@ async def send_enhanced_notification(
         provider_name = notification_data.get("provider")
         
         # Map notification type
-        from ..models.notification_models import NotificationType, NotificationPriority
+        from src.models.notification_models import NotificationType, NotificationPriority
         type_mapping = {
             "email": NotificationType.EMAIL,
             "sms": NotificationType.SMS,
@@ -436,3 +436,169 @@ async def send_enhanced_notification(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send notification: {str(e)}"
         )
+
+
+@router.get("/providers")
+async def get_communication_providers(
+    current_user: MockUser = Depends(get_current_user_mock)
+):
+    """
+    Get available communication providers and their configuration status
+    Obter provedores de comunicação disponíveis e status de configuração
+    """
+    try:
+        # Initialize notification service
+        notification_service = EnhancedNotificationService()
+        
+        # Get gateway status including providers
+        status_info = notification_service.get_gateway_status()
+        
+        # Add configuration template for each provider
+        providers_with_config = []
+        for provider in status_info["providers"]:
+            provider_info = {
+                "name": provider["name"],
+                "configured": provider["configured"],
+                "supports": provider["supports"],
+                "config_template": _get_provider_config_template(provider["name"])
+            }
+            providers_with_config.append(provider_info)
+        
+        return {
+            "status": "success",
+            "providers": providers_with_config,
+            "total_providers": status_info["total_providers"],
+            "configured_providers": status_info["configured_providers"]
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get providers: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get providers: {str(e)}"
+        )
+
+
+@router.post("/providers/configure")
+async def configure_communication_provider(
+    config_data: Dict[str, Any],
+    current_user: MockUser = Depends(get_current_user_mock)
+):
+    """
+    Configure a communication provider
+    Configurar um provedor de comunicação
+    """
+    if not hasattr(current_user, 'role') or current_user.role not in ["super_admin", "administrador"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    try:
+        provider_name = config_data.get("provider")
+        config = config_data.get("config", {})
+        
+        if not provider_name:
+            raise ValueError("Provider name is required")
+        
+        # For demonstration, we'll just validate the configuration
+        # In production, this would save to database or environment
+        validation_result = _validate_provider_config(provider_name, config)
+        
+        return {
+            "status": "success",
+            "message": f"Provider {provider_name} configuration validated",
+            "provider": provider_name,
+            "validation": validation_result
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to configure provider: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to configure provider: {str(e)}"
+        )
+
+
+def _get_provider_config_template(provider_name: str) -> Dict[str, Any]:
+    """Get configuration template for a provider"""
+    templates = {
+        "email": {
+            "smtp_server": {
+                "type": "string",
+                "required": True,
+                "description": "SMTP server address"
+            },
+            "smtp_port": {
+                "type": "integer", 
+                "required": True,
+                "default": 587,
+                "description": "SMTP server port"
+            },
+            "username": {
+                "type": "string",
+                "required": True,
+                "description": "Email username"
+            },
+            "password": {
+                "type": "password",
+                "required": True,
+                "description": "Email password"
+            }
+        },
+        "twilio": {
+            "account_sid": {
+                "type": "string",
+                "required": True,
+                "description": "Twilio Account SID (format: ACxxxxxxxx)",
+                "pattern": "^AC[0-9a-fA-F]{32}$"
+            },
+            "auth_token": {
+                "type": "password",
+                "required": True,
+                "description": "Twilio Auth Token"
+            },
+            "from_sms": {
+                "type": "string",
+                "required": False,
+                "description": "SMS phone number (format: +15551234567)",
+                "pattern": "^\\+[1-9]\\d{1,14}$"
+            },
+            "from_whatsapp": {
+                "type": "string",
+                "required": False,
+                "description": "WhatsApp number (format: whatsapp:+14155238886)",
+                "pattern": "^whatsapp:\\+[1-9]\\d{1,14}$"
+            }
+        }
+    }
+    
+    return templates.get(provider_name, {})
+
+
+def _validate_provider_config(provider_name: str, config: Dict[str, Any]) -> Dict[str, Any]:
+    """Validate provider configuration"""
+    template = _get_provider_config_template(provider_name)
+    validation_result = {
+        "valid": True,
+        "errors": [],
+        "warnings": []
+    }
+    
+    # Check required fields
+    for field, field_config in template.items():
+        if field_config.get("required", False) and not config.get(field):
+            validation_result["valid"] = False
+            validation_result["errors"].append(f"Required field '{field}' is missing")
+    
+    # Provider-specific validation
+    if provider_name == "twilio":
+        account_sid = config.get("account_sid", "")
+        if account_sid and not account_sid.startswith("AC"):
+            validation_result["errors"].append("Twilio Account SID must start with 'AC'")
+        
+        # Check if at least one number is provided
+        if not config.get("from_sms") and not config.get("from_whatsapp"):
+            validation_result["warnings"].append("At least one phone number (SMS or WhatsApp) should be configured")
+    
+    return validation_result
