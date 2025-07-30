@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
+import KeyboardNavigation from "./components/ui/KeyboardNavigation";
 import { useAuthStore } from "./stores/authStore";
 import { useUIStore } from "./stores/uiStore";
 
@@ -57,35 +58,37 @@ function App() {
   }
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <Navbar />
-      <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          bgcolor: "background.default",
-          p: 3,
-          mt: 8, // Account for navbar height
-          ml: sidebarOpen ? 0 : "-240px",
-          transition: "margin-left 0.3s ease",
-          minHeight: "calc(100vh - 64px)",
-        }}
-      >
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/payroll/*" element={<PayrollPage />} />
-            <Route path="/documents/*" element={<DocumentsPage />} />
-            <Route path="/cct/*" element={<CCTPage />} />
-            <Route path="/audit/*" element={<AuditPage />} />
-            <Route path="/chatbot" element={<ChatbotPage />} />
-            <Route path="/reports/templates" element={<ReportTemplatesPage />} />
-          </Routes>
-        </Suspense>
+    <KeyboardNavigation>
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+        <Navbar />
+        <Sidebar />
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            bgcolor: "background.default",
+            p: 3,
+            mt: 8, // Account for navbar height
+            ml: sidebarOpen ? 0 : "-240px",
+            transition: "margin-left 0.3s ease",
+            minHeight: "calc(100vh - 64px)",
+          }}
+        >
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/payroll/*" element={<PayrollPage />} />
+              <Route path="/documents/*" element={<DocumentsPage />} />
+              <Route path="/cct/*" element={<CCTPage />} />
+              <Route path="/audit/*" element={<AuditPage />} />
+              <Route path="/chatbot" element={<ChatbotPage />} />
+              <Route path="/reports/templates" element={<ReportTemplatesPage />} />
+            </Routes>
+          </Suspense>
+        </Box>
       </Box>
-    </Box>
+    </KeyboardNavigation>
   );
 }
 
