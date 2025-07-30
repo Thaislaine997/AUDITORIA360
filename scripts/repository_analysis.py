@@ -175,7 +175,7 @@ class AuditoriaAnalyzer:
         print("📚 Analyzing documentation...")
         
         # Check for essential documentation files
-        essential_docs = ['README.md', 'CHANGELOG.md']
+        essential_docs = ['README.md', 'docs/relatorios/CHANGELOG.md']
         missing_docs = []
         
         for doc in essential_docs:
