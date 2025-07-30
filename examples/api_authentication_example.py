@@ -166,8 +166,8 @@ def example_user_management():
     # Criar novo usuário
     new_user = {
         "name": "João Silva",
-        "email": "joao@empresa.com",
-        "password": "senha123",
+        "email": "joao@exemplo.com",
+        "password": "exemplo_senha_segura_123!",
         "role": "hr_user",
         "department": "RH",
         "is_active": True
@@ -210,16 +210,16 @@ def example_error_handling():
     print(f"Sem token: {profile}")
     
     # Login com credenciais inválidas
-    invalid_login = api.login("invalid@email.com", "wrongpassword")
+    invalid_login = api.login("invalid@exemplo.com", "senha_errada")
     print(f"Login inválido: {invalid_login}")
     
     # Tentar criar usuário sem permissões
-    api.login("user@empresa.com", "senha123")  # Login como usuário comum
+    api.login("user@exemplo.com", "exemplo_senha_user")  # Login como usuário comum
     
     user_data = {
         "name": "Teste",
-        "email": "teste@teste.com",
-        "password": "123456"
+        "email": "teste@exemplo.com",
+        "password": "exemplo_senha_123!"
     }
     
     result = api.create_user(user_data)
