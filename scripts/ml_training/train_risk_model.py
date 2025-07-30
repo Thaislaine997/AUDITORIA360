@@ -12,9 +12,41 @@ from sklearn.model_selection import train_test_split
 def load_data_from_bq(
     project_id: str, dataset_id: str, table_name: str
 ) -> pd.DataFrame:
+    """
+    Load data from BigQuery using safe table references to prevent SQL injection
+    
+    Args:
+        project_id: GCP project ID (validated)
+        dataset_id: BigQuery dataset ID (validated)
+        table_name: Table name (validated)
+        
+    Returns:
+        pandas.DataFrame: Query results
+        
+    Raises:
+        ValueError: If parameters contain invalid characters
+    """
+    # Import validation function from utils
+    import sys
+    sys.path.append('.')
+    from scripts.ml_training.utils import _validate_sql_identifier
+    
+    # Input validation to prevent SQL injection
+    if not _validate_sql_identifier(project_id):
+        raise ValueError("Invalid project_id: contains unsafe characters")
+    if not _validate_sql_identifier(dataset_id):
+        raise ValueError("Invalid dataset_id: contains unsafe characters")
+    if not _validate_sql_identifier(table_name):
+        raise ValueError("Invalid table_name: contains unsafe characters")
+        
     client = bigquery.Client(project=project_id)
-    query = f"SELECT * FROM `{project_id}.{dataset_id}.{table_name}`"
-    return client.query(query).to_dataframe()
+    
+    # Use table reference for maximum safety - no string interpolation
+    table_ref = client.dataset(dataset_id, project=project_id).table(table_name)
+    table = client.get_table(table_ref)
+    
+    # Convert table to DataFrame safely
+    return client.list_rows(table).to_dataframe()
 
 
 def preprocess_data(

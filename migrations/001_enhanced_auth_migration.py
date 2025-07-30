@@ -11,8 +11,25 @@ from typing import Any, Dict
 import asyncpg
 from passlib.context import CryptContext
 
-# Configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/auditoria360")
+# Import secure secrets manager
+try:
+    from src.core.secrets import secrets_manager
+except ImportError:
+    # Fallback for direct execution
+    class SimpleSecretsManager:
+        def get_database_url(self):
+            return os.getenv("DATABASE_URL", "postgresql://user:password@localhost/auditoria360")
+        def get_default_passwords(self):
+            return {
+                "admin": os.getenv("DEFAULT_ADMIN_PASSWORD", "secure_admin_pass_123!"),
+                "gestor_a": os.getenv("DEFAULT_GESTOR_A_PASSWORD", "secure_gestor_a_123!"),
+                "gestor_b": os.getenv("DEFAULT_GESTOR_B_PASSWORD", "secure_gestor_b_123!"),
+                "client_x": os.getenv("DEFAULT_CLIENT_X_PASSWORD", "secure_client_x_123!"),
+            }
+    secrets_manager = SimpleSecretsManager()
+
+# Configuration - using secrets manager
+DATABASE_URL = secrets_manager.get_database_url()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -142,13 +159,16 @@ async def create_enhanced_user_tables():
 
 
 async def insert_initial_data():
-    """Insert initial companies and test users"""
+    """Insert initial companies and test users with secure passwords"""
     
-    # Hash passwords
-    admin_password = pwd_context.hash("senha_admin")
-    gestor_a_password = pwd_context.hash("senha_gestor_a")
-    gestor_b_password = pwd_context.hash("senha_gestor_b")
-    cliente_x_password = pwd_context.hash("senha_cliente_x")
+    # Get secure passwords from secrets manager
+    secure_passwords = secrets_manager.get_default_passwords()
+    
+    # Hash passwords securely
+    admin_password = pwd_context.hash(secure_passwords["admin"])
+    gestor_a_password = pwd_context.hash(secure_passwords["gestor_a"])
+    gestor_b_password = pwd_context.hash(secure_passwords["gestor_b"])
+    cliente_x_password = pwd_context.hash(secure_passwords["client_x"])
     
     data_sql = f"""
     -- Insert companies

@@ -50,3 +50,6 @@ python-multipart
 playwright>=1.30.0
 scikit-learn>=1.3.0
 redis>=4.0.0
+
+# Security Dependencies for input validation
+bleach>=6.0.0
