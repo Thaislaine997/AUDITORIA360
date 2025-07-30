@@ -1,0 +1,21 @@
+# Observability and Monitoring Dependencies for Phase 4
+# Prometheus metrics
+prometheus-client>=0.22.0
+
+# OpenTelemetry distributed tracing
+opentelemetry-api>=1.36.0
+opentelemetry-sdk>=1.36.0
+opentelemetry-instrumentation>=0.57b0
+opentelemetry-instrumentation-fastapi>=0.57b0
+opentelemetry-instrumentation-requests>=0.57b0
+opentelemetry-instrumentation-sqlalchemy>=0.57b0
+opentelemetry-exporter-prometheus>=0.57b0
+opentelemetry-exporter-jaeger>=1.21.0
+opentelemetry-exporter-otlp>=1.36.0
+
+# Structured logging  
+structlog>=25.1.0
+python-json-logger>=3.1.0
+
+# Additional monitoring utilities
+psutil>=6.0.0

@@ -1,5 +1,6 @@
 """
 Core monitoring system that orchestrates all monitoring components
+Enhanced with Prometheus metrics, structured logging, and distributed tracing
 """
 
 import asyncio
@@ -12,6 +13,14 @@ from .alerts import AlertManager, AlertSeverity
 from .health import HealthChecker
 from .metrics import MetricsCollector
 from .system import SystemMonitor
+
+try:
+    from .prometheus import PrometheusExporter, get_prometheus_exporter
+    from .structured_logging import setup_structured_logging
+    from .tracing import Tracer, setup_tracing
+    ENHANCED_MONITORING = True
+except ImportError:
+    ENHANCED_MONITORING = False
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +35,17 @@ class MonitoringSystem:
         self.health_checker = HealthChecker(self.metrics_collector)
         self.running = False
         self._monitoring_thread = None
+        
+        # Enhanced monitoring components
+        if ENHANCED_MONITORING:
+            self.prometheus_exporter = get_prometheus_exporter(self.metrics_collector)
+            self.tracer = setup_tracing("auditoria360")
+            setup_structured_logging("INFO", "auditoria360")
+            logger.info("Enhanced monitoring features enabled")
+        else:
+            self.prometheus_exporter = None
+            self.tracer = None
+            logger.warning("Enhanced monitoring features not available")
 
     def start(self):
         """Start the monitoring system"""
@@ -99,13 +119,47 @@ class MonitoringSystem:
 
     def get_dashboard_data(self) -> Dict[str, Any]:
         """Get data for monitoring dashboard"""
-        return {
+        dashboard_data = {
             "metrics_summary": self.metrics_collector.get_metrics_summary(),
             "system_info": self.system_monitor.get_system_info(),
             "active_alerts": [alert.__dict__ for alert in self.alert_manager.get_active_alerts()],
             "health_checks": {name: check.__dict__ for name, check in self.health_checker.get_latest_results().items()},
             "system_status": self._get_system_status(),
+            "enhanced_monitoring": ENHANCED_MONITORING
         }
+        
+        # Add enhanced monitoring data if available
+        if ENHANCED_MONITORING and self.tracer:
+            recent_traces = self.tracer.collector.get_recent_traces(10)
+            dashboard_data["recent_traces"] = {
+                trace_id: [span.__dict__ for span in spans]
+                for trace_id, spans in recent_traces.items()
+            }
+            
+        return dashboard_data
+    
+    def get_prometheus_metrics(self) -> str:
+        """Get Prometheus metrics if available"""
+        if ENHANCED_MONITORING and self.prometheus_exporter:
+            return self.prometheus_exporter.get_metrics_output()
+        return ""
+    
+    def record_business_event(self, event_type: str, data: Dict[str, Any]):
+        """Record business event for monitoring"""
+        if ENHANCED_MONITORING and self.prometheus_exporter:
+            if event_type == "audit_completed":
+                self.prometheus_exporter.update_business_metrics({
+                    "auditorias_processadas": [data]
+                })
+            elif event_type == "report_generated":
+                self.prometheus_exporter.update_business_metrics({
+                    "relatorios_gerados": [data]
+                })
+    
+    def record_http_request(self, method: str, endpoint: str, status_code: int, duration: float):
+        """Record HTTP request metrics"""
+        if ENHANCED_MONITORING and self.prometheus_exporter:
+            self.prometheus_exporter.record_http_request(method, endpoint, status_code, duration)
 
     def _get_system_status(self) -> str:
         """Get overall system status"""
