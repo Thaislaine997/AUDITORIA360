@@ -12,7 +12,7 @@ from sqlalchemy.pool import StaticPool
 
 # Database URL for Neon PostgreSQL
 DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql://user:password@localhost/auditoria360"
+    "DATABASE_URL", "sqlite:///./test.db"
 )
 
 # Create engine with proper connection pooling for serverless
