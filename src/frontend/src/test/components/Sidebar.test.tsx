@@ -1,8 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../components/layout/Sidebar";
+import { useUIStore } from "../../stores/uiStore";
 
 const theme = createTheme();
 
@@ -28,9 +29,15 @@ const renderWithProviders = (component: React.ReactElement) => {
 describe("Sidebar Component", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    // Reset UI store state
+    useUIStore.setState({
+      sidebarOpen: true,
+      currentPage: "/dashboard",
+      notifications: [],
+    });
   });
 
-  it("renders all menu items", () => {
+  it("renders all menu items when sidebar is open", () => {
     renderWithProviders(<Sidebar />);
 
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
@@ -44,7 +51,7 @@ describe("Sidebar Component", () => {
   it("highlights the active menu item", () => {
     renderWithProviders(<Sidebar />);
 
-    const dashboardItem = screen.getByText("Dashboard").closest("button");
+    const dashboardItem = screen.getByText("Dashboard").closest("a");
     expect(dashboardItem).toHaveClass("Mui-selected");
   });
 
@@ -57,22 +64,20 @@ describe("Sidebar Component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/payroll");
   });
 
-  it("renders with correct drawer width", () => {
+  it("does not render menu items when sidebar is closed", () => {
+    // Close the sidebar
+    useUIStore.setState({ sidebarOpen: false });
+    
     renderWithProviders(<Sidebar />);
 
-    const drawer = screen.getByRole("presentation");
-    expect(drawer).toBeInTheDocument();
+    // Menu items should not be visible when sidebar is closed
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
 
-  it("displays menu items with icons", () => {
+  it("displays menu items with correct accessibility attributes", () => {
     renderWithProviders(<Sidebar />);
 
-    // Check that all menu items are rendered
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
-    expect(screen.getByText("Folha de Pagamento")).toBeInTheDocument();
-    expect(screen.getByText("Documentos")).toBeInTheDocument();
-    expect(screen.getByText("CCT")).toBeInTheDocument();
-    expect(screen.getByText("Auditoria")).toBeInTheDocument();
-    expect(screen.getByText("Chatbot")).toBeInTheDocument();
+    const dashboardLink = screen.getByLabelText("Navegar para Dashboard");
+    expect(dashboardLink).toBeInTheDocument();
   });
 });
