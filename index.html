@@ -997,10 +997,10 @@
             console.log(`Navegando para: ${path}`);
             showNotification(`Redirecionando para ${path}...`, "info");
 
-            // Simulação de redirecionamento
+            // Redirecionamento real para o módulo
             setTimeout(() => {
-              // window.location.href = path;
-              console.log(`Módulo ${path} carregado`);
+              window.location.href = path;
+              console.log(`Navegando para módulo ${path}`);
               
               // Log successful load
               window.navigationLogger?.logNavigationSuccess(path, 'load', {

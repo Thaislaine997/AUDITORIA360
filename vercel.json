@@ -26,7 +26,7 @@
       "dest": "/assets/$1"
     },
     {
-      "src": "/(dashboard|portal_demandas|relatorios|checklist|consultor|ccts|revisao|obrigacoes|parametros|sugestoes|benchmarking|trilha).*",
+      "src": "/(dashboard|portal_demandas|dashboards|relatorios|checklist|consultor|ccts|revisao|obrigacoes|parametros|sugestoes|benchmarking|trilha).*",
       "dest": "/index.html"
     },
     {
