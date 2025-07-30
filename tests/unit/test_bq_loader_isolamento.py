@@ -101,7 +101,7 @@ def test_listar_empresas_isolamento(monkeypatch, config_cliente_a, config_client
 
 
 # Exemplo de uso correto:
-client = MagicMock()
-full_table_id = "projeto.dataset.tabela"
-sample_data = [{"col1": "valor1"}]
-load_data_to_bq(sample_data, full_table_id, client)
+# client = MagicMock()
+# full_table_id = "projeto.dataset.tabela"
+# sample_data = [{"col1": "valor1"}]
+# load_data_to_bq(sample_data, full_table_id, client, "projeto.dataset.tabela")
