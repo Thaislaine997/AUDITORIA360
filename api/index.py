@@ -69,6 +69,7 @@ try:
         notification_router,
         payroll_router,
         reports_router,
+        performance_router,
     )
     from src.api.routers.compliance import router as compliance_router
     from src.api.routers.automation import router as automation_router
@@ -89,6 +90,7 @@ except ImportError as e:
     compliance_router = APIRouter()
     automation_router = APIRouter()
     reports_router = APIRouter()
+    performance_router = APIRouter()
 
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
@@ -113,6 +115,10 @@ except ImportError as e:
     @reports_router.get("/health")
     def reports_health():
         return {"message": "Reports module - ready", "status": "ok"}
+
+    @performance_router.get("/health")
+    def performance_health():
+        return {"message": "Performance monitoring - ready", "status": "ok"}
 
 
 # Security
@@ -328,6 +334,7 @@ router_configs = [
     (ai_router, "/api/v1/ai", ["AI & Chatbot"]),
     (automation_router, "/api/v1/automation", ["Serverless Automation"]),
     (reports_router, "/api/v1/reports", ["Report Templates"]),
+    (performance_router, "/api/v1/performance", ["Performance Monitoring"]),
 ]
 
 for router, prefix, tags in router_configs:
