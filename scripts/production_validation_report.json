@@ -14,8 +14,7 @@
   ],
   "warnings": [
     "\u26a0\ufe0f No GitHub Actions workflows found",
-    "\u26a0\ufe0f Import test failed: from api.index import app",
-    "Error: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'api'\n"
+    "\u26a0\ufe0f Import test failed: from api.index import app"
   ],
   "validation_results": {
     "File Structure": false,
