@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-01-27",
+  "project": "AUDITORIA360",
+  "validation_type": "Production Deploy Validation",
+  "overall_status": "FAIL",
+  "critical_issues": [
+    "\u274c Missing essential files: ['requirements.txt', 'api/index.py', 'dashboards/app.py', 'vercel.json', '.env.template', '.env.production', '.streamlit/config.toml', '.streamlit/secrets.toml.template', 'Dockerfile', 'Makefile']",
+    "\u274c .env.production file missing",
+    "\u274c requirements.txt not found",
+    "\u274c vercel.json not found",
+    "\u274c .streamlit/config.toml not found",
+    "\u274c Dockerfile not found",
+    "\u274c .gitignore not found"
+  ],
+  "warnings": [
+    "\u26a0\ufe0f No GitHub Actions workflows found",
+    "\u26a0\ufe0f Import test failed: from api.index import app",
+    "Error: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'api'\n"
+  ],
+  "validation_results": {
+    "File Structure": false,
+    "Environment Config": false,
+    "Dependencies": false,
+    "Vercel Config": false,
+    "Streamlit Config": false,
+    "Docker Config": false,
+    "Security Measures": false,
+    "CI/CD Config": true,
+    "Basic Tests": true
+  },
+  "recommendations": [
+    "Address warning items before production deploy"
+  ]
+}
