@@ -69,3 +69,16 @@ logs/
 # Streamlit production secrets (keep template only)
 .streamlit/secrets.toml
 !.streamlit/secrets.toml.template
+
+# Database files (shouldn't be in repository)
+*.db
+*.sqlite
+*.sqlite3
+
+# Python cache and compiled files (already covered by __pycache__ but being explicit)
+*.pyc
+*.pyo
+*.pyd
+
+# Test cache
+.pytest_cache/

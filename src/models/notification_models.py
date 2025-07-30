@@ -193,6 +193,7 @@ class NotificationRule(Base):
 
     # Rule triggers
     event_type = Column(Enum(EventType), nullable=False)
+    event_id = Column(Integer, ForeignKey("events.id"), nullable=True)  # Fixed: Add missing foreign key
     conditions = Column(JSON)  # Conditions for triggering notification
 
     # Notification configuration

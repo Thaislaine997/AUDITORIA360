@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 from typing import Any, List, Optional, Union
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from .responses import ErrorDetail, validation_error
 
@@ -32,13 +32,15 @@ class PaginationParams(BaseValidationModel):
     page: int = Field(1, ge=1, le=1000, description="Page number (1-based)")
     page_size: int = Field(20, ge=1, le=100, description="Items per page")
     
-    @validator('page')
+    @field_validator('page')
+    @classmethod
     def validate_page(cls, v):
         if v < 1:
             raise validation_error("Page must be greater than 0", field="page", value=v)
         return v
     
-    @validator('page_size')
+    @field_validator('page_size')
+    @classmethod
     def validate_page_size(cls, v):
         if v > 100:
             raise validation_error("Page size cannot exceed 100", field="page_size", value=v)
@@ -51,10 +53,11 @@ class DateRangeParams(BaseValidationModel):
     start_date: Optional[datetime] = Field(None, description="Start date (ISO format)")
     end_date: Optional[datetime] = Field(None, description="End date (ISO format)")
     
-    @validator('end_date')
-    def validate_date_range(cls, v, values):
-        if v and 'start_date' in values and values['start_date']:
-            if v < values['start_date']:
+    @field_validator('end_date')
+    @classmethod 
+    def validate_date_range(cls, v, info):
+        if v and 'start_date' in info.data and info.data['start_date']:
+            if v < info.data['start_date']:
                 raise validation_error(
                     "End date must be after start date",
                     field="end_date",
@@ -69,7 +72,8 @@ class SortParams(BaseValidationModel):
     sort_by: Optional[str] = Field(None, description="Field to sort by")
     sort_order: Optional[str] = Field("asc", pattern="^(asc|desc)$", description="Sort order")
     
-    @validator('sort_order')
+    @field_validator('sort_order')
+    @classmethod
     def validate_sort_order(cls, v):
         if v not in ['asc', 'desc']:
             raise validation_error(
@@ -86,7 +90,8 @@ class StandardListParams(PaginationParams, DateRangeParams, SortParams):
     search: Optional[str] = Field(None, max_length=100, description="Search term")
     active_only: Optional[bool] = Field(None, description="Filter only active records")
     
-    @validator('search')
+    @field_validator('search')
+    @classmethod
     def validate_search(cls, v):
         if v is not None and len(v.strip()) < 2:
             raise validation_error(
