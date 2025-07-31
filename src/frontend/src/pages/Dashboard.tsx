@@ -13,7 +13,9 @@ import {
 import { 
   RocketLaunch, 
   Dashboard as DashboardIcon,
-  Psychology 
+  Psychology,
+  Nature,
+  Timeline,
 } from "@mui/icons-material";
 import {
   dashboardService,
@@ -21,12 +23,18 @@ import {
 } from "../modules/dashboard/dashboardService";
 import ChronosGalaxyView from "../components/chronos/ChronosGalaxyView";
 import ChronosAIPanteao from "../components/chronos/ChronosAIPanteao";
+import KairosOrganicDashboard from "../components/kairos/KairosOrganicDashboard";
+import ComplianceLoom from "../components/kairos/ComplianceLoom";
+import DuraLexAI from "../components/kairos/DuraLexAI";
 
 const Dashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<DashboardMetric[]>([]);
   const [loading, setLoading] = useState(true);
   const [chronosMode, setChronosMode] = useState(false);
+  const [kairosMode, setKairosMode] = useState(false);
+  const [complianceLoomMode, setComplianceLoomMode] = useState(false);
   const [showAIPanteao, setShowAIPanteao] = useState(false);
+  const [showDuraLex, setShowDuraLex] = useState(false);
 
   useEffect(() => {
     const loadMetrics = async () => {
@@ -57,6 +65,24 @@ const Dashboard: React.FC = () => {
         return "primary.main";
     }
   };
+
+  // If Kairós Organic mode is active
+  if (kairosMode) {
+    return (
+      <KairosOrganicDashboard 
+        onBackToTraditional={() => setKairosMode(false)}
+      />
+    );
+  }
+
+  // If Compliance Loom mode is active
+  if (complianceLoomMode) {
+    return (
+      <ComplianceLoom 
+        onBack={() => setComplianceLoomMode(false)}
+      />
+    );
+  }
 
   // If Chronos mode is active, render the 3D galaxy view
   if (chronosMode) {
@@ -114,11 +140,11 @@ const Dashboard: React.FC = () => {
         </Typography>
         
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Tooltip title="Ativar Panteão IA">
+          <Tooltip title="Ativar Dura Lex IA">
             <Fab
               size="small"
               color="secondary"
-              onClick={() => setShowAIPanteao(true)}
+              onClick={() => setShowDuraLex(true)}
               sx={{
                 background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
                 '&:hover': {
@@ -146,6 +172,25 @@ const Dashboard: React.FC = () => {
             >
               <RocketLaunch sx={{ mr: 1 }} />
               Ativar CHRONOS
+            </Fab>
+          </Tooltip>
+
+          <Tooltip title="Entrar no KAIRÓS - Bioma Operacional">
+            <Fab
+              color="success"
+              variant="extended"
+              onClick={() => setKairosMode(true)}
+              sx={{
+                background: 'linear-gradient(45deg, #2E7D32, #4CAF50)',
+                color: 'white',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #1B5E20, #2E7D32)',
+                  transform: 'scale(1.05)'
+                }
+              }}
+            >
+              <Nature sx={{ mr: 1 }} />
+              Ativar KAIRÓS
             </Fab>
           </Tooltip>
         </Box>
@@ -218,10 +263,88 @@ const Dashboard: React.FC = () => {
         </Paper>
       </Zoom>
 
-      {/* AI Panteão Dialog */}
+      {/* Kairós introduction card */}
+      <Zoom in>
+        <Paper
+          sx={{
+            mt: 2,
+            p: 3,
+            background: 'linear-gradient(135deg, #2E7D32 0%, #4CAF50 50%, #66BB6A 100%)',
+            color: 'white',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.02)',
+              boxShadow: '0 8px 32px rgba(46, 125, 50, 0.4)'
+            }
+          }}
+          onClick={() => setKairosMode(true)}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Nature sx={{ fontSize: 60, color: '#E8F5E8' }} />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+                🌱 MANIFESTO KAIRÓS
+              </Typography>
+              <Typography variant="h6" gutterBottom sx={{ color: '#E8F5E8' }}>
+                O Ecossistema de Orquestração Departamental
+              </Typography>
+              <Typography variant="body1" sx={{ opacity: 0.95 }}>
+                Uma nova filosofia orgânica. Visualize o Coração Pulsante da Contabilidade, 
+                navegue pelos Rios de Clientes e explore a Floresta de Colaboradores. 
+                Sinta o pulso de milhares de clientes e aja no momento exato (Kairós).
+              </Typography>
+            </Box>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                Clique para entrar
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Zoom>
+
+      {/* Compliance Loom shortcut */}
+      <Zoom in>
+        <Paper
+          sx={{
+            mt: 2,
+            p: 2,
+            background: 'linear-gradient(135deg, #795548 0%, #8D6E63 50%, #A1887F 100%)',
+            color: 'white',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.01)',
+              boxShadow: '0 4px 16px rgba(121, 85, 72, 0.4)'
+            }
+          }}
+          onClick={() => setComplianceLoomMode(true)}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Timeline sx={{ fontSize: 40, color: '#EFEBE9' }} />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+                🧵 Tear da Conformidade
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Orquestre eventos no tear do tempo. Visualize a folha como uma tapeçaria, 
+                identifique nós (erros) e lance ondas eSocial.
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Zoom>
+
+      {/* AI Dialogs */}
       <ChronosAIPanteao
         open={showAIPanteao}
         onClose={() => setShowAIPanteao(false)}
+      />
+
+      <DuraLexAI
+        open={showDuraLex}
+        onClose={() => setShowDuraLex(false)}
       />
     </Container>
   );
