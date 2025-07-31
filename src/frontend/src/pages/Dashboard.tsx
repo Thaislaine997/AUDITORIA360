@@ -7,14 +7,17 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+
 import {
   dashboardService,
   type DashboardMetric,
 } from "../modules/dashboard/dashboardService";
 
+
 const Dashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<DashboardMetric[]>([]);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const loadMetrics = async () => {
@@ -46,7 +49,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Traditional dashboard view
+
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: "center" }}>
