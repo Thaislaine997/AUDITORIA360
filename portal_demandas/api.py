@@ -4,7 +4,8 @@ Comprehensive API for managing demands/tickets with SQLAlchemy + Neon PostgreSQL
 """
 
 import logging
-from datetime import datetime
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -34,11 +35,29 @@ from portal_demandas.models import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Create FastAPI app
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """FastAPI lifespan event handler"""
+    # Startup
+    try:
+        init_portal_db()
+        logger.info("Portal demandas database initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+    
+    yield
+    
+    # Shutdown (if needed)
+    logger.info("Portal demandas API shutting down")
+
+
+# Create FastAPI app with lifespan
 app = FastAPI(
     title="Portal Demandas API",
     description="API para gerenciamento de demandas e tickets do AUDITORIA360",
     version="1.0.0",
+    lifespan=lifespan,
     tags_metadata=[
         {"name": "tickets", "description": "Operações com tickets"},
         {"name": "comments", "description": "Comentários dos tickets"},
@@ -56,17 +75,6 @@ app.add_middleware(
 )
 
 
-# Initialize database on startup
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database on startup"""
-    try:
-        init_portal_db()
-        logger.info("Portal demandas database initialized")
-    except Exception as e:
-        logger.error(f"Failed to initialize database: {e}")
-
-
 # Health check
 @app.get("/health", tags=["health"])
 def health_check():
@@ -74,7 +82,7 @@ def health_check():
     return {
         "status": "healthy",
         "service": "portal_demandas",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "version": "1.0.0",
     }
 
@@ -97,8 +105,8 @@ def criar_ticket(ticket: TicketCreate, db: Session = Depends(get_db)):
             categoria=ticket.categoria.value,
             tags=ticket.tags,
             tempo_estimado=ticket.tempo_estimado,
-            criado_em=datetime.utcnow(),
-            atualizado_em=datetime.utcnow(),
+            criado_em=datetime.now(timezone.utc),
+            atualizado_em=datetime.now(timezone.utc),
         )
 
         db.add(db_ticket)
@@ -108,7 +116,7 @@ def criar_ticket(ticket: TicketCreate, db: Session = Depends(get_db)):
         # Log creation
         logger.info(f"Ticket created: ID={db_ticket.id}, Titulo='{db_ticket.titulo}'")
 
-        return Ticket.from_orm(db_ticket)
+        return Ticket.model_validate(db_ticket)
 
     except Exception as e:
         db.rollback()
@@ -125,7 +133,7 @@ def obter_ticket(ticket_id: int, db: Session = Depends(get_db)):
     if not db_ticket:
         raise HTTPException(status_code=404, detail="Ticket não encontrado")
 
-    return Ticket.from_orm(db_ticket)
+    return Ticket.model_validate(db_ticket)
 
 
 @app.get("/tickets/", response_model=TicketListResponse, tags=["tickets"])
@@ -201,7 +209,7 @@ def listar_tickets(
         tickets = query.offset(offset).limit(per_page).all()
 
         # Convert to Pydantic models
-        ticket_list = [Ticket.from_orm(ticket) for ticket in tickets]
+        ticket_list = [Ticket.model_validate(ticket) for ticket in tickets]
 
         # Calculate processing time
         processing_time = time.time() - start_time
@@ -255,14 +263,14 @@ def atualizar_ticket(
                     setattr(db_ticket, field, value)
 
         # Update timestamp
-        db_ticket.atualizado_em = datetime.utcnow()
+        db_ticket.atualizado_em = datetime.now(timezone.utc)
 
         db.commit()
         db.refresh(db_ticket)
 
         logger.info(f"Ticket updated: ID={ticket_id}")
 
-        return Ticket.from_orm(db_ticket)
+        return Ticket.model_validate(db_ticket)
 
     except Exception as e:
         db.rollback()
@@ -322,14 +330,14 @@ def adicionar_comentario(
             autor=comment.autor,
             comentario=comment.comentario,
             tipo=comment.tipo,
-            criado_em=datetime.utcnow(),
+            criado_em=datetime.now(timezone.utc),
         )
 
         db.add(db_comment)
         db.commit()
         db.refresh(db_comment)
 
-        return TicketComment.from_orm(db_comment)
+        return TicketComment.model_validate(db_comment)
 
     except Exception as e:
         db.rollback()
@@ -355,7 +363,7 @@ def listar_comentarios(ticket_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-    return [TicketComment.from_orm(comment) for comment in comments]
+    return [TicketComment.model_validate(comment) for comment in comments]
 
 
 # Statistics endpoints with performance optimization
@@ -486,7 +494,7 @@ def atualizar_status_bulk(
             db.query(TicketDB)
             .filter(TicketDB.id.in_(ticket_ids))
             .update(
-                {"status": new_status.value, "atualizado_em": datetime.utcnow()},
+                {"status": new_status.value, "atualizado_em": datetime.now(timezone.utc)},
                 synchronize_session=False,
             )
         )
