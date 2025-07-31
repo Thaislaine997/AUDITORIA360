@@ -3,6 +3,7 @@ MCP Configuration Management for AUDITORIA360
 Handles configuration for MCP servers, clients, and development environment
 """
 
+import logging
 import os
 from enum import Enum
 from pathlib import Path
@@ -12,6 +13,8 @@ import yaml
 from pydantic import BaseModel, Field
 
 from .protocol import MCPVersion
+
+logger = logging.getLogger(__name__)
 
 
 class MCPTransportType(str, Enum):
@@ -137,7 +140,7 @@ class MCPConfigManager:
                 return self._config
 
             except Exception as e:
-                print(f"Error loading MCP configuration: {e}")
+                logger.error(f"Error loading MCP configuration: {e}")
                 return self._get_default_config()
         else:
             return self._get_default_config()
@@ -162,10 +165,10 @@ class MCPConfigManager:
             # Save individual client configurations
             self._save_client_configs()
 
-            print(f"MCP configuration saved to {self.config_file}")
+            logger.info(f"MCP configuration saved to {self.config_file}")
 
         except Exception as e:
-            print(f"Error saving MCP configuration: {e}")
+            logger.error(f"Error saving MCP configuration: {e}")
             raise
 
     def _load_server_configs(self):
@@ -179,7 +182,7 @@ class MCPConfigManager:
                 self._config.servers[server_config.name] = server_config
 
             except Exception as e:
-                print(f"Error loading server config {config_file}: {e}")
+                logger.error(f"Error loading server config {config_file}: {e}")
 
     def _load_client_configs(self):
         """Load individual client configuration files"""
@@ -192,7 +195,7 @@ class MCPConfigManager:
                 self._config.clients[client_config.name] = client_config
 
             except Exception as e:
-                print(f"Error loading client config {config_file}: {e}")
+                logger.error(f"Error loading client config {config_file}: {e}")
 
     def _save_server_configs(self):
         """Save individual server configuration files"""
@@ -202,7 +205,7 @@ class MCPConfigManager:
                 with open(config_file, "w", encoding="utf-8") as f:
                     yaml.dump(server_config.model_dump(), f, default_flow_style=False)
             except Exception as e:
-                print(f"Error saving server config {name}: {e}")
+                logger.error(f"Error saving server config {name}: {e}")
 
     def _save_client_configs(self):
         """Save individual client configuration files"""
@@ -212,7 +215,7 @@ class MCPConfigManager:
                 with open(config_file, "w", encoding="utf-8") as f:
                     yaml.dump(client_config.model_dump(), f, default_flow_style=False)
             except Exception as e:
-                print(f"Error saving client config {name}: {e}")
+                logger.error(f"Error saving client config {name}: {e}")
 
     def _get_default_config(self) -> MCPConfiguration:
         """Get default MCP configuration"""
