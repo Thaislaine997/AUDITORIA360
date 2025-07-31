@@ -10,7 +10,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "user" | "auditor";
+  role: "super_admin" | "contabilidade" | "cliente_final";
   permissions?: string[];
 }
 
@@ -35,15 +35,15 @@ export class AuthService {
   }
 
   // Login
-  async login(username: string, password: string): Promise<User> {
+  async login(credentials: { email: string; password: string }): Promise<User> {
     try {
       // In a real app, this would make an API call
       const mockResponse = {
         user: {
           id: "1",
           name: "Demo User",
-          email: "demo@auditoria360.com",
-          role: "admin" as const,
+          email: credentials.email,
+          role: "super_admin" as const,
           permissions: ["read", "write", "admin"],
         },
         tokens: {
