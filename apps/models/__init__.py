@@ -1,91 +1,17 @@
 """
-Main models module - imports all model classes and sets up the database
+Redirect module to consolidate models in src.models
+This module redirects all imports to the centralized models in src.models
+to avoid SQLAlchemy table conflicts while maintaining backward compatibility.
 """
 
-from .ai_models import (
-    AIRecommendation,
-    BotConfiguration,
-    BotType,
-    Conversation,
-    ConversationStatus,
-    IntentCategory,
-    KnowledgeBase,
-    LearningLog,
-    Message,
-    MessageType,
-)
-from .audit_models import (
-    AuditExecution,
-    AuditFinding,
-    AuditStatus,
-    AuditType,
-    ComplianceReport,
-    ComplianceRule,
-    ComplianceStatus,
-    RiskAssessment,
-    RuleSeverity,
-    ViolationType,
-)
+# Import everything from the centralized models
+from src.models import *
 
-# Import all models to ensure they're registered with SQLAlchemy
-from .auth_models import AccessLog, Permission, User, UserRole, UserStatus
-from .cct_models import (
-    CCT,
-    CCTClause,
-    CCTComparison,
-    CCTStatus,
-    CCTType,
-    CCTUpdateLog,
-    ClauseType,
-    Union,
-)
-
-# Import database configuration
-from .database import Base, SessionLocal, engine, get_db, init_db
-from .document_models import (
-    AccessLevel,
-    Document,
-    DocumentAccess,
-    DocumentCategory,
-    DocumentShare,
-    DocumentStatus,
-    DocumentTemplate,
-    DocumentType,
-    DocumentVersion,
-)
-from .notification_models import (
-    Event,
-    EventType,
-    Notification,
-    NotificationPreference,
-    NotificationPriority,
-    NotificationRule,
-    NotificationStatus,
-    NotificationTemplate,
-    NotificationType,
-)
-from .payroll_models import (
-    Employee,
-    PayrollCompetency,
-    PayrollImport,
-    PayrollItem,
-    PayrollStatus,
-    PayrollType,
-)
-from .report_models import (
-    ReportTemplate,
-    ReportBlock,
-    GeneratedReport,
-    ReportDataSource,
-    ReportType,
-    BlockType,
-)
-
-# Export all models for easy importing
+# Ensure backward compatibility
 __all__ = [
     # Database
     "Base",
-    "engine",
+    "engine", 
     "SessionLocal",
     "get_db",
     "init_db",
@@ -155,14 +81,9 @@ __all__ = [
     "IntentCategory",
     # Report models
     "ReportTemplate",
-    "ReportBlock", 
+    "ReportBlock",
     "GeneratedReport",
     "ReportDataSource",
     "ReportType",
     "BlockType",
 ]
-
-
-def create_all_tables():
-    """Create all database tables"""
-    Base.metadata.create_all(bind=engine)
