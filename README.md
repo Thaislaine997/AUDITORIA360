@@ -2,321 +2,108 @@
 
 > **Plataforma Integrada de Auditoria, Gestão da Folha e Compliance - Pós-Gênesis**
 
-Uma solução completa e moderna para auditoria de folha de pagamento, análise de CCTs (Convenções Coletivas de Trabalho), e gestão de compliance trabalhista. **Projeto Gênesis concluído - Era Kairós ativa**.
-
 [![Status](https://img.shields.io/badge/status-Era%20Kairós-success.svg)]()
 [![Gênesis](https://img.shields.io/badge/Projeto%20Gênesis-✅%20Concluído-brightgreen)]()
+[![Wiki](https://img.shields.io/badge/docs-Wiki%20Oficial-blue.svg)](https://github.com/Thaislaine997/AUDITORIA360/wiki)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
-[![Frontend Tests](https://img.shields.io/badge/frontend%20tests-92.9%25-brightgreen)]()
 
-## 🏆 Status do Projeto Gênesis
-
-### ✅ **PROJETO GÊNESIS OFICIALMENTE CONCLUÍDO** (Julho 2025)
-
-- **PR #108**: Refatoração Abrangente ✅ **CONCLUÍDA**
-- **PR #109**: Auditoria Pós-Gênesis ✅ **VALIDADA**  
-- **PR #110**: Certificação Final ✅ **APROVADA**
-- **PR #111**: Execução da Arquitetura Corporativa Unificada ✅ **IMPLEMENTADA**
-
-### 🌟 **ERA KAIRÓS INICIADA** (Agosto 2025)
-
-A AUDITORIA360 agora opera com arquitetura completamente unificada e profissional:
-- ⚡ **Arquitetura Unificada**: Backend Python + SPA React exclusivamente
-- 🔒 **Segurança Robusta**: Multi-tenant + RBAC implementados
-### 🗑️ **Legado Eliminado**: Streamlit dashboards removidos, código simplificado
-- Arquivos Python legacy do frontend removidos (components/widgets Streamlit)
-- API wrappers legados eliminados
-- Dependências Streamlit removidas do requirements.txt
-- Sistema de autenticação unificado mantido apenas para backend API
-- 📊 **Modelo Simplificado**: Funcionários com apenas 7 campos essenciais
-- 🚫 **Integrações Removidas**: Módulos desnecessários eliminados
-- 🎯 **Interface Corporativa**: UI profissional focada em eficiência
-- 📈 **Performance Otimizada**: Codebase enxuto e focado no core business
-
-## 🚀 Funcionalidades Principais (Era Kairós)
-
-- **📊 Dashboard Executivo**: Métricas e indicadores de performance em tempo real
-- **💰 Gestão de Folha Simplificada**: Análise focada com modelo de funcionário de 7 campos essenciais
-- **📋 Análise de CCTs**: Revisão automática de cláusulas e sugestões de compliance
-- **🔍 Auditoria Inteligente**: Identificação automática de riscos e irregularidades
-- **🤖 Assistente AI**: Chatbot integrado para consultas e orientações
-- **📄 Geração de Relatórios**: Templates personalizáveis para diferentes tipos de auditoria
-- **🔐 Multi-tenancy**: Isolamento seguro de dados por empresa/cliente
-- **🎯 Interface Corporativa**: Design profissional focado em eficiência e densidade de informação
-
-## 🏗️ Arquitetura
-
-
-### Frontend (Unified React SPA)
-- **React 18**: Interface moderna e responsiva
-- **TypeScript**: Tipagem estática para maior robustez
-- **Material-UI**: Componentes de interface profissionais
-- **Zustand**: Gerenciamento de estado global simplificado
-- **Vite**: Build tool ultra-rápido
-
-### Backend (Unified Python API)
-- **FastAPI**: API moderna e performática
-- **SQLAlchemy**: ORM robusto para gestão de dados
-- **PostgreSQL**: Banco de dados principal
-- **DuckDB**: Analytics de dados (substituto do BigQuery)
-- **OpenAI**: Integração de IA para análises inteligentes
-
-### Infraestrutura
-- **Docker**: Containerização da aplicação
-- **Cloudflare R2**: Armazenamento de arquivos
-- **GitHub Actions**: CI/CD automatizado
-
-## 📦 Instalação Rápida
+## 🚀 Início Rápido
 
 ### Pré-requisitos
-- Node.js 18+
-- Python 3.12+
-- Docker (opcional)
+- Node.js 18+ | Python 3.12+ | Docker (opcional)
 
-### 1. Clone o repositório
+### Configuração Básica
 ```bash
+# 1. Clone do repositório
 git clone https://github.com/Thaislaine997/AUDITORIA360.git
 cd AUDITORIA360
-```
 
-### 2. Configuração do Backend
-```bash
-# Instalar dependências Python
+# 2. Backend (FastAPI)
 pip install -r requirements.txt
-
-# Configurar variáveis de ambiente
-cp .env.template .env
-# Edite o arquivo .env com suas configurações
-
-# Executar servidor backend
+cp .env.template .env  # Configure suas variáveis
 python test_api_server.py
-```
 
-### 3. Configuração do Frontend
-```bash
-# Navegar para o frontend
+# 3. Frontend (React)
 cd src/frontend
-
-# Instalar dependências
-npm install
-
-# Executar em modo de desenvolvimento
-npm run dev
+npm install && npm run dev
 ```
 
-### 4. Verificação
-Acesse:
+### Acesso
 - **Frontend**: http://localhost:3000
-- **API**: http://localhost:8001
-- **Documentação da API**: http://localhost:8001/docs
+- **API**: http://localhost:8001  
+- **Docs API**: http://localhost:8001/docs
 
-**Usuários para teste:**
-- Admin: `admin` / `admin123` (acesso total)
-- Contabilidade: `contabilidade` / `conta123` (acesso restrito)
+**Usuários de teste:**
+- Admin: `admin` / `admin123`
+- Contabilidade: `contabilidade` / `conta123`
 
-📖 **Guia Completo**: Consulte [SETUP_GUIDE.md](./SETUP_GUIDE.md) para instruções detalhadas, deploy e troubleshooting.
+## 📚 Documentação Completa
 
-## 🔧 Configuração
+📖 **IMPORTANTE: Toda a documentação foi centralizada na [Wiki Oficial](https://github.com/Thaislaine997/AUDITORIA360/wiki)**
 
-### Variáveis de Ambiente Essenciais
+### 🗂️ Navegação Rápida
+- 🎯 **[Visão e Estratégia](https://github.com/Thaislaine997/AUDITORIA360/wiki/Vision-and-Strategy)** - Roadmap, decisões de arquitetura, status do projeto
+- 👨‍💻 **[Guias de Desenvolvedor](https://github.com/Thaislaine997/AUDITORIA360/wiki/Developer-Guides)** - Setup completo, padrões, arquitetura, contribuição
+- 🚀 **[Operações e Deploy](https://github.com/Thaislaine997/AUDITORIA360/wiki/Operations-Deploy)** - Deploy, troubleshooting, monitoramento, migração
+- 👤 **[Manuais de Usuário](https://github.com/Thaislaine997/AUDITORIA360/wiki/User-Manuals)** - Primeiros passos, guia completo, FAQ
+- 🔌 **[Referência da API](https://github.com/Thaislaine997/AUDITORIA360/wiki/API-Reference)** - Autenticação, endpoints, modelos de dados
 
-```bash
-# Segurança
-SECRET_KEY=sua_chave_secreta_aqui_minimo_32_caracteres
-ACCESS_TOKEN_EXPIRE_MINUTES=60
+## 🏆 Status do Projeto - Era Kairós
 
-# Banco de Dados
-DATABASE_URL=postgresql://username:password@host:port/database
+### ✅ **PROJETO GÊNESIS OFICIALMENTE CONCLUÍDO** (Julho 2025)
+- **PR #108-111**: Refatoração abrangente, auditoria, certificação e execução ✅ **CONCLUÍDAS**
 
-# OpenAI
-OPENAI_API_KEY=sua_chave_openai_aqui
+### 🌟 **ERA KAIRÓS ATIVA** (Agosto 2025)
+- ⚡ **Arquitetura Unificada**: Backend Python + SPA React exclusivamente
+- 🔒 **Segurança Robusta**: Multi-tenant + RBAC implementados  
+- 🗑️ **Legado Eliminado**: Streamlit removido, código simplificado
+- 📊 **Modelo Simplificado**: Funcionários com 7 campos essenciais
+- 🎯 **Interface Corporativa**: UI profissional focada em eficiência
+- 📈 **Performance Otimizada**: < 100ms (p95)
 
-# Multi-tenant
-ENABLE_TENANT_ISOLATION=true
-ENFORCE_COMPANY_FILTERING=true
-```
-
-Consulte o arquivo `.env.template` para uma lista completa das configurações disponíveis.
-
-## 📁 Estrutura do Projeto
-
-```
-AUDITORIA360/
-├── 📂 src/                      # Código fonte principal
-│   ├── api/                     # API Backend (FastAPI)
-│   │   └── routers/             # Rotas da API
-│   ├── auth/                    # Sistema de autenticação
-│   ├── core/                    # Funcionalidades centrais
-│   ├── models/                  # Modelos de dados
-│   ├── services/                # Camada de serviços
-│   └── frontend/                # Aplicação React
-│       ├── src/
-│       │   ├── components/      # Componentes reutilizáveis
-│       │   ├── pages/           # Páginas da aplicação
-│       │   ├── stores/          # Gerenciamento de estado (Zustand)
-│       │   ├── modules/         # Módulos específicos
-│       │   └── services/        # Serviços do frontend
-│       ├── package.json
-│       └── vite.config.ts
-├── 📂 config/                   # Configurações unificadas
-├── 📂 docs-source/              # Documentação centralizada
-├── 📂 tests/                    # Testes automatizados
-├── 📂 .github/workflows/        # Automações CI/CD
-├── 📄 test_api_server.py        # Servidor de testes da API
-├── 📄 SETUP_GUIDE.md            # Guia completo de configuração
-└── 📄 requirements.txt          # Dependências Python
-```
-
-## 🧪 Testes
-
-### Backend
-```bash
-# Executar todos os testes
-python -m pytest
-
-# Testes específicos
-python -m pytest tests/unit/
-python -m pytest tests/integration/
-```
+## 🛠️ Stack Tecnológica
 
 ### Frontend
+**React 18** + TypeScript + Material-UI + Zustand + Vite
+
+### Backend  
+**Python 3.12** + FastAPI + SQLAlchemy + PostgreSQL + DuckDB + Redis
+
+### Infraestrutura
+**Docker** + GitHub Actions + Cloudflare + Prometheus + Grafana
+
+## 🧪 Comandos Úteis
+
 ```bash
-cd src/frontend
+# Testes
+make test                 # Executar todos os testes
+make test-coverage        # Testes com cobertura
+make lint                 # Linting do código
 
-# Executar testes
-npm run test
-
-# Testes com cobertura
-npm run test:coverage
-
-# Testes em modo watch
-npm run test:ui
+# Deploy
+make build               # Build da aplicação
+make deploy              # Deploy completo
+make checklist           # Validação do Master Checklist
 ```
-
-## 🔍 Master Execution Checklist
-
-O projeto inclui um sistema abrangente de validação que garante a qualidade e integridade de todos os arquivos antes do merge:
-
-### Validação Rápida
-```bash
-# Verificação rápida de todos os arquivos
-make checklist
-
-# Verificação detalhada
-make checklist-verbose
-
-# Relatório completo
-make checklist-all
-```
-
-### Métricas Atuais
-- **Total de Arquivos**: 589 arquivos monitorados
-- **Taxa de Conclusão**: 92.9% (Projeto Gênesis concluído)
-- **Status**: ✨ **Era Kairós ativa! Otimização e crescimento.**
-
-### Marcos Históricos
-- ✅ **Julho 2025**: Projeto Gênesis concluído oficialmente
-- ✅ **Agosto 2025**: Era Kairós iniciada
-- ✅ Validação automática em PRs
-- ✅ Relatórios diários programados  
-- ✅ Comentários automáticos com status
-- ✅ Dashboard web interativo
-
-Para mais detalhes, consulte: [Certificação Gênesis](CERTIFICACAO_GENESIS_RELATORIO_FINAL.md)
-
-## 📚 Documentação
-
-A documentação completa está disponível em:
-- **[Wiki do GitHub](https://github.com/Thaislaine997/AUDITORIA360/wiki)** (sincronizada automaticamente)
-- **[Documentação de Desenvolvimento](docs-source/developer-guides/)**
-- **[Guias do Usuário](docs-source/user-manuals/)**
-- **[Referência da API](docs-source/api-reference/)**
-
-## 🔒 Segurança e Controle de Acesso
-
-### 🔐 Sistema de Roles Implementado
-
-O AUDITORIA360 agora conta com controle completo de acesso baseado em roles:
-
-#### **Administradora Master** 
-- ✅ Acesso total ao sistema
-- ✅ Gestão de usuários e contabilidades
-- ✅ Configurações globais
-- ✅ Todos os relatórios e dados
-
-#### **Clientes Contabilidade**
-- ✅ Acesso apenas aos próprios clientes
-- ✅ Relatórios da própria contabilidade
-- ❌ Gestão de usuários
-- ❌ Acesso a outras contabilidades
-
-### Recursos de Segurança Implementados
-- ✅ Autenticação JWT com expiração configurável
-- ✅ Isolamento automático de dados por empresa
-- ✅ Interface adaptativa baseada no perfil do usuário
-- ✅ Validação de entrada em todas as APIs
-- ✅ Headers de segurança configurados
-- ✅ Rate limiting implementado
-- ✅ Logs de auditoria completos
-
-### Usuários de Demonstração
-- **Admin**: `admin` / `admin123` - Acesso completo
-- **Contabilidade**: `contabilidade` / `conta123` - Acesso restrito
-
-## 🚀 Deploy
-
-### Produção com Docker
-```bash
-# Build das imagens
-docker-compose build
-
-# Executar em produção
-docker-compose up -d
-```
-
-### Deploy na Nuvem
-Consulte o [Guia de Deploy](docs-source/DEPLOYMENT_GUIDE.md) para instruções específicas de cada provedor.
 
 ## 🤝 Contribuição
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-Consulte [CONTRIBUTING.md](docs-source/developer-guides/contributing.md) para diretrizes detalhadas.
-
-## 🌟 Próxima Fase: Era Kairós
-
-### 🎯 **Roadmap Q4 2025**
-- [ ] **Sprint de Otimização**: Testes de carga + auditoria de segurança
-- [ ] **Sprint de UX**: Polimento da experiência do usuário  
-- [ ] **Sprint de Migração**: Transição segura dos dados legados
-- [ ] **Rios de Clientes**: Visualizações avançadas de dados
-- [ ] **Árvores de Colaboradores**: Mapeamento organizacional inteligente
-
-### 📊 **Métricas Era Kairós**
-- **Performance**: < 100ms (p95)
-- **Capacidade**: 10,000+ usuários simultâneos
-- **Satisfação**: NPS > 80
-- **Migração**: 100% dados legados
-- **Componentes**: 5 novos widgets Kairós
-
-Para detalhes completos: [Plano Kairós Fase 2](docs-source/strategic/PLANO_ACAO_KAIROS_FASE2.md)
-
-## 📄 Licença
-
-Este projeto está licenciado sob a [MIT License](LICENSE).
+1. Consulte o **[Guia de Contribuição](https://github.com/Thaislaine997/AUDITORIA360/wiki/Developer-Guides/Contributing)** na Wiki
+2. Faça fork do projeto
+3. Crie sua feature branch (`git checkout -b feature/AmazingFeature`)
+4. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+5. Push para a branch (`git push origin feature/AmazingFeature`)
+6. Abra um Pull Request
 
 ## 📞 Suporte
 
-- **📧 Email**: suporte@auditoria360.com
-- **💬 Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
 - **📖 Wiki**: [Documentação Completa](https://github.com/Thaislaine997/AUDITORIA360/wiki)
+- **💬 Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
+- **📧 Email**: suporte@auditoria360.com
+- **🔧 Troubleshooting**: [Guia na Wiki](https://github.com/Thaislaine997/AUDITORIA360/wiki/Operations-Deploy/Troubleshooting)
 
 ---
 
-**Desenvolvido com ❤️ pela equipe AUDITORIA360**
+**📝 Nota**: Esta documentação README foi simplificada como parte do **Projeto Alexandria** - migração da documentação para a Wiki. Para informações detalhadas, consulte sempre a **[Wiki Oficial](https://github.com/Thaislaine997/AUDITORIA360/wiki)**.
 
-*"Transformando a auditoria trabalhista através da tecnologia"*
+**Desenvolvido com ❤️ pela equipe AUDITORIA360** | *"Transformando a auditoria trabalhista através da tecnologia"*
