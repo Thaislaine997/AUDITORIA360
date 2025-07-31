@@ -28,10 +28,8 @@ python-jose[cryptography]
 passlib[bcrypt]
 pydantic[email]
 
-# Dashboard Frontend
-streamlit
+# Dashboard Frontend (React SPA only)
 plotly
-streamlit-authenticator
 
 # MCP Integration Dependencies
 pydantic>=2.0.0
