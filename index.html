@@ -2,98 +2,19 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/assets/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AUDITORIA360 - Portal de Gestão da Folha</title>
     <meta
       name="description"
       content="Portal seguro, inteligente e integrado para centralizar, automatizar e auditar todos os processos de folha de pagamento"
     />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="./assets/logo.png" />
-
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-          sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .redirect-container {
-        text-align: center;
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-      }
-
-      .logo {
-        height: 60px;
-        margin-bottom: 1rem;
-      }
-
-      .title {
-        color: #1976d2;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-
-      .subtitle {
-        color: #666;
-        margin-bottom: 1.5rem;
-      }
-
-      .loading {
-        color: #1976d2;
-        font-size: 0.9rem;
-      }
-
-      .spinner {
-        border: 2px solid #f3f3f3;
-        border-top: 2px solid #1976d2;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 1rem;
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    </style>
+    <script type="module" crossorigin src="/assets/index-BF9pKsfm.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-DFrXMbSk.js">
+    <link rel="modulepreload" crossorigin href="/assets/mui-DRbYYFBS.js">
+    <link rel="modulepreload" crossorigin href="/assets/utils-CfYBU_sI.js">
   </head>
   <body>
-    <div class="redirect-container">
-      <img src="./assets/logo.png" alt="AUDITORIA360" class="logo" onerror="this.style.display='none'">
-      <h1 class="title">AUDITORIA360</h1>
-      <p class="subtitle">Redirecionando para o novo portal...</p>
-      <div class="spinner"></div>
-      <p class="loading">Carregando aplicação React...</p>
-    </div>
-
-    <script>
-      // Redirect to the React application
-      setTimeout(() => {
-        window.location.href = './src/frontend/index.html';
-      }, 2000);
-
-      // Immediate redirect for development
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        setTimeout(() => {
-          window.location.href = 'http://localhost:3000';
-        }, 1000);
-      }
-    </script>
+    <div id="root"></div>
   </body>
 </html>

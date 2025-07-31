@@ -18,6 +18,9 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Frontend build assets in root (deployed)
+/assets/
 package-lock.json
 yarn.lock
 

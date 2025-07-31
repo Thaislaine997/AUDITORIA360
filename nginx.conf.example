@@ -1,0 +1,47 @@
+# Nginx configuration for React SPA
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/your/app;
+    index index.html;
+
+    # Serve static assets with caching
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # Handle client-side routing
+    location / {
+        try_files $uri $uri/ /index.html;
+        
+        # Security headers
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    }
+
+    # Prevent access to source files and internal directories
+    location ~ ^/(src|node_modules)/ {
+        return 404;
+    }
+    
+    location ~ \.(tsx?|jsx?|ts|js\.map)$ {
+        return 404;
+    }
+
+    # Gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types
+        text/plain
+        text/css
+        text/xml
+        text/javascript
+        application/javascript
+        application/xml+rss
+        application/json;
+}
