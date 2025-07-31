@@ -84,7 +84,7 @@ const navigationItems: MenuItem[] = [
         label: 'Usuários',
         path: '/gestao/usuarios',
         icon: <PeopleIcon />,
-        roles: ['super_admin', 'contabilidade'], // Gestors and super admin
+        roles: ['super_admin'], // Only super admin can manage users
       },
     ],
   },

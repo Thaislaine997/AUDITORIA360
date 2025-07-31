@@ -87,6 +87,9 @@ pip install -r requirements.txt
 # Configurar variáveis de ambiente
 cp .env.template .env
 # Edite o arquivo .env com suas configurações
+
+# Executar servidor backend
+python test_api_server.py
 ```
 
 ### 3. Configuração do Frontend
@@ -101,19 +104,17 @@ npm install
 npm run dev
 ```
 
-### 4. Execução
-```bash
-# Backend (raiz do projeto)
-python test_api_server.py
-
-# Frontend (em outro terminal)
-cd src/frontend && npm run dev
-```
-
+### 4. Verificação
 Acesse:
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:8001
 - **Documentação da API**: http://localhost:8001/docs
+
+**Usuários para teste:**
+- Admin: `admin` / `admin123` (acesso total)
+- Contabilidade: `contabilidade` / `conta123` (acesso restrito)
+
+📖 **Guia Completo**: Consulte [SETUP_GUIDE.md](./SETUP_GUIDE.md) para instruções detalhadas, deploy e troubleshooting.
 
 ## 🔧 Configuração
 
@@ -141,20 +142,29 @@ Consulte o arquivo `.env.template` para uma lista completa das configurações d
 
 ```
 AUDITORIA360/
-├── 📂 apps/                    # Módulos organizados da aplicação
-│   ├── auth/                   # Sistema de autenticação
-│   ├── core/                   # Funcionalidades centrais
-│   ├── models/                 # Modelos de dados
-│   └── services/               # Camada de serviços
-├── 📂 config/                  # Configurações unificadas
-├── 📂 src/frontend/            # Aplicação React
-│   ├── components/             # Componentes reutilizáveis
-│   ├── pages/                  # Páginas da aplicação
-│   ├── stores/                 # Gerenciamento de estado (Zustand)
-│   └── modules/                # Módulos específicos
-├── 📂 docs-source/             # Documentação centralizada
-├── 📂 tests/                   # Testes automatizados
-└── 📂 .github/workflows/       # Automações CI/CD
+├── 📂 src/                      # Código fonte principal
+│   ├── api/                     # API Backend (FastAPI)
+│   │   └── routers/             # Rotas da API
+│   ├── auth/                    # Sistema de autenticação
+│   ├── core/                    # Funcionalidades centrais
+│   ├── models/                  # Modelos de dados
+│   ├── services/                # Camada de serviços
+│   └── frontend/                # Aplicação React
+│       ├── src/
+│       │   ├── components/      # Componentes reutilizáveis
+│       │   ├── pages/           # Páginas da aplicação
+│       │   ├── stores/          # Gerenciamento de estado (Zustand)
+│       │   ├── modules/         # Módulos específicos
+│       │   └── services/        # Serviços do frontend
+│       ├── package.json
+│       └── vite.config.ts
+├── 📂 config/                   # Configurações unificadas
+├── 📂 docs-source/              # Documentação centralizada
+├── 📂 tests/                    # Testes automatizados
+├── 📂 .github/workflows/        # Automações CI/CD
+├── 📄 test_api_server.py        # Servidor de testes da API
+├── 📄 SETUP_GUIDE.md            # Guia completo de configuração
+└── 📄 requirements.txt          # Dependências Python
 ```
 
 ## 🧪 Testes
@@ -222,21 +232,36 @@ A documentação completa está disponível em:
 - **[Guias do Usuário](docs-source/user-manuals/)**
 - **[Referência da API](docs-source/api-reference/)**
 
-## 🔒 Segurança
+## 🔒 Segurança e Controle de Acesso
+
+### 🔐 Sistema de Roles Implementado
+
+O AUDITORIA360 agora conta com controle completo de acesso baseado em roles:
+
+#### **Administradora Master** 
+- ✅ Acesso total ao sistema
+- ✅ Gestão de usuários e contabilidades
+- ✅ Configurações globais
+- ✅ Todos os relatórios e dados
+
+#### **Clientes Contabilidade**
+- ✅ Acesso apenas aos próprios clientes
+- ✅ Relatórios da própria contabilidade
+- ❌ Gestão de usuários
+- ❌ Acesso a outras contabilidades
 
 ### Recursos de Segurança Implementados
-- ✅ Isolamento multi-tenant automático
-- ✅ Autenticação JWT com expiração
+- ✅ Autenticação JWT com expiração configurável
+- ✅ Isolamento automático de dados por empresa
+- ✅ Interface adaptativa baseada no perfil do usuário
 - ✅ Validação de entrada em todas as APIs
 - ✅ Headers de segurança configurados
 - ✅ Rate limiting implementado
 - ✅ Logs de auditoria completos
 
-### Boas Práticas
-- Todas as senhas são hashadas com bcrypt
-- Secrets gerenciados via variáveis de ambiente
-- Validação de permissões em tempo de execução
-- Isolamento de dados por empresa garantido
+### Usuários de Demonstração
+- **Admin**: `admin` / `admin123` - Acesso completo
+- **Contabilidade**: `contabilidade` / `conta123` - Acesso restrito
 
 ## 🚀 Deploy
 
