@@ -1,0 +1,150 @@
+name: Master Execution Checklist Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  validate-checklist:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml
+        
+    - name: Run Master Execution Checklist Validation
+      run: |
+        python scripts/master_execution_checklist.py --output-format json --output-file checklist-validation.json
+        python scripts/master_execution_checklist.py --output-format markdown --output-file MASTER_EXECUTION_CHECKLIST_REPORT.md
+        python scripts/master_execution_checklist.py --output-format html --output-file checklist-report.html
+        
+    - name: Display Summary
+      run: |
+        echo "## 🔍 Master Execution Checklist Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Extract summary from JSON
+        TOTAL_FILES=$(cat checklist-validation.json | python -c "import sys, json; data=json.load(sys.stdin); print(data['summary']['total_files'])")
+        FILES_FOUND=$(cat checklist-validation.json | python -c "import sys, json; data=json.load(sys.stdin); print(data['summary']['files_found'])")
+        FILES_VALID=$(cat checklist-validation.json | python -c "import sys, json; data=json.load(sys.stdin); print(data['summary']['files_valid'])")
+        COMPLETION=$(cat checklist-validation.json | python -c "import sys, json; data=json.load(sys.stdin); print(f\"{data['summary']['overall_completion_percentage']:.1f}%\")")
+        
+        echo "- **Total de Arquivos**: $TOTAL_FILES" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos Encontrados**: $FILES_FOUND" >> $GITHUB_STEP_SUMMARY
+        echo "- **Arquivos Válidos**: $FILES_VALID" >> $GITHUB_STEP_SUMMARY
+        echo "- **Percentual de Conclusão**: $COMPLETION" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Add status badge
+        if [ "$COMPLETION" = "100.0%" ]; then
+          echo "🟢 **Status**: COMPLETO" >> $GITHUB_STEP_SUMMARY
+        elif (( $(echo "$COMPLETION" | cut -d'%' -f1 | cut -d'.' -f1) >= 90 )); then
+          echo "🟡 **Status**: QUASE COMPLETO" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "🔴 **Status**: INCOMPLETO" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+    - name: Upload validation reports as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: master-checklist-validation-reports
+        path: |
+          checklist-validation.json
+          MASTER_EXECUTION_CHECKLIST_REPORT.md
+          checklist-report.html
+          
+    - name: Comment PR with checklist status
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          
+          // Read validation data
+          const validationData = JSON.parse(fs.readFileSync('checklist-validation.json', 'utf8'));
+          const summary = validationData.summary;
+          
+          // Create comment body
+          const completion = summary.overall_completion_percentage.toFixed(1);
+          let statusIcon = '🔴';
+          let statusText = 'INCOMPLETO';
+          
+          if (completion === '100.0') {
+            statusIcon = '🟢';
+            statusText = 'COMPLETO';
+          } else if (completion >= 90) {
+            statusIcon = '🟡';
+            statusText = 'QUASE COMPLETO';
+          }
+          
+          const commentBody = `## ${statusIcon} Master Execution Checklist - ${statusText}
+          
+          **Validação automática executada em**: ${new Date().toISOString()}
+          
+          ### 📊 Resumo Geral
+          - **Total de Arquivos**: ${summary.total_files}
+          - **Arquivos Encontrados**: ${summary.files_found}
+          - **Arquivos Válidos**: ${summary.files_valid}
+          - **Percentual de Conclusão**: ${completion}%
+          
+          ### 📋 Status por Seção
+          `;
+          
+          let sectionDetails = '';
+          for (const [sectionName, sectionData] of Object.entries(validationData.sections)) {
+            const sectionCompletion = sectionData.completion_percentage.toFixed(1);
+            let sectionIcon = '🔴';
+            
+            if (sectionCompletion === '100.0') {
+              sectionIcon = '✅';
+            } else if (sectionCompletion >= 80) {
+              sectionIcon = '🟡';
+            }
+            
+            const sectionTitle = sectionName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            sectionDetails += `- ${sectionIcon} **${sectionTitle}**: ${sectionCompletion}% (${sectionData.files_valid}/${sectionData.total_files})\n`;
+          }
+          
+          const fullComment = commentBody + sectionDetails + `
+          
+          📄 Relatórios detalhados estão disponíveis nos artefatos desta execução.
+          `;
+          
+          // Post comment
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: fullComment
+          });
+          
+    - name: Fail if checklist completion is below threshold
+      run: |
+        COMPLETION=$(cat checklist-validation.json | python -c "import sys, json; data=json.load(sys.stdin); print(data['summary']['overall_completion_percentage'])")
+        
+        # Set minimum completion threshold (e.g., 85%)
+        THRESHOLD=85.0
+        
+        if (( $(echo "$COMPLETION < $THRESHOLD" | bc -l) )); then
+          echo "❌ Checklist completion ($COMPLETION%) is below threshold ($THRESHOLD%)"
+          echo "Please ensure all required files are present and valid before merging."
+          exit 1
+        else
+          echo "✅ Checklist completion ($COMPLETION%) meets threshold ($THRESHOLD%)"
+        fi

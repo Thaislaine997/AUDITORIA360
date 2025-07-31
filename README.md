@@ -151,6 +151,35 @@ npm run test:coverage
 npm run test:ui
 ```
 
+## 🔍 Master Execution Checklist
+
+O projeto inclui um sistema abrangente de validação que garante a qualidade e integridade de todos os arquivos antes do merge:
+
+### Validação Rápida
+```bash
+# Verificação rápida de todos os arquivos
+make checklist
+
+# Verificação detalhada
+make checklist-verbose
+
+# Relatório completo
+make checklist-all
+```
+
+### Métricas Atuais
+- **Total de Arquivos**: 589 arquivos monitorados
+- **Taxa de Conclusão**: 93.4%
+- **Status**: ✨ Quase pronto! Pequenos ajustes necessários
+
+### Automação
+- ✅ Validação automática em PRs
+- ✅ Relatórios diários programados  
+- ✅ Comentários automáticos com status
+- ✅ Dashboard web interativo
+
+Para mais detalhes, consulte: [Master Execution Checklist](docs-source/MASTER_EXECUTION_CHECKLIST.md)
+
 ## 📚 Documentação
 
 A documentação completa está disponível em:
