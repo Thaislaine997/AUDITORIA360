@@ -31,8 +31,8 @@ Todos os componentes do backend, incluindo APIs, modelos, serviços e utilitári
 
 **Arquivos incluídos**: 175 arquivos
 - APIs (`api/*`, `src/api/*`)
-- Modelos de dados (`apps/models/*`, `src/models/*`)
-- Serviços (`apps/services/*`, `services/*`)
+- Modelos de dados (`src/models/*`)
+- Serviços (`src/services/*`, `services/*`)
 - Configurações (`config/*`)
 - Schemas (`src/schemas/*`)
 
