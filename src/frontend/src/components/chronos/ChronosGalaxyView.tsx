@@ -1,8 +1,9 @@
 import React, { useRef, useMemo, useState } from 'react';
 import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
-import { Box, Typography, IconButton, Paper, Fade } from '@mui/material';
-import { ArrowBack, Settings, Help } from '@mui/icons-material';
+import { Box, Typography, IconButton, Paper, Fade, Fab, Tooltip } from '@mui/material';
+import { ArrowBack, Settings, Help, AccountTree } from '@mui/icons-material';
 import * as THREE from 'three';
+import ChronosWorkflowAltar from './ChronosWorkflowAltar';
 
 // Extend with OrbitControls
 import { OrbitControls } from 'three-stdlib';
@@ -229,6 +230,7 @@ const ChronosGalaxyView: React.FC<ChronosGalaxyViewProps> = ({ onBackToTradition
   const [selectedStar, setSelectedStar] = useState<ContabilidadeData | null>(null);
   const [hoveredStar, setHoveredStar] = useState<ContabilidadeData | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [showWorkflowAltar, setShowWorkflowAltar] = useState(false);
 
   const handleStarClick = (data: ContabilidadeData) => {
     setSelectedStar(data);
@@ -280,6 +282,15 @@ const ChronosGalaxyView: React.FC<ChronosGalaxyViewProps> = ({ onBackToTradition
           >
             <Settings />
           </IconButton>
+          <Tooltip title="Abrir Altar da Automação">
+            <IconButton 
+              color="primary"
+              onClick={() => setShowWorkflowAltar(true)}
+              sx={{ bgcolor: 'rgba(255,255,255,0.1)' }}
+            >
+              <AccountTree />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
 
@@ -312,6 +323,9 @@ const ChronosGalaxyView: React.FC<ChronosGalaxyViewProps> = ({ onBackToTradition
           </Typography>
           <Typography variant="body2">
             • Clique em uma estrela para navegar ao sistema
+          </Typography>
+          <Typography variant="body2">
+            • Use o ícone de árvore para acessar o Altar da Automação
           </Typography>
         </Paper>
       </Fade>
@@ -384,6 +398,12 @@ const ChronosGalaxyView: React.FC<ChronosGalaxyViewProps> = ({ onBackToTradition
 
         <CameraController />
       </Canvas>
+
+      {/* Workflow Altar Dialog */}
+      <ChronosWorkflowAltar
+        open={showWorkflowAltar}
+        onClose={() => setShowWorkflowAltar(false)}
+      />
     </Box>
   );
 };
