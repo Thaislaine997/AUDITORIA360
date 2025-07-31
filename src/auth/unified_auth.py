@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-import streamlit as st
+
 import yaml
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -318,52 +318,6 @@ class UnifiedAuthManager:
         # In JWT, logout is mainly client-side token removal
         # This is for server-side audit logging
         return {"message": "Successfully logged out", "status": "success"}
-
-    def get_streamlit_auth_status(self) -> Dict[str, Any]:
-        """Get authentication status for Streamlit integration"""
-        if "authentication_status" not in st.session_state:
-            return {"authenticated": False, "user": None}
-
-        if st.session_state.get("authentication_status") and st.session_state.get(
-            "api_token"
-        ):
-            user = self.get_current_user_from_token(st.session_state.get("api_token"))
-            return {"authenticated": True, "user": user}
-
-        return {"authenticated": False, "user": None}
-
-    def streamlit_login(self, username: str, password: str) -> bool:
-        """Streamlit-specific login method"""
-        try:
-            login_result = self.login(username, password)
-
-            # Store in Streamlit session
-            st.session_state["authentication_status"] = True
-            st.session_state["api_token"] = login_result["access_token"]
-            st.session_state["username"] = username
-            st.session_state["name"] = login_result["user"]["name"]
-            st.session_state["email"] = login_result["user"]["email"]
-            st.session_state["roles"] = login_result["user"]["roles"]
-
-            return True
-        except HTTPException:
-            return False
-
-    def streamlit_logout(self):
-        """Streamlit-specific logout method"""
-        keys_to_clear = [
-            "authentication_status",
-            "api_token",
-            "username",
-            "name",
-            "email",
-            "roles",
-            "password",
-        ]
-
-        for key in keys_to_clear:
-            if key in st.session_state:
-                del st.session_state[key]
 
 
 # Global instance

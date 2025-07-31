@@ -23,7 +23,11 @@ Uma solução completa e moderna para auditoria de folha de pagamento, análise 
 A AUDITORIA360 agora opera com arquitetura completamente unificada e profissional:
 - ⚡ **Arquitetura Unificada**: Backend Python + SPA React exclusivamente
 - 🔒 **Segurança Robusta**: Multi-tenant + RBAC implementados
-- 🗑️ **Legado Eliminado**: Streamlit dashboards removidos, código simplificado
+### 🗑️ **Legado Eliminado**: Streamlit dashboards removidos, código simplificado
+- Arquivos Python legacy do frontend removidos (components/widgets Streamlit)
+- API wrappers legados eliminados
+- Dependências Streamlit removidas do requirements.txt
+- Sistema de autenticação unificado mantido apenas para backend API
 - 📊 **Modelo Simplificado**: Funcionários com apenas 7 campos essenciais
 - 🚫 **Integrações Removidas**: Módulos desnecessários eliminados
 - 🎯 **Interface Corporativa**: UI profissional focada em eficiência
