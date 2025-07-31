@@ -1,0 +1,17 @@
+# Legacy reference - actual implementation in src/core/config.json
+import json
+import os
+
+# Import the actual config
+config_path = os.path.join(os.path.dirname(__file__), '../../src/core/config.json')
+if os.path.exists(config_path):
+    with open(config_path, 'r') as f:
+        config_data = json.load(f)
+else:
+    # Fallback config for compatibility
+    config_data = {
+        "app_name": "AUDITORIA360",
+        "version": "Era Kairós v1.0",
+        "api_version": "v1",
+        "environment": "production"
+    }
