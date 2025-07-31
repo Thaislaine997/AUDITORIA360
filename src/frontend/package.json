@@ -11,6 +11,9 @@
     "@mui/material": "^5.15.0",
     "@mui/x-data-grid": "^6.18.0",
     "@mui/x-date-pickers": "^6.18.0",
+    "@react-three/drei": "^9.77.1",
+    "@react-three/fiber": "^8.13.7",
+    "@types/three": "^0.178.1",
     "axios": "^1.6.0",
     "date-fns": "^2.30.0",
     "jspdf": "^2.5.1",
@@ -22,6 +25,8 @@
     "react-query": "^3.39.0",
     "react-router-dom": "^6.20.0",
     "recharts": "^2.8.0",
+    "three": "^0.178.0",
+    "three-stdlib": "^2.36.0",
     "yup": "^1.4.0",
     "zustand": "^5.0.6"
   },
