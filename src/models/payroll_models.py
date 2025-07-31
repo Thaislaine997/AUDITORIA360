@@ -44,43 +44,22 @@ class Employee(Base):
     __tablename__ = "employees"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(String(50), unique=True, nullable=False, index=True)
-    full_name = Column(String(255), nullable=False)
-    cpf = Column(String(14), unique=True, nullable=False)
-    pis_pasep = Column(String(15))
+    
+    # 7 essential fields as required
+    nome = Column(String(255), nullable=False)  # nome (full_name)
+    codigo = Column(String(50), unique=True, nullable=False, index=True)  # código (employee_id)
+    admissao = Column(DateTime, nullable=False)  # admissão (hire_date)
+    salario = Column(Float, nullable=False)  # salário (salary)
+    dependentes = Column(Integer, default=0)  # dependentes (number of dependents)
+    cpf = Column(String(14), unique=True, nullable=False)  # cpf
+    cargo = Column(String(100), nullable=False)  # cargo (position)
+    cbo = Column(String(10))  # cbo (Brazilian Occupation Classification)
 
-    # Personal information
-    birth_date = Column(DateTime)
-    gender = Column(String(10))
-    marital_status = Column(String(20))
-    email = Column(String(255))
-    phone = Column(String(20))
-
-    # Address
-    address = Column(Text)
-    city = Column(String(100))
-    state = Column(String(2))
-    zip_code = Column(String(10))
-
-    # Employment information
-    hire_date = Column(DateTime, nullable=False)
-    termination_date = Column(DateTime)
-    department = Column(String(100))
-    position = Column(String(100))
-    salary = Column(Float, nullable=False)
-    work_schedule = Column(String(50))
-
-    # Status
+    # Status and audit fields (minimal required)
     is_active = Column(Boolean, default=True)
-
-    # Audit fields
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     created_by_id = Column(Integer, ForeignKey("users.id"))
-
-    # LGPD Compliance
-    consent_given = Column(Boolean, default=False)
-    consent_date = Column(DateTime(timezone=True))
 
     # Relationships
     payroll_items = relationship("PayrollItem", back_populates="employee")

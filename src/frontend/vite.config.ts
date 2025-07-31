@@ -23,5 +23,17 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          mui: ['@mui/material', '@mui/icons-material', '@mui/x-data-grid'],
+          charts: ['recharts'],
+          forms: ['react-hook-form', '@hookform/resolvers', 'yup'],
+          utils: ['date-fns', 'axios', 'zustand']
+        }
+      }
+    }
   },
 });

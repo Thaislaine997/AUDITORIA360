@@ -4,11 +4,9 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import KeyboardNavigation from "./components/ui/KeyboardNavigation";
-import GamificationToast, { achievements } from "./components/ui/GamificationToast";
 import { useAuthStore } from "./stores/authStore";
 import { useUIStore } from "./stores/uiStore";
 import { useNavigationStore } from "./stores/navigationStore";
-import { useGamificationStore } from "./stores/gamificationStore";
 
 // Lazy loaded pages
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
@@ -53,9 +51,6 @@ function App() {
   const { isAuthenticated, loading } = useAuthStore();
   const { sidebarOpen } = useUIStore();
   const { sidebarCollapsed } = useNavigationStore();
-  const { toastQueue, dismissToast, recordActivity } = useGamificationStore();
-  
-  const [currentAchievement, setCurrentAchievement] = React.useState<any>(null);
   
   // Calculate sidebar width
   const getSidebarWidth = () => {
@@ -67,36 +62,6 @@ function App() {
     // Initialize auth state
     useAuthStore.getState().checkAuth();
   }, []);
-
-  // Handle gamification toasts
-  React.useEffect(() => {
-    if (toastQueue.length > 0) {
-      const toast = toastQueue[0];
-      
-      if (toast.type === 'achievement') {
-        // Find the achievement from our predefined list
-        const achievement = achievements.find(a => a.id === toast.data.achievement.id) || {
-          id: toast.data.achievement.id,
-          title: toast.data.achievement.title,
-          description: toast.data.achievement.description,
-          icon: toast.data.achievement.icon || '🏆',
-          color: 'primary' as const,
-          rarity: 'comum' as const,
-          points: toast.data.achievement.xpReward || 50,
-          category: toast.data.achievement.category || 'Geral',
-        };
-        
-        setCurrentAchievement(achievement);
-      }
-    }
-  }, [toastQueue]);
-
-  // Record activity for gamification
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      recordActivity();
-    }
-  }, [isAuthenticated, recordActivity]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -159,16 +124,6 @@ function App() {
           </Suspense>
         </Box>
       </Box>
-      
-      {/* Gamification Toast */}
-      <GamificationToast
-        achievement={currentAchievement}
-        open={!!currentAchievement}
-        onClose={() => {
-          setCurrentAchievement(null);
-          dismissToast();
-        }}
-      />
     </KeyboardNavigation>
   );
 }
