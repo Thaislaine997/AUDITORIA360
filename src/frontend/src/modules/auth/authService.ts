@@ -10,7 +10,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "superAdmin" | "gestor" | "analista" | "admin" | "user" | "auditor";
+
   permissions?: string[];
   contabilidadeId?: string; // For hierarchy access control
 }
@@ -36,17 +36,14 @@ export class AuthService {
   }
 
   // Login
-  async login(username: string, password: string): Promise<User> {
+  async login(credentials: { email: string; password: string }): Promise<User> {
     try {
       // In a real app, this would make an API call
       const mockResponse = {
         user: {
           id: "1",
           name: "Demo User",
-          email: "demo@auditoria360.com",
-          role: "gestor" as const,
-          permissions: ["read", "write", "manage_clients"],
-          contabilidadeId: "contab_001"
+
         },
         tokens: {
           accessToken: "mock-access-token",
@@ -58,9 +55,9 @@ export class AuthService {
       this.user = mockResponse.user;
       this.tokens = mockResponse.tokens;
 
-      // Store in localStorage
-      localStorage.setItem("authTokens", JSON.stringify(this.tokens));
-      localStorage.setItem("user", JSON.stringify(this.user));
+      // Store in sessionStorage
+      sessionStorage.setItem("authTokens", JSON.stringify(this.tokens));
+      sessionStorage.setItem("user", JSON.stringify(this.user));
 
       return mockResponse.user;
     } catch (error) {
@@ -73,8 +70,8 @@ export class AuthService {
   logout(): void {
     this.user = null;
     this.tokens = null;
-    localStorage.removeItem("authTokens");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("authTokens");
+    sessionStorage.removeItem("user");
   }
 
   // Check if user is authenticated
@@ -112,11 +109,11 @@ export class AuthService {
     return this.tokens?.accessToken || null;
   }
 
-  // Load auth data from localStorage
+  // Load auth data from sessionStorage
   private loadFromStorage(): void {
     try {
-      const tokensJson = localStorage.getItem("authTokens");
-      const userJson = localStorage.getItem("user");
+      const tokensJson = sessionStorage.getItem("authTokens");
+      const userJson = sessionStorage.getItem("user");
 
       if (tokensJson && userJson) {
         this.tokens = JSON.parse(tokensJson);

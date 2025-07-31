@@ -18,6 +18,16 @@ const ChatbotPage = React.lazy(() => import("./pages/ChatbotPage"));
 const ReportTemplatesPage = React.lazy(() => import("./pages/ReportTemplatesPage"));
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
 
+// New pages for the unified navigation
+const PortalDemandas = React.lazy(() => import("./pages/PortalDemandas"));
+const ConsultorRiscos = React.lazy(() => import("./pages/ConsultorRiscos"));
+const GestaoContabilidades = React.lazy(() => import("./pages/GestaoContabilidades"));
+const GestaoClientes = React.lazy(() => import("./pages/GestaoClientes"));
+const GerenciamentoUsuarios = React.lazy(() => import("./pages/GerenciamentoUsuarios"));
+const RelatoriosAvancados = React.lazy(() => import("./pages/RelatoriosAvancados"));
+const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
+const Templates = React.lazy(() => import("./pages/Templates"));
+
 // Loading component
 const LoadingSpinner: React.FC = () => (
   <Box
@@ -86,6 +96,24 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              
+              {/* OPERAÇÃO submenu */}
+              <Route path="/demandas" element={<PortalDemandas />} />
+              <Route path="/consultor-riscos" element={<ConsultorRiscos />} />
+              
+              {/* GESTÃO submenu */}
+              <Route path="/gestao/contabilidades" element={<GestaoContabilidades />} />
+              <Route path="/gestao/clientes" element={<GestaoClientes />} />
+              <Route path="/gestao/usuarios" element={<GerenciamentoUsuarios />} />
+              
+              {/* RELATÓRIOS submenu */}
+              <Route path="/relatorios/avancados" element={<RelatoriosAvancados />} />
+              
+              {/* CONFIGURAÇÕES submenu */}
+              <Route path="/configuracoes/minha-conta" element={<MinhaConta />} />
+              <Route path="/configuracoes/templates" element={<Templates />} />
+              
+              {/* Legacy routes - keep for backward compatibility */}
               <Route path="/payroll/*" element={<PayrollPage />} />
               <Route path="/documents/*" element={<DocumentsPage />} />
               <Route path="/cct/*" element={<CCTPage />} />
