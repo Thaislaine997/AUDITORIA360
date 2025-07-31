@@ -10,8 +10,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "user" | "auditor";
+  role: "superAdmin" | "gestor" | "analista" | "admin" | "user" | "auditor";
   permissions?: string[];
+  contabilidadeId?: string; // For hierarchy access control
 }
 
 export interface AuthTokens {
@@ -43,8 +44,9 @@ export class AuthService {
           id: "1",
           name: "Demo User",
           email: "demo@auditoria360.com",
-          role: "admin" as const,
-          permissions: ["read", "write", "admin"],
+          role: "gestor" as const,
+          permissions: ["read", "write", "manage_clients"],
+          contabilidadeId: "contab_001"
         },
         tokens: {
           accessToken: "mock-access-token",

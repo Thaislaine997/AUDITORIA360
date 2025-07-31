@@ -10,6 +10,7 @@ import {
   MenuItem,
   Chip,
   Divider,
+  Tooltip,
 } from '@mui/material';
 import { 
   Menu as MenuIcon, 
@@ -18,15 +19,36 @@ import {
   Settings,
   Person,
   ExitToApp,
+  Search as SearchIcon,
+  Notifications as NotificationsIcon,
 } from '@mui/icons-material';
 import NotificationCenter from '../ui/NotificationCenter';
+import CommandPalette from '../ui/CommandPalette';
 import { useUIStore } from '../../stores/uiStore';
 import { useAuthStore } from '../../stores/authStore';
+import { useGamificationStore } from '../../stores/gamificationStore';
+import { useNotificationsStore } from '../../stores/notificationsStore';
 
 const Navbar: React.FC = () => {
   const { toggleSidebar } = useUIStore();
   const { user, logout } = useAuthStore();
+  const { userProgress } = useGamificationStore();
+  const { unreadCount, setCenterOpen, centerOpen } = useNotificationsStore();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [commandPaletteOpen, setCommandPaletteOpen] = React.useState(false);
+
+  // Handle keyboard shortcut for command palette
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -62,8 +84,8 @@ const Navbar: React.FC = () => {
       .substring(0, 2);
   };
 
-  const getUserLevel = () => {
-    return user?.xp_points ? Math.floor(user.xp_points / 1000) + 1 : 1;
+  const handleNotificationToggle = () => {
+    setCenterOpen(!centerOpen);
   };
 
   return (
@@ -99,22 +121,64 @@ const Navbar: React.FC = () => {
         </Typography>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* Notification Center */}
-          <NotificationCenter />
+          {/* Command Palette Trigger */}
+          <Tooltip title="Paleta de Comando (Ctrl+K)">
+            <IconButton
+              color="inherit"
+              onClick={() => setCommandPaletteOpen(true)}
+              aria-label="Abrir paleta de comando"
+            >
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
+
+          {/* Notification Bell */}
+          <Tooltip title="Central de Notificações">
+            <IconButton
+              color="inherit"
+              onClick={handleNotificationToggle}
+              aria-label="Notificações"
+            >
+              {unreadCount > 0 ? (
+                <Box sx={{ position: 'relative' }}>
+                  <NotificationsIcon />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: -2,
+                      right: -2,
+                      minWidth: 16,
+                      height: 16,
+                      borderRadius: '50%',
+                      backgroundColor: 'error.main',
+                      color: 'error.contrastText',
+                      fontSize: '0.7rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </Box>
+                </Box>
+              ) : (
+                <NotificationsIcon />
+              )}
+            </IconButton>
+          </Tooltip>
           
           {/* User Level Badge */}
-          {user?.xp_points && (
-            <Chip
-              icon={<Star />}
-              label={`Nível ${getUserLevel()}`}
-              size="small"
-              sx={{
-                bgcolor: 'warning.main',
-                color: 'warning.contrastText',
-                fontWeight: 'bold',
-              }}
-            />
-          )}
+          <Chip
+            icon={<Star />}
+            label={`Nível ${userProgress.level}`}
+            size="small"
+            sx={{
+              bgcolor: 'warning.main',
+              color: 'warning.contrastText',
+              fontWeight: 'bold',
+            }}
+          />
           
           {/* User Menu */}
           <IconButton
@@ -129,12 +193,12 @@ const Navbar: React.FC = () => {
             {user?.avatar ? (
               <Avatar 
                 src={user.avatar} 
-                alt={user.full_name || 'User'}
+                alt={user.name || 'User'}
                 sx={{ width: 32, height: 32 }}
               />
             ) : (
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
-                {user?.full_name ? getUserInitials(user.full_name) : <AccountIcon />}
+                {user?.name ? getUserInitials(user.name) : <AccountIcon />}
               </Avatar>
             )}
           </IconButton>
@@ -161,7 +225,7 @@ const Navbar: React.FC = () => {
             <MenuItem disabled>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {user?.full_name || 'Usuário'}
+                  {user?.name || 'Usuário'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {user?.email}
@@ -180,24 +244,20 @@ const Navbar: React.FC = () => {
             <Divider />
             
             {/* XP and Level Info */}
-            {user?.xp_points && (
-              <>
-                <MenuItem disabled>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Star color="primary" />
-                    <Box>
-                      <Typography variant="body2">
-                        Nível {getUserLevel()} • {user.xp_points} XP
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {user.total_missions_completed || 0} missões completadas
-                      </Typography>
-                    </Box>
-                  </Box>
-                </MenuItem>
-                <Divider />
-              </>
-            )}
+            <MenuItem disabled>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Star color="primary" />
+                <Box>
+                  <Typography variant="body2">
+                    Nível {userProgress.level} • {userProgress.currentXP} XP
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {userProgress.currentXP}/{userProgress.xpToNextLevel} para próximo nível
+                  </Typography>
+                </Box>
+              </Box>
+            </MenuItem>
+            <Divider />
             
             {/* Menu Items */}
             <MenuItem onClick={handleProfile}>
@@ -218,6 +278,15 @@ const Navbar: React.FC = () => {
           </Menu>
         </Box>
       </Toolbar>
+
+      {/* Command Palette */}
+      <CommandPalette
+        open={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+      />
+
+      {/* Notification Center */}
+      <NotificationCenter />
     </AppBar>
   );
 };
