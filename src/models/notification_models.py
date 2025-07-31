@@ -27,6 +27,8 @@ class NotificationType(enum.Enum):
     EMAIL = "email"
     SMS = "sms"
     SYSTEM = "system"
+    WHATSAPP = "whatsapp"
+    SLACK = "slack"
 
 
 class NotificationPriority(enum.Enum):
@@ -42,6 +44,25 @@ class NotificationStatus(enum.Enum):
     DELIVERED = "delivered"
     FAILED = "failed"
     READ = "read"
+    DISMISSED = "dismissed"
+
+
+class NotificationCategory(enum.Enum):
+    SYSTEM = "system"
+    CLIENT_ACTIVITY = "client_activity"
+    CONFIGURATION = "configuration"
+    COMPLIANCE = "compliance"
+    ACHIEVEMENT = "achievement"
+    CHURN_ALERT = "churn_alert"
+    ANOMALY = "anomaly"
+
+
+class DigestFrequency(enum.Enum):
+    INSTANT = "instant"
+    HOURLY = "hourly" 
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    NEVER = "never"
 
 
 class EventType(enum.Enum):
@@ -67,6 +88,7 @@ class Notification(Base):
     title = Column(String(255), nullable=False)
     message = Column(Text, nullable=False)
     type = Column(Enum(NotificationType), nullable=False)
+    category = Column(Enum(NotificationCategory), nullable=False, default=NotificationCategory.SYSTEM)
     priority = Column(
         Enum(NotificationPriority), nullable=False, default=NotificationPriority.MEDIUM
     )
@@ -78,6 +100,10 @@ class Notification(Base):
     delivery_attempts = Column(Integer, default=0)
     max_attempts = Column(Integer, default=3)
 
+    # Grouping for digest notifications
+    digest_group = Column(String(100))  # Group similar notifications
+    can_be_digested = Column(Boolean, default=True)
+
     # Scheduling
     scheduled_for = Column(DateTime(timezone=True))
     expires_at = Column(DateTime(timezone=True))
@@ -86,11 +112,17 @@ class Notification(Base):
     action_url = Column(String(500))  # URL for action button
     action_text = Column(String(100))  # Text for action button
     additional_data = Column(JSON)  # Additional metadata
+    
+    # Rich content support
+    icon = Column(String(50))  # Icon identifier
+    image_url = Column(String(500))  # Optional image
+    sound = Column(String(100))  # Sound identifier for push notifications
 
     # Delivery tracking
     sent_at = Column(DateTime(timezone=True))
     delivered_at = Column(DateTime(timezone=True))
     read_at = Column(DateTime(timezone=True))
+    dismissed_at = Column(DateTime(timezone=True))
     failed_at = Column(DateTime(timezone=True))
     error_message = Column(Text)
 
@@ -254,3 +286,77 @@ class NotificationPreference(Base):
     user = relationship("User")
 
     # Use default __repr__ from BaseModel
+
+
+class EnhancedNotificationPreference(Base):
+    """Granular notification preferences for the Blueprint requirements"""
+    __tablename__ = "enhanced_notification_preferences"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    # General email preferences
+    email_enabled = Column(Boolean, default=True)
+    email_critical_failures_only = Column(Boolean, default=False)
+    email_digest_frequency = Column(Enum(DigestFrequency), default=DigestFrequency.DAILY)
+    
+    # Specific notification categories
+    notify_success_sends = Column(Boolean, default=False)  # "Don't notify about success"
+    notify_failure_sends = Column(Boolean, default=True)
+    notify_client_activity = Column(Boolean, default=True)
+    notify_configuration_changes = Column(Boolean, default=True)
+    notify_compliance_alerts = Column(Boolean, default=True)
+    notify_churn_risks = Column(Boolean, default=True)
+    notify_anomaly_detection = Column(Boolean, default=True)
+    notify_achievements = Column(Boolean, default=True)
+    notify_system_updates = Column(Boolean, default=False)
+    
+    # Advanced preferences
+    group_similar_notifications = Column(Boolean, default=True)
+    max_notifications_per_digest = Column(Integer, default=10)
+    auto_dismiss_read_notifications = Column(Boolean, default=False)
+    
+    # Sound and visual preferences
+    enable_sound_notifications = Column(Boolean, default=True)
+    enable_desktop_notifications = Column(Boolean, default=True)
+    preferred_sound = Column(String(50), default="default")
+    
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    user = relationship("User")
+
+
+class NotificationDigest(Base):
+    """Grouped notifications for digest delivery"""
+    __tablename__ = "notification_digests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    # Digest details
+    digest_type = Column(Enum(DigestFrequency), nullable=False)
+    title = Column(String(255), nullable=False)
+    summary = Column(Text)
+    
+    # Contained notifications
+    notification_ids = Column(JSON)  # Array of notification IDs in this digest
+    notification_count = Column(Integer, default=0)
+    
+    # Categories summary
+    categories_summary = Column(JSON)  # Count by category
+    priority_summary = Column(JSON)  # Count by priority
+    
+    # Delivery
+    is_sent = Column(Boolean, default=False)
+    sent_at = Column(DateTime(timezone=True))
+    
+    # Period covered
+    period_start = Column(DateTime(timezone=True), nullable=False)
+    period_end = Column(DateTime(timezone=True), nullable=False)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    user = relationship("User")
