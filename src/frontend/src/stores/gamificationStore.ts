@@ -336,7 +336,7 @@ export const useGamificationStore = create<GamificationState>()(
           const today = new Date();
           const lastActivity = state.userProgress.lastActivityDate;
           const isConsecutiveDay = lastActivity && 
-            (today.getTime() - lastActivity.getTime()) < (48 * 60 * 60 * 1000); // within 48 hours
+            (today.getTime() - new Date(lastActivity).getTime()) < (48 * 60 * 60 * 1000); // within 48 hours
 
           return {
             userProgress: {
