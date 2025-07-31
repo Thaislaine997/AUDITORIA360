@@ -2,6 +2,13 @@
   "version": 2,
   "builds": [
     {
+      "src": "src/frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
@@ -15,19 +22,20 @@
       "dest": "api/index.py"
     },
     {
-      "src": "/dashboards",
-      "status": 301,
-      "headers": {
-        "Location": "https://auditoria360-dashboards.streamlit.app"
-      }
-    },
-    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },
     {
-      "src": "/(dashboard|portal_demandas|dashboards|relatorios|checklist|consultor|ccts|revisao|obrigacoes|parametros|sugestoes|benchmarking|trilha).*",
-      "dest": "/index.html"
+      "src": "/(dashboard|demandas|consultor-riscos|gestao|relatorios|configuracoes).*",
+      "dest": "/src/frontend/dist/index.html"
+    },
+    {
+      "src": "/src/frontend/dist/assets/(.*)",
+      "dest": "/src/frontend/dist/assets/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/src/frontend/dist/index.html"
     },
     {
       "src": "/(.*)",
