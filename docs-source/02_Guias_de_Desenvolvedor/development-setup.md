@@ -190,8 +190,8 @@ streamlit run portal_demandas/main.py
 ```
 
 ### **URLs de Desenvolvimento**
-- **API**: http://localhost:8000
-- **Docs**: http://localhost:8000/docs
+- **API**: http://localhost:8001
+- **Docs**: http://localhost:8001/docs
 - **Dashboard**: http://localhost:8501
 - **Frontend**: http://localhost:3000 (se aplicável)
 

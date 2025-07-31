@@ -34,7 +34,7 @@ A plataforma mais avançada para auditoria de folha de pagamento e compliance tr
 ### 🚀 03. Guias de Operações e Deploy
 - **📦 [Guia de Deploy](03_Guias_de_Operacoes_e_Deploy/Guia_de_Deploy.md)** - Deploy e infraestrutura
 - **📊 [Monitoramento e Alertas](03_Guias_de_Operacoes_e_Deploy/DEPLOYMENT_GUIDE.md)** - Observabilidade
-- **🔧 [Troubleshooting](TROUBLESHOOTING_GUIDE.md)** - Resolução de problemas
+- **🔧 [Troubleshooting](03_Guias_de_Operacoes_e_Deploy/TROUBLESHOOTING_GUIDE.md)** - Resolução de problemas
 
 ### 👤 04. Manuais de Usuário
 - **🚀 [Primeiros Passos](04_Manuais_de_Usuario/Primeiros_Passos.md)** - Início rápido para novos usuários
@@ -110,7 +110,7 @@ A plataforma mais avançada para auditoria de folha de pagamento e compliance tr
 - **⚡ Vite** para build
 
 ### Backend
-- **🐍 Python 3.11** + FastAPI
+- **🐍 Python 3.12** + FastAPI
 - **🗄️ SQLAlchemy** para ORM
 - **🐘 PostgreSQL** banco principal
 - **🔴 Redis** para cache

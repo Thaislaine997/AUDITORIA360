@@ -7,7 +7,7 @@ Este guia completo orienta desenvolvedores na configuração do ambiente local p
 ## 🛠️ Pré-requisitos
 
 ### Software Obrigatório
-- **Python 3.11+**
+- **Python 3.12+**
 - **Node.js 18+** 
 - **PostgreSQL 14+**
 - **Redis 6+**
@@ -105,7 +105,7 @@ nano .env.local
 
 **Variáveis do frontend:**
 ```env
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=http://localhost:8001
 VITE_ENVIRONMENT=development
 VITE_ENABLE_DEVTOOLS=true
 ```
@@ -241,13 +241,13 @@ tail -f logs/app.log
 python scripts/validate_production_deploy.py
 
 # Health check
-curl http://localhost:8000/health
+curl http://localhost:8001/health
 ```
 
 ## 📋 Checklist de Validação
 
 ### ✅ Backend
-- [ ] API responde em `http://localhost:8000`
+- [ ] API responde em `http://localhost:8001`
 - [ ] Healthcheck retorna 200: `GET /health`
 - [ ] Autenticação funciona: `POST /auth/login`
 - [ ] Banco de dados conectado
