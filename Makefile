@@ -17,6 +17,28 @@ run:
 test:
 	pytest
 
+# Master Execution Checklist commands
+checklist:
+	python scripts/quick_checklist.py
+
+checklist-verbose:
+	python scripts/quick_checklist.py --verbose
+
+checklist-full:
+	python scripts/master_execution_checklist.py --output-format markdown --output-file MASTER_EXECUTION_CHECKLIST_REPORT.md
+	@echo "✅ Full checklist report generated: MASTER_EXECUTION_CHECKLIST_REPORT.md"
+
+checklist-html:
+	python scripts/master_execution_checklist.py --output-format html --output-file checklist-report.html
+	@echo "✅ HTML checklist report generated: checklist-report.html"
+
+checklist-json:
+	python scripts/master_execution_checklist.py --output-format json --output-file checklist-validation.json
+	@echo "✅ JSON checklist data generated: checklist-validation.json"
+
+checklist-all: checklist-json checklist-full checklist-html
+	@echo "✅ All checklist reports generated successfully"
+
 # Code quality commands
 format:
 	black .
@@ -82,4 +104,4 @@ docs-deploy:
 docs-all: docs-full
 	@echo "📚 All documentation generated successfully"
 
-.PHONY: install install-dev run test format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all
+.PHONY: install install-dev run test checklist checklist-verbose checklist-full checklist-html checklist-json checklist-all format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all

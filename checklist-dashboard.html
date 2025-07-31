@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDITORIA360 - Master Execution Checklist Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .completion-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .completion-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .section-percentage {
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+        }
+        
+        .section-percentage.complete {
+            background: #00b894;
+        }
+        
+        .section-percentage.almost {
+            background: #fdcb6e;
+        }
+        
+        .section-percentage.incomplete {
+            background: #e17055;
+        }
+        
+        .file-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f2f6;
+        }
+        
+        .file-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .file-name {
+            flex: 1;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: #2c3e50;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .last-update {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .sections-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 AUDITORIA360</h1>
+            <p class="subtitle">Master Execution Checklist Dashboard</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalFiles">---</div>
+                <div class="stat-label">Total de Arquivos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="filesFound">---</div>
+                <div class="stat-label">Arquivos Encontrados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="filesValid">---</div>
+                <div class="stat-label">Arquivos Válidos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completionPercent">---%</div>
+                <div class="stat-label">Taxa de Conclusão</div>
+            </div>
+        </div>
+        
+        <div class="completion-bar">
+            <div class="completion-fill" id="completionBar" style="width: 0%"></div>
+        </div>
+        
+        <div class="sections-grid" id="sectionsGrid">
+            <!-- Sections will be populated by JavaScript -->
+        </div>
+        
+        <div class="last-update" id="lastUpdate">
+            Carregando dados...
+        </div>
+    </div>
+    
+    <button class="refresh-btn" onclick="loadData()">
+        🔄 Atualizar
+    </button>
+    
+    <script>
+        let checklistData = null;
+        
+        // Sample data structure (will be replaced by actual data loading)
+        const sampleData = {
+            "timestamp": "2025-07-31T15:38:56.596265",
+            "summary": {
+                "total_files": 589,
+                "files_found": 550,
+                "files_valid": 547,
+                "overall_completion_percentage": 92.9
+            },
+            "sections": {
+                "PARTE_1_ALICERCE_E_GOVERNANCA": {
+                    "total_files": 28,
+                    "files_found": 28,
+                    "files_valid": 28,
+                    "completion_percentage": 100.0
+                },
+                "PARTE_2_CONFIGURACAO_E_AUTOMACAO_CI_CD": {
+                    "total_files": 7,
+                    "files_found": 6,
+                    "files_valid": 6,
+                    "completion_percentage": 85.7
+                },
+                "PARTE_3_ESTRUTURAS_DE_BACKEND": {
+                    "total_files": 175,
+                    "files_found": 165,
+                    "files_valid": 162,
+                    "completion_percentage": 92.6
+                },
+                "PARTE_4_LEGADO_DASHBOARDS_STREAMLIT": {
+                    "total_files": 24,
+                    "files_found": 22,
+                    "files_valid": 22,
+                    "completion_percentage": 91.7
+                },
+                "PARTE_5_NOVO_MUNDO_FRONTEND_KAIROS": {
+                    "total_files": 90,
+                    "files_found": 85,
+                    "files_valid": 85,
+                    "completion_percentage": 94.4
+                },
+                "PARTE_6_DOCUMENTACAO_TESTES_ECOSSISTEMA": {
+                    "total_files": 265,
+                    "files_found": 244,
+                    "files_valid": 244,
+                    "completion_percentage": 92.1
+                }
+            }
+        };
+        
+        function formatSectionTitle(sectionName) {
+            return sectionName
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase())
+                .replace('Parte ', 'Parte ')
+                .replace('E ', 'e ')
+                .replace('De ', 'de ')
+                .replace('Ci Cd', 'CI/CD');
+        }
+        
+        function getStatusClass(percentage) {
+            if (percentage === 100) return 'complete';
+            if (percentage >= 80) return 'almost';
+            return 'incomplete';
+        }
+        
+        function getStatusIcon(percentage) {
+            if (percentage === 100) return '✅';
+            if (percentage >= 80) return '🟡';
+            return '❌';
+        }
+        
+        function renderDashboard(data) {
+            checklistData = data;
+            
+            // Update summary stats
+            document.getElementById('totalFiles').textContent = data.summary.total_files;
+            document.getElementById('filesFound').textContent = data.summary.files_found;
+            document.getElementById('filesValid').textContent = data.summary.files_valid;
+            document.getElementById('completionPercent').textContent = 
+                data.summary.overall_completion_percentage.toFixed(1) + '%';
+            
+            // Update completion bar
+            document.getElementById('completionBar').style.width = 
+                data.summary.overall_completion_percentage + '%';
+            
+            // Update sections
+            const sectionsGrid = document.getElementById('sectionsGrid');
+            sectionsGrid.innerHTML = '';
+            
+            for (const [sectionName, sectionData] of Object.entries(data.sections)) {
+                const sectionCard = document.createElement('div');
+                sectionCard.className = 'section-card';
+                
+                const percentage = sectionData.completion_percentage;
+                const statusClass = getStatusClass(percentage);
+                const statusIcon = getStatusIcon(percentage);
+                
+                sectionCard.innerHTML = `
+                    <div class="section-header">
+                        <div class="section-title">
+                            ${statusIcon} ${formatSectionTitle(sectionName)}
+                        </div>
+                        <div class="section-percentage ${statusClass}">
+                            ${percentage.toFixed(1)}%
+                        </div>
+                    </div>
+                    <div style="color: #7f8c8d;">
+                        ${sectionData.files_valid}/${sectionData.total_files} arquivos válidos
+                    </div>
+                    <div class="completion-bar">
+                        <div class="completion-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                
+                sectionsGrid.appendChild(sectionCard);
+            }
+            
+            // Update last update time
+            const lastUpdate = new Date(data.timestamp).toLocaleString('pt-BR');
+            document.getElementById('lastUpdate').textContent = 
+                `Última atualização: ${lastUpdate}`;
+        }
+        
+        async function loadData() {
+            try {
+                // Try to load actual checklist data
+                const response = await fetch('./checklist-validation.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    renderDashboard(data);
+                } else {
+                    // Fallback to sample data
+                    renderDashboard(sampleData);
+                }
+            } catch (error) {
+                console.log('Using sample data:', error.message);
+                renderDashboard(sampleData);
+            }
+        }
+        
+        // Auto-refresh every 5 minutes
+        setInterval(loadData, 5 * 60 * 1000);
+        
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
