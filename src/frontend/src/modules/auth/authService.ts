@@ -10,8 +10,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "super_admin" | "contabilidade" | "cliente_final";
+
   permissions?: string[];
+  contabilidadeId?: string; // For hierarchy access control
 }
 
 export interface AuthTokens {
@@ -42,9 +43,7 @@ export class AuthService {
         user: {
           id: "1",
           name: "Demo User",
-          email: credentials.email,
-          role: "super_admin" as const,
-          permissions: ["read", "write", "admin"],
+
         },
         tokens: {
           accessToken: "mock-access-token",
