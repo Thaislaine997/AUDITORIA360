@@ -71,101 +71,70 @@ Antes de qualquer deploy em produção, execute este checklist:
 ### Ambiente de Desenvolvimento
 
 ```bash
-# 1. Construir imagens
-docker-compose build
+# 1. Instalar dependências
+pip install -r requirements.txt
 
-# 2. Iniciar serviços
-docker-compose up -d
+# 2. Configurar variáveis de ambiente
+cp .env.template .env
+# Editar .env com suas configurações
 
-# 3. Verificar status
-docker-compose ps
+# 3. Iniciar API
+python test_api_server.py
+# ou usando o Makefile
+make run
 
-# 4. Logs
-docker-compose logs -f app
+# 4. Iniciar frontend (em outro terminal)
+cd src/frontend
+npm install
+npm run dev
+
+# 5. Verificar saúde da API
+curl http://localhost:8001/health
 ```
 
 ### Ambiente de Produção
 
 ```bash
 # 1. Configurar variáveis de ambiente
-cp .env.production.example .env.production
+cp .env.template .env.production
 nano .env.production
 
-# 2. Build de produção
-docker-compose -f docker-compose.prod.yml build
+# 2. Instalar dependências de produção
+pip install -r requirements.txt
 
-# 3. Deploy
-docker-compose -f docker-compose.prod.yml up -d
+# 3. Iniciar com uvicorn (produção)
+uvicorn api.index:app --host 0.0.0.0 --port 8001 --workers 4
 
 # 4. Verificação
-curl -f http://localhost/health || exit 1
+curl -f http://localhost:8001/health || exit 1
 ```
 
-### Docker Compose - Produção
+### Monitoramento com Docker Compose
 
-```yaml
-# docker-compose.prod.yml
-version: '3.8'
+Para monitoramento, use o arquivo docker-compose.monitoring.yml:
 
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    restart: unless-stopped
-    environment:
-      - ENVIRONMENT=production
-    volumes:
-      - ./logs:/app/logs
-    depends_on:
-      - db
-      - redis
-    networks:
-      - auditoria360_network
+```bash
+# Iniciar stack de monitoramento
+docker-compose -f docker-compose.monitoring.yml up -d
 
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./ssl:/etc/nginx/ssl
-    depends_on:
-      - app
-    networks:
-      - auditoria360_network
+# Acessar dashboards
+# Prometheus: http://localhost:9090
+# Grafana: http://localhost:3001
+```
 
-  db:
-    image: postgres:14
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: auditoria360_prod
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backups:/backups
-    networks:
-      - auditoria360_network
+### Configuração de Produção
 
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    command: redis-server --appendonly yes
-    volumes:
-      - redis_data:/data
-    networks:
-      - auditoria360_network
+Para deploy em produção, configure adequadamente:
 
-volumes:
-  postgres_data:
-  redis_data:
+```bash
+# Variáveis de ambiente essenciais
+export SECRET_KEY="sua_chave_secreta_32_caracteres_minimo"
+export DATABASE_URL="postgresql://user:pass@host:port/dbname"
+export OPENAI_API_KEY="sua_chave_openai"
+export ENVIRONMENT="production"
 
-networks:
-  auditoria360_network:
-    driver: bridge
+# Deploy com uvicorn
+uvicorn api.index:app --host 0.0.0.0 --port 8001 --workers 4 --access-log
 ```
 
 ## ☁️ Deploy em Cloud (AWS/GCP/Azure)
@@ -478,18 +447,24 @@ py-spy top --pid $(pgrep python)
 ### Rollback
 
 ```bash
-# Docker Compose
-docker-compose down
-docker-compose up -d --scale app=0
-docker-compose up -d
+# Para ambiente simples com uvicorn
+# 1. Parar processo atual
+pkill -f "uvicorn api.index:app"
 
-# Kubernetes
+# 2. Reverter código
+git checkout previous-commit
+
+# 3. Reinstalar dependências se necessário
+pip install -r requirements.txt
+
+# 4. Reiniciar aplicação
+uvicorn api.index:app --host 0.0.0.0 --port 8001 --workers 4
+
+# Para Kubernetes (se aplicável)
 kubectl rollout undo deployment/auditoria360-app
 
-# Manual
-git checkout previous-commit
-docker build -t auditoria360:rollback .
-docker-compose up -d
+# Para monitoramento
+docker-compose -f docker-compose.monitoring.yml restart
 ```
 
 ## 📚 Recursos Adicionais

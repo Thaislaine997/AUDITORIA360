@@ -12,7 +12,7 @@ install-dev:
 	pip install uvicorn black isort flake8 autoflake pre-commit
 
 run:
-	python3 -m uvicorn api.index:app --host 0.0.0.0 --port 8000
+	python3 -m uvicorn api.index:app --host 0.0.0.0 --port 8001
 
 test:
 	pytest

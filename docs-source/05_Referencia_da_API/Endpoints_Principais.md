@@ -7,7 +7,7 @@ A API AUDITORIA360 oferece endpoints RESTful para integração completa com noss
 ### Base URL
 ```
 Produção: https://api.auditoria360.com.br/v1
-Desenvolvimento: http://localhost:8000/v1
+Desenvolvimento: http://localhost:8001/v1
 ```
 
 ### Autenticação

@@ -130,7 +130,7 @@ Este documento registra as principais decisões de arquitetura tomadas durante a
 - **Vite** como build tool
 
 **Backend**:
-- **Python 3.11** com FastAPI
+- **Python 3.12** com FastAPI
 - **SQLAlchemy** para ORM
 - **PostgreSQL** como banco principal
 - **Redis** para cache e sessões
