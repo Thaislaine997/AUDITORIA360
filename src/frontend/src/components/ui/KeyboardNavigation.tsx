@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Tooltip,
@@ -18,10 +18,25 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextField,
+  ListItemButton,
+  ListItemIcon,
+  InputAdornment,
 } from '@mui/material';
 import {
   Keyboard,
   ExpandMore,
+  Search,
+  Dashboard,
+  Business,
+  People,
+  Assignment,
+  Psychology,
+  AccountBalance,
+  Assessment,
+  Settings,
+  AccountCircle,
+  Description,
 } from '@mui/icons-material';
 
 interface KeyboardShortcut {
@@ -31,16 +46,123 @@ interface KeyboardShortcut {
   section: string;
 }
 
+interface CommandPaletteItem {
+  id: string;
+  label: string;
+  description?: string;
+  path: string;
+  icon: React.ReactNode;
+  keywords: string[];
+}
+
 interface KeyboardNavigationProps {
   children: React.ReactNode;
 }
 
 const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({ children }) => {
   const navigate = useNavigate();
-  const [shortcutTooltip, setShortcutTooltip] = React.useState<string>('');
-  const [showShortcutHelp, setShowShortcutHelp] = React.useState(false);
+  const [shortcutTooltip, setShortcutTooltip] = useState<string>('');
+  const [showShortcutHelp, setShowShortcutHelp] = useState(false);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
+  const [commandSearchQuery, setCommandSearchQuery] = useState('');
+
+  // Command palette items for quick navigation
+  const commandPaletteItems: CommandPaletteItem[] = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      description: 'Visão geral do sistema',
+      path: '/dashboard',
+      icon: <Dashboard />,
+      keywords: ['dashboard', 'inicio', 'home', 'principal'],
+    },
+    {
+      id: 'demandas',
+      label: 'Portal de Demandas',
+      description: 'Gerencie solicitações e tickets',
+      path: '/demandas',
+      icon: <Assignment />,
+      keywords: ['demandas', 'tickets', 'solicitações', 'portal'],
+    },
+    {
+      id: 'consultor-riscos',
+      label: 'Consultor de Riscos',
+      description: 'IA para análise de riscos',
+      path: '/consultor-riscos',
+      icon: <Psychology />,
+      keywords: ['riscos', 'consultor', 'ia', 'análise'],
+    },
+    {
+      id: 'gestao-contabilidades',
+      label: 'Gestão de Contabilidades',
+      description: 'Gerenciar contabilidades',
+      path: '/gestao/contabilidades',
+      icon: <AccountBalance />,
+      keywords: ['contabilidades', 'gestão', 'contábil'],
+    },
+    {
+      id: 'gestao-clientes',
+      label: 'Gestão de Clientes',
+      description: 'Gerenciar clientes',
+      path: '/gestao/clientes',
+      icon: <Business />,
+      keywords: ['clientes', 'gestão', 'empresas'],
+    },
+    {
+      id: 'gestao-usuarios',
+      label: 'Gerenciamento de Usuários',
+      description: 'Gerenciar usuários do sistema',
+      path: '/gestao/usuarios',
+      icon: <People />,
+      keywords: ['usuários', 'gestão', 'colaboradores', 'equipe'],
+    },
+    {
+      id: 'relatorios-avancados',
+      label: 'Relatórios Avançados',
+      description: 'Relatórios e análises',
+      path: '/relatorios/avancados',
+      icon: <Assessment />,
+      keywords: ['relatórios', 'análises', 'dados', 'gráficos'],
+    },
+    {
+      id: 'minha-conta',
+      label: 'Minha Conta',
+      description: 'Configurações pessoais',
+      path: '/configuracoes/minha-conta',
+      icon: <AccountCircle />,
+      keywords: ['conta', 'perfil', 'configurações', 'pessoal'],
+    },
+    {
+      id: 'templates',
+      label: 'Templates',
+      description: 'Gerenciar templates',
+      path: '/configuracoes/templates',
+      icon: <Description />,
+      keywords: ['templates', 'modelos', 'configurações'],
+    },
+  ];
+
+  // Filter command palette items based on search query
+  const filteredCommands = commandPaletteItems.filter(item => {
+    if (!commandSearchQuery) return true;
+    
+    const query = commandSearchQuery.toLowerCase();
+    return (
+      item.label.toLowerCase().includes(query) ||
+      item.description?.toLowerCase().includes(query) ||
+      item.keywords.some(keyword => keyword.toLowerCase().includes(query))
+    );
+  });
 
   const shortcuts: KeyboardShortcut[] = [
+    // Command palette
+    {
+      key: 'Ctrl+k',
+      description: 'Abrir paleta de comandos',
+      action: () => setShowCommandPalette(true),
+      section: 'Sistema',
+    },
+    
     // Navigation shortcuts
     {
       key: 'g+d',
@@ -51,31 +173,25 @@ const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({ children }) => 
     {
       key: 'g+c',
       description: 'Ir para Clientes',
-      action: () => navigate('/clients'),
+      action: () => navigate('/gestao/clientes'),
       section: 'Navegação',
     },
     {
-      key: 'g+p',
-      description: 'Ir para Folha de Pagamento',
-      action: () => navigate('/payroll'),
-      section: 'Navegação',
-    },
-    {
-      key: 'g+f',
-      description: 'Ir para Documentos',
-      action: () => navigate('/documents'),
+      key: 'g+u',
+      description: 'Ir para Usuários',
+      action: () => navigate('/gestao/usuarios'),
       section: 'Navegação',
     },
     {
       key: 'g+r',
       description: 'Ir para Relatórios',
-      action: () => navigate('/reports'),
+      action: () => navigate('/relatorios/avancados'),
       section: 'Navegação',
     },
     {
-      key: 'g+a',
-      description: 'Ir para Auditoria',
-      action: () => navigate('/audit'),
+      key: 'g+s',
+      description: 'Ir para Configurações',
+      action: () => navigate('/configuracoes/minha-conta'),
       section: 'Navegação',
     },
 
@@ -262,6 +378,13 @@ const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({ children }) => 
     if (shiftKey) keyCombo += 'Shift+';
     keyCombo += key;
 
+    // Handle Ctrl+K for command palette
+    if ((ctrlKey || event.metaKey) && key === 'k') {
+      event.preventDefault();
+      setShowCommandPalette(true);
+      return;
+    }
+
     // Handle sequential shortcuts (like g+d)
     if (key === 'g') {
       event.preventDefault();
@@ -341,6 +464,128 @@ const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({ children }) => 
           }
         }}
       />
+
+      {/* Command Palette Dialog */}
+      <Dialog
+        open={showCommandPalette}
+        onClose={() => {
+          setShowCommandPalette(false);
+          setCommandSearchQuery('');
+        }}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            position: 'absolute',
+            top: '20%',
+            m: 0,
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 0 }}>
+          <TextField
+            autoFocus
+            fullWidth
+            placeholder="Digite para navegar ou procurar..."
+            value={commandSearchQuery}
+            onChange={(e) => setCommandSearchQuery(e.target.value)}
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 0,
+                borderBottom: '1px solid',
+                borderBottomColor: 'divider',
+                '& fieldset': {
+                  border: 'none',
+                },
+              },
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const firstItem = document.querySelector('[data-command-item="0"]') as HTMLElement;
+                firstItem?.focus();
+              } else if (e.key === 'Escape') {
+                setShowCommandPalette(false);
+                setCommandSearchQuery('');
+              }
+            }}
+          />
+          
+          <List sx={{ maxHeight: 400, overflow: 'auto', p: 1 }}>
+            {filteredCommands.length === 0 ? (
+              <ListItem>
+                <ListItemText 
+                  primary="Nenhum resultado encontrado"
+                  secondary="Tente uma busca diferente"
+                  sx={{ textAlign: 'center' }}
+                />
+              </ListItem>
+            ) : (
+              filteredCommands.map((item, index) => (
+                <ListItemButton
+                  key={item.id}
+                  data-command-item={index}
+                  onClick={() => {
+                    navigate(item.path);
+                    setShowCommandPalette(false);
+                    setCommandSearchQuery('');
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      const nextItem = document.querySelector(`[data-command-item="${index + 1}"]`) as HTMLElement;
+                      nextItem?.focus();
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      if (index === 0) {
+                        const searchInput = document.querySelector('input[placeholder*="Digite para navegar"]') as HTMLElement;
+                        searchInput?.focus();
+                      } else {
+                        const prevItem = document.querySelector(`[data-command-item="${index - 1}"]`) as HTMLElement;
+                        prevItem?.focus();
+                      }
+                    } else if (e.key === 'Enter') {
+                      navigate(item.path);
+                      setShowCommandPalette(false);
+                      setCommandSearchQuery('');
+                    } else if (e.key === 'Escape') {
+                      setShowCommandPalette(false);
+                      setCommandSearchQuery('');
+                    }
+                  }}
+                  sx={{
+                    borderRadius: 1,
+                    mb: 0.5,
+                    '&:hover, &:focus': {
+                      bgcolor: 'primary.main',
+                      color: 'white',
+                      '& .MuiListItemIcon-root': {
+                        color: 'white',
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    secondary={item.description}
+                  />
+                </ListItemButton>
+              ))
+            )}
+          </List>
+        </DialogContent>
+      </Dialog>
 
       {/* Keyboard Shortcuts Help Dialog */}
       <Dialog

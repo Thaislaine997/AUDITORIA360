@@ -33,6 +33,7 @@ import {
   Business,
 } from "@mui/icons-material";
 import { useAuthStore } from "../stores/authStore";
+import { useGamificationStore } from "../stores/gamificationStore";
 
 interface Cliente {
   id: string;
@@ -48,6 +49,7 @@ interface Cliente {
 
 const GestaoClientes: React.FC = () => {
   const { user } = useAuthStore();
+  const { unlockAchievement, addXP } = useGamificationStore();
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -305,7 +307,27 @@ const GestaoClientes: React.FC = () => {
           <Button onClick={() => setOpenDialog(false)}>
             Cancelar
           </Button>
-          <Button variant="contained" onClick={() => setOpenDialog(false)}>
+          <Button 
+            variant="contained" 
+            onClick={() => {
+              // Simulate saving client
+              setOpenDialog(false);
+              
+              // Add gamification rewards
+              addXP(50, "Cliente cadastrado");
+              
+              // Check if this is the first client (trigger achievement)
+              if (clientes.length === 0 || !editingId) {
+                unlockAchievement("first_client_config");
+              }
+              
+              // Update client count for achievements
+              const newClientCount = clientes.length + 1;
+              if (newClientCount >= 10) {
+                unlockAchievement("client_master");
+              }
+            }}
+          >
             Salvar
           </Button>
         </DialogActions>
