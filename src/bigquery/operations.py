@@ -3,6 +3,7 @@ BigQuery data operations - loading, inserting, updating, and querying data
 """
 
 import logging
+import re
 import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Sequence
@@ -13,10 +14,17 @@ logger = logging.getLogger(__name__)
 
 
 class DataOperations:
-    """Handles BigQuery data operations"""
+    """Handles BigQuery data operations with security validations"""
     
     def __init__(self, client: bigquery.Client):
         self.client = client
+        
+    def _validate_identifier(self, identifier: str, identifier_type: str = "identifier") -> bool:
+        """Validate SQL identifiers to prevent injection attacks"""
+        # Allow alphanumeric characters, underscores, and dots only
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*$', identifier):
+            raise ValueError(f"Invalid {identifier_type}: {identifier}. Only alphanumeric, underscore, and dot allowed.")
+        return True
     
     def insert_rows(
         self, 
@@ -197,16 +205,22 @@ class DataOperations:
     ) -> Optional[List[Any]]:
         """Get distinct values from a column"""
         try:
+            # Validate inputs to prevent SQL injection
+            self._validate_identifier(dataset_id, "dataset_id")
+            self._validate_identifier(table_id, "table_id") 
+            self._validate_identifier(column_name, "column_name")
+            
             full_table_id = f"{self.client.project}.{dataset_id}.{table_id}"
             
             query = f"SELECT DISTINCT {column_name} FROM `{full_table_id}`"
             
             if where_clause:
+                # Note: where_clause should be parameterized by caller for complex conditions
                 query += f" WHERE {where_clause}"
             
             query += f" ORDER BY {column_name}"
             
-            if limit:
+            if limit and isinstance(limit, int) and limit > 0:
                 query += f" LIMIT {limit}"
             
             results = self.query_data(query)
@@ -214,6 +228,9 @@ class DataOperations:
                 return [row[column_name] for row in results]
             return []
             
+        except ValueError as e:
+            logger.error(f"Validation error: {e}")
+            raise
         except Exception as e:
             logger.error(f"Error getting distinct values from {column_name}: {e}")
             return None

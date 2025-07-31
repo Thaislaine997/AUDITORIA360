@@ -1,22 +1,9 @@
-# Unified Authentication Module
-from .unified_auth import (
-    UnifiedAuthManager,
-    auth_manager,
-    authenticate_user,
-    create_access_token,
-    get_current_user_dependency,
-    hash_password,
-    require_role,
-    verify_password,
-)
+"""
+Redirect module to consolidate auth in src.auth
+This module redirects all imports to the centralized auth in src.auth
+to avoid duplication while maintaining backward compatibility.
+"""
 
-__all__ = [
-    "auth_manager",
-    "UnifiedAuthManager",
-    "get_current_user_dependency",
-    "require_role",
-    "hash_password",
-    "verify_password",
-    "create_access_token",
-    "authenticate_user",
-]
+# Import everything from the centralized auth
+from src.auth.middleware import *
+from src.auth.unified_auth import *
