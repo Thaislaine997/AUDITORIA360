@@ -6,6 +6,7 @@ import Sidebar from "./components/layout/Sidebar";
 import KeyboardNavigation from "./components/ui/KeyboardNavigation";
 import { useAuthStore } from "./stores/authStore";
 import { useUIStore } from "./stores/uiStore";
+import { useNavigationStore } from "./stores/navigationStore";
 
 // Lazy loaded pages
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
@@ -39,6 +40,13 @@ const LoadingSpinner: React.FC = () => (
 function App() {
   const { isAuthenticated, loading } = useAuthStore();
   const { sidebarOpen } = useUIStore();
+  const { sidebarCollapsed } = useNavigationStore();
+  
+  // Calculate sidebar width
+  const getSidebarWidth = () => {
+    if (!sidebarOpen) return 0;
+    return sidebarCollapsed ? 60 : 240;
+  };
 
   React.useEffect(() => {
     // Initialize auth state
@@ -69,7 +77,7 @@ function App() {
             bgcolor: "background.default",
             p: 3,
             mt: 8, // Account for navbar height
-            ml: sidebarOpen ? 0 : "-240px",
+            ml: `${getSidebarWidth()}px`,
             transition: "margin-left 0.3s ease",
             minHeight: "calc(100vh - 64px)",
           }}
