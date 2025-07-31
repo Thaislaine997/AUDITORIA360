@@ -137,7 +137,7 @@ class User(Base):
     )
     xp_history = relationship("XPHistory", back_populates="user")
     skill_progress = relationship("UserSkillProgress", back_populates="user")
-    custom_role = relationship("CustomRole", back_populates="users")
+    custom_role = relationship("CustomRole", back_populates="users", foreign_keys=[custom_role_id])
     current_mission = relationship("OnboardingMission")
 
     # Use default __repr__ from BaseModel
@@ -200,7 +200,7 @@ class CustomRole(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
-    users = relationship("User", back_populates="custom_role")
+    users = relationship("User", back_populates="custom_role", foreign_keys="User.custom_role_id")
     created_by = relationship("User", foreign_keys=[created_by_user_id])
 
 
