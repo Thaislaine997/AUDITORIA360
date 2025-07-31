@@ -10,9 +10,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'super_admin' | 'contabilidade' | 'analista'; // Add role for access control
+  role: 'super_admin' | 'contabilidade' | 'cliente_final'; // Updated roles to match backend
   permissions?: string[];
   contabilidadeId?: string; // For hierarchy access control
+  userType?: string; // Map from backend user_type
+  fullName?: string; // From backend full_name
 }
 
 export interface AuthTokens {
@@ -38,31 +40,50 @@ export class AuthService {
   // Login
   async login(credentials: { email: string; password: string }): Promise<User> {
     try {
-      // In a real app, this would make an API call
-      const mockResponse = {
-        user: {
-          id: "1",
-          name: "Demo User",
-          email: credentials.email,
-          role: "contabilidade" as const, // Default role, can be changed for testing
-          permissions: ["read_clients", "write_clients", "read_reports"],
-          contabilidadeId: "1",
+      // Make real API call to backend
+      const response = await fetch('http://localhost:8001/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        tokens: {
-          accessToken: "mock-access-token",
-          refreshToken: "mock-refresh-token",
-          expiresAt: Date.now() + 3600000, // 1 hour
-        },
+        body: JSON.stringify({
+          username: credentials.email,
+          password: credentials.password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const data = await response.json();
+      
+      // Map backend response to our User interface
+      const user: User = {
+        id: data.user.id.toString(),
+        name: data.user.full_name || data.user.username,
+        email: data.user.email,
+        role: data.user.role, // Maps directly from backend
+        permissions: [], // TODO: Get from backend when implemented
+        contabilidadeId: data.user.contabilidadeId,
+        userType: data.user.role,
+        fullName: data.user.full_name,
       };
 
-      this.user = mockResponse.user;
-      this.tokens = mockResponse.tokens;
+      // Store tokens
+      this.tokens = {
+        accessToken: data.token.access_token,
+        refreshToken: '', // TODO: Implement refresh tokens
+        expiresAt: Date.now() + (data.token.expires_in * 1000),
+      };
+
+      this.user = user;
 
       // Store in sessionStorage
       sessionStorage.setItem("authTokens", JSON.stringify(this.tokens));
       sessionStorage.setItem("user", JSON.stringify(this.user));
 
-      return mockResponse.user;
+      return user;
     } catch (error) {
       console.error("Login error:", error);
       throw error;

@@ -3,15 +3,36 @@ Standalone API server for testing new features without complex dependencies
 """
 
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
+# Import auth router
+try:
+    from src.api.routers.auth import router as auth_router
+    AUTH_AVAILABLE = True
+except ImportError:
+    AUTH_AVAILABLE = False
+
 app = FastAPI(
-    title="AUDITORIA360 - Feature Test API",
+    title="AUDITORIA360 - Feature Test API", 
     description="Test implementation for new features",
     version="1.0.0"
 )
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount auth router if available
+if AUTH_AVAILABLE:
+    app.include_router(auth_router, prefix="/auth", tags=["authentication"])
 
 # Mock User for testing
 class MockUser:
