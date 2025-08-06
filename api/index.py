@@ -213,6 +213,7 @@ def health_check():
         "message": "AUDITORIA360 API is running!",
         "version": "1.0.0",
         "enhanced_features": ENHANCED_FEATURES,
+        "quantum_validation": QUANTUM_AVAILABLE,
         "modules": [
             "authentication",
             "payroll",
@@ -322,6 +323,15 @@ except ImportError:
         return {"message": "Dashboard module loading...", "status": "placeholder"}
 
 
+# Import quantum validation router
+try:
+    from src.serverless import router as quantum_router
+    QUANTUM_AVAILABLE = True
+except ImportError:
+    quantum_router = None
+    QUANTUM_AVAILABLE = False
+    logger.warning("⚠️ Quantum validation module not available")
+
 # Include all module routers with safe error handling
 router_configs = [
     (auth_router, "/api/v1/auth", ["Authentication"]),
@@ -336,6 +346,10 @@ router_configs = [
     (reports_router, "/api/v1/reports", ["Report Templates"]),
     (performance_router, "/api/v1/performance", ["Performance Monitoring"]),
 ]
+
+# Add quantum validation router if available
+if QUANTUM_AVAILABLE and quantum_router:
+    router_configs.append((quantum_router, "", ["Quantum Validation"]))
 
 for router, prefix, tags in router_configs:
     if router is not None:

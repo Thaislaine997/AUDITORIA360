@@ -5,7 +5,7 @@ Performance optimized with caching and async operations
 
 import asyncio
 import logging
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from fastapi import HTTPException, status
 from sqlalchemy import text
