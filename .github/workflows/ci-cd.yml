@@ -59,7 +59,7 @@ jobs:
           exit 1
         fi
         echo "✅ Semantic intent validation passed"
-    
+
     - name: Documentation Sync Verification
       run: |
         echo "📚 Checking if service changes include documentation updates..."
@@ -218,7 +218,6 @@ else:
 
   frontend-tests:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && contains(fromJson('["main", "develop"]'), github.ref_name))
     steps:
     - uses: actions/checkout@v4
     
@@ -249,39 +248,8 @@ else:
         cd src/frontend
         npm run build
 
-  # Full security and E2E tests only on main branch
-  security-and-e2e:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref_name == 'main'
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt || echo "Some dev dependencies failed but continuing"
-    
-    - name: Run comprehensive security analysis
-      run: |
-        echo "🔒 Running comprehensive security analysis..."
-        # Add security scanning tools here
-        echo "✅ Security analysis complete"
-    
-    - name: Run E2E tests
-      run: |
-        echo "🎯 Running end-to-end tests..."
-        # Add E2E test commands here
-        echo "✅ E2E tests complete"
-
   automation-tests:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && contains(fromJson('["main", "develop"]'), github.ref_name))
     steps:
     - uses: actions/checkout@v4
     
@@ -310,7 +278,6 @@ else:
 
   api-health-check:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && contains(fromJson('["main", "develop"]'), github.ref_name))
     steps:
     - uses: actions/checkout@v4
     
