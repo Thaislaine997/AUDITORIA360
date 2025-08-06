@@ -203,3 +203,211 @@ class ToolUpdateNotification(MCPNotification):
     method: Literal["notifications/tools/list_changed"] = (
         "notifications/tools/list_changed"
     )
+
+
+# Swarm Intelligence Extensions for Master Collective Protocol
+
+class AgentRole(str, Enum):
+    """Agent specialization roles in the collective"""
+    
+    COORDINATOR = "coordinator"
+    ANALYST = "analyst"
+    LEGISLATOR = "legislator"
+    COMMUNICATOR = "communicator"
+    DATA_PROCESSOR = "data_processor"
+    AUDITOR = "auditor"
+    SPECIALIST = "specialist"
+    MONITOR = "monitor"
+
+
+class AgentStatus(str, Enum):
+    """Agent operational status"""
+    
+    ACTIVE = "active"
+    IDLE = "idle"
+    BUSY = "busy"
+    CORRUPTED = "corrupted"
+    ISOLATED = "isolated"
+    DEAD = "dead"
+
+
+class AgentInfo(BaseModel):
+    """Information about an agent in the collective"""
+    
+    agent_id: str
+    name: str
+    role: AgentRole
+    status: AgentStatus
+    capabilities: List[str]
+    specializations: List[str] = Field(default_factory=list)
+    trust_score: float = Field(default=1.0, ge=0.0, le=1.0)
+    created_at: str
+    last_seen: str
+    performance_metrics: Dict[str, Any] = Field(default_factory=dict)
+
+
+class SwarmMessage(BaseModel):
+    """Message format for inter-agent communication"""
+    
+    message_id: str
+    sender_id: str
+    recipient_id: Optional[str] = None  # None means broadcast
+    message_type: str
+    content: Dict[str, Any]
+    timestamp: str
+    priority: int = Field(default=1, ge=1, le=5)  # 1=low, 5=critical
+    requires_response: bool = False
+    correlation_id: Optional[str] = None
+
+
+class ConsensusProposal(BaseModel):
+    """Proposal for collective decision making"""
+    
+    proposal_id: str
+    proposer_id: str
+    proposal_type: str
+    content: Dict[str, Any]
+    voting_threshold: float = Field(default=0.6, ge=0.5, le=1.0)
+    deadline: str
+    votes: Dict[str, bool] = Field(default_factory=dict)  # agent_id -> vote
+    status: Literal["pending", "approved", "rejected", "expired"] = "pending"
+
+
+class TaskDefinition(BaseModel):
+    """Definition of a task for the collective"""
+    
+    task_id: str
+    title: str
+    description: str
+    requirements: List[str]
+    complexity: int = Field(ge=1, le=10)
+    estimated_duration: int  # minutes
+    assigned_agents: List[str] = Field(default_factory=list)
+    status: Literal["pending", "in_progress", "completed", "failed"] = "pending"
+    created_at: str
+    deadline: Optional[str] = None
+
+
+# Swarm-specific MCP Messages
+
+class RegisterAgentRequest(MCPRequest):
+    """Register a new agent in the collective"""
+    
+    method: Literal["swarm/agent/register"] = "swarm/agent/register"
+    params: AgentInfo
+
+
+class RegisterAgentResponse(MCPResponse):
+    """Agent registration response"""
+    
+    result: Dict[Literal["success", "agent_id"], Union[bool, str]]
+
+
+class ListAgentsRequest(MCPRequest):
+    """List all agents in the collective"""
+    
+    method: Literal["swarm/agents/list"] = "swarm/agents/list"
+    params: Optional[Dict[str, Any]] = None
+
+
+class ListAgentsResponse(MCPResponse):
+    """Agents list response"""
+    
+    result: Dict[Literal["agents"], List[AgentInfo]]
+
+
+class SendMessageRequest(MCPRequest):
+    """Send message between agents"""
+    
+    method: Literal["swarm/message/send"] = "swarm/message/send"
+    params: SwarmMessage
+
+
+class SendMessageResponse(MCPResponse):
+    """Message sending response"""
+    
+    result: Dict[Literal["delivered"], bool]
+
+
+class ProposeConsensusRequest(MCPRequest):
+    """Propose something for collective decision"""
+    
+    method: Literal["swarm/consensus/propose"] = "swarm/consensus/propose"
+    params: ConsensusProposal
+
+
+class VoteConsensusRequest(MCPRequest):
+    """Vote on a consensus proposal"""
+    
+    method: Literal["swarm/consensus/vote"] = "swarm/consensus/vote"
+    params: Dict[Literal["proposal_id", "vote"], Union[str, bool]]
+
+
+class DistributeTaskRequest(MCPRequest):
+    """Distribute a task to the collective"""
+    
+    method: Literal["swarm/task/distribute"] = "swarm/task/distribute"
+    params: TaskDefinition
+
+
+class ClaimTaskRequest(MCPRequest):
+    """Agent claims a task"""
+    
+    method: Literal["swarm/task/claim"] = "swarm/task/claim"
+    params: Dict[Literal["task_id", "agent_id"], str]
+
+
+class IsolateAgentRequest(MCPRequest):
+    """Isolate a corrupted agent"""
+    
+    method: Literal["swarm/agent/isolate"] = "swarm/agent/isolate"
+    params: Dict[Literal["agent_id", "reason"], str]
+
+
+class SwarmHealthRequest(MCPRequest):
+    """Get collective health status"""
+    
+    method: Literal["swarm/health"] = "swarm/health"
+
+
+class SwarmHealthResponse(MCPResponse):
+    """Collective health status"""
+    
+    result: Dict[str, Any]  # Contains metrics, agent counts, etc.
+
+
+# Swarm Notifications
+
+class AgentJoinedNotification(MCPNotification):
+    """Notify when new agent joins collective"""
+    
+    method: Literal["notifications/swarm/agent_joined"] = "notifications/swarm/agent_joined"
+    params: Dict[Literal["agent"], AgentInfo]
+
+
+class AgentLeftNotification(MCPNotification):
+    """Notify when agent leaves collective"""
+    
+    method: Literal["notifications/swarm/agent_left"] = "notifications/swarm/agent_left"
+    params: Dict[Literal["agent_id", "reason"], str]
+
+
+class MessageBroadcastNotification(MCPNotification):
+    """Broadcast message to all agents"""
+    
+    method: Literal["notifications/swarm/message_broadcast"] = "notifications/swarm/message_broadcast"
+    params: SwarmMessage
+
+
+class ConsensusUpdateNotification(MCPNotification):
+    """Notify about consensus proposal updates"""
+    
+    method: Literal["notifications/swarm/consensus_update"] = "notifications/swarm/consensus_update"
+    params: ConsensusProposal
+
+
+class EmergencyProtocolNotification(MCPNotification):
+    """Emergency protocol activation"""
+    
+    method: Literal["notifications/swarm/emergency"] = "notifications/swarm/emergency"
+    params: Dict[str, Any]
