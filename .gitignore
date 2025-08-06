@@ -9,6 +9,10 @@ auth/gestor_contas.json
 auth/login.yaml
 !auth/*.example.*
 
+# IAI-C Automated Issue Files (temporary)
+automated_issues_*.md
+dependency_entropy_issue.md
+
 # Documentação migrada para Wiki (Projeto Alexandria)
 # Arquivos de backup da migração
 README_ORIGINAL_BACKUP.md
