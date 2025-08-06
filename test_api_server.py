@@ -8,12 +8,18 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-# Import auth router
+# Import routers
 try:
     from src.api.routers.auth import router as auth_router
     AUTH_AVAILABLE = True
 except ImportError:
     AUTH_AVAILABLE = False
+
+try:
+    from src.api.routers.core_business import router as core_business_router
+    CORE_BUSINESS_AVAILABLE = True
+except ImportError:
+    CORE_BUSINESS_AVAILABLE = False
 
 app = FastAPI(
     title="AUDITORIA360 - Feature Test API", 
@@ -30,9 +36,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount auth router if available
+# Mount routers if available
 if AUTH_AVAILABLE:
     app.include_router(auth_router, prefix="/auth", tags=["authentication"])
+
+if CORE_BUSINESS_AVAILABLE:
+    app.include_router(core_business_router, prefix="/api/core", tags=["core-business"])
 
 # Mock User for testing
 class MockUser:

@@ -52,6 +52,8 @@ const GestaoClientes: React.FC = () => {
   const { unlockAchievement, addXP } = useGamificationStore();
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [systemStatus, setSystemStatus] = useState<any>(null);
+  const [loadingSystemStatus, setLoadingSystemStatus] = useState(false);
 
   // Mock data - in real app this would be filtered by user role/permissions
   const [clientes, setClientes] = useState<Cliente[]>([
@@ -113,6 +115,37 @@ const GestaoClientes: React.FC = () => {
     }
   };
 
+  const checkSystemHealth = async () => {
+    try {
+      setLoadingSystemStatus(true);
+      const response = await fetch('http://localhost:8001/api/core/system/health');
+      const data = await response.json();
+      setSystemStatus(data);
+    } catch (error) {
+      console.error('Failed to check system health:', error);
+      setSystemStatus({ success: false, error: 'Connection failed' });
+    } finally {
+      setLoadingSystemStatus(false);
+    }
+  };
+
+  const activateBusinessFlow = async (clientId: string) => {
+    try {
+      const response = await fetch(`http://localhost:8001/api/core/business-flow/${clientId}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(`Business flow activated for ${data.data.client.name}! 
+Context ID: ${data.data.system_health.context_id}
+Available actions: ${data.data.available_actions.join(', ')}`);
+      } else {
+        alert(`Failed to activate business flow: ${data.message}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
   // Filter clients based on user role
   const filteredClientes = user?.role === "super_admin" 
     ? clientes 
@@ -140,14 +173,45 @@ const GestaoClientes: React.FC = () => {
           <Typography variant="h6">
             Clientes Cadastrados ({filteredClientes.length})
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={handleAdd}
-          >
-            Novo Cliente
-          </Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={loadingSystemStatus ? undefined : <Business />}
+              onClick={checkSystemHealth}
+              disabled={loadingSystemStatus}
+              color="info"
+            >
+              {loadingSystemStatus ? "Verificando..." : "Status do Sistema"}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleAdd}
+            >
+              Novo Cliente
+            </Button>
+          </Box>
         </Box>
+
+        {/* System Status Display */}
+        {systemStatus && (
+          <Box sx={{ mb: 3, p: 2, bgcolor: systemStatus.success ? 'success.light' : 'error.light', borderRadius: 1 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Status do Sistema Integrado:
+            </Typography>
+            {systemStatus.success ? (
+              <Typography variant="body2">
+                ✅ Core System: {systemStatus.health.core_system.initialized ? 'Inicializado' : 'Não inicializado'} | 
+                Cache: {systemStatus.health.components.cache} | 
+                Auth: {systemStatus.health.components.authentication}
+              </Typography>
+            ) : (
+              <Typography variant="body2" color="error">
+                ❌ Sistema offline: {systemStatus.error || 'Conexão falhou'}
+              </Typography>
+            )}
+          </Box>
+        )}
 
         <TableContainer>
           <Table>
@@ -203,16 +267,30 @@ const GestaoClientes: React.FC = () => {
                       size="small" 
                       color="primary"
                       onClick={() => handleEdit(cliente.id)}
+                      title="Editar Cliente"
                     >
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="info">
+                    <IconButton 
+                      size="small" 
+                      color="info"
+                      title="Visualizar Detalhes"
+                    >
                       <Visibility />
+                    </IconButton>
+                    <IconButton 
+                      size="small" 
+                      color="success"
+                      onClick={() => activateBusinessFlow(cliente.id)}
+                      title="Ativar Fluxo de Negócio"
+                    >
+                      <Business />
                     </IconButton>
                     <IconButton 
                       size="small" 
                       color="error"
                       onClick={() => handleDelete(cliente.id)}
+                      title="Excluir Cliente"
                     >
                       <Delete />
                     </IconButton>
