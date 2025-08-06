@@ -66,8 +66,8 @@ import {
   VisibilityOff,
   Gavel,
 } from '@mui/icons-material';
-import { useIntentionStore } from '../stores/intentionStore';
-import { useAdaptiveUI } from '../hooks/useNeuralSignals';
+import { useIntentionStore } from '../../stores/intentionStore';
+import { useAdaptiveUI } from '../../hooks/useNeuralSignals';
 
 interface DataSubject {
   id: number;
