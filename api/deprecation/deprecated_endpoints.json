@@ -1,0 +1,24 @@
+{
+  "last_updated": "2025-08-06T19:23:39.809576",
+  "total_deprecated_endpoints": 4,
+  "endpoints": [
+    {
+      "endpoint": "/api/v1/legacy/auditoria",
+      "method": "GET",
+      "deprecation_level": "deprecated",
+      "sunset_date": "2025-11-04T18:47:01.899697",
+      "replacement_endpoint": "/api/v2/audits",
+      "migration_guide": "Use /api/v2/audits with enhanced security",
+      "business_impact": "medium"
+    },
+    {
+      "endpoint": "/api/v1/legacy/rpa",
+      "method": "POST",
+      "deprecation_level": "warning",
+      "sunset_date": "2025-11-04T18:47:01.899697",
+      "replacement_endpoint": "/api/v2/automation/rpa",
+      "migration_guide": "Migrate to RPA API with security quarantine",
+      "business_impact": "high"
+    }
+  ]
+}
