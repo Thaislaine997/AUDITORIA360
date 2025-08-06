@@ -61,7 +61,7 @@ jobs:
         fi
         
     - name: Upload validation reports as artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: master-checklist-validation-reports
         path: |
@@ -141,10 +141,15 @@ jobs:
         # Set minimum completion threshold (e.g., 85%)
         THRESHOLD=85.0
         
-        if (( $(echo "$COMPLETION < $THRESHOLD" | bc -l) )); then
-          echo "❌ Checklist completion ($COMPLETION%) is below threshold ($THRESHOLD%)"
-          echo "Please ensure all required files are present and valid before merging."
-          exit 1
-        else
-          echo "✅ Checklist completion ($COMPLETION%) meets threshold ($THRESHOLD%)"
-        fi
+        # Use Python for floating point comparison
+        python -c "
+import sys
+completion = float('$COMPLETION')
+threshold = float('$THRESHOLD')
+if completion < threshold:
+    print(f'❌ Checklist completion ({completion}%) is below threshold ({threshold}%)')
+    print('Please ensure all required files are present and valid before merging.')
+    sys.exit(1)
+else:
+    print(f'✅ Checklist completion ({completion}%) meets threshold ({threshold}%)')
+"
