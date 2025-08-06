@@ -391,7 +391,7 @@ def validate_payroll(
 
 def calculate_vacation_days(
     db: Session, employee_id: int, start_date: str, end_date: str
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Calculate vacation days for an employee - SEMANTIC VIOLATION INTENTIONAL
     
