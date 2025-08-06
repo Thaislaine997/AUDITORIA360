@@ -45,7 +45,7 @@ jobs:
         python automation/cron_legislacao.py
     
     - name: Upload results to artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: legislacao-data-${{ github.run_number }}
         path: data/updates/
@@ -102,7 +102,7 @@ jobs:
     
     - name: Test automation functions
       run: |
-        python -m pytest tests/test_automation_serverless.py -v
+        python -m pytest tests/unit/test_automation_serverless.py -v
     
     - name: Verify serverless compatibility
       run: |
@@ -141,7 +141,7 @@ jobs:
         python automation/rpa_folha.py
     
     - name: Upload payroll artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: payroll-automation-${{ github.run_number }}
         path: /tmp/payroll/
@@ -184,7 +184,7 @@ jobs:
         python automation/schedule_reports.py weekly
     
     - name: Upload report artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: automated-reports-${{ github.run_number }}
         path: /tmp/reports/
@@ -220,7 +220,7 @@ jobs:
         python automation/backup_routine.py full
     
     - name: Upload backup artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: backups-${{ github.run_number }}
         path: /tmp/backups/
