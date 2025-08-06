@@ -19,13 +19,24 @@ from .protocol import (
     ServerInfo,
     ToolInfo,
     ToolUpdateNotification,
+    # Swarm Intelligence imports
+    AgentInfo,
+    SwarmMessage,
+    ConsensusProposal,
+    TaskDefinition,
+    AgentJoinedNotification,
+    AgentLeftNotification,
+    MessageBroadcastNotification,
+    ConsensusUpdateNotification,
+    EmergencyProtocolNotification,
 )
+from .swarm import CollectiveMind, BaseAgent, SpecialistAgent, AgentRole
 
 logger = logging.getLogger(__name__)
 
 
 class MCPServer:
-    """Model Context Protocol server for AUDITORIA360"""
+    """Model Context Protocol server for AUDITORIA360 with Swarm Intelligence"""
 
     def __init__(self, name: str = "AUDITORIA360-MCP", version: str = "1.0.0"):
         self.name = name
@@ -44,6 +55,16 @@ class MCPServer:
             "resources/read": self._handle_read_resource,
             "tools/list": self._handle_list_tools,
             "tools/call": self._handle_call_tool,
+            # Swarm Intelligence handlers
+            "swarm/agent/register": self._handle_register_agent,
+            "swarm/agents/list": self._handle_list_agents,
+            "swarm/message/send": self._handle_send_message,
+            "swarm/consensus/propose": self._handle_propose_consensus,
+            "swarm/consensus/vote": self._handle_vote_consensus,
+            "swarm/task/distribute": self._handle_distribute_task,
+            "swarm/task/claim": self._handle_claim_task,
+            "swarm/agent/isolate": self._handle_isolate_agent,
+            "swarm/health": self._handle_swarm_health,
         }
 
         # Resource and tool implementations
@@ -52,8 +73,11 @@ class MCPServer:
 
         # Notification callbacks
         self._notification_callbacks: List[Callable] = []
+        
+        # Swarm Intelligence - Master Collective Protocol
+        self.collective_mind = CollectiveMind()
 
-        logger.info(f"MCP Server {self.name} v{self.version} initialized")
+        logger.info(f"MCP Server {self.name} v{self.version} initialized with Swarm Intelligence")
 
     async def handle_request(self, request_data: str) -> str:
         """Handle incoming MCP request"""
@@ -229,6 +253,281 @@ class MCPServer:
     def add_notification_callback(self, callback: Callable):
         """Add callback for sending notifications"""
         self._notification_callbacks.append(callback)
+
+    # Swarm Intelligence Method Handlers
+
+    async def _handle_register_agent(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle agent registration"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing agent info"
+            )
+
+        try:
+            agent_info = AgentInfo(**request.params)
+            
+            # Create appropriate agent type based on role
+            if agent_info.role == AgentRole.SPECIALIST:
+                agent = SpecialistAgent(
+                    agent_info.agent_id,
+                    agent_info.specializations[0] if agent_info.specializations else "general",
+                    "default_domain"
+                )
+            else:
+                agent = BaseAgent(agent_info.agent_id, agent_info.role, agent_info.name)
+                agent.capabilities = [cap for cap in agent_info.capabilities]
+                agent.specializations = agent_info.specializations
+                agent.trust_score = agent_info.trust_score
+
+            success = await self.collective_mind.register_agent(agent)
+            
+            if success:
+                # Send notification
+                notification = AgentJoinedNotification(params={"agent": agent_info})
+                await self._send_notification(notification)
+                
+                return {"success": True, "agent_id": agent_info.agent_id}
+            else:
+                return MCPError(
+                    code=ErrorCode.INTERNAL_ERROR,
+                    message="Failed to register agent"
+                )
+                
+        except Exception as e:
+            logger.error(f"Error registering agent: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Registration failed: {str(e)}"
+            )
+
+    async def _handle_list_agents(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle list agents request"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        agents = [agent.get_info() for agent in self.collective_mind.agents.values()]
+        return {"agents": [agent.model_dump() for agent in agents]}
+
+    async def _handle_send_message(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle send message request"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing message data"
+            )
+
+        try:
+            message = SwarmMessage(**request.params)
+            delivered = await self.collective_mind.send_message(message)
+            
+            # Send notification if broadcast
+            if not message.recipient_id:
+                notification = MessageBroadcastNotification(params=message)
+                await self._send_notification(notification)
+            
+            return {"delivered": delivered}
+            
+        except Exception as e:
+            logger.error(f"Error sending message: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Message sending failed: {str(e)}"
+            )
+
+    async def _handle_propose_consensus(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle consensus proposal"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing proposal data"
+            )
+
+        try:
+            proposal = ConsensusProposal(**request.params)
+            proposal_id = await self.collective_mind.propose_consensus(proposal)
+            
+            # Send notification
+            notification = ConsensusUpdateNotification(params=proposal)
+            await self._send_notification(notification)
+            
+            return {"proposal_id": proposal_id, "status": "proposed"}
+            
+        except Exception as e:
+            logger.error(f"Error proposing consensus: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Consensus proposal failed: {str(e)}"
+            )
+
+    async def _handle_vote_consensus(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle consensus voting"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params or "proposal_id" not in request.params or "vote" not in request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing proposal_id or vote"
+            )
+
+        try:
+            proposal_id = request.params["proposal_id"]
+            vote = request.params["vote"]
+            agent_id = request.params.get("agent_id", "unknown")
+            
+            success = await self.collective_mind.vote_consensus(proposal_id, agent_id, vote)
+            
+            if success:
+                # Get updated proposal and send notification
+                proposal = self.collective_mind.consensus_proposals.get(proposal_id)
+                if proposal:
+                    notification = ConsensusUpdateNotification(params=proposal)
+                    await self._send_notification(notification)
+                
+                return {"voted": True, "proposal_id": proposal_id}
+            else:
+                return MCPError(
+                    code=ErrorCode.INVALID_PARAMS,
+                    message="Invalid proposal or voting failed"
+                )
+                
+        except Exception as e:
+            logger.error(f"Error voting on consensus: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Voting failed: {str(e)}"
+            )
+
+    async def _handle_distribute_task(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle task distribution"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing task data"
+            )
+
+        try:
+            task = TaskDefinition(**request.params)
+            task_id = await self.collective_mind.distribute_task(task)
+            
+            return {"task_id": task_id, "status": "distributed"}
+            
+        except Exception as e:
+            logger.error(f"Error distributing task: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Task distribution failed: {str(e)}"
+            )
+
+    async def _handle_claim_task(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle task claiming by agent"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params or "task_id" not in request.params or "agent_id" not in request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing task_id or agent_id"
+            )
+
+        task_id = request.params["task_id"]
+        agent_id = request.params["agent_id"]
+        
+        # Implementation for task claiming logic
+        if task_id in self.collective_mind.tasks:
+            task = self.collective_mind.tasks[task_id]
+            if agent_id not in task.assigned_agents:
+                task.assigned_agents.append(agent_id)
+            return {"claimed": True, "task_id": task_id}
+        else:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS,
+                message="Task not found"
+            )
+
+    async def _handle_isolate_agent(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle agent isolation"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        if not request.params or "agent_id" not in request.params:
+            return MCPError(
+                code=ErrorCode.INVALID_PARAMS, message="Missing agent_id"
+            )
+
+        try:
+            agent_id = request.params["agent_id"]
+            reason = request.params.get("reason", "manual_isolation")
+            
+            success = await self.collective_mind.isolate_agent(agent_id, reason)
+            
+            if success:
+                # Send notification
+                notification = AgentLeftNotification(params={
+                    "agent_id": agent_id,
+                    "reason": f"isolated: {reason}"
+                })
+                await self._send_notification(notification)
+                
+                return {"isolated": True, "agent_id": agent_id}
+            else:
+                return MCPError(
+                    code=ErrorCode.INVALID_PARAMS,
+                    message="Agent not found or isolation failed"
+                )
+                
+        except Exception as e:
+            logger.error(f"Error isolating agent: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Agent isolation failed: {str(e)}"
+            )
+
+    async def _handle_swarm_health(self, request: MCPRequest) -> Dict[str, Any]:
+        """Handle swarm health check"""
+        if not self.initialized:
+            return MCPError(
+                code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
+            )
+
+        try:
+            health = self.collective_mind.get_collective_health()
+            
+            # Resolve async consciousness cost if present
+            if "consciousness_cost" in health and hasattr(health["consciousness_cost"], "result"):
+                health["consciousness_cost"] = await health["consciousness_cost"]
+            
+            return health
+            
+        except Exception as e:
+            logger.error(f"Error getting swarm health: {e}")
+            return MCPError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message=f"Health check failed: {str(e)}"
+            )
 
 
 class AuditoriaResourceProvider:
