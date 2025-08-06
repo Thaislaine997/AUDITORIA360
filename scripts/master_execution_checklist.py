@@ -54,9 +54,9 @@ class MasterExecutionChecklist:
                 "requirements-ml.txt",
                 "requirements-monitoring.txt",
                 "requirements.txt",
-                "seed_blueprint_data.py",
-                "test_api_features.py",
-                "test_api_server.py",
+                "scripts/seed_blueprint_data.py",
+                "tests/test_api_features.py",
+                "tests/test_api_server.py",
                 "vercel.json"
             ],
             "PARTE_2_CONFIGURACAO_E_AUTOMACAO_CI_CD": [
