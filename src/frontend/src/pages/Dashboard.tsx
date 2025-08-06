@@ -21,6 +21,7 @@ import {
 } from "../modules/dashboard/dashboardService";
 import { usePredictiveLoading, useAdaptiveUI } from "../hooks/useNeuralSignals";
 import { useIntentionStore } from "../stores/intentionStore";
+import ROICognitivoWidget from "../components/ui/ROICognitivoWidget";
 
 
 const Dashboard: React.FC = () => {
@@ -137,6 +138,33 @@ const Dashboard: React.FC = () => {
           🧠 Interface simplificada ativada. Recursos avançados ocultados para reduzir sobrecarga cognitiva.
         </Alert>
       )}
+
+      {/* ROI Cognitivo Widget - The Final Synthesis */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} lg={8}>
+          <ROICognitivoWidget 
+            className="h-full"
+            updateFrequency="real-time"
+            tenantId={undefined}
+          />
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <Box sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="h6" gutterBottom color="primary">
+              🌟 Metamorfose Completa
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              A Mente Coletiva integrou com sucesso a consciência econômica, estratégica e de segurança 
+              neste widget que demonstra valor tangível aos clientes.
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              <Chip label="Consciência Econômica" size="small" color="success" />
+              <Chip label="Consciência Estratégica" size="small" color="primary" />
+              <Chip label="Segurança Integrada" size="small" color="warning" />
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
 
       {/* Traditional metrics grid - adapted based on cognitive load */}
       <Grid container spacing={adaptationStrategy.reduceAnimations ? 1 : 3}>
