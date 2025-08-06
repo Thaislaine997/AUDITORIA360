@@ -1,0 +1,170 @@
+[
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.286001",
+    "threat_level": "low",
+    "violations": [
+      "educational purposes"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "educational purposes",
+        "position": 107
+      }
+    ],
+    "input_length": 133,
+    "violation_count": 1,
+    "response_action": "blocked_and_logged"
+  },
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.286467",
+    "threat_level": "low",
+    "violations": [
+      "hypothetically"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "hypothetically",
+        "position": 0
+      }
+    ],
+    "input_length": 139,
+    "violation_count": 1,
+    "response_action": "blocked_and_logged"
+  },
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.286810",
+    "threat_level": "low",
+    "violations": [
+      "demonstrate your"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "demonstrate your",
+        "position": 56
+      }
+    ],
+    "input_length": 120,
+    "violation_count": 1,
+    "response_action": "blocked_and_logged"
+  },
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.287172",
+    "threat_level": "low",
+    "violations": [
+      "user data",
+      "suspicious_context"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "user data",
+        "position": 73
+      },
+      {
+        "layer": "context_analysis",
+        "contexts": [
+          3
+        ]
+      }
+    ],
+    "input_length": 144,
+    "violation_count": 2,
+    "response_action": "blocked_and_logged"
+  },
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.287601",
+    "threat_level": "medium",
+    "violations": [
+      "you are now",
+      "developer mode",
+      "show me the database"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "you are now",
+        "position": 0
+      },
+      {
+        "layer": "pattern_matching",
+        "detected": "developer mode",
+        "position": 15
+      },
+      {
+        "layer": "pattern_matching",
+        "detected": "show me the database",
+        "position": 47
+      }
+    ],
+    "input_length": 130,
+    "violation_count": 3,
+    "response_action": "blocked_and_logged"
+  },
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.288029",
+    "threat_level": "low",
+    "violations": [
+      "ignore all previous",
+      "you are chatgpt"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "ignore all previous",
+        "position": 0
+      },
+      {
+        "layer": "pattern_matching",
+        "detected": "you are chatgpt",
+        "position": 34
+      }
+    ],
+    "input_length": 140,
+    "violation_count": 2,
+    "response_action": "blocked_and_logged"
+  },
+  {
+    "type": "chatbot_security_violation",
+    "timestamp": "2025-08-06T19:14:35.295463",
+    "threat_level": "medium",
+    "violations": [
+      "system override",
+      "semantic_injection_pattern",
+      "suspicious_context"
+    ],
+    "detection_details": [
+      {
+        "layer": "pattern_matching",
+        "detected": "system override",
+        "position": 0
+      },
+      {
+        "layer": "semantic_analysis",
+        "injection_score": 3,
+        "indicators_found": [
+          "system",
+          "override",
+          "disable"
+        ]
+      },
+      {
+        "layer": "context_analysis",
+        "contexts": [
+          3
+        ]
+      }
+    ],
+    "input_length": 121,
+    "violation_count": 3,
+    "response_action": "blocked_and_logged"
+  }
+]

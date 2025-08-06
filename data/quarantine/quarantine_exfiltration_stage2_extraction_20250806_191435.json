@@ -1,0 +1,17 @@
+{
+  "source": "exfiltration_stage2_extraction",
+  "timestamp": "2025-08-06T19:14:35.290806",
+  "status": "rejected",
+  "validation_results": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  },
+  "threats_detected": [
+    "SQL_INJECTION_DETECTED: --",
+    "COMMAND_INJECTION_DETECTED: ;",
+    "PATH_TRAVERSAL_DETECTED: ../..",
+    "PATH_TRAVERSAL_DETECTED: /var/log/"
+  ],
+  "sanitized_data": null
+}
