@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, keyframes } from '@mui/material';
+import { trackSuccessConfetti } from '../../services/acr';
 
 interface ConfettiPiece {
   id: string;
@@ -58,6 +59,9 @@ export const SuccessConfetti: React.FC<SuccessConfettiProps> = ({
   useEffect(() => {
     if (trigger && !isActive) {
       setIsActive(true);
+      
+      // ACR (Kinetic Tracking Agent) - Track confetti celebration
+      trackSuccessConfetti('success_celebration', duration, particleCount);
       
       // Generate confetti pieces
       const pieces: ConfettiPiece[] = Array.from({ length: particleCount }, (_, i) => ({

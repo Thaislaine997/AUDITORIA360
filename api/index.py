@@ -2,6 +2,7 @@
 AUDITORIA360 - Portal de Gestão da Folha, Auditoria 360 e CCT
 Main FastAPI application with all modules integrated
 Enhanced with performance monitoring and alerting systems
+Enhanced with OpenTelemetry instrumentation for ACR (Kinetic Tracking Agent)
 """
 
 import logging
@@ -12,6 +13,45 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from fastapi.security import HTTPBearer
+
+# ACR (Agente de Rastreamento Cinético) - OpenTelemetry Instrumentation
+try:
+    from opentelemetry import trace
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    from opentelemetry.instrumentation.requests import RequestsInstrumentor
+    from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+    from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+    
+    # Configure OpenTelemetry
+    trace.set_tracer_provider(
+        TracerProvider(
+            resource=Resource.create({SERVICE_NAME: "auditoria360-api"})
+        )
+    )
+    
+    # Configure Jaeger exporter
+    jaeger_exporter = JaegerExporter(
+        agent_host_name=os.getenv("JAEGER_AGENT_HOST", "localhost"),
+        agent_port=int(os.getenv("JAEGER_AGENT_PORT", "6831")),
+    )
+    
+    # Add span processor
+    span_processor = BatchSpanProcessor(jaeger_exporter)
+    trace.get_tracer_provider().add_span_processor(span_processor)
+    
+    # Get tracer for manual instrumentation
+    tracer = trace.get_tracer(__name__)
+    
+    ACR_INSTRUMENTATION = True
+    logger.info("✅ ACR (Kinetic Tracking Agent) - OpenTelemetry instrumentation enabled")
+    
+except ImportError as e:
+    ACR_INSTRUMENTATION = False
+    tracer = None
+    logger.warning(f"⚠️ ACR OpenTelemetry instrumentation not available: {e}")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -172,6 +212,12 @@ app = FastAPI(
     * **Auditoria e Compliance** - Motor de regras e detecção de não conformidades
     * **IA e Chatbot** - Assistente inteligente treinado com base de conhecimento
     * **Gestão de Usuários** - Permissões granulares e controle de acesso
+    
+    ## ACR - Agente de Rastreamento Cinético
+    
+    * **Distributed Tracing** - OpenTelemetry instrumentation for flow visualization
+    * **Performance Analysis** - Automatic bottleneck detection and optimization
+    * **Error Tracking** - Comprehensive error analysis and debugging support
     """,
     version="1.0.0",
     contact={
@@ -183,6 +229,24 @@ app = FastAPI(
     },
     lifespan=lifespan,
 )
+
+# ACR (Kinetic Tracking Agent) - Automatic instrumentation
+if ACR_INSTRUMENTATION:
+    try:
+        # Instrument FastAPI automatically
+        FastAPIInstrumentor.instrument_app(app)
+        
+        # Instrument requests library for external API calls
+        RequestsInstrumentor().instrument()
+        
+        # Instrument SQLAlchemy for database queries
+        # SQLAlchemyInstrumentor().instrument()  # Uncomment when database is configured
+        
+        logger.info("✅ ACR - FastAPI application instrumented with OpenTelemetry")
+    except Exception as e:
+        logger.warning(f"⚠️ ACR instrumentation failed: {e}")
+else:
+    logger.info("⚡ ACR - Running without OpenTelemetry instrumentation")
 
 # CORS configuration for frontend integration
 app.add_middleware(
@@ -202,6 +266,102 @@ if MIDDLEWARE_AVAILABLE:
 else:
     logger.warning("⚠️ Using basic error handling (middleware not available)")
 
+
+# ACR (Kinetic Tracking Agent) - Manual tracing endpoints
+if ACR_INSTRUMENTATION:
+    @app.get("/api/v1/acr/trace-demo", tags=["ACR - Kinetic Tracking"])
+    def acr_trace_demo():
+        """Demo endpoint with manual tracing for ACR demonstration"""
+        with tracer.start_as_current_span("acr_demo_operation") as span:
+            span.set_attribute("demo.type", "kinetic_tracking")
+            span.set_attribute("demo.component", "acr")
+            
+            # Simulate some business logic
+            with tracer.start_as_current_span("validate_request"):
+                span.set_attribute("validation.status", "success")
+                # Simulate validation time
+                import time
+                time.sleep(0.05)
+                
+            with tracer.start_as_current_span("process_data"):
+                span.set_attribute("processing.items", 10)
+                # Simulate processing time
+                time.sleep(0.1)
+                
+                # Simulate a child operation
+                with tracer.start_as_current_span("database_query"):
+                    span.set_attribute("db.operation", "SELECT")
+                    span.set_attribute("db.table", "auditorias")
+                    time.sleep(0.03)
+                    
+            with tracer.start_as_current_span("generate_response"):
+                span.set_attribute("response.format", "json")
+                time.sleep(0.02)
+                
+            return {
+                "message": "ACR trace demo completed successfully",
+                "trace_id": format(span.get_span_context().trace_id, '032x'),
+                "span_id": format(span.get_span_context().span_id, '016x'),
+                "acr_status": "active",
+                "note": "Check Jaeger UI at http://localhost:16686 to see the trace"
+            }
+            
+    @app.get("/api/v1/acr/trace-error", tags=["ACR - Kinetic Tracking"])
+    def acr_trace_error():
+        """Demo endpoint that generates an error for trace analysis"""
+        with tracer.start_as_current_span("acr_error_demo") as span:
+            span.set_attribute("demo.type", "error_generation")
+            span.set_attribute("demo.component", "acr")
+            
+            try:
+                with tracer.start_as_current_span("risky_operation"):
+                    # Simulate an operation that might fail
+                    import random
+                    if random.random() < 0.7:  # 70% chance of "error"
+                        span.record_exception(Exception("Simulated ACR demo error"))
+                        span.set_status(trace.Status(trace.StatusCode.ERROR, "Demo error occurred"))
+                        raise HTTPException(
+                            status_code=500, 
+                            detail="ACR demo error - check trace for details"
+                        )
+                    else:
+                        span.set_attribute("operation.result", "success")
+                        return {"message": "Operation succeeded unexpectedly!"}
+                        
+            except HTTPException:
+                raise
+            except Exception as e:
+                span.record_exception(e)
+                span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
+                raise HTTPException(status_code=500, detail=str(e))
+                
+    @app.get("/api/v1/acr/status", tags=["ACR - Kinetic Tracking"])
+    def acr_status():
+        """Get ACR (Kinetic Tracking Agent) status"""
+        return {
+            "acr_enabled": ACR_INSTRUMENTATION,
+            "opentelemetry_version": "1.36.0" if ACR_INSTRUMENTATION else None,
+            "jaeger_endpoint": f"http://{os.getenv('JAEGER_AGENT_HOST', 'localhost')}:16686",
+            "service_name": "auditoria360-api",
+            "instrumentation": {
+                "fastapi": ACR_INSTRUMENTATION,
+                "requests": ACR_INSTRUMENTATION,
+                "sqlalchemy": False  # Will be True when database is configured
+            },
+            "trace_sample_rate": 1.0,  # 100% sampling for demo
+            "note": "Visit the trace-demo endpoint to generate sample traces"
+        }
+
+else:
+    @app.get("/api/v1/acr/status", tags=["ACR - Kinetic Tracking"])
+    def acr_status_disabled():
+        """ACR status when instrumentation is disabled"""
+        return {
+            "acr_enabled": False,
+            "message": "ACR (Kinetic Tracking Agent) is not available",
+            "reason": "OpenTelemetry dependencies not installed",
+            "installation": "pip install opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation-fastapi"
+        }
 
 # Health check endpoint
 @app.get("/", tags=["Health"])

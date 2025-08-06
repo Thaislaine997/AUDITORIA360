@@ -1,50 +1,104 @@
 """
 MCP Protocol Implementation for AUDITORIA360
 Defines core protocol messages and types according to MCP specification
+Enhanced with Consensus Mechanism for "Grande Síntese" - Initiative IV
 """
 
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
+from datetime import datetime
+import uuid
+import logging
 
 from pydantic import BaseModel, Field
 
+logger = logging.getLogger(__name__)
 
 class MCPVersion(str, Enum):
     """Supported MCP protocol versions"""
-
     V1_0 = "1.0"
-
 
 class ErrorCode(int, Enum):
     """Standard MCP error codes"""
-
     PARSE_ERROR = -32700
     INVALID_REQUEST = -32600
     METHOD_NOT_FOUND = -32601
     INVALID_PARAMS = -32602
     INTERNAL_ERROR = -32603
+    # Enhanced error codes for consensus
+    CONSENSUS_FAILED = -32001
+    QUORUM_NOT_REACHED = -32002
+    AGENT_CONFLICT = -32003
 
+class ConsensusLevel(str, Enum):
+    """Consensus requirement levels"""
+    SIMPLE = "simple"  # 51% agreement
+    MAJORITY = "majority"  # 66% agreement 
+    SUPERMAJORITY = "supermajority"  # 75% agreement
+    UNANIMOUS = "unanimous"  # 100% agreement
+
+class AgentRole(str, Enum):
+    """Types of agents in the consensus system"""
+    SECURITY_AGENT = "security"
+    VALIDATION_AGENT = "validation"
+    RISK_AGENT = "risk"
+    COMPLIANCE_AGENT = "compliance"
+    AUDIT_AGENT = "audit"
+    BUSINESS_AGENT = "business"
+
+class ConsensusVote(BaseModel):
+    """Individual agent vote in consensus"""
+    agent_id: str
+    agent_role: AgentRole
+    vote: bool  # True = approve, False = reject
+    confidence: float = Field(ge=0.0, le=1.0)  # 0.0 to 1.0
+    reasoning: str
+    timestamp: datetime
+    supporting_data: Optional[Dict[str, Any]] = None
+
+class ConsensusResult(BaseModel):
+    """Result of a consensus process"""
+    consensus_id: str
+    decision_approved: bool
+    total_agents: int
+    votes_for: int
+    votes_against: int
+    abstentions: int
+    consensus_level_required: ConsensusLevel
+    consensus_level_achieved: float
+    quorum_met: bool
+    individual_votes: List[ConsensusVote]
+    debate_log: List[str]
+    final_reasoning: str
+    timestamp: datetime
+    processing_time_ms: int
+
+class MCPConsensusRequest(BaseModel):
+    """Request for MCP consensus on critical insights"""
+    insight_id: str
+    insight_type: str  # e.g., "risk_assessment", "security_decision", "compliance_ruling"
+    insight_data: Dict[str, Any]
+    consensus_level_required: ConsensusLevel = ConsensusLevel.MAJORITY
+    timeout_seconds: int = 300  # 5 minute default timeout
+    required_agent_roles: List[AgentRole] = []
+    context: Optional[Dict[str, Any]] = None
+    priority: Literal["low", "medium", "high", "critical"] = "medium"
 
 class MCPError(BaseModel):
     """MCP error response format"""
-
     code: ErrorCode
     message: str
     data: Optional[Dict[str, Any]] = None
 
-
 class MCPRequest(BaseModel):
     """Base MCP request message"""
-
     jsonrpc: Literal["2.0"] = "2.0"
     id: Union[str, int, None] = None
     method: str
     params: Optional[Dict[str, Any]] = None
 
-
 class MCPResponse(BaseModel):
     """Base MCP response message"""
-
     jsonrpc: Literal["2.0"] = "2.0"
     id: Union[str, int, None] = None
     result: Optional[Dict[str, Any]] = None
