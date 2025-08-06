@@ -32,3 +32,27 @@ repos:
     hooks:
       - id: autoflake
         args: [--in-place, --remove-all-unused-imports, --remove-unused-variables]
+
+  # IAI-C (Intrinsic Artificial Intelligence in Code) - Semantic Validation Layer
+  - repo: local
+    hooks:
+      - id: semantic-intent-validator
+        name: Semantic Intent Validator (IAI-C)
+        entry: python scripts/python/semantic_intent_validator.py
+        language: python
+        files: \.(py)$
+        additional_dependencies: []
+        
+      - id: business-logic-validator
+        name: Business Logic Validator (IAI-C)
+        entry: python scripts/python/business_logic_validator.py
+        language: python
+        files: ^src/services/.*\.py$
+        additional_dependencies: []
+        
+      - id: dependency-entropy-scanner
+        name: Dependency Entropy Scanner (IAI-C)
+        entry: python scripts/python/dependency_entropy_scanner.py
+        language: python
+        files: ^(requirements.*\.txt|package\.json|pyproject\.toml)$
+        additional_dependencies: []

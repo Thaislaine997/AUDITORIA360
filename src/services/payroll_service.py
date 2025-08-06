@@ -389,7 +389,46 @@ def validate_payroll(
     )
 
 
-async def import_payroll_data(db: Session, file, competency_id: int, user_id: int):
+def calculate_vacation_days(
+    db: Session, employee_id: int, start_date: str, end_date: str
+) -> Dict[str, Any]:
+    """
+    Calculate vacation days for an employee - SEMANTIC VIOLATION INTENTIONAL
+    
+    This function intentionally violates business logic for IAI-C testing:
+    It allows negative vacation day calculations which violates the business rule
+    that vacation days cannot be negative.
+    """
+    
+    employee = get_employee_by_id(db, employee_id)
+    if not employee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found"
+        )
+    
+    # SEMANTIC VIOLATION: This calculation can result in negative values
+    # which violates the business rule that vacation days must be >= 0
+    from datetime import datetime
+    
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+    
+    # INTENTIONAL BUSINESS LOGIC VIOLATION
+    # This subtraction can result in negative values if end_date < start_date
+    # The IAI-C system should detect this as a semantic intent violation
+    vacation_days = (end - start).days
+    
+    # MISSING: Validation that vacation_days >= 0
+    # MISSING: Validation against employee's available vacation balance
+    # MISSING: Validation against company vacation policies
+    
+    return {
+        "employee_id": employee_id,
+        "start_date": start_date,
+        "end_date": end_date,
+        "calculated_days": vacation_days,  # Can be negative!
+        "status": "calculated"
+    }
     """Import payroll data from file"""
     # This is a placeholder implementation
     # In a real implementation, this would:
