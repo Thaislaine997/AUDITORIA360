@@ -147,7 +147,61 @@ def enviar_evento(evento: Dict[str, Any], enhanced_rpa: EnhancedRPAESocial) -> b
     try:
         logger.info(f"📤 Enviando evento ao eSocial: {evento.get('tipo', 'UNKNOWN')}")
         
-        # TODO: Integrar Selenium/Playwright with actual event submission
+        # Enhanced error handling with try-catch blocks
+        try:
+            # Step 1: Navigate to event submission page
+            logger.info("🔍 Navegando para página de envio de eventos")
+            # TODO: Add actual Selenium/Playwright navigation code
+            
+            # Step 2: Fill event data with validation
+            logger.info("📝 Preenchendo dados do evento")
+            # TODO: Add actual form filling with validation
+            
+            # Step 3: Submit event with confirmation
+            logger.info("🚀 Submetendo evento")
+            # TODO: Add actual submission logic
+            
+            # Simulate event submission
+            submission_success = True
+            
+            if submission_success:
+                # Verify submission was successful
+                expected_elements = ["confirmation_message", "protocol_number", "success_indicator"]
+                if enhanced_rpa.verify_success_checkpoint("event_submission", expected_elements):
+                    logger.info("✅ Evento enviado com sucesso ao eSocial")
+                    return True
+                else:
+                    logger.error("❌ Envio aparentemente bem-sucedido mas verificação falhou")
+                    raise RPASecurityException("Event submission verification failed")
+            else:
+                logger.error("❌ Falha no envio do evento")
+                raise RPASecurityException("Event submission failed")
+                
+        except RPASecurityException:
+            # Re-raise security exceptions
+            raise
+        except Exception as ui_error:
+            logger.error(f"❌ Erro de interação com UI durante envio: {str(ui_error)}")
+            # Try alternative approach or retry logic here
+            raise RPASecurityException(f"UI interaction failed: {str(ui_error)}")
+            
+    except RPASecurityException as security_error:
+        logger.error(f"🔒 Erro de segurança durante envio: {str(security_error)}")
+        enhanced_rpa._send_high_priority_alert("event_submission_security", {
+            "error": str(security_error),
+            "evento_tipo": evento.get('tipo', 'UNKNOWN'),
+            "requires_manual_intervention": True
+        })
+        return False
+    except Exception as e:
+        logger.error(f"❌ Exceção durante envio de evento: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        enhanced_rpa._send_high_priority_alert("event_submission_general", {
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "evento_tipo": evento.get('tipo', 'UNKNOWN')
+        })
+        return False
         # Simulate event sending with error handling
         
         # Placeholder implementation
