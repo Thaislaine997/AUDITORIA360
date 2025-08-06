@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
-./.git/objects/pack/pack-9b0bb80084d0aaef98b192b74c576434294cc76d.idx
-./.git/objects/pack/pack-9b0bb80084d0aaef98b192b74c576434294cc76d.pack
-./.git/objects/pack/pack-9b0bb80084d0aaef98b192b74c576434294cc76d.rev
+./.git/objects/pack/pack-676a13edcf143366c977090c840c3c6a9e1991ab.idx
+./.git/objects/pack/pack-676a13edcf143366c977090c840c3c6a9e1991ab.pack
+./.git/objects/pack/pack-676a13edcf143366c977090c840c3c6a9e1991ab.rev
 ./.git/refs/heads/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
@@ -50,10 +50,13 @@
 ./METAMORFOSE_RELATORIO_FINAL.md
 ./Makefile
 ./README.md
+./api/DEPRECATED.md
 ./api/deprecation/deprecated_endpoints.json
 ./api/deprecation/tickets/MIG-20250806-12345678.json
 ./api/deprecation_middleware.py
 ./api/index.py
+./artifacts/ach/ach_complete_analysis_20250806_200102.json
+./artifacts/ach/vitality_diagram_20250806_200102.html
 ./assets/bootstrap-grid.css
 ./assets/bootstrap.bundle.min.js
 ./assets/bootstrap.min.css
@@ -218,6 +221,7 @@
 ./scripts/python/onboarding_cliente.py
 ./scripts/python/restore_neon_r2.py
 ./scripts/python/run_final_tests.py
+./scripts/python/run_holistic_consciousness_agent.py
 ./scripts/python/run_kinetic_trace.py
 ./scripts/python/semantic_intent_validator.py
 ./scripts/python/setup_advanced_monitoring.py
@@ -397,6 +401,7 @@
 ./src/frontend/src/pages/RelatoriosAvancados.tsx
 ./src/frontend/src/pages/ReportTemplatesPage.tsx
 ./src/frontend/src/pages/Templates.tsx
+./src/frontend/src/services/acr.ts
 ./src/frontend/src/services/ai.ts
 ./src/frontend/src/stores/authStore.ts
 ./src/frontend/src/stores/dashboardStore.ts
@@ -436,6 +441,7 @@
 ./src/mcp/__init__.py
 ./src/mcp/client.py
 ./src/mcp/config.py
+./src/mcp/consensus.py
 ./src/mcp/copilot_server.py
 ./src/mcp/protocol.py
 ./src/mcp/quantum_tests.py
