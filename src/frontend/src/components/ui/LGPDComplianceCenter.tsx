@@ -39,6 +39,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Fade,
+  Slide,
+  Zoom,
 } from '@mui/material';
 import {
   Security,
@@ -59,7 +62,12 @@ import {
   Description,
   VpnKey,
   Timeline,
+  Psychology,
+  VisibilityOff,
+  Gavel,
 } from '@mui/icons-material';
+import { useIntentionStore } from '../stores/intentionStore';
+import { useAdaptiveUI } from '../hooks/useNeuralSignals';
 
 interface DataSubject {
   id: number;
@@ -114,6 +122,52 @@ const LGPDComplianceCenter: React.FC = () => {
   const [rightsDialogOpen, setRightsDialogOpen] = useState(false);
   const [consentDialogOpen, setConsentDialogOpen] = useState(false);
   const [dataMapDialogOpen, setDataMapDialogOpen] = useState(false);
+  
+  // Neuro-Symbolic Guardian State
+  const [guardianMode, setGuardianMode] = useState(false);
+  const [guardianMessage, setGuardianMessage] = useState("");
+  const [privacyRiskLevel, setPrivacyRiskLevel] = useState<'low' | 'medium' | 'high'>('low');
+  const [showGuardianDialog, setShowGuardianDialog] = useState(false);
+  
+  // Neural interface hooks
+  const { currentIntentions, cognitiveLoad } = useIntentionStore();
+  const { shouldSimplify, adaptationStrategy } = useAdaptiveUI();
+
+  // Guardian activation detection
+  useEffect(() => {
+    const privacyRelatedIntentions = currentIntentions.filter(intention => 
+      intention.target.toLowerCase().includes('lgpd') ||
+      intention.target.toLowerCase().includes('privacy') ||
+      intention.target.toLowerCase().includes('consent') ||
+      intention.target.toLowerCase().includes('data') ||
+      intention.context?.privacyRelated
+    );
+
+    if (privacyRelatedIntentions.length > 0 && !guardianMode) {
+      // Guardian materializes when privacy intentions are detected
+      console.log("🛡️ LGPD Guardian: Privacy intention detected, materializing...");
+      
+      setGuardianMode(true);
+      setGuardianMessage(
+        "🛡️ Guardião LGPD ativado! Detectei intenções relacionadas à privacidade. " +
+        "Como guardião da conformidade, estou aqui para auxiliá-lo com questões de proteção de dados."
+      );
+      
+      // Assess privacy risk based on cognitive load
+      if (cognitiveLoad.level === 'high') {
+        setPrivacyRiskLevel('high');
+      } else if (cognitiveLoad.level === 'medium') {
+        setPrivacyRiskLevel('medium');
+      }
+      
+      setShowGuardianDialog(true);
+      
+      // Auto-hide guardian message after 10 seconds
+      setTimeout(() => {
+        setShowGuardianDialog(false);
+      }, 10000);
+    }
+  }, [currentIntentions, guardianMode, cognitiveLoad.level]);
 
   // Mock data
   useEffect(() => {
@@ -573,41 +627,171 @@ const LGPDComplianceCenter: React.FC = () => {
 
   return (
     <Box>
-      {/* Header */}
+      {/* Neuro-Symbolic Guardian Dialog */}
+      <Dialog
+        open={showGuardianDialog}
+        onClose={() => setShowGuardianDialog(false)}
+        maxWidth="md"
+        fullWidth
+        TransitionComponent={Zoom}
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1,
+          bgcolor: privacyRiskLevel === 'high' ? 'error.light' : 
+                  privacyRiskLevel === 'medium' ? 'warning.light' : 'success.light'
+        }}>
+          <Shield sx={{ 
+            color: privacyRiskLevel === 'high' ? 'error.main' : 
+                   privacyRiskLevel === 'medium' ? 'warning.main' : 'success.main',
+            animation: 'pulse 2s infinite',
+            '@keyframes pulse': {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.1)' },
+              '100%': { transform: 'scale(1)' },
+            },
+          }} />
+          🛡️ Guardião LGPD - Interface Neuro-Simbólica
+        </DialogTitle>
+        <DialogContent>
+          <Alert 
+            severity={privacyRiskLevel === 'high' ? 'error' : 
+                     privacyRiskLevel === 'medium' ? 'warning' : 'info'}
+            icon={<Psychology />}
+            sx={{ mb: 2 }}
+          >
+            {guardianMessage}
+          </Alert>
+          
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              🧠 Análise Neural da Situação:
+            </Typography>
+            <List dense>
+              <ListItem>
+                <ListItemIcon>
+                  <Psychology color="primary" />
+                </ListItemIcon>
+                <ListItemText 
+                  primary="Intenções de Privacidade Detectadas"
+                  secondary={`${currentIntentions.filter(i => 
+                    i.target.toLowerCase().includes('lgpd') || 
+                    i.target.toLowerCase().includes('privacy')
+                  ).length} intenção(ões) relacionada(s) à privacidade`}
+                />
+              </ListItem>
+              
+              <ListItem>
+                <ListItemIcon>
+                  <Gavel color={privacyRiskLevel === 'high' ? 'error' : 'success'} />
+                </ListItemIcon>
+                <ListItemText 
+                  primary="Nível de Risco de Privacidade"
+                  secondary={`${privacyRiskLevel.toUpperCase()} - Baseado na carga cognitiva e padrões de interação`}
+                />
+              </ListItem>
+              
+              <ListItem>
+                <ListItemIcon>
+                  <VisibilityOff color="info" />
+                </ListItemIcon>
+                <ListItemText 
+                  primary="Modo Guardião Ativo"
+                  secondary="Monitoramento contínuo de atividades relacionadas à proteção de dados"
+                />
+              </ListItem>
+            </List>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowGuardianDialog(false)}>
+            Entendi
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={() => {
+              setShowGuardianDialog(false);
+              setActiveTab('overview');
+            }}
+          >
+            Prosseguir com Monitoramento
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Header with Guardian Status */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-          <Security sx={{ mr: 2, color: 'primary.main' }} />
-          Centro de Compliance LGPD
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+            <Security sx={{ mr: 2, color: 'primary.main' }} />
+            Centro de Compliance LGPD
+            {guardianMode && (
+              <Fade in={guardianMode}>
+                <Chip 
+                  label="🛡️ Guardião Ativo" 
+                  color="success" 
+                  icon={<Shield />}
+                  sx={{ 
+                    ml: 2,
+                    animation: 'glow 3s ease-in-out infinite alternate',
+                    '@keyframes glow': {
+                      from: { boxShadow: '0 0 5px rgba(76, 175, 80, 0.5)' },
+                      to: { boxShadow: '0 0 20px rgba(76, 175, 80, 0.8)' },
+                    },
+                  }}
+                />
+              </Fade>
+            )}
+          </Typography>
+          
+          {/* Adaptive UI Status */}
+          {shouldSimplify && (
+            <Alert severity="info" icon={<Psychology />}>
+              Interface simplificada ativa - Carga cognitiva elevada detectada
+            </Alert>
+          )}
+        </Box>
+        
         <Typography variant="body1" color="text.secondary">
-          Gerencie a conformidade com a Lei Geral de Proteção de Dados (LGPD)
+          {guardianMode ? 
+            "🧠 Modo Guardião: Monitoramento neuro-simbólico ativo para proteção de dados" :
+            "Gerencie a conformidade com a Lei Geral de Proteção de Dados (LGPD)"
+          }
         </Typography>
       </Box>
 
-      {/* Navigation Tabs */}
+      {/* Navigation Tabs - Adaptive based on cognitive load */}
       <Paper sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', overflow: 'auto' }}>
           {[
             { key: 'overview', label: 'Visão Geral', icon: <Shield /> },
             { key: 'subjects', label: 'Titulares', icon: <AccountBox /> },
-            { key: 'consent', label: 'Consentimentos', icon: <Policy /> },
-            { key: 'datamap', label: 'Mapa de Dados', icon: <Map /> },
-            { key: 'rights', label: 'Direitos', icon: <VpnKey /> },
+            ...(adaptationStrategy.hideAdvancedFeatures ? [] : [
+              { key: 'consent', label: 'Consentimentos', icon: <Policy /> },
+              { key: 'datamap', label: 'Mapa de Dados', icon: <Map /> },
+              { key: 'rights', label: 'Direitos', icon: <VpnKey /> },
+            ]),
           ].map((tab) => (
             <Button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
               sx={{
                 minWidth: 'auto',
-                p: 2,
+                p: adaptationStrategy.reduceAnimations ? 1 : 2,
                 borderRadius: 0,
                 backgroundColor: activeTab === tab.key ? 'action.selected' : 'transparent',
                 borderBottom: activeTab === tab.key ? 2 : 0,
                 borderColor: 'primary.main',
+                border: adaptationStrategy.highlightPrimaryActions && activeTab === tab.key ? 2 : 0,
+                transition: adaptationStrategy.reduceAnimations ? 'none' : 'all 0.3s ease',
               }}
               startIcon={tab.icon}
             >
               {tab.label}
+              {adaptationStrategy.showHelpHints && activeTab === tab.key && (
+                <Chip label="Ativo" size="small" color="primary" sx={{ ml: 1 }} />
+              )}
             </Button>
           ))}
         </Box>
