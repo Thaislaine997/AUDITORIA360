@@ -22,6 +22,7 @@ import {
 import { usePredictiveLoading, useAdaptiveUI } from "../hooks/useNeuralSignals";
 import { useIntentionStore } from "../stores/intentionStore";
 import ROICognitivoWidget from "../components/ui/ROICognitivoWidget";
+import PremiumFeatureTeaser from "../components/ui/PremiumFeatureTeaser";
 
 
 const Dashboard: React.FC = () => {
@@ -33,6 +34,16 @@ const Dashboard: React.FC = () => {
   const { predictions, preloadHighProbabilityTargets, isDataPreloaded } = usePredictiveLoading();
   const { shouldSimplify, adaptationStrategy, loadLevel } = useAdaptiveUI();
   const { currentIntentions } = useIntentionStore();
+
+  // Premium feature promotion handlers
+  const handleTrialStart = (feature: string) => {
+    console.log(`🚀 Starting trial for: ${feature}`);
+    // Here you would typically:
+    // 1. Make API call to enable feature flag for user
+    // 2. Update user preferences/subscription state
+    // 3. Show success notification
+    // 4. Potentially redirect to feature onboarding
+  };
 
   useEffect(() => {
     const loadMetrics = async () => {
@@ -165,6 +176,41 @@ const Dashboard: React.FC = () => {
           </Box>
         </Grid>
       </Grid>
+
+      {/* Premium Feature Teasers - Strategic Upselling */}
+      {!adaptationStrategy.hideAdvancedFeatures && (
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h5" gutterBottom sx={{ mb: 3, color: 'primary.main' }}>
+            🌟 Desbloqueie Funcionalidades Premium
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={3}>
+              <PremiumFeatureTeaser 
+                feature="consultor-riscos"
+                onTrialStart={handleTrialStart}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={3}>
+              <PremiumFeatureTeaser 
+                feature="insight-cognitivo"
+                onTrialStart={handleTrialStart}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={3}>
+              <PremiumFeatureTeaser 
+                feature="auditoria-avancada"
+                onTrialStart={handleTrialStart}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={3}>
+              <PremiumFeatureTeaser 
+                feature="compliance-inteligente"
+                onTrialStart={handleTrialStart}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      )}
 
       {/* Traditional metrics grid - adapted based on cognitive load */}
       <Grid container spacing={adaptationStrategy.reduceAnimations ? 1 : 3}>
