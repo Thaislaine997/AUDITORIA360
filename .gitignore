@@ -110,3 +110,15 @@ logs/
 
 # Test cache
 .pytest_cache/
+
+# Coverage files
+.coverage
+.coverage.*
+htmlcov/
+
+# Build artifacts and temporary files
+*.tmp
+*.temp
+temp_*
+*backup*
+*.log
