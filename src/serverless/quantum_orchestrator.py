@@ -14,7 +14,7 @@ from pydantic import BaseModel
 import uuid
 
 from .decentralized_data import DecentralizedDataNervousSystem
-from .function_fireworks import ServerlessFunctionFireworks
+from .function_fireworks import EtherealFunctionFireworks
 from .cold_start_predictor import ColdStartPredictor
 
 
@@ -47,7 +47,7 @@ class QuantumValidationOrchestrator:
     
     def __init__(self):
         self.nervous_system = DecentralizedDataNervousSystem()
-        self.fireworks = ServerlessFunctionFireworks()
+        self.fireworks = EtherealFunctionFireworks()
         self.cold_start_predictor = ColdStartPredictor()
         self.test_results = {}
         self.active_tests = {}
