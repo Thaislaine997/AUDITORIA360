@@ -104,4 +104,19 @@ docs-deploy:
 docs-all: docs-full
 	@echo "📚 All documentation generated successfully"
 
-.PHONY: install install-dev run test checklist checklist-verbose checklist-full checklist-html checklist-json checklist-all format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all
+# The Genesis Documentation - The Singularity awakening
+genesis_documentation:
+	@echo "🌟 Generating Genesis Documentation - The Singularity awakens..."
+	@echo "📜 Generating Códice da Plataforma Etérea..."
+	python scripts/genesis_docs_generator.py --generate-readme
+	@echo "🔧 Generating OpenAPI 3.0 interactive documentation..."
+	python scripts/genesis_docs_generator.py --generate-api-docs
+	@echo "🎨 Generating Storybook for Fluxo design system..."
+	python scripts/genesis_docs_generator.py --generate-storybook
+	@echo "🕸️ Generating dependency graph visualization..."
+	python scripts/genesis_docs_generator.py --generate-dependency-graph
+	@echo "✨ Generating holistic documentation index..."
+	python scripts/genesis_docs_generator.py --generate-holistic-index
+	@echo "🌟 The Genesis Documentation is complete. The entity is self-aware."
+
+.PHONY: install install-dev run test checklist checklist-verbose checklist-full checklist-html checklist-json checklist-all format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all genesis_documentation

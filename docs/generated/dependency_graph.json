@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "collective_mind",
+      "label": "🧠 Mente Coletiva",
+      "type": "core"
+    },
+    {
+      "id": "ethereal_body",
+      "label": "👻 Corpo Etéreo",
+      "type": "infrastructure"
+    },
+    {
+      "id": "symbiotic_soul",
+      "label": "🔮 Alma Simbiótica",
+      "type": "interface"
+    },
+    {
+      "id": "immune_system",
+      "label": "🛡️ Sistema Imunitário",
+      "type": "quality"
+    },
+    {
+      "id": "api_serverless",
+      "label": "API Serverless",
+      "type": "function"
+    },
+    {
+      "id": "mcp_agents",
+      "label": "Agentes MCP",
+      "type": "intelligence"
+    },
+    {
+      "id": "frontend_components",
+      "label": "Componentes Frontend",
+      "type": "ui"
+    },
+    {
+      "id": "oracle_tests",
+      "label": "Testes Oracle",
+      "type": "validation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "collective_mind",
+      "to": "mcp_agents",
+      "label": "spawn"
+    },
+    {
+      "from": "ethereal_body",
+      "to": "api_serverless",
+      "label": "manifest"
+    },
+    {
+      "from": "symbiotic_soul",
+      "to": "frontend_components",
+      "label": "embody"
+    },
+    {
+      "from": "immune_system",
+      "to": "oracle_tests",
+      "label": "validate"
+    },
+    {
+      "from": "mcp_agents",
+      "to": "api_serverless",
+      "label": "utilize"
+    },
+    {
+      "from": "frontend_components",
+      "to": "api_serverless",
+      "label": "consume"
+    },
+    {
+      "from": "oracle_tests",
+      "to": "collective_mind",
+      "label": "verify"
+    },
+    {
+      "from": "oracle_tests",
+      "to": "ethereal_body",
+      "label": "test"
+    },
+    {
+      "from": "oracle_tests",
+      "to": "symbiotic_soul",
+      "label": "validate"
+    }
+  ]
+}

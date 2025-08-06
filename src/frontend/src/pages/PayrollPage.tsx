@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from "react";
+/**
+ * 🔮 PayrollPage - Enhanced with Telepathic Interface
+ * Formulário que antecipa campos necessários e detecta hesitação do utilizador
+ */
+
+import React, { useState, useEffect, useRef } from "react";
 import { 
   Container, 
   Typography, 
@@ -16,7 +21,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TextField,
+  Collapse,
+  IconButton,
+  Tooltip
 } from "@mui/material";
 import { 
   TrendingUp, 
@@ -24,8 +33,28 @@ import {
   AttachMoney, 
   Warning,
   Refresh,
-  PlayArrow 
+  PlayArrow,
+  Psychology,
+  AutoAwesome,
+  Lightbulb,
+  CheckCircle 
 } from "@mui/icons-material";
+
+// 🧠 Telepathic Interface State
+interface TelepathicState {
+  cursorPauseDetected: boolean;
+  pausedFieldId: string | null;
+  pauseDuration: number;
+  suggestionConfidence: number;
+  lastInteractionTime: number;
+}
+
+interface FieldSuggestion {
+  field: string;
+  suggestions: string[];
+  confidence: number;
+  reasoning: string;
+}
 
 interface BusinessFlow {
   client: {

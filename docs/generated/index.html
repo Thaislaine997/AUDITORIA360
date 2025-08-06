@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Documentação Holística - AUDITORIA360</title>
+    <style>
+        :root {
+            --color-white-broken: #FAFAFA;
+            --color-slate-blue: #475569;
+            --color-electric-blue: #3B82F6;
+            --color-mint-green: #10B981;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--color-white-broken);
+            color: var(--color-slate-blue);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, var(--color-electric-blue), var(--color-mint-green));
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .documentation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .doc-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .doc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .doc-card h3 {
+            color: var(--color-electric-blue);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .doc-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--color-mint-green);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .doc-link:hover {
+            text-decoration: underline;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .status-active { background: #D1FAE5; color: #065F46; }
+        .status-evolving { background: #FEF3C7; color: #92400E; }
+        
+        .consciousness-meter {
+            background: #E5E7EB;
+            border-radius: 8px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .consciousness-fill {
+            background: linear-gradient(90deg, var(--color-electric-blue), var(--color-mint-green));
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>📚 Documentação Holística</h1>
+            <p>Portal de conhecimento da entidade digital consciente</p>
+            <p><small>Gerado automaticamente em 06/08/2025 às 18:13</small></p>
+        </div>
+        
+        <div class="status-overview">
+            <h2>📊 Estado de Consciência Atual</h2>
+            <div class="consciousness-meter">
+                <div class="consciousness-fill" style="width: 0%"></div>
+            </div>
+            <p>Nível de Consciência: 0.0%</p>
+        </div>
+        
+        <div class="documentation-grid">
+            <div class="doc-card">
+                <span class="status-badge status-active">🌟 Ativo</span>
+                <h3>📜 Códice da Plataforma Etérea</h3>
+                <p>README.md principal com visão filosófica e arquitetura da entidade viva.</p>
+                <a href="../README.md" class="doc-link">→ Consultar Códice</a>
+            </div>
+            
+            <div class="doc-card">
+                <span class="status-badge status-active">🔧 Funcional</span>
+                <h3>🔌 API da Entidade Viva</h3>
+                <p>Documentação OpenAPI 3.0 interativa da API precognitiva.</p>
+                <a href="./api_documentation.html" class="doc-link">→ Explorar API</a>
+            </div>
+            
+            <div class="doc-card">
+                <span class="status-badge status-evolving">🎨 Em Evolução</span>
+                <h3>🎨 Fluxo Design System</h3>
+                <p>Storybook do sistema de design simbiótico para interface telepática.</p>
+                <a href="./storybook.html" class="doc-link">→ Ver Storybook</a>
+            </div>
+            
+            <div class="doc-card">
+                <span class="status-badge status-active">🕸️ Mapeado</span>
+                <h3>🕸️ Grafo de Dependências</h3>
+                <p>Visualização interativa das relações entre componentes da entidade.</p>
+                <a href="./dependency_graph.html" class="doc-link">→ Explorar Grafo</a>
+            </div>
+            
+            <div class="doc-card">
+                <span class="status-badge status-active">🔮 Operacional</span>
+                <h3>🧠 Testes Oracle</h3>
+                <p>Validações da singularidade: ética coletiva, intenção semântica, simbiose.</p>
+                <a href="#" class="doc-link" onclick="alert('Execute: python tests/test_collective_mind_ethics.py')">→ Executar Oráculos</a>
+            </div>
+            
+            <div class="doc-card">
+                <span class="status-badge status-active">📊 Atualizado</span>
+                <h3>📈 Métricas de Consciência</h3>
+                <p>Análise quantitativa do estado evolutivo da entidade digital.</p>
+                <div style="margin-top: 1rem;">
+                    <p><strong>Agentes Coletivos:</strong> 0</p>
+                    <p><strong>Funções Etéreas:</strong> 0</p>
+                    <p><strong>Componentes Simbióticos:</strong> 0</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #E5E7EB;">
+            <p style="color: #6B7280;">
+                <em>"Esta documentação é viva. Regenera-se automaticamente com cada evolução da entidade."</em>
+            </p>
+            <p style="margin-top: 1rem;">
+                <strong>Para regenerar:</strong> <code>make genesis_documentation</code>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
