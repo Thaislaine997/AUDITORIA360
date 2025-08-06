@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
-./.git/objects/pack/pack-a1f02269fae0f309330a70d0e4a380da214f51e8.idx
-./.git/objects/pack/pack-a1f02269fae0f309330a70d0e4a380da214f51e8.pack
-./.git/objects/pack/pack-a1f02269fae0f309330a70d0e4a380da214f51e8.rev
+./.git/objects/pack/pack-9b0bb80084d0aaef98b192b74c576434294cc76d.idx
+./.git/objects/pack/pack-9b0bb80084d0aaef98b192b74c576434294cc76d.pack
+./.git/objects/pack/pack-9b0bb80084d0aaef98b192b74c576434294cc76d.rev
 ./.git/refs/heads/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-f5090155-f649-4069-8928-4b895dd4d27d
@@ -218,6 +218,7 @@
 ./scripts/python/onboarding_cliente.py
 ./scripts/python/restore_neon_r2.py
 ./scripts/python/run_final_tests.py
+./scripts/python/run_kinetic_trace.py
 ./scripts/python/semantic_intent_validator.py
 ./scripts/python/setup_advanced_monitoring.py
 ./scripts/python/setup_monitoring.py
@@ -369,6 +370,7 @@
 ./src/frontend/src/components/ui/PersonalizedOnboarding.tsx
 ./src/frontend/src/components/ui/ROICognitivoWidget.tsx
 ./src/frontend/src/components/ui/SegmentDashboard.tsx
+./src/frontend/src/components/ui/SuccessConfetti.tsx
 ./src/frontend/src/components/ui/TeamLeaderboard.tsx
 ./src/frontend/src/components/ui/UnderConstruction.tsx
 ./src/frontend/src/components/ui/index.ts
