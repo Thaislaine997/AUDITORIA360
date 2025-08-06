@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-b32cabdb-c7a3-43c0-ad98-0a727661e87d
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-b32cabdb-c7a3-43c0-ad98-0a727661e87d
-./.git/objects/pack/pack-5069aeb6140d1b5cfe52674a28cb3317f98f0792.idx
-./.git/objects/pack/pack-5069aeb6140d1b5cfe52674a28cb3317f98f0792.pack
-./.git/objects/pack/pack-5069aeb6140d1b5cfe52674a28cb3317f98f0792.rev
+./.git/objects/pack/pack-9cd167bca16b19a064bc60aad6f6dd8f09542997.idx
+./.git/objects/pack/pack-9cd167bca16b19a064bc60aad6f6dd8f09542997.pack
+./.git/objects/pack/pack-9cd167bca16b19a064bc60aad6f6dd8f09542997.rev
 ./.git/refs/heads/copilot/fix-b32cabdb-c7a3-43c0-ad98-0a727661e87d
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-b32cabdb-c7a3-43c0-ad98-0a727661e87d
@@ -87,6 +87,7 @@
 ./data/input/sample_extrato.pdf
 ./data/processed
 ./data/quarantine/quarantine_esocial_robot_20250806_185010.json
+./data/quarantine/quarantine_esocial_robot_20250806_190854.json
 ./data/raw
 ./data_base/migrations/merge_folhas.sql
 ./data_base/schemas/dataset_treinamento_riscos_folha.sql
