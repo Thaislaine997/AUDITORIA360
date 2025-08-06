@@ -28,7 +28,14 @@
     "three": "^0.178.0",
     "three-stdlib": "^2.36.0",
     "yup": "^1.4.0",
-    "zustand": "^5.0.6"
+    "zustand": "^5.0.6",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-web": "^1.18.0",
+    "@opentelemetry/instrumentation": "^0.45.0",
+    "@opentelemetry/instrumentation-fetch": "^0.45.0",
+    "@opentelemetry/instrumentation-xml-http-request": "^0.45.0",
+    "@opentelemetry/exporter-jaeger": "^1.18.0",
+    "@opentelemetry/context-zone": "^1.18.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.4",

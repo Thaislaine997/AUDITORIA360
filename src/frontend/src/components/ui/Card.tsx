@@ -30,8 +30,20 @@ export const Card: React.FC<CardProps> = ({
       {...props}
       sx={{
         borderRadius: 2,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(0, 0, 0, 0.05)',
+        border: '1px solid var(--border-color)',
+        // Fluxo "Floating Shadow" Physics
+        boxShadow: 'var(--fluxo-shadow-subtle)',
+        transition: 'all var(--transition-normal)',
+        '&:hover': {
+          boxShadow: 'var(--fluxo-shadow-floating-hover)',
+          transform: 'translateY(-2px)',
+          borderColor: 'var(--border-hover-color)',
+        },
+        // Accessibility: ensure focus is visible
+        '&:focus-within': {
+          outline: '2px solid var(--fluxo-electric-blue)',
+          outlineOffset: '2px',
+        },
         ...props.sx,
       }}
     >

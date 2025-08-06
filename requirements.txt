@@ -54,3 +54,14 @@ bleach>=6.0.0
 
 # Communication Gateway Dependencies
 twilio>=9.0.0
+
+# OpenTelemetry Dependencies (ACR - Kinetic Tracking Agent)
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+opentelemetry-instrumentation-fastapi>=0.41b0
+opentelemetry-instrumentation-requests>=0.41b0
+opentelemetry-instrumentation-sqlalchemy>=0.41b0
+opentelemetry-exporter-jaeger-thrift>=1.20.0
+opentelemetry-exporter-otlp>=1.20.0
+requests>=2.31.0
+graphviz>=0.20.0

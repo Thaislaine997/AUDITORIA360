@@ -7,31 +7,44 @@
  */
 
 :root {
-  /* Cores Primárias (Baseadas na Logo) */
-  --primary-color: #00d4ff; /* Ciano vibrante da logo */
-  --secondary-color: #0ea5e9; /* Azul complementar */
-  --accent-color: #22d3ee; /* Destaque */
+  /* FLUXO DESIGN SYSTEM - Core Colors */
+  --fluxo-off-white: #FDFDFD; /* Primary background - off-white */
+  --fluxo-dark-slate: #121822; /* Dark contrast backgrounds */
+  --fluxo-main-text: #1A1A1A; /* Main text color */
+  --fluxo-electric-blue: #0077FF; /* Surgical accent - Electric Blue */
+  --fluxo-mint-green: #10B981; /* Success/positive accent - Mint Green */
 
-  /* Cores de Fundo */
-  --background-color: #0a0d1f; /* Azul escuro principal */
-  --secondary-background-color: #1e2242; /* Azul médio para cards */
-  --surface-color: #2a2f54; /* Superfície elevada */
-  --glass-background: rgba(30, 34, 66, 0.8); /* Efeito glass */
+  /* Primary Colors (Updated for Fluxo) */
+  --primary-color: var(--fluxo-electric-blue);
+  --secondary-color: var(--fluxo-mint-green);
+  --accent-color: var(--fluxo-electric-blue);
 
-  /* Cores de Texto */
-  --text-color: #ffffff; /* Texto principal */
-  --secondary-text-color: #a0a5c7; /* Texto secundário */
-  --muted-text-color: #6b7280; /* Texto desabilitado */
+  /* Background Colors (Updated for Fluxo) */
+  --background-color: var(--fluxo-off-white);
+  --secondary-background-color: #F8F9FA; /* Subtle background variation */
+  --surface-color: #FFFFFF; /* Pure white for elevated surfaces */
+  --glass-background: rgba(255, 255, 255, 0.95); /* Light glass effect */
 
-  /* Cores de Estado */
-  --success-color: #22c55e; /* Verde sucesso */
-  --warning-color: #facc15; /* Amarelo aviso */
-  --danger-color: #ef4444; /* Vermelho erro */
-  --info-color: #22d3ee; /* Azul informação */
+  /* Text Colors (Updated for Fluxo) */
+  --text-color: var(--fluxo-main-text);
+  --secondary-text-color: #6B7280; /* Muted text */
+  --muted-text-color: #9CA3AF; /* Very muted text */
 
-  /* Cores de Borda */
-  --border-color: #30363d;
-  --border-hover-color: var(--primary-color);
+  /* Estado Colors (Fluxo System) */
+  --success-color: var(--fluxo-mint-green); /* Mint Green for success */
+  --warning-color: #F59E0B; /* Amber for warnings */
+  --danger-color: #EF4444; /* Red for errors */
+  --info-color: var(--fluxo-electric-blue); /* Electric Blue for info */
+
+  /* Border Colors (Fluxo System) */
+  --border-color: #E5E7EB;
+  --border-hover-color: var(--fluxo-electric-blue);
+
+  /* Fluxo Interaction Physics */
+  --fluxo-click-displacement: 1px; /* Responsive Click displacement */
+  --fluxo-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --fluxo-shadow-floating: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --fluxo-shadow-floating-hover: 0 8px 30px rgba(0, 0, 0, 0.2);
 
   /* Tipografia */
   --font-family:
@@ -59,23 +72,31 @@
   --border-radius-xl: 1rem;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 20px rgba(0, 119, 255, 0.3); /* Electric Blue glow */
 
-  /* Transições */
-  --transition-fast: 0.15s ease-in-out;
-  --transition-normal: 0.3s ease-in-out;
-  --transition-slow: 0.5s ease-in-out;
+  /* Fluxo Transitions - Optimized for responsiveness */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Modo Escuro Automático */
+/* Fluxo Light Mode (Default) */
+:root {
+  color-scheme: light;
+}
+
+/* Dark mode support while maintaining Fluxo principles */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: #0a0d1f;
-    --text-color: #ffffff;
+    --background-color: var(--fluxo-dark-slate);
+    --secondary-background-color: #1E2242;
+    --surface-color: #2A2F54;
+    --text-color: #FFFFFF;
+    --secondary-text-color: #A0A5C7;
+    --border-color: #374151;
+    --glass-background: rgba(18, 24, 34, 0.95);
   }
 }
 
