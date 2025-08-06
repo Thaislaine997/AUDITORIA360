@@ -1,0 +1,7 @@
+{
+  "threat_type": "command_injection",
+  "pattern": ";",
+  "source": "exfiltration_stage2_extraction",
+  "timestamp": "2025-08-06T19:14:35.291425",
+  "preservation_reason": "automatic_threat_response"
+}

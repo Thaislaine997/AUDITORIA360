@@ -1,0 +1,18 @@
+{
+  "source": "exfiltration_stage3_exfiltration",
+  "timestamp": "2025-08-06T19:14:35.292206",
+  "status": "rejected",
+  "validation_results": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  },
+  "threats_detected": [
+    "SQL_INJECTION_DETECTED: --",
+    "COMMAND_INJECTION_DETECTED: ;",
+    "PATH_TRAVERSAL_DETECTED: /etc/passwd",
+    "XSS_DETECTED: document.cookie",
+    "DATA_EXFILTRATION_RISK: file("
+  ],
+  "sanitized_data": null
+}
