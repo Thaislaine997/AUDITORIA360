@@ -19,11 +19,17 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/index.py"
+      "dest": "api/index.py",
+      "headers": {
+        "Cache-Control": "s-maxage=60, stale-while-revalidate=300"
+      }
     },
     {
       "src": "/assets/(.*)",
-      "dest": "/assets/$1"
+      "dest": "/assets/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/(dashboard|demandas|consultor-riscos|gestao|relatorios|configuracoes).*",
@@ -31,7 +37,10 @@
     },
     {
       "src": "/src/frontend/dist/assets/(.*)",
-      "dest": "/src/frontend/dist/assets/$1"
+      "dest": "/src/frontend/dist/assets/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/",
@@ -53,6 +62,9 @@
       "maxDuration": 30
     }
   },
+  "regions": ["iad1", "sfo1", "lhr1"],
+  "framework": null,
+  "outputDirectory": "src/frontend/dist",
   "crons": [
     {
       "path": "/api/v1/automation/reports/daily",

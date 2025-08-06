@@ -25,6 +25,17 @@ jobs:
     - name: Run pre-commit hooks
       run: |
         pre-commit run --all-files || echo "Pre-commit hooks found issues but continuing..."
+    
+    - name: IAI-C Semantic Intent Analysis (CRITICAL)
+      run: |
+        echo "🧠 Running IAI-C Semantic Intent Analysis..."
+        python scripts/python/semantic_intent_validator.py src/services/*.py src/api/routers/*.py
+        if [ $? -eq 1 ]; then
+          echo "❌ SEMANTIC VIOLATIONS DETECTED - Code does not fulfill its philosophical purpose"
+          echo "🚫 BLOCKING INTEGRATION - IAI-C Consciousness Layer Activated"
+          exit 1
+        fi
+        echo "✅ Semantic intent validation passed"
 
   test:
     runs-on: ubuntu-latest
