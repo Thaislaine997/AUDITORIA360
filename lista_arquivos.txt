@@ -3,6 +3,7 @@
 ./.env.example
 ./.env.template
 ./.flake8
+./.git/COMMIT_EDITMSG
 ./.git/HEAD
 ./.git/config
 ./.git/description
@@ -24,11 +25,19 @@
 ./.git/info/exclude
 ./.git/logs/HEAD
 ./.git/logs/refs/heads/copilot/fix-12517390-1360-4f09-96ac-0cb26e38bc76
+./.git/logs/refs/remotes/origin/copilot/fix-12517390-1360-4f09-96ac-0cb26e38bc76
+./.git/objects/2a/c92345cea907c419b11d306d724d68bcff3e3f
+./.git/objects/92/5427e72b573a7c628e4bd3dbf3535d67eef6d0
+./.git/objects/a3/6b3dbb4206b27971afb9f9b308111369098218
+./.git/objects/c6/66f359eea42528b14d64a561a3f6d53ffbfc9d
+./.git/objects/d9/7241db37137bca65db5ccb39d7471898489f49
+./.git/objects/fe/9aeb1927e6ee20e1ab72c077c88b2b4774e65d
 ./.git/objects/pack/pack-e319278e582c44556bf06d027e068ae044eccdcd.idx
 ./.git/objects/pack/pack-e319278e582c44556bf06d027e068ae044eccdcd.pack
 ./.git/objects/pack/pack-e319278e582c44556bf06d027e068ae044eccdcd.rev
 ./.git/packed-refs
 ./.git/refs/heads/copilot/fix-12517390-1360-4f09-96ac-0cb26e38bc76
+./.git/refs/remotes/origin/copilot/fix-12517390-1360-4f09-96ac-0cb26e38bc76
 ./.git/shallow
 ./.github/dependabot.yml
 ./.github/workflows/atualiza-lista-arquivos.yml
