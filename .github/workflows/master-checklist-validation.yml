@@ -2,9 +2,9 @@ name: Master Execution Checklist Validation
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ Principal, develop ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ Principal, develop ]
   schedule:
     # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
