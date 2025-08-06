@@ -1,109 +1,93 @@
-# AUDITORIA360 🔍 - Era Kairós
+# AUDITORIA360
 
-> **Plataforma Integrada de Auditoria, Gestão da Folha e Compliance - Pós-Gênesis**
+Bem-vindo ao repositório **AUDITORIA360**!  
+Esta plataforma reúne módulos avançados para auditoria automatizada, inteligência artificial, validação quântica, ingestão e processamento de dados, entre outros.
 
-[![Status](https://img.shields.io/badge/status-Era%20Kairós-success.svg)]()
-[![Gênesis](https://img.shields.io/badge/Projeto%20Gênesis-✅%20Concluído-brightgreen)]()
-[![Wiki](https://img.shields.io/badge/docs-Wiki%20Oficial-blue.svg)](https://github.com/Thaislaine997/AUDITORIA360/wiki)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
+## Visão Geral
 
-## 🚀 Início Rápido
+AUDITORIA360 é uma solução modular e extensível, voltada para auditoria de dados, automação de processos e integração de técnicas avançadas de IA e computação quântica.
 
-### Pré-requisitos
-- Node.js 18+ | Python 3.12+ | Docker (opcional)
+Principais funcionalidades:
+- Ingestão automatizada de dados
+- Auditorias inteligentes com IA e validação quântica
+- Módulos de machine learning e LLMOps
+- Integração de scripts de automação variados
+- Autenticação robusta e gestão de demandas
 
-### Configuração Básica
-```bash
-# 1. Clone do repositório
-git clone https://github.com/Thaislaine997/AUDITORIA360.git
-cd AUDITORIA360
+## Estrutura do Projeto
 
-# 2. Backend (FastAPI)
-pip install -r requirements.txt
-cp .env.template .env  # Configure suas variáveis
-python test_api_server.py
-
-# 3. Frontend (React)
-cd src/frontend
-npm install && npm run dev
+```plaintext
+/
+├── src/                  # Código-fonte principal (utils, services, models)
+├── services/             # Serviços de ML, ingestão, componentes
+├── auth/                 # Módulo de autenticação/autorização
+├── portal_demandas/      # Gestão e acompanhamento de demandas
+├── tests/                # Testes automatizados
+├── scripts/              # Scripts de automação (shell, python, powershell, batch)
+├── docs/                 # Documentação técnica e arquivos históricos
+│   ├── MIGRATION_SUMMARY.md
+│   ├── WORKFLOW_FIXES.md
+│   ├── SWARM_INTELLIGENCE.md
+│   └── QUANTUM_VALIDATION.md
+├── requirements.txt      # Dependências principais
+├── requirements-ml.txt   # Dependências para ML
+├── requirements-dev.txt  # Dependências de desenvolvimento
+├── requirements-monitoring.txt # Dependências de monitoramento
 ```
 
-### Acesso
-- **Frontend**: http://localhost:3000
-- **API**: http://localhost:8001  
-- **Docs API**: http://localhost:8001/docs
+## Instalação e Configuração
 
-**Usuários de teste:**
-- Admin: `admin` / `admin123`
-- Contabilidade: `contabilidade` / `conta123`
+1. **Clone o repositório:**
+   ```bash
+   git clone 
+   cd AUDITORIA360
+   ```
 
-## 📚 Documentação Completa
+2. **Instale as dependências principais:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-📖 **IMPORTANTE: Toda a documentação foi centralizada na [Wiki Oficial](https://github.com/Thaislaine997/AUDITORIA360/wiki)**
+3. **Para módulos de Machine Learning:**
+   ```bash
+   pip install -r requirements-ml.txt
+   ```
 
-### 🗂️ Navegação Rápida
-- 🎯 **[Visão e Estratégia](https://github.com/Thaislaine997/AUDITORIA360/wiki/Vision-and-Strategy)** - Roadmap, decisões de arquitetura, status do projeto
-- 👨‍💻 **[Guias de Desenvolvedor](https://github.com/Thaislaine997/AUDITORIA360/wiki/Developer-Guides)** - Setup completo, padrões, arquitetura, contribuição
-- 🚀 **[Operações e Deploy](https://github.com/Thaislaine997/AUDITORIA360/wiki/Operations-Deploy)** - Deploy, troubleshooting, monitoramento, migração
-- 👤 **[Manuais de Usuário](https://github.com/Thaislaine997/AUDITORIA360/wiki/User-Manuals)** - Primeiros passos, guia completo, FAQ
-- 🔌 **[Referência da API](https://github.com/Thaislaine997/AUDITORIA360/wiki/API-Reference)** - Autenticação, endpoints, modelos de dados
+4. **Para ambiente de desenvolvimento:**
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
 
-## 🏆 Status do Projeto - Era Kairós
+5. **Para monitoramento:**
+   ```bash
+   pip install -r requirements-monitoring.txt
+   ```
 
-### ✅ **PROJETO GÊNESIS OFICIALMENTE CONCLUÍDO** (Julho 2025)
-- **PR #108-111**: Refatoração abrangente, auditoria, certificação e execução ✅ **CONCLUÍDAS**
+## Principais Módulos e Documentação Complementar
 
-### 🌟 **ERA KAIRÓS ATIVA** (Agosto 2025)
-- ⚡ **Arquitetura Unificada**: Backend Python + SPA React exclusivamente
-- 🔒 **Segurança Robusta**: Multi-tenant + RBAC implementados  
-- 🗑️ **Legado Eliminado**: Streamlit removido, código simplificado
-- 📊 **Modelo Simplificado**: Funcionários com 7 campos essenciais
-- 🎯 **Interface Corporativa**: UI profissional focada em eficiência
-- 📈 **Performance Otimizada**: < 100ms (p95)
+- [Resumo de Migrações](docs/MIGRATION_SUMMARY.md)
+- [Histórico de Correções de Workflow](docs/WORKFLOW_FIXES.md)
+- [Inteligência de Enxame (Swarm Intelligence)](docs/SWARM_INTELLIGENCE.md)
+- [Validação Quântica](docs/QUANTUM_VALIDATION.md)
+- [Documentação dos módulos](src/)
+- [Serviços de ML](services/ml/)
+- [Autenticação](auth/)
+- [Gestão de Demandas](portal_demandas/)
+- [Testes](tests/)
+- [Scripts de automação](scripts/)
 
-## 🛠️ Stack Tecnológica
+## Como Contribuir
 
-### Frontend
-**React 18** + TypeScript + Material-UI + Zustand + Vite
+1. Faça um fork do repositório.
+2. Crie uma nova branch: `git checkout -b minha-feature`
+3. Faça suas alterações e commit: `git commit -am 'Minha contribuição'`
+4. Envie para o repositório remoto: `git push origin minha-feature`
+5. Abra um Pull Request.
 
-### Backend  
-**Python 3.12** + FastAPI + SQLAlchemy + PostgreSQL + DuckDB + Redis
+## Contato
 
-### Infraestrutura
-**Docker** + GitHub Actions + Cloudflare + Prometheus + Grafana
-
-## 🧪 Comandos Úteis
-
-```bash
-# Testes
-make test                 # Executar todos os testes
-make test-coverage        # Testes com cobertura
-make lint                 # Linting do código
-
-# Deploy
-make build               # Build da aplicação
-make deploy              # Deploy completo
-make checklist           # Validação do Master Checklist
-```
-
-## 🤝 Contribuição
-
-1. Consulte o **[Guia de Contribuição](https://github.com/Thaislaine997/AUDITORIA360/wiki/Developer-Guides/Contributing)** na Wiki
-2. Faça fork do projeto
-3. Crie sua feature branch (`git checkout -b feature/AmazingFeature`)
-4. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-5. Push para a branch (`git push origin feature/AmazingFeature`)
-6. Abra um Pull Request
-
-## 📞 Suporte
-
-- **📖 Wiki**: [Documentação Completa](https://github.com/Thaislaine997/AUDITORIA360/wiki)
-- **💬 Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
-- **📧 Email**: suporte@auditoria360.com
-- **🔧 Troubleshooting**: [Guia na Wiki](https://github.com/Thaislaine997/AUDITORIA360/wiki/Operations-Deploy/Troubleshooting)
+Dúvidas? Sugestões? Abra uma issue ou entre em contato com a equipe responsável.
 
 ---
 
-**📝 Nota**: Esta documentação README foi simplificada como parte do **Projeto Alexandria** - migração da documentação para a Wiki. Para informações detalhadas, consulte sempre a **[Wiki Oficial](https://github.com/Thaislaine997/AUDITORIA360/wiki)**.
-
-**Desenvolvido com ❤️ pela equipe AUDITORIA360** | *"Transformando a auditoria trabalhista através da tecnologia"*
+> Para detalhes completos de cada módulo e histórico, consulte os arquivos na pasta `/docs` e os READMEs presentes em cada subdiretório.
