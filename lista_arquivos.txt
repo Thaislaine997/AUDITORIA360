@@ -24,18 +24,14 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/Principal
+./.git/logs/refs/heads/copilot/fix-db69c266-0ddb-4142-9b98-f9340033317f
 ./.git/logs/refs/remotes/origin/Principal
-./.git/logs/refs/remotes/origin/copilot/fix-33c7b53b-cb1c-4d13-b2d4-d5ca5210b404
-./.git/logs/refs/remotes/origin/copilot/fix-9cd2d39f-3a7c-4801-8776-159b85274186
 ./.git/logs/refs/remotes/origin/copilot/fix-db69c266-0ddb-4142-9b98-f9340033317f
-./.git/objects/pack/pack-bf360499b864e7d49e315b7b468aa77dd4c39ce0.idx
-./.git/objects/pack/pack-bf360499b864e7d49e315b7b468aa77dd4c39ce0.pack
-./.git/objects/pack/pack-bf360499b864e7d49e315b7b468aa77dd4c39ce0.rev
-./.git/refs/heads/Principal
+./.git/objects/pack/pack-9d43132c420cdeff7a3f12788ada507953c52e35.idx
+./.git/objects/pack/pack-9d43132c420cdeff7a3f12788ada507953c52e35.pack
+./.git/objects/pack/pack-9d43132c420cdeff7a3f12788ada507953c52e35.rev
+./.git/refs/heads/copilot/fix-db69c266-0ddb-4142-9b98-f9340033317f
 ./.git/refs/remotes/origin/Principal
-./.git/refs/remotes/origin/copilot/fix-33c7b53b-cb1c-4d13-b2d4-d5ca5210b404
-./.git/refs/remotes/origin/copilot/fix-9cd2d39f-3a7c-4801-8776-159b85274186
 ./.git/refs/remotes/origin/copilot/fix-db69c266-0ddb-4142-9b98-f9340033317f
 ./.github/dependabot.yml
 ./.github/workflows/atualiza-lista-arquivos.yml
@@ -51,8 +47,10 @@
 ./.prettierignore
 ./.prettierrc
 ./Dockerfile
+./METAMORFOSE_RELATORIO_FINAL.md
 ./Makefile
 ./README.md
+./api/deprecation_middleware.py
 ./api/index.py
 ./assets/bootstrap-grid.css
 ./assets/bootstrap.bundle.min.js
@@ -88,6 +86,7 @@
 ./data/external
 ./data/input/sample_extrato.pdf
 ./data/processed
+./data/quarantine/quarantine_esocial_robot_20250806_185010.json
 ./data/raw
 ./data_base/migrations/merge_folhas.sql
 ./data_base/schemas/dataset_treinamento_riscos_folha.sql
@@ -132,6 +131,7 @@
 ./installers/.env.example
 ./installers/init_db.py
 ./lista_arquivos.txt
+./metamorphosis_final_validation.json
 ./migrations/001_enhanced_auth_migration.py
 ./migrations/002_simplify_employee_model.sql
 ./migrations/performance_indices.sql
@@ -278,6 +278,10 @@
 ./src/api/common/middleware.py
 ./src/api/common/responses.py
 ./src/api/common/validators.py
+./src/api/migration/api_unification.py
+./src/api/migration/unification_report.json
+./src/api/products/crystallization_report.json
+./src/api/products/product_cores.py
 ./src/api/routers/__init__.py
 ./src/api/routers/ai.py
 ./src/api/routers/ai_client_management.py
@@ -347,6 +351,7 @@
 ./src/frontend/src/components/ui/LGPDComplianceCenter.tsx
 ./src/frontend/src/components/ui/NotificationCenter.tsx
 ./src/frontend/src/components/ui/PersonalizedOnboarding.tsx
+./src/frontend/src/components/ui/ROICognitivoWidget.tsx
 ./src/frontend/src/components/ui/SegmentDashboard.tsx
 ./src/frontend/src/components/ui/TeamLeaderboard.tsx
 ./src/frontend/src/components/ui/UnderConstruction.tsx
@@ -416,6 +421,7 @@
 ./src/mcp/copilot_server.py
 ./src/mcp/protocol.py
 ./src/mcp/quantum_tests.py
+./src/mcp/rpa_guardian.py
 ./src/mcp/server.py
 ./src/mcp/swarm.py
 ./src/mcp/tools.py
@@ -449,6 +455,9 @@
 ./src/schemas/payroll_schemas.py
 ./src/schemas/predicao_risco_schemas.py
 ./src/schemas/rbac_schemas.py
+./src/security/red_team_drill_report.json
+./src/security/security_protocols.py
+./src/security/security_protocols_report.json
 ./src/serverless/__init__.py
 ./src/serverless/cold_start_predictor.py
 ./src/serverless/decentralized_data.py
@@ -476,6 +485,7 @@
 ./src/utils/api_integration.py
 ./src/utils/monitoring.py
 ./src/utils/performance.py
+./src/validation/metamorphosis_validator.py
 ./tests/README.md
 ./tests/__init__.py
 ./tests/auth/login.yaml
