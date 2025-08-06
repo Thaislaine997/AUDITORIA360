@@ -18,8 +18,8 @@ import {
   Lightbulb,
   ErrorOutline,
 } from '@mui/icons-material';
-import { useEmpathicForm } from '../hooks/useNeuralSignals';
-import { EmpathicHelpDialog } from '../pages/ChatbotPage';
+import { useEmpathicForm } from '../../hooks/useNeuralSignals';
+import { EmpathicHelpDialog } from '../../pages/ChatbotPage';
 
 interface EmpathicTextFieldProps extends Omit<TextFieldProps, 'error' | 'helperText'> {
   formId: string;

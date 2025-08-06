@@ -27,6 +27,7 @@ const GerenciamentoUsuarios = React.lazy(() => import("./pages/GerenciamentoUsua
 const RelatoriosAvancados = React.lazy(() => import("./pages/RelatoriosAvancados"));
 const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
 const Templates = React.lazy(() => import("./pages/Templates"));
+const NeuroSymbolicDemo = React.lazy(() => import("./pages/NeuroSymbolicDemo"));
 
 // Loading component
 const LoadingSpinner: React.FC = () => (
@@ -112,6 +113,9 @@ function App() {
               {/* CONFIGURAÇÕES submenu */}
               <Route path="/configuracoes/minha-conta" element={<MinhaConta />} />
               <Route path="/configuracoes/templates" element={<Templates />} />
+              
+              {/* Neuro-Symbolic Demo */}
+              <Route path="/demo" element={<NeuroSymbolicDemo />} />
               
               {/* Legacy routes - keep for backward compatibility */}
               <Route path="/payroll/*" element={<PayrollPage />} />

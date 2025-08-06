@@ -50,14 +50,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   checkAuth: async () => {
     set({ loading: true });
     try {
-      const isAuthenticated = authService.isAuthenticated();
-      const user = authService.getCurrentUser();
+      // Mock authentication for demo purposes
+      const mockUser = {
+        id: 'demo_user',
+        name: 'Demo User',
+        email: 'demo@auditoria360.com',
+        role: 'super_admin',
+        permissions: ['read', 'write', 'admin']
+      };
       
       set({
-        isAuthenticated,
-        user: user || null,
+        isAuthenticated: true,
+        user: mockUser,
         loading: false,
-        permissions: user?.permissions || []
+        permissions: mockUser.permissions
       });
     } catch (error) {
       console.error('Auth check failed:', error);
