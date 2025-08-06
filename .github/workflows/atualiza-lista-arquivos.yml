@@ -1,0 +1,100 @@
+# Workflow para Atualização Automática da Lista de Arquivos
+# 
+# Este workflow automatiza a geração de um arquivo lista_arquivos.txt contendo
+# uma listagem atualizada de todos os arquivos presentes no repositório.
+# 
+# Funcionalidades:
+# - Executa diariamente às 09:00 UTC via cron schedule
+# - Executa automaticamente em push para qualquer branch
+# - Gera o arquivo usando o comando: find . -type f | sort
+# - Sobrescreve o arquivo existente a cada execução
+# - Faz commit e push automático apenas se houver diferenças
+# - Evita loops infinitos ao não disparar em commits próprios
+#
+# Arquivo gerado: lista_arquivos.txt (na raiz do repositório)
+# 
+# Autor: GitHub Actions Automation
+# Data: 2024
+
+name: Atualizar Lista de Arquivos
+
+on:
+  # Executa diariamente às 09:00 UTC
+  schedule:
+    - cron: '0 9 * * *'
+  
+  # Executa em push para qualquer branch, exceto commits do próprio workflow
+  push:
+    branches: ['**']
+  
+  # Permite execução manual via interface web
+  workflow_dispatch:
+
+jobs:
+  atualizar-lista-arquivos:
+    runs-on: ubuntu-latest
+    
+    # Evita execução desnecessária em commits automáticos do workflow
+    if: "!contains(github.event.head_commit.message, '[skip-file-list]')"
+    
+    steps:
+      # Checkout do código com token para permitir commits
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      # Configura git para commits automáticos
+      - name: Configurar Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      # Gera a lista atualizada de arquivos
+      - name: Gerar lista de arquivos
+        run: |
+          echo "🔍 Gerando lista atualizada de arquivos..."
+          find . -type f | sort > lista_arquivos.txt
+          echo "✅ Lista gerada com $(wc -l < lista_arquivos.txt) arquivos"
+      
+      # Verifica se houve mudanças no arquivo
+      - name: Verificar mudanças
+        id: changes
+        run: |
+          if git diff --quiet lista_arquivos.txt; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️  Nenhuma mudança detectada na lista de arquivos"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📝 Mudanças detectadas na lista de arquivos"
+            echo "Estatísticas das mudanças:"
+            git diff --stat lista_arquivos.txt || true
+          fi
+      
+      # Commit e push apenas se houver mudanças
+      - name: Commit e push das mudanças
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          echo "💾 Fazendo commit das mudanças..."
+          git add lista_arquivos.txt
+          git commit -m "Atualizar lista de arquivos automaticamente [skip-file-list]
+          
+          - Lista atualizada com $(wc -l < lista_arquivos.txt) arquivos
+          - Gerada automaticamente via GitHub Actions
+          - Data: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          echo "🚀 Fazendo push das mudanças..."
+          git push
+          
+          echo "✅ Lista de arquivos atualizada com sucesso!"
+      
+      # Log de conclusão
+      - name: Log de conclusão
+        run: |
+          if [ "${{ steps.changes.outputs.changed }}" = "true" ]; then
+            echo "🎉 Workflow concluído: arquivo lista_arquivos.txt atualizado"
+          else
+            echo "✨ Workflow concluído: nenhuma atualização necessária"
+          fi
+          echo "📊 Total de arquivos no repositório: $(wc -l < lista_arquivos.txt)"
