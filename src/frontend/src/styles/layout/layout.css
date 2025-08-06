@@ -1,16 +1,31 @@
 /*
  * ===================================================================
- * LAYOUT COMPONENTS - AUDITORIA 360
+ * LAYOUT COMPONENTS - AUDITORIA 360 - FLUXO DESIGN SYSTEM
  * ===================================================================
- * Descrição: Estilos para containers, grids e layout
+ * Descrição: Estilos para containers, grids e layout com modo Fluxo
  * ===================================================================
  */
+
+/* Fluxo Layout Modes */
+.fluxo-layout-comfortable {
+  --fluxo-card-padding: var(--spacing-lg);
+  --fluxo-section-gap: var(--spacing-2xl);
+  --fluxo-component-height: 48px;
+  --fluxo-line-height: 1.6;
+}
+
+.fluxo-layout-compact {
+  --fluxo-card-padding: var(--spacing-md);
+  --fluxo-section-gap: var(--spacing-lg);
+  --fluxo-component-height: 36px;
+  --fluxo-line-height: 1.4;
+}
 
 /* Container Principal Centralizado */
 .block-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md);
+  padding: var(--fluxo-section-gap) var(--spacing-md);
 }
 
 .container {
@@ -21,7 +36,7 @@
 }
 
 .section {
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: var(--fluxo-section-gap);
 }
 
 /* Grid System */

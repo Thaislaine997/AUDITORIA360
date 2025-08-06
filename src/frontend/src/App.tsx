@@ -50,7 +50,7 @@ const LoadingSpinner: React.FC = () => (
 
 function App() {
   const { isAuthenticated, loading } = useAuthStore();
-  const { sidebarOpen } = useUIStore();
+  const { sidebarOpen, layoutMode, setLayoutMode } = useUIStore();
   const { sidebarCollapsed } = useNavigationStore();
   
   // Calculate sidebar width
@@ -62,7 +62,10 @@ function App() {
   React.useEffect(() => {
     // Initialize auth state
     useAuthStore.getState().checkAuth();
-  }, []);
+    
+    // Initialize Fluxo layout mode
+    setLayoutMode(layoutMode);
+  }, [layoutMode, setLayoutMode]);
 
   if (loading) {
     return <LoadingSpinner />;
