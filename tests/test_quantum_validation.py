@@ -14,7 +14,7 @@ import json
 
 # Import dos módulos serverless
 from src.serverless.decentralized_data import DecentralizedDataNervousSystem
-from src.serverless.function_fireworks import ServerlessFunctionFireworks
+from src.serverless.function_fireworks import EtherealFunctionFireworks
 from src.serverless.cold_start_predictor import ColdStartPredictor
 from src.serverless.quantum_orchestrator import QuantumValidationOrchestrator
 
@@ -130,13 +130,13 @@ class TestDecentralizedDataNervousSystem:
         assert 'new_active_dataset' in rollback_result
 
 
-class TestServerlessFunctionFireworks:
+class TestEtherealFunctionFireworks:
     """Testes para o sistema de Fogo de Artifício de Funções."""
     
     @pytest.fixture
     def fireworks(self):
         """Fixture para instanciar o sistema de fireworks."""
-        return ServerlessFunctionFireworks()
+        return EtherealFunctionFireworks()
     
     @pytest.mark.asyncio
     async def test_ignite_function(self, fireworks):

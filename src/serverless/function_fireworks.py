@@ -45,7 +45,7 @@ class FireworkFunction:
         return 0
 
 
-class ServerlessFunctionFireworks:
+class EtherealFunctionFireworks:
     """
     Orquestrador do Fogo de Artifício de Funções Serverless.
     
@@ -587,7 +587,7 @@ async def demo_serverless_fireworks():
     print("🎆 === DEMO: FOGO DE ARTIFÍCIO DE FUNÇÕES SERVERLESS ===")
     
     # Inicializar orquestrador
-    fireworks = ServerlessFunctionFireworks()
+    fireworks = EtherealFunctionFireworks()
     
     # 1. Teste básico de funções individuais
     print("\n🎯 FASE 1: Teste de Funções Individuais")
