@@ -72,8 +72,28 @@ const ConsultorRiscos: React.FC = () => {
 
   const handleFeedback = (recommendationId: string, type: 'positive' | 'negative') => {
     setFeedback(prev => ({ ...prev, [recommendationId]: type }));
-    // TODO: Send feedback to API endpoint /api/ai/feedback
-    console.log(`Feedback sent for recommendation ${recommendationId}: ${type}`);
+    
+    // RLHF v2.0 - Enhanced feedback submission
+    fetch('/api/v1/ai/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        recommendation_id: recommendationId,
+        feedback_type: type,
+        timestamp: new Date().toISOString(),
+        user_context: {
+          workspace: 'audit',
+          session_id: sessionStorage.getItem('session_id'),
+          analysis_confidence: analysisResult?.recommendations?.find((r: any) => r.id === recommendationId)?.confidence
+        }
+      })
+    }).then(response => {
+      if (response.ok) {
+        console.log(`✅ RLHF feedback successfully submitted for recommendation ${recommendationId}: ${type}`);
+      }
+    }).catch(err => {
+      console.warn('⚠️ RLHF feedback submission failed:', err);
+    });
   };
 
   const handleDrillDown = (riskFactor: string) => {
