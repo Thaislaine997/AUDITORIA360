@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "src/frontend/package.json",
@@ -9,46 +8,18 @@
       }
     },
     {
-      "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
+      "src": "api/**/*.py",
+      "use": "@vercel/python"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/index.py",
-      "headers": {
-        "Cache-Control": "s-maxage=60, stale-while-revalidate=300"
-      }
+      "source": "/api/(.*)",
+      "destination": "/api/"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/(dashboard|demandas|consultor-riscos|gestao|relatorios|configuracoes).*",
-      "dest": "/src/frontend/dist/index.html"
-    },
-    {
-      "src": "/src/frontend/dist/assets/(.*)",
-      "dest": "/src/frontend/dist/assets/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/",
-      "dest": "/src/frontend/dist/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "api/index.py"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "env": {
