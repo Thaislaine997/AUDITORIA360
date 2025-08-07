@@ -25,6 +25,7 @@ Bem-vindo ao centro de documentação do projeto AUDITORIA360. Este índice orga
 - **[Histórico do Projeto](historico/)** - Evolução e marcos históricos
 - **[Relatórios Gerados](generated/)** - Documentação auto-gerada
 - **[Metamorfose Final](../METAMORFOSE_RELATORIO_FINAL.md)** - Relatório de transformação do projeto
+- **[Melhorias do Repositório](REPOSITORY_IMPROVEMENTS_SUMMARY.md)** - Relatório das melhorias implementadas
 
 ## 🛠️ Guias Técnicos
 
