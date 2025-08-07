@@ -29,6 +29,10 @@ const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
 const Templates = React.lazy(() => import("./pages/Templates"));
 const NeuroSymbolicDemo = React.lazy(() => import("./pages/NeuroSymbolicDemo"));
 
+// Grande Síntese - New pages (Initiative II, III, IV)
+const MasteryPaths = React.lazy(() => import("./pages/MasteryPaths"));
+const DeveloperPortal = React.lazy(() => import("./pages/DeveloperPortal"));
+
 // Loading component
 const LoadingSpinner: React.FC = () => (
   <Box
@@ -116,6 +120,10 @@ function App() {
               {/* CONFIGURAÇÕES submenu */}
               <Route path="/configuracoes/minha-conta" element={<MinhaConta />} />
               <Route path="/configuracoes/templates" element={<Templates />} />
+              
+              {/* GRANDE SÍNTESE - New routes */}
+              <Route path="/mastery-paths" element={<MasteryPaths />} />
+              <Route path="/developer-portal" element={<DeveloperPortal />} />
               
               {/* Neuro-Symbolic Demo */}
               <Route path="/demo" element={<NeuroSymbolicDemo />} />
