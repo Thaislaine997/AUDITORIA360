@@ -24,14 +24,14 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-4d17fad3-3837-4d8d-af09-f6d7c928397b
+./.git/logs/refs/heads/Principal
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-4d17fad3-3837-4d8d-af09-f6d7c928397b
 ./.git/logs/refs/remotes/origin/copilot/fix-f2dec3a2-8803-43e9-bc6f-c2aa03210aa4
-./.git/objects/pack/pack-3d5f70dec6cea1425673523c2868dd76ae79edf4.idx
-./.git/objects/pack/pack-3d5f70dec6cea1425673523c2868dd76ae79edf4.pack
-./.git/objects/pack/pack-3d5f70dec6cea1425673523c2868dd76ae79edf4.rev
-./.git/refs/heads/copilot/fix-4d17fad3-3837-4d8d-af09-f6d7c928397b
+./.git/objects/pack/pack-b4f812de5ea82ca58a88a0c5b95cc9c207b97d01.idx
+./.git/objects/pack/pack-b4f812de5ea82ca58a88a0c5b95cc9c207b97d01.pack
+./.git/objects/pack/pack-b4f812de5ea82ca58a88a0c5b95cc9c207b97d01.rev
+./.git/refs/heads/Principal
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-4d17fad3-3837-4d8d-af09-f6d7c928397b
 ./.git/refs/remotes/origin/copilot/fix-f2dec3a2-8803-43e9-bc6f-c2aa03210aa4
@@ -60,8 +60,10 @@
 ./api/index.py
 ./artifacts/ach/ach_complete_analysis_20250806_200102.json
 ./artifacts/ach/ach_complete_analysis_20250806_205653.json
+./artifacts/ach/ach_complete_analysis_20250807_132810.json
 ./artifacts/ach/vitality_diagram_20250806_200102.html
 ./artifacts/ach/vitality_diagram_20250806_205653.html
+./artifacts/ach/vitality_diagram_20250807_132810.html
 ./assets/bootstrap-grid.css
 ./assets/bootstrap.bundle.min.js
 ./assets/bootstrap.min.css
@@ -139,6 +141,9 @@
 ./docs/adr/005-adocao-de-python-fastapi-como-core-backend.md
 ./docs/adr/006-adocao-de-react-typescript-como-core-frontend.md
 ./docs/adr/007-unificacao-da-stack-de-automacao-em-python.md
+./docs/adr/ADR-001-fluxo-design-system.md
+./docs/adr/ADR-002-observabilidade-acr-ach.md
+./docs/adr/ADR-003-api-as-a-product.md
 ./docs/adr/README.md
 ./docs/business_logic/README.md
 ./docs/business_logic/payroll_calculation_rules.md
@@ -385,6 +390,7 @@
 ./src/frontend/src/components/ui/EmpathicTextField.tsx
 ./src/frontend/src/components/ui/GamificationSystem.tsx
 ./src/frontend/src/components/ui/GamificationToast.tsx
+./src/frontend/src/components/ui/HighConsequenceModal.tsx
 ./src/frontend/src/components/ui/Input.tsx
 ./src/frontend/src/components/ui/IntelligentEmptyState.tsx
 ./src/frontend/src/components/ui/KeyboardNavigation.tsx
@@ -415,6 +421,7 @@
 ./src/frontend/src/pages/GestaoClientes.tsx
 ./src/frontend/src/pages/GestaoContabilidades.tsx
 ./src/frontend/src/pages/LoginPage.tsx
+./src/frontend/src/pages/MasteryPaths.tsx
 ./src/frontend/src/pages/MinhaConta.tsx
 ./src/frontend/src/pages/NeuroSymbolicDemo.tsx
 ./src/frontend/src/pages/PayrollPage.tsx
