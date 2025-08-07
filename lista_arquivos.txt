@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-f8201953-091d-4af3-b3bc-c512efb94045
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-f8201953-091d-4af3-b3bc-c512efb94045
-./.git/objects/pack/pack-d46fb0135b5b89e74e6763ebfd711b5d3b25745b.idx
-./.git/objects/pack/pack-d46fb0135b5b89e74e6763ebfd711b5d3b25745b.pack
-./.git/objects/pack/pack-d46fb0135b5b89e74e6763ebfd711b5d3b25745b.rev
+./.git/objects/pack/pack-c9c82427b5162a8b88eff7ef6aaad405c9171766.idx
+./.git/objects/pack/pack-c9c82427b5162a8b88eff7ef6aaad405c9171766.pack
+./.git/objects/pack/pack-c9c82427b5162a8b88eff7ef6aaad405c9171766.rev
 ./.git/refs/heads/copilot/fix-f8201953-091d-4af3-b3bc-c512efb94045
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-f8201953-091d-4af3-b3bc-c512efb94045
@@ -352,6 +352,7 @@
 ./src/api/routers/payroll.py
 ./src/api/routers/performance.py
 ./src/api/routers/reports.py
+./src/api/routers/supabase_test_router.py
 ./src/auth/__init__.py
 ./src/auth/middleware.py
 ./src/auth/unified_auth.py
@@ -475,6 +476,7 @@
 ./src/frontend/tsconfig.json
 ./src/frontend/tsconfig.node.json
 ./src/frontend/vite.config.ts
+./src/lib/supabase_client.py
 ./src/main.py
 ./src/mcp/CustomerJourneyAgent.py
 ./src/mcp/__init__.py
