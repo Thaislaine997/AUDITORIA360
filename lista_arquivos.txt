@@ -28,9 +28,9 @@
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-24d8573b-e8a4-4c73-a321-1476cfea88d5
 ./.git/logs/refs/remotes/origin/gh-pages
-./.git/objects/pack/pack-5b01d524cd041a4af522efec527fb862481c20f6.idx
-./.git/objects/pack/pack-5b01d524cd041a4af522efec527fb862481c20f6.pack
-./.git/objects/pack/pack-5b01d524cd041a4af522efec527fb862481c20f6.rev
+./.git/objects/pack/pack-0086031abb530924f9bae51940f1632e8efb23b5.idx
+./.git/objects/pack/pack-0086031abb530924f9bae51940f1632e8efb23b5.pack
+./.git/objects/pack/pack-0086031abb530924f9bae51940f1632e8efb23b5.rev
 ./.git/refs/heads/copilot/fix-24d8573b-e8a4-4c73-a321-1476cfea88d5
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-24d8573b-e8a4-4c73-a321-1476cfea88d5
@@ -48,6 +48,7 @@
 ./.pre-commit-config.yaml
 ./.prettierignore
 ./.prettierrc
+./CNAME
 ./CONTRIBUTING.md
 ./Dockerfile
 ./METAMORFOSE_RELATORIO_FINAL.md
@@ -174,6 +175,7 @@
 ./examples/ocr_paddle_example.py
 ./examples/r2_upload_download_example.py
 ./frontend/src/utils/navigationLogger.js
+./index.html
 ./infra/.htaccess
 ./infra/nginx.conf
 ./installers/.env.example
