@@ -60,9 +60,13 @@ Bem-vindo ao centro de documentação do projeto AUDITORIA360. Este índice orga
 ## 💡 Exemplos e Demos
 
 ### Exemplos de Uso:
-- **[Exemplos de API](../examples/)** - Como usar as APIs do sistema
-- **[Demos](../demos/)** - Demonstrações funcionais
+- **[Exemplos de API](../examples/)** - Como usar as APIs do sistema (com README detalhado)
+- **[Demos](../demos/)** - Demonstrações completas e avançadas (com README detalhado)
 - **[Notebooks](../notebooks/)** - Análises e explorações de dados
+
+### Estrutura Organizada:
+- **Examples**: Foco em APIs específicas, código didático, para desenvolvedores
+- **Demos**: Showcases completos, múltiplas integrações, para stakeholders e apresentações
 
 ### Scripts Utilitários:
 - **[Scripts Python](../scripts/python/)** - Utilitários em Python
