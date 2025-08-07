@@ -9,6 +9,9 @@ from pydantic import BaseModel
 # Importar as funções de processamento
 from src.main import process_control_sheet, process_document_ocr
 
+# --- 1. IMPORTAR O NOSSO NOVO ROUTER DE TESTE ---
+from src.api.routers.supabase_test_router import router as supabase_test_router
+
 # Importar os roteadores
 # from .explainability_routes import router as explainability_router  # Temporariamente comentado
 
@@ -23,6 +26,10 @@ app = FastAPI(
 
 # Incluir o router de explainability
 # app.include_router(explainability_router, prefix="/explainability", tags=["Explainability"])  # Temporariamente comentado
+
+# --- 2. ADICIONAR O NOSSO NOVO ROUTER À APLICAÇÃO ---
+# Este router será usado para validar a nossa nova infraestrutura
+app.include_router(supabase_test_router, prefix="/api")
 
 # Configuração do CORS
 # ATENÇÃO: Para produção, restrinja os origins permitidos.

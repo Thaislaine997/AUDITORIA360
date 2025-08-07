@@ -4,6 +4,7 @@ uvicorn
 # Conexão com Banco de Dados (Neon)
 sqlalchemy
 psycopg2-binary
+duckdb-engine
 
 # Análise de Dados (Substituto do BigQuery)
 duckdb
@@ -15,6 +16,9 @@ boto3
 # AI/ML Dependencies
 openai>=1.0.0
 python-dotenv>=1.0.0
+
+# Supabase Integration
+supabase>=2.0.0
 
 # OCR (Substituto do Document AI)
 paddleocr
