@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACH - Diagrama de Vitalidade Sistémica | AUDITORIA360</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --fluxo-electric-blue: #0077FF;
+            --fluxo-mint-green: #10B981;
+            --fluxo-off-white: #FDFDFD;
+            --fluxo-main-text: #1A1A1A;
+            --fluxo-danger: #EF4444;
+            --fluxo-warning: #F59E0B;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--fluxo-off-white);
+            color: var(--fluxo-main-text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--fluxo-electric-blue), var(--fluxo-mint-green));
+            color: white;
+            border-radius: 12px;
+        }
+        
+        .diagram-container {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .health-excellent { color: var(--fluxo-mint-green); }
+        .health-good { color: var(--fluxo-electric-blue); }
+        .health-fair { color: var(--fluxo-warning); }
+        .health-poor { color: var(--fluxo-danger); }
+        
+        .node-system { fill: var(--fluxo-electric-blue); }
+        .node-excellent { fill: var(--fluxo-mint-green); }
+        .node-good { fill: var(--fluxo-electric-blue); }
+        .node-warning { fill: var(--fluxo-warning); }
+        .node-critical { fill: var(--fluxo-danger); }
+        
+        .link { stroke: #E5E7EB; stroke-width: 2; }
+        .link-strong { stroke: var(--fluxo-mint-green); }
+        .link-medium { stroke: var(--fluxo-warning); }
+        .link-weak { stroke: var(--fluxo-danger); }
+        
+        .legend {
+            background: #F8F9FA;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .recommendation {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 ACH - Agente de Consciência Holística</h1>
+            <p>Diagrama de Vitalidade Sistémica - AUDITORIA360</p>
+            <p>Gerado em: 2025-08-07 13:54:06</p>
+        </div>
+        
+        <div class="diagram-container">
+            <h2>Mapa de Vitalidade do Sistema</h2>
+            <p>Clique nos componentes para ver detalhes. Cores representam a saúde: 
+               <span class="health-excellent">Verde</span> (excelente), 
+               <span class="health-good">Azul</span> (bom), 
+               <span class="health-fair">Amarelo</span> (regular), 
+               <span class="health-poor">Vermelho</span> (crítico)</p>
+            <svg id="vitality-diagram" width="100%" height="600"></svg>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Saúde Geral</h3>
+                <p class="health-good" style="font-size: 2em; margin: 0;">
+                    76.4%
+                </p>
+                <p>Good</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total de Arquivos</h3>
+                <p style="font-size: 2em; margin: 0; color: var(--fluxo-electric-blue);">
+                    636
+                </p>
+                <p>Arquivos analisados</p>
+            </div>
+            <div class="stat-card">
+                <h3>Issues Críticos</h3>
+                <p style="font-size: 2em; margin: 0; color: var(--fluxo-danger);">
+                    0
+                </p>
+                <p>Requerem atenção</p>
+            </div>
+            <div class="stat-card">
+                <h3>Componentes</h3>
+                <p style="font-size: 2em; margin: 0; color: var(--fluxo-mint-green);">
+                    7
+                </p>
+                <p>Classificações</p>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h3>🔧 Recomendações do ACH</h3>
+            <div class="recommendation">✨ Sistema em boa saúde - manter monitoramento regular</div>
+        </div>
+    </div>
+    
+    <div id="info-panel" class="info-panel">
+        <h3 id="panel-title">Detalhes do Componente</h3>
+        <div id="panel-content"></div>
+    </div>
+    
+    <script>
+        const nodes = [{"id": "system", "name": "AUDITORIA360", "type": "system", "health": "good", "score": 0.764, "size": 40}, {"id": "config", "name": "Config", "type": "component", "health": "healthy", "score": 0.9, "count": 70, "percentage": 11.01, "issues": ["Configura\u00e7\u00f5es ausentes: docker-compose.yml"], "size": 14.0}, {"id": "docs", "name": "Docs", "type": "component", "health": "healthy", "score": 1.0, "count": 40, "percentage": 6.29, "issues": [], "size": 10}, {"id": "other", "name": "Other", "type": "component", "health": "unknown", "score": 0.5, "count": 9, "percentage": 1.42, "issues": [], "size": 10}, {"id": "database", "name": "Database", "type": "component", "health": "healthy", "score": 0.7, "count": 6, "percentage": 0.94, "issues": ["SQLAlchemy n\u00e3o instalado"], "size": 10}, {"id": "backend", "name": "Backend", "type": "component", "health": "warning", "score": 0.6, "count": 369, "percentage": 58.02, "issues": ["Depend\u00eancias cr\u00edticas ausentes: No module named 'fastapi'"], "size": 30}, {"id": "frontend", "name": "Frontend", "type": "component", "health": "healthy", "score": 0.9, "count": 122, "percentage": 19.18, "issues": ["Diret\u00f3rio public ausente"], "size": 24.4}, {"id": "infrastructure", "name": "Infrastructure", "type": "component", "health": "healthy", "score": 0.8, "count": 20, "percentage": 3.14, "issues": ["docker-compose.yml n\u00e3o encontrado"], "size": 10}];
+        const links = [{"source": "system", "target": "config", "strength": 0.9}, {"source": "system", "target": "docs", "strength": 1.0}, {"source": "system", "target": "other", "strength": 0.5}, {"source": "system", "target": "database", "strength": 0.7}, {"source": "system", "target": "backend", "strength": 0.6}, {"source": "system", "target": "frontend", "strength": 0.9}, {"source": "system", "target": "infrastructure", "strength": 0.8}];
+        
+        const width = document.getElementById('vitality-diagram').clientWidth;
+        const height = 600;
+        
+        const svg = d3.select("#vitality-diagram")
+            .attr("width", width)
+            .attr("height", height);
+            
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+            
+        const link = svg.append("g")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("class", d => {
+                if (d.strength >= 0.8) return "link link-strong";
+                if (d.strength >= 0.5) return "link link-medium";
+                return "link link-weak";
+            })
+            .attr("stroke-width", d => Math.max(1, d.strength * 5));
+            
+        const node = svg.append("g")
+            .selectAll("circle")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("r", d => d.size)
+            .attr("class", d => {
+                if (d.type === "system") return "node-system";
+                if (d.health === "healthy") return "node-excellent";
+                if (d.health === "warning") return "node-warning";
+                return "node-critical";
+            })
+            .style("cursor", "pointer")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showNodeDetails);
+            
+        const label = svg.append("g")
+            .selectAll("text")
+            .data(nodes)
+            .enter().append("text")
+            .text(d => d.name)
+            .style("font-size", "12px")
+            .style("text-anchor", "middle")
+            .style("pointer-events", "none")
+            .style("font-weight", "bold");
+            
+        simulation
+            .nodes(nodes)
+            .on("tick", ticked);
+            
+        simulation.force("link")
+            .links(links);
+            
+        function ticked() {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+                
+            node
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+                
+            label
+                .attr("x", d => d.x)
+                .attr("y", d => d.y + 5);
+        }
+        
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+        
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+        
+        function showNodeDetails(event, d) {
+            const panel = document.getElementById('info-panel');
+            const title = document.getElementById('panel-title');
+            const content = document.getElementById('panel-content');
+            
+            title.textContent = d.name;
+            
+            let detailsHtml = `
+                <p><strong>Tipo:</strong> ${d.type}</p>
+                <p><strong>Saúde:</strong> <span class="health-${d.health}">${d.health}</span></p>
+                <p><strong>Score:</strong> ${(d.score * 100).toFixed(1)}%</p>
+            `;
+            
+            if (d.count !== undefined) {
+                detailsHtml += `<p><strong>Arquivos:</strong> ${d.count} (${d.percentage}%)</p>`;
+            }
+            
+            if (d.issues && d.issues.length > 0) {
+                detailsHtml += '<p><strong>Issues:</strong></p><ul>';
+                d.issues.forEach(issue => {
+                    detailsHtml += `<li>${issue}</li>`;
+                });
+                detailsHtml += '</ul>';
+            }
+            
+            content.innerHTML = detailsHtml;
+            panel.style.display = 'block';
+        }
+        
+        // Close panel when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('#info-panel') && !event.target.closest('circle')) {
+                document.getElementById('info-panel').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+        

@@ -1,0 +1,3940 @@
+{
+  "ach_version": "1.0.0",
+  "analysis_timestamp": "2025-08-07T13:54:06.973740",
+  "genomic_census": {
+    "timestamp": "2025-08-07T13:53:53.943779",
+    "repository_path": "/home/runner/work/AUDITORIA360/AUDITORIA360",
+    "total_files": 636,
+    "classification_summary": {
+      "config": {
+        "count": 70,
+        "percentage": 11.01,
+        "health_weight": 0.1
+      },
+      "docs": {
+        "count": 40,
+        "percentage": 6.29,
+        "health_weight": 0.05
+      },
+      "other": {
+        "count": 9,
+        "percentage": 1.42,
+        "health_weight": 0.01
+      },
+      "database": {
+        "count": 6,
+        "percentage": 0.94,
+        "health_weight": 0.15
+      },
+      "backend": {
+        "count": 369,
+        "percentage": 58.02,
+        "health_weight": 0.3
+      },
+      "frontend": {
+        "count": 122,
+        "percentage": 19.18,
+        "health_weight": 0.25
+      },
+      "infrastructure": {
+        "count": 20,
+        "percentage": 3.14,
+        "health_weight": 0.05
+      }
+    },
+    "file_details": {
+      "oracle_singularity_validation.json": {
+        "classification": "config",
+        "size_bytes": 5095,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.047
+      },
+      "docker-compose.monitoring.yml": {
+        "classification": "config",
+        "size_bytes": 2590,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.022
+      },
+      "requirements-ml.txt": {
+        "classification": "docs",
+        "size_bytes": 426,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.15
+      },
+      ".env.example": {
+        "classification": "config",
+        "size_bytes": 2103,
+        "last_modified": "2025-08-07T13:39:19.319664",
+        "complexity_score": 0.152
+      },
+      "metamorphosis_final_validation.json": {
+        "classification": "config",
+        "size_bytes": 3198,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.101
+      },
+      "package.json": {
+        "classification": "config",
+        "size_bytes": 523,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.158
+      },
+      "README.md": {
+        "classification": "docs",
+        "size_bytes": 4548,
+        "last_modified": "2025-08-07T13:39:19.321664",
+        "complexity_score": 0.038
+      },
+      "METAMORFOSE_RELATORIO_FINAL.md": {
+        "classification": "docs",
+        "size_bytes": 13592,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.113
+      },
+      "Makefile": {
+        "classification": "other",
+        "size_bytes": 3998,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.089
+      },
+      "requirements.txt": {
+        "classification": "docs",
+        "size_bytes": 1272,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.164
+      },
+      "requirements-dev.txt": {
+        "classification": "docs",
+        "size_bytes": 703,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.139
+      },
+      "oracle_judgment.json": {
+        "classification": "config",
+        "size_bytes": 6311,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.26
+      },
+      "metamorphosis_final_validation_report.json": {
+        "classification": "config",
+        "size_bytes": 1599,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.0
+      },
+      "CONTRIBUTING.md": {
+        "classification": "docs",
+        "size_bytes": 4813,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.103
+      },
+      "vercel.json": {
+        "classification": "config",
+        "size_bytes": 1362,
+        "last_modified": "2025-08-07T13:46:43.231091",
+        "complexity_score": 0.016
+      },
+      "lista_arquivos.txt": {
+        "classification": "docs",
+        "size_bytes": 25796,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.066
+      },
+      "pyproject.toml": {
+        "classification": "config",
+        "size_bytes": 1229,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.074
+      },
+      "requirements-monitoring.txt": {
+        "classification": "docs",
+        "size_bytes": 604,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.524
+      },
+      "Dockerfile": {
+        "classification": "other",
+        "size_bytes": 214,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.0
+      },
+      ".env.template": {
+        "classification": "config",
+        "size_bytes": 2782,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.138
+      },
+      "migrations/performance_indices.sql": {
+        "classification": "database",
+        "size_bytes": 3976,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.582
+      },
+      "migrations/001_enhanced_auth_migration.py": {
+        "classification": "backend",
+        "size_bytes": 12956,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.236
+      },
+      "migrations/002_simplify_employee_model.sql": {
+        "classification": "database",
+        "size_bytes": 3032,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.27
+      },
+      "conf/nginx.conf.example": {
+        "classification": "config",
+        "size_bytes": 1165,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.085
+      },
+      "demos/demo_first_stage.py": {
+        "classification": "backend",
+        "size_bytes": 15708,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.174
+      },
+      "demos/demo_modular_backend.py": {
+        "classification": "backend",
+        "size_bytes": 13626,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.142
+      },
+      "demos/demo_quantum_validation.py": {
+        "classification": "backend",
+        "size_bytes": 9284,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.192
+      },
+      "demos/demo_swarm_intelligence.py": {
+        "classification": "backend",
+        "size_bytes": 21266,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.182
+      },
+      "demos/reports/monthly_20250701_20250729.json": {
+        "classification": "config",
+        "size_bytes": 3801,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.011
+      },
+      "demos/reports/weekly_20250722_20250729.json": {
+        "classification": "config",
+        "size_bytes": 3622,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.011
+      },
+      "demos/reports/daily_20250728_20250729.json": {
+        "classification": "config",
+        "size_bytes": 3619,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.011
+      },
+      "assets/bootstrap.bundle.min.js": {
+        "classification": "frontend",
+        "size_bytes": 0,
+        "last_modified": "2025-08-07T13:39:19.323664",
+        "complexity_score": 0.0
+      },
+      "assets/bootstrap-grid.css": {
+        "classification": "frontend",
+        "size_bytes": 23413,
+        "last_modified": "2025-08-07T13:39:19.323664",
+        "complexity_score": 0.017
+      },
+      "assets/logo.png": {
+        "classification": "other",
+        "size_bytes": 163794,
+        "last_modified": "2025-08-07T13:39:19.323664",
+        "complexity_score": 0.018
+      },
+      "assets/bootstrap.min.css": {
+        "classification": "frontend",
+        "size_bytes": 0,
+        "last_modified": "2025-08-07T13:39:19.323664",
+        "complexity_score": 0.0
+      },
+      "src/README.md": {
+        "classification": "backend",
+        "size_bytes": 1670,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.014
+      },
+      "src/ai_agent.py": {
+        "classification": "backend",
+        "size_bytes": 18930,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.165
+      },
+      "src/main.py": {
+        "classification": "backend",
+        "size_bytes": 8515,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.117
+      },
+      "src/serverless/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 526,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.176
+      },
+      "src/serverless/quantum_orchestrator.py": {
+        "classification": "backend",
+        "size_bytes": 35069,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.208
+      },
+      "src/serverless/decentralized_data.py": {
+        "classification": "backend",
+        "size_bytes": 30385,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.253
+      },
+      "src/serverless/cold_start_predictor.py": {
+        "classification": "backend",
+        "size_bytes": 30233,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.304
+      },
+      "src/serverless/function_fireworks.py": {
+        "classification": "backend",
+        "size_bytes": 27592,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.365
+      },
+      "src/mcp/consensus.py": {
+        "classification": "backend",
+        "size_bytes": 17626,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.294
+      },
+      "src/mcp/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 157,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.143
+      },
+      "src/mcp/config.py": {
+        "classification": "backend",
+        "size_bytes": 13691,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.221
+      },
+      "src/mcp/tools.py": {
+        "classification": "backend",
+        "size_bytes": 25501,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.143
+      },
+      "src/mcp/CustomerJourneyAgent.py": {
+        "classification": "backend",
+        "size_bytes": 16167,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.219
+      },
+      "src/mcp/rpa_guardian.py": {
+        "classification": "backend",
+        "size_bytes": 16575,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.248
+      },
+      "src/mcp/client.py": {
+        "classification": "backend",
+        "size_bytes": 12028,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.218
+      },
+      "src/mcp/quantum_tests.py": {
+        "classification": "backend",
+        "size_bytes": 21461,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.155
+      },
+      "src/mcp/copilot_server.py": {
+        "classification": "backend",
+        "size_bytes": 2818,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.202
+      },
+      "src/mcp/protocol.py": {
+        "classification": "backend",
+        "size_bytes": 12387,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.267
+      },
+      "src/mcp/swarm.py": {
+        "classification": "backend",
+        "size_bytes": 24038,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.246
+      },
+      "src/mcp/server.py": {
+        "classification": "backend",
+        "size_bytes": 25181,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.255
+      },
+      "src/bigquery/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 439,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.059
+      },
+      "src/bigquery/operations.py": {
+        "classification": "backend",
+        "size_bytes": 10145,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.223
+      },
+      "src/bigquery/client.py": {
+        "classification": "backend",
+        "size_bytes": 4296,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.21
+      },
+      "src/bigquery/loaders.py": {
+        "classification": "backend",
+        "size_bytes": 10671,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.193
+      },
+      "src/bigquery/schema.py": {
+        "classification": "backend",
+        "size_bytes": 8430,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.172
+      },
+      "src/auth/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 455,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.261
+      },
+      "src/auth/unified_auth.py": {
+        "classification": "backend",
+        "size_bytes": 16485,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.208
+      },
+      "src/auth/middleware.py": {
+        "classification": "backend",
+        "size_bytes": 8650,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.24
+      },
+      "src/models/ai_models.py": {
+        "classification": "backend",
+        "size_bytes": 10495,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.245
+      },
+      "src/models/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 3300,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.112
+      },
+      "src/models/cct_models.py": {
+        "classification": "backend",
+        "size_bytes": 7657,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.223
+      },
+      "src/models/auth_models.py": {
+        "classification": "backend",
+        "size_bytes": 11853,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.322
+      },
+      "src/models/notification_models.py": {
+        "classification": "backend",
+        "size_bytes": 11813,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.431
+      },
+      "src/models/README.md": {
+        "classification": "backend",
+        "size_bytes": 1280,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.063
+      },
+      "src/models/audit_models.py": {
+        "classification": "backend",
+        "size_bytes": 10032,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.21
+      },
+      "src/models/payroll_models.py": {
+        "classification": "backend",
+        "size_bytes": 7330,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.372
+      },
+      "src/models/database.py": {
+        "classification": "backend",
+        "size_bytes": 2090,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.464
+      },
+      "src/models/client_models.py": {
+        "classification": "backend",
+        "size_bytes": 8800,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.207
+      },
+      "src/models/document_models.py": {
+        "classification": "backend",
+        "size_bytes": 7018,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.229
+      },
+      "src/models/report_models.py": {
+        "classification": "backend",
+        "size_bytes": 6728,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.25
+      },
+      "src/core/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 396,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.111
+      },
+      "src/core/secrets.py": {
+        "classification": "backend",
+        "size_bytes": 4880,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.32
+      },
+      "src/core/exceptions.py": {
+        "classification": "backend",
+        "size_bytes": 1270,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.372
+      },
+      "src/core/config.py": {
+        "classification": "backend",
+        "size_bytes": 1827,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.271
+      },
+      "src/core/system_manager.py": {
+        "classification": "backend",
+        "size_bytes": 17194,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.214
+      },
+      "src/core/tenant_middleware.py": {
+        "classification": "backend",
+        "size_bytes": 6518,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.303
+      },
+      "src/core/validators.py": {
+        "classification": "backend",
+        "size_bytes": 9746,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.281
+      },
+      "src/core/security.py": {
+        "classification": "backend",
+        "size_bytes": 2029,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.234
+      },
+      "src/core/constants.py": {
+        "classification": "backend",
+        "size_bytes": 3584,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.308
+      },
+      "src/core/validation.py": {
+        "classification": "backend",
+        "size_bytes": 7747,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.281
+      },
+      "src/core/config.json": {
+        "classification": "backend",
+        "size_bytes": 118,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.286
+      },
+      "src/migration/legacy_script_migration.py": {
+        "classification": "backend",
+        "size_bytes": 27432,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.248
+      },
+      "src/migration/migration_report.json": {
+        "classification": "backend",
+        "size_bytes": 2975,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.0
+      },
+      "src/migration/encapsulated/cloudrun_deploy_backend_wrapper.py": {
+        "classification": "backend",
+        "size_bytes": 4876,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.209
+      },
+      "src/migration/encapsulated/cloudrun_deploy_streamlit_wrapper.py": {
+        "classification": "backend",
+        "size_bytes": 4880,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.209
+      },
+      "src/migration/encapsulated/compilar_instalador_windows_wrapper.py": {
+        "classification": "backend",
+        "size_bytes": 4886,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.209
+      },
+      "src/migration/encapsulated/agendar_auditoria_mensal_wrapper.py": {
+        "classification": "backend",
+        "size_bytes": 4820,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.209
+      },
+      "src/migration/python_equivalents/setup_dev_env.py": {
+        "classification": "backend",
+        "size_bytes": 2031,
+        "last_modified": "2025-08-07T13:39:19.349664",
+        "complexity_score": 0.243
+      },
+      "src/validation/metamorphosis_validator.py": {
+        "classification": "backend",
+        "size_bytes": 20277,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.276
+      },
+      "src/utils/performance.py": {
+        "classification": "backend",
+        "size_bytes": 18625,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.296
+      },
+      "src/utils/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 471,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.368
+      },
+      "src/utils/api_integration.py": {
+        "classification": "backend",
+        "size_bytes": 13167,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.245
+      },
+      "src/utils/README.md": {
+        "classification": "backend",
+        "size_bytes": 857,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.167
+      },
+      "src/utils/monitoring.py": {
+        "classification": "backend",
+        "size_bytes": 1052,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.189
+      },
+      "src/schemas/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 166,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.143
+      },
+      "src/schemas/predicao_risco_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 2460,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.106
+      },
+      "src/schemas/parametros_legais_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 3578,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.155
+      },
+      "src/schemas/payroll_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 7364,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.225
+      },
+      "src/schemas/cct_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 2747,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.167
+      },
+      "src/schemas/folha_processada_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 375,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.125
+      },
+      "src/schemas/auth_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 2976,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.184
+      },
+      "src/schemas/checklist_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 463,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.115
+      },
+      "src/schemas/rbac_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 1108,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.159
+      },
+      "src/monitoring/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 1502,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.151
+      },
+      "src/monitoring/tracing.py": {
+        "classification": "backend",
+        "size_bytes": 8609,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.228
+      },
+      "src/monitoring/system.py": {
+        "classification": "backend",
+        "size_bytes": 3623,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.185
+      },
+      "src/monitoring/prometheus.py": {
+        "classification": "backend",
+        "size_bytes": 8478,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.281
+      },
+      "src/monitoring/structured_logging.py": {
+        "classification": "backend",
+        "size_bytes": 9876,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.258
+      },
+      "src/monitoring/alerts.py": {
+        "classification": "backend",
+        "size_bytes": 8599,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.314
+      },
+      "src/monitoring/health.py": {
+        "classification": "backend",
+        "size_bytes": 4421,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.231
+      },
+      "src/monitoring/metrics.py": {
+        "classification": "backend",
+        "size_bytes": 3655,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.248
+      },
+      "src/monitoring/core.py": {
+        "classification": "backend",
+        "size_bytes": 7062,
+        "last_modified": "2025-08-07T13:39:19.350664",
+        "complexity_score": 0.24
+      },
+      "src/security/security_protocols.py": {
+        "classification": "backend",
+        "size_bytes": 61368,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.23
+      },
+      "src/security/security_protocols_report.json": {
+        "classification": "backend",
+        "size_bytes": 8012,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.062
+      },
+      "src/security/red_team_drill_report.json": {
+        "classification": "backend",
+        "size_bytes": 2291,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.027
+      },
+      "src/security/enhanced_red_team_drill_report.json": {
+        "classification": "backend",
+        "size_bytes": 7072,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.062
+      },
+      "src/security/chatbot_security_incidents.json": {
+        "classification": "backend",
+        "size_bytes": 3849,
+        "last_modified": "2025-08-07T13:39:19.351664",
+        "complexity_score": 0.0
+      },
+      "src/services/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 108,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.143
+      },
+      "src/services/payroll_service.py": {
+        "classification": "backend",
+        "size_bytes": 14943,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.137
+      },
+      "src/services/auth_service.py": {
+        "classification": "backend",
+        "size_bytes": 11485,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.182
+      },
+      "src/services/README.md": {
+        "classification": "backend",
+        "size_bytes": 1160,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.057
+      },
+      "src/services/openai_service.py": {
+        "classification": "backend",
+        "size_bytes": 10981,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.168
+      },
+      "src/services/cache_service.py": {
+        "classification": "backend",
+        "size_bytes": 8989,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.308
+      },
+      "src/services/duckdb_optimizer.py": {
+        "classification": "backend",
+        "size_bytes": 11174,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.233
+      },
+      "src/services/user_service.py": {
+        "classification": "backend",
+        "size_bytes": 12344,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.216
+      },
+      "src/services/enhanced_notification_service.py": {
+        "classification": "backend",
+        "size_bytes": 9309,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.331
+      },
+      "src/services/ocr/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 132,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.0
+      },
+      "src/services/ocr/ocr_service.py": {
+        "classification": "backend",
+        "size_bytes": 2932,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.226
+      },
+      "src/services/communication_gateway/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 578,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.158
+      },
+      "src/services/communication_gateway/providers.py": {
+        "classification": "backend",
+        "size_bytes": 8103,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.152
+      },
+      "src/services/communication_gateway/github_integration.py": {
+        "classification": "backend",
+        "size_bytes": 8081,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.12
+      },
+      "src/services/communication_gateway/gateway.py": {
+        "classification": "backend",
+        "size_bytes": 6284,
+        "last_modified": "2025-08-07T13:39:19.352664",
+        "complexity_score": 0.243
+      },
+      "src/services/storage/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 152,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.0
+      },
+      "src/services/storage/storage_service.py": {
+        "classification": "backend",
+        "size_bytes": 5763,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.186
+      },
+      "src/api/products/product_cores.py": {
+        "classification": "backend",
+        "size_bytes": 25249,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.134
+      },
+      "src/api/products/crystallization_report.json": {
+        "classification": "backend",
+        "size_bytes": 34750,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.049
+      },
+      "src/api/common/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 2102,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.1
+      },
+      "src/api/common/validators.py": {
+        "classification": "backend",
+        "size_bytes": 10675,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.257
+      },
+      "src/api/common/middleware.py": {
+        "classification": "backend",
+        "size_bytes": 4864,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.108
+      },
+      "src/api/common/responses.py": {
+        "classification": "backend",
+        "size_bytes": 9298,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.167
+      },
+      "src/api/common/api_key_middleware.py": {
+        "classification": "backend",
+        "size_bytes": 15780,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.238
+      },
+      "src/api/migration/api_unification.py": {
+        "classification": "backend",
+        "size_bytes": 11514,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.301
+      },
+      "src/api/migration/unification_report.json": {
+        "classification": "backend",
+        "size_bytes": 17130,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.156
+      },
+      "src/api/routers/performance.py": {
+        "classification": "backend",
+        "size_bytes": 6553,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.208
+      },
+      "src/api/routers/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 720,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.259
+      },
+      "src/api/routers/notifications.py": {
+        "classification": "backend",
+        "size_bytes": 20249,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.302
+      },
+      "src/api/routers/auth.py": {
+        "classification": "backend",
+        "size_bytes": 13514,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.202
+      },
+      "src/api/routers/ai_client_management.py": {
+        "classification": "backend",
+        "size_bytes": 21720,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.148
+      },
+      "src/api/routers/core_business.py": {
+        "classification": "backend",
+        "size_bytes": 7463,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.126
+      },
+      "src/api/routers/ai.py": {
+        "classification": "backend",
+        "size_bytes": 15665,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.132
+      },
+      "src/api/routers/cct.py": {
+        "classification": "backend",
+        "size_bytes": 1904,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.101
+      },
+      "src/api/routers/payroll.py": {
+        "classification": "backend",
+        "size_bytes": 11087,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.142
+      },
+      "src/api/routers/reports.py": {
+        "classification": "backend",
+        "size_bytes": 9347,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.155
+      },
+      "src/api/routers/automation.py": {
+        "classification": "backend",
+        "size_bytes": 9126,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.165
+      },
+      "src/api/routers/documents.py": {
+        "classification": "backend",
+        "size_bytes": 3792,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.094
+      },
+      "src/api/routers/intentions.py": {
+        "classification": "backend",
+        "size_bytes": 11160,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.181
+      },
+      "src/api/routers/gamification.py": {
+        "classification": "backend",
+        "size_bytes": 17164,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.141
+      },
+      "src/api/routers/audit.py": {
+        "classification": "backend",
+        "size_bytes": 8988,
+        "last_modified": "2025-08-07T13:39:19.339664",
+        "complexity_score": 0.203
+      },
+      "src/api/routers/compliance.py": {
+        "classification": "backend",
+        "size_bytes": 9241,
+        "last_modified": "2025-08-07T13:39:19.340664",
+        "complexity_score": 0.169
+      },
+      "src/frontend/tsconfig.node.json": {
+        "classification": "frontend",
+        "size_bytes": 278,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.091
+      },
+      "src/frontend/package.json": {
+        "classification": "frontend",
+        "size_bytes": 2665,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.141
+      },
+      "src/frontend/tsconfig.json": {
+        "classification": "frontend",
+        "size_bytes": 626,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.16
+      },
+      "src/frontend/index.html": {
+        "classification": "frontend",
+        "size_bytes": 571,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.0
+      },
+      "src/frontend/package-lock.json": {
+        "classification": "frontend",
+        "size_bytes": 355443,
+        "last_modified": "2025-08-07T13:45:17.144836",
+        "complexity_score": 0.122
+      },
+      "src/frontend/vite.config.ts": {
+        "classification": "frontend",
+        "size_bytes": 906,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.15
+      },
+      "src/frontend/src/App.tsx": {
+        "classification": "frontend",
+        "size_bytes": 5677,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.075
+      },
+      "src/frontend/src/main.tsx": {
+        "classification": "frontend",
+        "size_bytes": 3384,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.068
+      },
+      "src/frontend/src/hooks/useNeuralSignals.ts": {
+        "classification": "frontend",
+        "size_bytes": 6557,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.19
+      },
+      "src/frontend/src/hooks/useAuth.ts": {
+        "classification": "frontend",
+        "size_bytes": 112,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.0
+      },
+      "src/frontend/src/styles/index.css": {
+        "classification": "frontend",
+        "size_bytes": 804,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.04
+      },
+      "src/frontend/src/styles/themes/global.css": {
+        "classification": "frontend",
+        "size_bytes": 4740,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.016
+      },
+      "src/frontend/src/styles/themes/variables.css": {
+        "classification": "frontend",
+        "size_bytes": 3833,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.108
+      },
+      "src/frontend/src/styles/layout/layout.css": {
+        "classification": "frontend",
+        "size_bytes": 2674,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.034
+      },
+      "src/frontend/src/styles/components/animations.css": {
+        "classification": "frontend",
+        "size_bytes": 817,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.08
+      },
+      "src/frontend/src/styles/components/alerts.css": {
+        "classification": "frontend",
+        "size_bytes": 963,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.0
+      },
+      "src/frontend/src/styles/components/buttons.css": {
+        "classification": "frontend",
+        "size_bytes": 2062,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.03
+      },
+      "src/frontend/src/styles/components/badges.css": {
+        "classification": "frontend",
+        "size_bytes": 1210,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.02
+      },
+      "src/frontend/src/styles/components/forms.css": {
+        "classification": "frontend",
+        "size_bytes": 1397,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.167
+      },
+      "src/frontend/src/styles/components/cards.css": {
+        "classification": "frontend",
+        "size_bytes": 1360,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.017
+      },
+      "src/frontend/src/styles/components/navigation.css": {
+        "classification": "frontend",
+        "size_bytes": 1077,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.0
+      },
+      "src/frontend/src/test/quantum-validation-basic.test.ts": {
+        "classification": "frontend",
+        "size_bytes": 1938,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.032
+      },
+      "src/frontend/src/test/quantum-validation.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 14354,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.104
+      },
+      "src/frontend/src/test/setup.ts": {
+        "classification": "frontend",
+        "size_bytes": 496,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.083
+      },
+      "src/frontend/src/test/hooks/useAuth.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 2983,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.029
+      },
+      "src/frontend/src/test/modules/authService.test.ts": {
+        "classification": "frontend",
+        "size_bytes": 5101,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.104
+      },
+      "src/frontend/src/test/components/Navbar.simple.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 878,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.0
+      },
+      "src/frontend/src/test/components/Sidebar.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 2656,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.048
+      },
+      "src/frontend/src/test/components/DuraLexAI.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 2217,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.054
+      },
+      "src/frontend/src/test/components/KairosOrganicDashboard.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 2765,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.022
+      },
+      "src/frontend/src/test/components/Sidebar.simple.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 1779,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.029
+      },
+      "src/frontend/src/test/components/Navbar.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 1998,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.056
+      },
+      "src/frontend/src/test/pages/Dashboard.test.tsx": {
+        "classification": "frontend",
+        "size_bytes": 3355,
+        "last_modified": "2025-08-07T13:39:19.348664",
+        "complexity_score": 0.058
+      },
+      "src/frontend/src/stores/intentionStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 11526,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.115
+      },
+      "src/frontend/src/stores/authStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 1931,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.058
+      },
+      "src/frontend/src/stores/uiStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 10477,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.162
+      },
+      "src/frontend/src/stores/dashboardStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 5354,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.069
+      },
+      "src/frontend/src/stores/userPreferencesStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 1803,
+        "last_modified": "2025-08-07T13:39:19.347664",
+        "complexity_score": 0.16
+      },
+      "src/frontend/src/stores/notificationsStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 2725,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.541
+      },
+      "src/frontend/src/stores/navigationStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 3601,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.039
+      },
+      "src/frontend/src/stores/gamificationStore.ts": {
+        "classification": "frontend",
+        "size_bytes": 10132,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.054
+      },
+      "src/frontend/src/modules/auth/authService.ts": {
+        "classification": "frontend",
+        "size_bytes": 4003,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.123
+      },
+      "src/frontend/src/modules/dashboard/dashboardService.ts": {
+        "classification": "frontend",
+        "size_bytes": 3294,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.104
+      },
+      "src/frontend/src/modules/monitoring/monitoringService.ts": {
+        "classification": "frontend",
+        "size_bytes": 3832,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.08
+      },
+      "src/frontend/src/components/PersonalizedOnboarding.tsx": {
+        "classification": "frontend",
+        "size_bytes": 13603,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.203
+      },
+      "src/frontend/src/components/GamificationToast.tsx": {
+        "classification": "frontend",
+        "size_bytes": 13275,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.14
+      },
+      "src/frontend/src/components/ExportButton.tsx": {
+        "classification": "frontend",
+        "size_bytes": 3748,
+        "last_modified": "2025-08-07T13:39:19.341664",
+        "complexity_score": 0.079
+      },
+      "src/frontend/src/components/NotificationBell.tsx": {
+        "classification": "frontend",
+        "size_bytes": 6802,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.239
+      },
+      "src/frontend/src/components/Navbar.tsx": {
+        "classification": "frontend",
+        "size_bytes": 156,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.5
+      },
+      "src/frontend/src/components/Sidebar.tsx": {
+        "classification": "frontend",
+        "size_bytes": 158,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.5
+      },
+      "src/frontend/src/components/ui/PersonalizedOnboarding.tsx": {
+        "classification": "frontend",
+        "size_bytes": 13191,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.024
+      },
+      "src/frontend/src/components/ui/SegmentDashboard.tsx": {
+        "classification": "frontend",
+        "size_bytes": 20006,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.022
+      },
+      "src/frontend/src/components/ui/UnderConstruction.tsx": {
+        "classification": "frontend",
+        "size_bytes": 3396,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.024
+      },
+      "src/frontend/src/components/ui/Card.tsx": {
+        "classification": "frontend",
+        "size_bytes": 1467,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.062
+      },
+      "src/frontend/src/components/ui/ConfigurationOptimizer.tsx": {
+        "classification": "frontend",
+        "size_bytes": 25218,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.059
+      },
+      "src/frontend/src/components/ui/ROICognitivoWidget.tsx": {
+        "classification": "frontend",
+        "size_bytes": 7454,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.294
+      },
+      "src/frontend/src/components/ui/HighConsequenceModal.tsx": {
+        "classification": "frontend",
+        "size_bytes": 9818,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.045
+      },
+      "src/frontend/src/components/ui/NotificationCenter.tsx": {
+        "classification": "frontend",
+        "size_bytes": 28508,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.253
+      },
+      "src/frontend/src/components/ui/SuccessConfetti.tsx": {
+        "classification": "frontend",
+        "size_bytes": 3395,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.063
+      },
+      "src/frontend/src/components/ui/Input.tsx": {
+        "classification": "frontend",
+        "size_bytes": 1565,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.075
+      },
+      "src/frontend/src/components/ui/TeamLeaderboard.tsx": {
+        "classification": "frontend",
+        "size_bytes": 20964,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.04
+      },
+      "src/frontend/src/components/ui/PremiumFeatureTeaser.tsx": {
+        "classification": "frontend",
+        "size_bytes": 9885,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.059
+      },
+      "src/frontend/src/components/ui/Button.tsx": {
+        "classification": "frontend",
+        "size_bytes": 1588,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.102
+      },
+      "src/frontend/src/components/ui/GamificationToast.tsx": {
+        "classification": "frontend",
+        "size_bytes": 4830,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.046
+      },
+      "src/frontend/src/components/ui/IntelligentEmptyState.tsx": {
+        "classification": "frontend",
+        "size_bytes": 12852,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.025
+      },
+      "src/frontend/src/components/ui/KeyboardNavigation.tsx": {
+        "classification": "frontend",
+        "size_bytes": 20485,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.08
+      },
+      "src/frontend/src/components/ui/LGPDComplianceCenter.tsx": {
+        "classification": "frontend",
+        "size_bytes": 30886,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.037
+      },
+      "src/frontend/src/components/ui/index.ts": {
+        "classification": "frontend",
+        "size_bytes": 337,
+        "last_modified": "2025-08-07T13:39:19.344664",
+        "complexity_score": 0.667
+      },
+      "src/frontend/src/components/ui/CommandPalette.tsx": {
+        "classification": "frontend",
+        "size_bytes": 11145,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.051
+      },
+      "src/frontend/src/components/ui/EmpathicTextField.tsx": {
+        "classification": "frontend",
+        "size_bytes": 7206,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.166
+      },
+      "src/frontend/src/components/ui/GamificationSystem.tsx": {
+        "classification": "frontend",
+        "size_bytes": 17018,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.081
+      },
+      "src/frontend/src/components/ui/ConfigurationVersioning.tsx": {
+        "classification": "frontend",
+        "size_bytes": 26193,
+        "last_modified": "2025-08-07T13:39:19.343664",
+        "complexity_score": 0.053
+      },
+      "src/frontend/src/components/layout/Navbar.tsx": {
+        "classification": "frontend",
+        "size_bytes": 8533,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.085
+      },
+      "src/frontend/src/components/layout/Sidebar.tsx": {
+        "classification": "frontend",
+        "size_bytes": 8489,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.048
+      },
+      "src/frontend/src/components/layout/index.ts": {
+        "classification": "frontend",
+        "size_bytes": 121,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.667
+      },
+      "src/frontend/src/components/kairos/ComplianceLoom.tsx": {
+        "classification": "frontend",
+        "size_bytes": 16513,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.039
+      },
+      "src/frontend/src/components/kairos/DuraLexAI.tsx": {
+        "classification": "frontend",
+        "size_bytes": 22847,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.017
+      },
+      "src/frontend/src/components/kairos/KairosOrganicDashboard.tsx": {
+        "classification": "frontend",
+        "size_bytes": 12364,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.099
+      },
+      "src/frontend/src/components/Widgets/ActivityFeedWidget.tsx": {
+        "classification": "frontend",
+        "size_bytes": 7923,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.099
+      },
+      "src/frontend/src/components/Widgets/HealthMapWidget.tsx": {
+        "classification": "frontend",
+        "size_bytes": 8780,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.109
+      },
+      "src/frontend/src/components/Widgets/KPIWidget.tsx": {
+        "classification": "frontend",
+        "size_bytes": 5393,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.111
+      },
+      "src/frontend/src/components/Widgets/index.ts": {
+        "classification": "frontend",
+        "size_bytes": 344,
+        "last_modified": "2025-08-07T13:39:19.342664",
+        "complexity_score": 0.429
+      },
+      "src/frontend/src/pages/MasteryPaths.tsx": {
+        "classification": "frontend",
+        "size_bytes": 19273,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.061
+      },
+      "src/frontend/src/pages/DocumentsPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 9522,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.057
+      },
+      "src/frontend/src/pages/Templates.tsx": {
+        "classification": "frontend",
+        "size_bytes": 13824,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.041
+      },
+      "src/frontend/src/pages/ConsultorRiscos.tsx": {
+        "classification": "frontend",
+        "size_bytes": 19377,
+        "last_modified": "2025-08-07T13:52:42.774246",
+        "complexity_score": 0.044
+      },
+      "src/frontend/src/pages/ReportTemplatesPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 13188,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.046
+      },
+      "src/frontend/src/pages/GestaoClientes.tsx": {
+        "classification": "frontend",
+        "size_bytes": 16920,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.069
+      },
+      "src/frontend/src/pages/LoginPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 2909,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.065
+      },
+      "src/frontend/src/pages/AuditPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 477,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.05
+      },
+      "src/frontend/src/pages/CCTPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 18917,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.052
+      },
+      "src/frontend/src/pages/PayrollPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 11815,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.049
+      },
+      "src/frontend/src/pages/ChatbotPage.tsx": {
+        "classification": "frontend",
+        "size_bytes": 10263,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.061
+      },
+      "src/frontend/src/pages/RelatoriosAvancados.tsx": {
+        "classification": "frontend",
+        "size_bytes": 11449,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.073
+      },
+      "src/frontend/src/pages/DeveloperPortal.tsx": {
+        "classification": "frontend",
+        "size_bytes": 18555,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.018
+      },
+      "src/frontend/src/pages/NeuroSymbolicDemo.tsx": {
+        "classification": "frontend",
+        "size_bytes": 11514,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.092
+      },
+      "src/frontend/src/pages/GestaoContabilidades.tsx": {
+        "classification": "frontend",
+        "size_bytes": 7409,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.02
+      },
+      "src/frontend/src/pages/Dashboard.tsx": {
+        "classification": "frontend",
+        "size_bytes": 9762,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.079
+      },
+      "src/frontend/src/pages/PortalDemandas.tsx": {
+        "classification": "frontend",
+        "size_bytes": 2356,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.036
+      },
+      "src/frontend/src/pages/GerenciamentoUsuarios.tsx": {
+        "classification": "frontend",
+        "size_bytes": 10087,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.063
+      },
+      "src/frontend/src/pages/MinhaConta.tsx": {
+        "classification": "frontend",
+        "size_bytes": 12392,
+        "last_modified": "2025-08-07T13:39:19.345664",
+        "complexity_score": 0.086
+      },
+      "src/frontend/src/services/ai.ts": {
+        "classification": "frontend",
+        "size_bytes": 9990,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.111
+      },
+      "src/frontend/src/services/acr.ts": {
+        "classification": "frontend",
+        "size_bytes": 6201,
+        "last_modified": "2025-08-07T13:39:19.346664",
+        "complexity_score": 0.271
+      },
+      "auth/README.md": {
+        "classification": "docs",
+        "size_bytes": 2209,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.055
+      },
+      "auth/login.example.yaml": {
+        "classification": "config",
+        "size_bytes": 1091,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.036
+      },
+      "auth/gestor_contas.example.json": {
+        "classification": "config",
+        "size_bytes": 479,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.0
+      },
+      "docs/PERFORMANCE_OPTIMIZATION_STRATEGY.md": {
+        "classification": "docs",
+        "size_bytes": 10307,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.113
+      },
+      "docs/onboarding_guide.md": {
+        "classification": "docs",
+        "size_bytes": 9770,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.055
+      },
+      "docs/SWARM_INTELLIGENCE.md": {
+        "classification": "docs",
+        "size_bytes": 8184,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.036
+      },
+      "docs/QUANTUM_VALIDATION.md": {
+        "classification": "docs",
+        "size_bytes": 7575,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.148
+      },
+      "docs/historico/implementation_summary_output.txt": {
+        "classification": "docs",
+        "size_bytes": 3141,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.13
+      },
+      "docs/generated/dependency_graph.html": {
+        "classification": "frontend",
+        "size_bytes": 2198,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.085
+      },
+      "docs/generated/api_documentation.html": {
+        "classification": "frontend",
+        "size_bytes": 625,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.0
+      },
+      "docs/generated/index.html": {
+        "classification": "frontend",
+        "size_bytes": 6768,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.146
+      },
+      "docs/generated/api_documentation.json": {
+        "classification": "config",
+        "size_bytes": 2543,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.022
+      },
+      "docs/generated/storybook.html": {
+        "classification": "frontend",
+        "size_bytes": 2978,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.137
+      },
+      "docs/generated/storybook_config.json": {
+        "classification": "config",
+        "size_bytes": 1782,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.071
+      },
+      "docs/generated/dependency_graph.json": {
+        "classification": "config",
+        "size_bytes": 1764,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.033
+      },
+      "docs/business_logic/README.md": {
+        "classification": "docs",
+        "size_bytes": 967,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.095
+      },
+      "docs/business_logic/payroll_calculation_rules.md": {
+        "classification": "docs",
+        "size_bytes": 2503,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.132
+      },
+      "docs/adr/005-adocao-de-python-fastapi-como-core-backend.md": {
+        "classification": "docs",
+        "size_bytes": 5654,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.119
+      },
+      "docs/adr/007-unificacao-da-stack-de-automacao-em-python.md": {
+        "classification": "docs",
+        "size_bytes": 10448,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.13
+      },
+      "docs/adr/README.md": {
+        "classification": "docs",
+        "size_bytes": 1800,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.044
+      },
+      "docs/adr/001-escolha-da-arquitetura-de-dados-descentralizada-com-duckdb.md": {
+        "classification": "docs",
+        "size_bytes": 3843,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.22
+      },
+      "docs/adr/ADR-001-fluxo-design-system.md": {
+        "classification": "docs",
+        "size_bytes": 2889,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.086
+      },
+      "docs/adr/003-estrategia-api-as-a-product.md": {
+        "classification": "docs",
+        "size_bytes": 6334,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.128
+      },
+      "docs/adr/004-observabilidade-profunda-acr-ach.md": {
+        "classification": "docs",
+        "size_bytes": 5661,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.084
+      },
+      "docs/adr/ADR-003-api-as-a-product.md": {
+        "classification": "docs",
+        "size_bytes": 6278,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.087
+      },
+      "docs/adr/ADR-002-observabilidade-acr-ach.md": {
+        "classification": "docs",
+        "size_bytes": 5294,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.161
+      },
+      "docs/adr/ADR-0004-grand-synthesis-architecture.md": {
+        "classification": "docs",
+        "size_bytes": 5555,
+        "last_modified": "2025-08-07T13:53:42.429434",
+        "complexity_score": 0.292
+      },
+      "docs/adr/006-adocao-de-react-typescript-como-core-frontend.md": {
+        "classification": "docs",
+        "size_bytes": 8080,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.108
+      },
+      "docs/adr/002-implementacao-sistema-mcp-multi-agente.md": {
+        "classification": "docs",
+        "size_bytes": 5625,
+        "last_modified": "2025-08-07T13:39:19.328664",
+        "complexity_score": 0.109
+      },
+      "installers/.env.example": {
+        "classification": "config",
+        "size_bytes": 4791,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.048
+      },
+      "installers/init_db.py": {
+        "classification": "backend",
+        "size_bytes": 14465,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.21
+      },
+      "deploy/cloudbuild.yaml": {
+        "classification": "config",
+        "size_bytes": 2516,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.303
+      },
+      "deploy/Dockerfile.streamlit": {
+        "classification": "infrastructure",
+        "size_bytes": 293,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.0
+      },
+      "deploy/Dockerfile": {
+        "classification": "infrastructure",
+        "size_bytes": 1322,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.07
+      },
+      "deploy/kubernetes/api-deployment.yaml": {
+        "classification": "config",
+        "size_bytes": 3313,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.019
+      },
+      "deploy/kubernetes/redis-deployment.yaml": {
+        "classification": "config",
+        "size_bytes": 3372,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.018
+      },
+      "deploy/.github/workflows/tests.yml": {
+        "classification": "config",
+        "size_bytes": 1837,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.0
+      },
+      "deploy/aws/autoscaling-template.json": {
+        "classification": "config",
+        "size_bytes": 11561,
+        "last_modified": "2025-08-07T13:39:19.327664",
+        "complexity_score": 0.039
+      },
+      ".github/dependabot.yml": {
+        "classification": "config",
+        "size_bytes": 512,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.0
+      },
+      ".github/workflows/automation.yml": {
+        "classification": "config",
+        "size_bytes": 7445,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.103
+      },
+      ".github/workflows/sync-wiki.yml": {
+        "classification": "config",
+        "size_bytes": 7536,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.112
+      },
+      ".github/workflows/atualiza-lista-arquivos.yml": {
+        "classification": "config",
+        "size_bytes": 3633,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.09
+      },
+      ".github/workflows/genome-guardian.yml": {
+        "classification": "config",
+        "size_bytes": 10380,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.207
+      },
+      ".github/workflows/iai-c-health-monitor.yml": {
+        "classification": "config",
+        "size_bytes": 8107,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.153
+      },
+      ".github/workflows/ci-cd.yml": {
+        "classification": "config",
+        "size_bytes": 16158,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.138
+      },
+      ".github/workflows/jekyll-gh-pages.yml": {
+        "classification": "config",
+        "size_bytes": 1414,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.077
+      },
+      ".github/workflows/master-checklist-validation.yml": {
+        "classification": "config",
+        "size_bytes": 6300,
+        "last_modified": "2025-08-07T13:39:19.320664",
+        "complexity_score": 0.11
+      },
+      "infra/nginx.conf": {
+        "classification": "infrastructure",
+        "size_bytes": 2580,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.146
+      },
+      "examples/ai_chatbot_example.py": {
+        "classification": "backend",
+        "size_bytes": 17992,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.145
+      },
+      "examples/r2_upload_download_example.py": {
+        "classification": "backend",
+        "size_bytes": 506,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.053
+      },
+      "examples/api_documents_example.py": {
+        "classification": "backend",
+        "size_bytes": 16790,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.114
+      },
+      "examples/ocr_paddle_example.py": {
+        "classification": "backend",
+        "size_bytes": 17537,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.143
+      },
+      "examples/api_authentication_example.py": {
+        "classification": "backend",
+        "size_bytes": 7942,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.143
+      },
+      "examples/api_payroll_example.py": {
+        "classification": "backend",
+        "size_bytes": 14043,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.116
+      },
+      "examples/duckdb_example.py": {
+        "classification": "backend",
+        "size_bytes": 16794,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.079
+      },
+      "examples/complete_workflow_example.py": {
+        "classification": "backend",
+        "size_bytes": 20339,
+        "last_modified": "2025-08-07T13:39:19.329664",
+        "complexity_score": 0.164
+      },
+      "automation/rpa_folha.py": {
+        "classification": "backend",
+        "size_bytes": 8441,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.173
+      },
+      "automation/schedule_reports.py": {
+        "classification": "backend",
+        "size_bytes": 16483,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.138
+      },
+      "automation/enhanced_robot_esocial.py": {
+        "classification": "backend",
+        "size_bytes": 8010,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.162
+      },
+      "automation/cron_comunicados.py": {
+        "classification": "backend",
+        "size_bytes": 813,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.097
+      },
+      "automation/cron_legislacao.py": {
+        "classification": "backend",
+        "size_bytes": 1010,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.122
+      },
+      "automation/onboarding.py": {
+        "classification": "backend",
+        "size_bytes": 813,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.143
+      },
+      "automation/backup_routine.py": {
+        "classification": "backend",
+        "size_bytes": 2600,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.308
+      },
+      "automation/robot_esocial.py": {
+        "classification": "backend",
+        "size_bytes": 13631,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.296
+      },
+      "artifacts/ach/vitality_diagram_20250807_132810.html": {
+        "classification": "frontend",
+        "size_bytes": 12112,
+        "last_modified": "2025-08-07T13:39:19.322664",
+        "complexity_score": 0.157
+      },
+      "artifacts/ach/ach_complete_analysis_20250806_200102.json": {
+        "classification": "config",
+        "size_bytes": 129608,
+        "last_modified": "2025-08-07T13:39:19.322664",
+        "complexity_score": 0.495
+      },
+      "artifacts/ach/ach_complete_analysis_20250807_132810.json": {
+        "classification": "config",
+        "size_bytes": 135827,
+        "last_modified": "2025-08-07T13:39:19.322664",
+        "complexity_score": 0.497
+      },
+      "artifacts/ach/ach_complete_analysis_20250806_205653.json": {
+        "classification": "config",
+        "size_bytes": 134025,
+        "last_modified": "2025-08-07T13:39:19.322664",
+        "complexity_score": 0.494
+      },
+      "artifacts/ach/vitality_diagram_20250806_200102.html": {
+        "classification": "frontend",
+        "size_bytes": 12159,
+        "last_modified": "2025-08-07T13:39:19.322664",
+        "complexity_score": 0.157
+      },
+      "artifacts/ach/vitality_diagram_20250806_205653.html": {
+        "classification": "frontend",
+        "size_bytes": 12317,
+        "last_modified": "2025-08-07T13:39:19.322664",
+        "complexity_score": 0.157
+      },
+      "web/checklist-dashboard.html": {
+        "classification": "frontend",
+        "size_bytes": 12759,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.133
+      },
+      "web/index.html": {
+        "classification": "frontend",
+        "size_bytes": 825,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.0
+      },
+      "config/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 128,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.0
+      },
+      "config/config_common.yaml": {
+        "classification": "config",
+        "size_bytes": 248,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.091
+      },
+      "config/encrypt_configs.py": {
+        "classification": "backend",
+        "size_bytes": 1923,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.169
+      },
+      "config/streamlit_config.toml": {
+        "classification": "config",
+        "size_bytes": 887,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.043
+      },
+      "config/config_docai.yaml": {
+        "classification": "config",
+        "size_bytes": 112,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.167
+      },
+      "config/logging_config.json": {
+        "classification": "config",
+        "size_bytes": 512,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.321
+      },
+      "config/settings.py": {
+        "classification": "backend",
+        "size_bytes": 2732,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.095
+      },
+      "config/decrypt_configs.py": {
+        "classification": "backend",
+        "size_bytes": 1105,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.111
+      },
+      "config/auditoria_gcp.py": {
+        "classification": "backend",
+        "size_bytes": 1172,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.2
+      },
+      "config/config_ml.yaml": {
+        "classification": "config",
+        "size_bytes": 200,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.0
+      },
+      "config/demo_config.py": {
+        "classification": "backend",
+        "size_bytes": 2388,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.156
+      },
+      "config/mcp/mcp_config.yaml": {
+        "classification": "config",
+        "size_bytes": 1464,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.046
+      },
+      "notebooks/exploracao_e_prototipagem.ipynb": {
+        "classification": "other",
+        "size_bytes": 26280,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.089
+      },
+      "notebooks/modulo_2_folha_inteligente.ipynb": {
+        "classification": "other",
+        "size_bytes": 21603,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.085
+      },
+      "cloudflare/wrangler.toml": {
+        "classification": "config",
+        "size_bytes": 1155,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.178
+      },
+      "cloudflare/backup-worker.js": {
+        "classification": "frontend",
+        "size_bytes": 5309,
+        "last_modified": "2025-08-07T13:39:19.324664",
+        "complexity_score": 0.219
+      },
+      "tests/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 41,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.0
+      },
+      "tests/README.md": {
+        "classification": "docs",
+        "size_bytes": 1231,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.095
+      },
+      "tests/test_quantum_validation.py": {
+        "classification": "backend",
+        "size_bytes": 18726,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.235
+      },
+      "tests/test_predictive_immunity.py": {
+        "classification": "backend",
+        "size_bytes": 13311,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.239
+      },
+      "tests/test_neuro_symbolic_interface.py": {
+        "classification": "backend",
+        "size_bytes": 20968,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.168
+      },
+      "tests/oracle_singularity_validation.py": {
+        "classification": "backend",
+        "size_bytes": 21686,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.124
+      },
+      "tests/test_neuro_symbolic.py": {
+        "classification": "backend",
+        "size_bytes": 13674,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.132
+      },
+      "tests/test_refactoring_validation.py": {
+        "classification": "backend",
+        "size_bytes": 14490,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.36
+      },
+      "tests/test_api_server.py": {
+        "classification": "backend",
+        "size_bytes": 8389,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.226
+      },
+      "tests/test_semantic_intention.py": {
+        "classification": "backend",
+        "size_bytes": 7757,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.289
+      },
+      "tests/pytest.ini": {
+        "classification": "config",
+        "size_bytes": 740,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.158
+      },
+      "tests/test_enhanced_auth.py": {
+        "classification": "backend",
+        "size_bytes": 14438,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.126
+      },
+      "tests/test_monitoring_phase4.py": {
+        "classification": "backend",
+        "size_bytes": 8252,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.137
+      },
+      "tests/conftest.py": {
+        "classification": "backend",
+        "size_bytes": 15631,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.135
+      },
+      "tests/test_api_features.py": {
+        "classification": "backend",
+        "size_bytes": 4137,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.268
+      },
+      "tests/test_collective_mind_ethics.py": {
+        "classification": "backend",
+        "size_bytes": 17332,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.197
+      },
+      "tests/performance/test_performance.py": {
+        "classification": "backend",
+        "size_bytes": 8733,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.225
+      },
+      "tests/performance/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 28,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.5
+      },
+      "tests/performance/test_optimization.py": {
+        "classification": "backend",
+        "size_bytes": 14103,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.264
+      },
+      "tests/performance/benchmark_suite.py": {
+        "classification": "backend",
+        "size_bytes": 12201,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.28
+      },
+      "tests/auth/login.yaml": {
+        "classification": "config",
+        "size_bytes": 1026,
+        "last_modified": "2025-08-07T13:39:19.353664",
+        "complexity_score": 0.036
+      },
+      "tests/unit/test_bq_loader.py": {
+        "classification": "backend",
+        "size_bytes": 7455,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.165
+      },
+      "tests/unit/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 21,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.0
+      },
+      "tests/unit/test_ml_components_isolation_forest.py": {
+        "classification": "backend",
+        "size_bytes": 7518,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.415
+      },
+      "tests/unit/test_communication_gateway.py": {
+        "classification": "backend",
+        "size_bytes": 14217,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.146
+      },
+      "tests/unit/test_main_functions.py": {
+        "classification": "backend",
+        "size_bytes": 4035,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.175
+      },
+      "tests/unit/test_gemini_utils.py": {
+        "classification": "backend",
+        "size_bytes": 9911,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.429
+      },
+      "tests/unit/test_log_utils.py": {
+        "classification": "backend",
+        "size_bytes": 4872,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.066
+      },
+      "tests/unit/test_automation_serverless.py": {
+        "classification": "backend",
+        "size_bytes": 5488,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.238
+      },
+      "tests/unit/test_cct_processing_worker.py": {
+        "classification": "backend",
+        "size_bytes": 838,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.04
+      },
+      "tests/unit/test_checklist_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 736,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.107
+      },
+      "tests/unit/test_ml_components_autoencoder.py": {
+        "classification": "backend",
+        "size_bytes": 5161,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.121
+      },
+      "tests/unit/test_ml_components_train_model.py": {
+        "classification": "backend",
+        "size_bytes": 9835,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.265
+      },
+      "tests/unit/test_unified_auth.py": {
+        "classification": "backend",
+        "size_bytes": 5945,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.266
+      },
+      "tests/unit/test_monitoring_refactored.py": {
+        "classification": "backend",
+        "size_bytes": 12579,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.109
+      },
+      "tests/unit/test_bigquery_refactored.py": {
+        "classification": "backend",
+        "size_bytes": 11462,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.178
+      },
+      "tests/unit/test_models_database.py": {
+        "classification": "backend",
+        "size_bytes": 7729,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.24
+      },
+      "tests/unit/test_ocr_integration_comprehensive.py": {
+        "classification": "backend",
+        "size_bytes": 19399,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.219
+      },
+      "tests/unit/test_tenant_isolation.py": {
+        "classification": "backend",
+        "size_bytes": 10486,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.168
+      },
+      "tests/unit/test_utils.py": {
+        "classification": "backend",
+        "size_bytes": 7038,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.149
+      },
+      "tests/unit/test_core_config.py": {
+        "classification": "backend",
+        "size_bytes": 4753,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.216
+      },
+      "tests/unit/test_predicao_risco.py": {
+        "classification": "backend",
+        "size_bytes": 2006,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.077
+      },
+      "tests/unit/test_compliance_router_functions.py": {
+        "classification": "backend",
+        "size_bytes": 17702,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.135
+      },
+      "tests/unit/test_ml_components_models.py": {
+        "classification": "backend",
+        "size_bytes": 6879,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.314
+      },
+      "tests/unit/test_predicao_risco_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 1283,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.111
+      },
+      "tests/unit/test_import.py": {
+        "classification": "backend",
+        "size_bytes": 473,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.077
+      },
+      "tests/unit/test_ml_components_ks_test.py": {
+        "classification": "backend",
+        "size_bytes": 8535,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.249
+      },
+      "tests/unit/test_ml_components_shap_explainer.py": {
+        "classification": "backend",
+        "size_bytes": 10815,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.261
+      },
+      "tests/unit/test_cct_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 1295,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.191
+      },
+      "tests/unit/test_core_validators.py": {
+        "classification": "backend",
+        "size_bytes": 7946,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.243
+      },
+      "tests/unit/test_bq_loader_isolamento.py": {
+        "classification": "backend",
+        "size_bytes": 3498,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.139
+      },
+      "tests/unit/test_auth_flow.py": {
+        "classification": "backend",
+        "size_bytes": 8072,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.155
+      },
+      "tests/unit/test_folha_processada_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 402,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.077
+      },
+      "tests/unit/test_auth_service.py": {
+        "classification": "backend",
+        "size_bytes": 3143,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.224
+      },
+      "tests/unit/test_parametros_legais_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 909,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.128
+      },
+      "tests/unit/test_models.py": {
+        "classification": "backend",
+        "size_bytes": 5897,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.208
+      },
+      "tests/unit/test_vertex_utils.py": {
+        "classification": "backend",
+        "size_bytes": 7460,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.287
+      },
+      "tests/unit/test_docai_utils.py": {
+        "classification": "backend",
+        "size_bytes": 7197,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.112
+      },
+      "tests/unit/test_compliance_router_comprehensive.py": {
+        "classification": "backend",
+        "size_bytes": 22451,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.135
+      },
+      "tests/unit/test_ml_components_vertex_utils.py": {
+        "classification": "backend",
+        "size_bytes": 12726,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.325
+      },
+      "tests/unit/test_modular_backend.py": {
+        "classification": "backend",
+        "size_bytes": 5545,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.238
+      },
+      "tests/unit/test_ml_components_explainers.py": {
+        "classification": "backend",
+        "size_bytes": 8571,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.241
+      },
+      "tests/unit/test_enhanced_features.py": {
+        "classification": "backend",
+        "size_bytes": 7611,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.184
+      },
+      "tests/unit/test_core_security.py": {
+        "classification": "backend",
+        "size_bytes": 6052,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.305
+      },
+      "tests/unit/test_routers.py": {
+        "classification": "backend",
+        "size_bytes": 6042,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.174
+      },
+      "tests/unit/test_ml_components_bias_detection.py": {
+        "classification": "backend",
+        "size_bytes": 7206,
+        "last_modified": "2025-08-07T13:39:19.359664",
+        "complexity_score": 0.176
+      },
+      "tests/unit/test_rbac_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 1176,
+        "last_modified": "2025-08-07T13:39:19.360664",
+        "complexity_score": 0.127
+      },
+      "tests/unit/ingestion/test_bq_loader.py": {
+        "classification": "backend",
+        "size_bytes": 435,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.154
+      },
+      "tests/unit/ingestion/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 23,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.0
+      },
+      "tests/unit/ingestion/test_entity_schema.py": {
+        "classification": "backend",
+        "size_bytes": 653,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.167
+      },
+      "tests/unit/ingestion/test_mocks_gcp.py": {
+        "classification": "backend",
+        "size_bytes": 866,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.077
+      },
+      "tests/unit/ingestion/test_docai_utils.py": {
+        "classification": "backend",
+        "size_bytes": 486,
+        "last_modified": "2025-08-07T13:39:19.357664",
+        "complexity_score": 0.154
+      },
+      "tests/unit/ml/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 16,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.0
+      },
+      "tests/unit/ml/test_pipeline_definition.py": {
+        "classification": "backend",
+        "size_bytes": 267,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.545
+      },
+      "tests/unit/ml/test_isolation_forest.py": {
+        "classification": "backend",
+        "size_bytes": 336,
+        "last_modified": "2025-08-07T13:39:19.358664",
+        "complexity_score": 0.357
+      },
+      "tests/integration/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 28,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.0
+      },
+      "tests/integration/test_app_api_vertex.py": {
+        "classification": "backend",
+        "size_bytes": 3792,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.156
+      },
+      "tests/integration/test_api_folhas.py": {
+        "classification": "backend",
+        "size_bytes": 3985,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.133
+      },
+      "tests/integration/test_folha_rbac.py": {
+        "classification": "backend",
+        "size_bytes": 3511,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.172
+      },
+      "tests/integration/test_cct_extracao_texto.py": {
+        "classification": "backend",
+        "size_bytes": 1459,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.2
+      },
+      "tests/integration/test_param_legais_inss.py": {
+        "classification": "backend",
+        "size_bytes": 9222,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.1
+      },
+      "tests/integration/test_serverless_automation.py": {
+        "classification": "backend",
+        "size_bytes": 12412,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.13
+      },
+      "tests/integration/test_api_empresas.py": {
+        "classification": "backend",
+        "size_bytes": 4956,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.128
+      },
+      "tests/integration/test_param_legais.py": {
+        "classification": "backend",
+        "size_bytes": 3234,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.08
+      },
+      "tests/integration/test_param_legais_fgts.py": {
+        "classification": "backend",
+        "size_bytes": 10187,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.082
+      },
+      "tests/integration/test_api_auditorias.py": {
+        "classification": "backend",
+        "size_bytes": 3021,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.157
+      },
+      "tests/integration/test_main.py": {
+        "classification": "backend",
+        "size_bytes": 6849,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.122
+      },
+      "tests/integration/test_etl_script.py": {
+        "classification": "backend",
+        "size_bytes": 11791,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.218
+      },
+      "tests/integration/test_openai_integration.py": {
+        "classification": "backend",
+        "size_bytes": 8840,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.146
+      },
+      "tests/integration/test_auxiliary_scripts.py": {
+        "classification": "backend",
+        "size_bytes": 11633,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.336
+      },
+      "tests/integration/test_ml_training.py": {
+        "classification": "backend",
+        "size_bytes": 1634,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.148
+      },
+      "tests/integration/test_mcp_integration.py": {
+        "classification": "backend",
+        "size_bytes": 8513,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.11
+      },
+      "tests/integration/test_api_auth.py": {
+        "classification": "backend",
+        "size_bytes": 3041,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.29
+      },
+      "tests/integration/test_controle_folha_integration.py": {
+        "classification": "backend",
+        "size_bytes": 1775,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.067
+      },
+      "tests/integration/test_etl.py": {
+        "classification": "backend",
+        "size_bytes": 1458,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.227
+      },
+      "tests/integration/test_health_check_script.py": {
+        "classification": "backend",
+        "size_bytes": 7117,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.233
+      },
+      "tests/integration/test_robot_esocial.py": {
+        "classification": "backend",
+        "size_bytes": 622,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.083
+      },
+      "tests/integration/test_cct_list.py": {
+        "classification": "backend",
+        "size_bytes": 4147,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.078
+      },
+      "tests/integration/test_automation_complete.py": {
+        "classification": "backend",
+        "size_bytes": 10649,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.163
+      },
+      "tests/integration/test_cron_legislacao.py": {
+        "classification": "backend",
+        "size_bytes": 541,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.176
+      },
+      "tests/integration/test_param_legais_irrf.py": {
+        "classification": "backend",
+        "size_bytes": 7178,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.117
+      },
+      "tests/integration/test_param_legais_salario_familia.py": {
+        "classification": "backend",
+        "size_bytes": 5985,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.09
+      },
+      "tests/integration/test_monitoring_script.py": {
+        "classification": "backend",
+        "size_bytes": 13513,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.236
+      },
+      "tests/integration/test_cct_alerts.py": {
+        "classification": "backend",
+        "size_bytes": 3576,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.104
+      },
+      "tests/integration/test_core_system_activation.py": {
+        "classification": "backend",
+        "size_bytes": 8019,
+        "last_modified": "2025-08-07T13:39:19.355664",
+        "complexity_score": 0.121
+      },
+      "tests/integration/test_api_dashboard.py": {
+        "classification": "backend",
+        "size_bytes": 2023,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.148
+      },
+      "tests/integration/test_param_legais_salario_minimo.py": {
+        "classification": "backend",
+        "size_bytes": 12984,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.092
+      },
+      "tests/integration/test_api_multi_cliente.py": {
+        "classification": "backend",
+        "size_bytes": 3827,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.056
+      },
+      "tests/integration/test_api_health.py": {
+        "classification": "backend",
+        "size_bytes": 2454,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.155
+      },
+      "tests/integration/test_refactored_endpoints.py": {
+        "classification": "backend",
+        "size_bytes": 8809,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.171
+      },
+      "tests/integration/mcp/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 29,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.0
+      },
+      "tests/integration/mcp/test_mcp_integration_simple.py": {
+        "classification": "backend",
+        "size_bytes": 5910,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.089
+      },
+      "tests/integration/portal_demandas/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 41,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.0
+      },
+      "tests/integration/portal_demandas/test_api_integration.py": {
+        "classification": "backend",
+        "size_bytes": 323,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.071
+      },
+      "tests/integration/portal_demandas/test_api.py": {
+        "classification": "backend",
+        "size_bytes": 1175,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.077
+      },
+      "tests/security/test_security_compliance.py": {
+        "classification": "backend",
+        "size_bytes": 9859,
+        "last_modified": "2025-08-07T13:39:19.356664",
+        "complexity_score": 0.296
+      },
+      "tests/frontend/test_html_templates.py": {
+        "classification": "frontend",
+        "size_bytes": 6697,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.335
+      },
+      "tests/e2e/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 20,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.0
+      },
+      "tests/e2e/e2e_config.py": {
+        "classification": "backend",
+        "size_bytes": 142,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.125
+      },
+      "tests/e2e/test_main_user_flow_simple.py": {
+        "classification": "backend",
+        "size_bytes": 6131,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.147
+      },
+      "tests/e2e/test_e2e_playwright.py": {
+        "classification": "backend",
+        "size_bytes": 5433,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 0.157
+      },
+      "tests/e2e/playwright-page-cliente2.html": {
+        "classification": "frontend",
+        "size_bytes": 24395,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 1.0
+      },
+      "tests/e2e/playwright-page-cliente1.html": {
+        "classification": "frontend",
+        "size_bytes": 25133,
+        "last_modified": "2025-08-07T13:39:19.354664",
+        "complexity_score": 1.0
+      },
+      "data_base/migrations/merge_folhas.sql": {
+        "classification": "database",
+        "size_bytes": 2232,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.098
+      },
+      "data_base/schemas/predicoes_risco_folha.sql": {
+        "classification": "database",
+        "size_bytes": 681,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.19
+      },
+      "data_base/schemas/features_engineering.sql": {
+        "classification": "database",
+        "size_bytes": 1615,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.154
+      },
+      "data_base/schemas/dataset_treinamento_riscos_folha.sql": {
+        "classification": "database",
+        "size_bytes": 1398,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.143
+      },
+      "scripts/production_validation_report.json": {
+        "classification": "config",
+        "size_bytes": 1151,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.03
+      },
+      "scripts/final_summary.py": {
+        "classification": "backend",
+        "size_bytes": 4508,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.155
+      },
+      "scripts/security_validation.py": {
+        "classification": "backend",
+        "size_bytes": 4802,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.225
+      },
+      "scripts/validate_openai_integration.py": {
+        "classification": "backend",
+        "size_bytes": 9189,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.202
+      },
+      "scripts/clean_test_runner.py": {
+        "classification": "backend",
+        "size_bytes": 2107,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.155
+      },
+      "scripts/seed_blueprint_data.py": {
+        "classification": "backend",
+        "size_bytes": 18447,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.163
+      },
+      "scripts/README.md": {
+        "classification": "docs",
+        "size_bytes": 2101,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.011
+      },
+      "scripts/deploy-autoscaling.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 10284,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.189
+      },
+      "scripts/validate_swarm_intelligence.py": {
+        "classification": "backend",
+        "size_bytes": 4977,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.164
+      },
+      "scripts/build_docs.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 4968,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.127
+      },
+      "scripts/implementation_summary.py": {
+        "classification": "backend",
+        "size_bytes": 6558,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.221
+      },
+      "scripts/genesis_docs_generator.py": {
+        "classification": "backend",
+        "size_bytes": 35109,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.128
+      },
+      "scripts/repository_analysis.py": {
+        "classification": "backend",
+        "size_bytes": 11643,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.278
+      },
+      "scripts/quick_checklist.py": {
+        "classification": "backend",
+        "size_bytes": 5860,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.229
+      },
+      "scripts/final_metamorphosis_validation.py": {
+        "classification": "backend",
+        "size_bytes": 11935,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.14
+      },
+      "scripts/demo_openai_integration.py": {
+        "classification": "backend",
+        "size_bytes": 8734,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.155
+      },
+      "scripts/validate_production_deploy.py": {
+        "classification": "backend",
+        "size_bytes": 17499,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.217
+      },
+      "scripts/master_execution_checklist.py": {
+        "classification": "backend",
+        "size_bytes": 43370,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.13
+      },
+      "scripts/main.py": {
+        "classification": "backend",
+        "size_bytes": 456,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.095
+      },
+      "scripts/validate_ci.py": {
+        "classification": "backend",
+        "size_bytes": 4373,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.188
+      },
+      "scripts/reorganizar_estrutura.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 3197,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.269
+      },
+      "scripts/__main__.py": {
+        "classification": "backend",
+        "size_bytes": 207,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.167
+      },
+      "scripts/oracle_runner.py": {
+        "classification": "backend",
+        "size_bytes": 19541,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.211
+      },
+      "scripts/python/setup_monitoring.py": {
+        "classification": "backend",
+        "size_bytes": 5396,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.195
+      },
+      "scripts/python/monitoramento.py": {
+        "classification": "backend",
+        "size_bytes": 7011,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.24
+      },
+      "scripts/python/generate_data_hash.py": {
+        "classification": "backend",
+        "size_bytes": 379,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.067
+      },
+      "scripts/python/test_iai_c_system.py": {
+        "classification": "backend",
+        "size_bytes": 7973,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.192
+      },
+      "scripts/python/run_kinetic_trace.py": {
+        "classification": "backend",
+        "size_bytes": 28719,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.128
+      },
+      "scripts/python/demo_mcp_integration.py": {
+        "classification": "backend",
+        "size_bytes": 17492,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.178
+      },
+      "scripts/python/semantic_intent_validator.py": {
+        "classification": "backend",
+        "size_bytes": 11836,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.455
+      },
+      "scripts/python/run_holistic_consciousness_agent.py": {
+        "classification": "backend",
+        "size_bytes": 38001,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.322
+      },
+      "scripts/python/README.md": {
+        "classification": "docs",
+        "size_bytes": 1877,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.085
+      },
+      "scripts/python/onboarding_cliente.py": {
+        "classification": "backend",
+        "size_bytes": 2103,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.065
+      },
+      "scripts/python/deploy_vercel.py": {
+        "classification": "backend",
+        "size_bytes": 12220,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.217
+      },
+      "scripts/python/business_logic_validator.py": {
+        "classification": "backend",
+        "size_bytes": 13703,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.507
+      },
+      "scripts/python/exportar_auditorias_csv.py": {
+        "classification": "backend",
+        "size_bytes": 641,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.08
+      },
+      "scripts/python/generate_hash.py": {
+        "classification": "backend",
+        "size_bytes": 484,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.118
+      },
+      "scripts/python/test_mcp_simple.py": {
+        "classification": "backend",
+        "size_bytes": 1114,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.091
+      },
+      "scripts/python/deploy_production.py": {
+        "classification": "backend",
+        "size_bytes": 12728,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.216
+      },
+      "scripts/python/dependency_entropy_scanner.py": {
+        "classification": "backend",
+        "size_bytes": 16349,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.216
+      },
+      "scripts/python/validate_config.py": {
+        "classification": "backend",
+        "size_bytes": 7285,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.197
+      },
+      "scripts/python/ci_notify_teams.py": {
+        "classification": "backend",
+        "size_bytes": 591,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.375
+      },
+      "scripts/python/api_healthcheck.py": {
+        "classification": "backend",
+        "size_bytes": 290,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.083
+      },
+      "scripts/python/health_check.py": {
+        "classification": "backend",
+        "size_bytes": 2592,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.188
+      },
+      "scripts/python/setup_advanced_monitoring.py": {
+        "classification": "backend",
+        "size_bytes": 23280,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.121
+      },
+      "scripts/python/run_final_tests.py": {
+        "classification": "backend",
+        "size_bytes": 8793,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.239
+      },
+      "scripts/python/verificar_progresso.py": {
+        "classification": "backend",
+        "size_bytes": 5239,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.244
+      },
+      "scripts/python/etl_elt.py": {
+        "classification": "backend",
+        "size_bytes": 3192,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.186
+      },
+      "scripts/python/restore_neon_r2.py": {
+        "classification": "backend",
+        "size_bytes": 1208,
+        "last_modified": "2025-08-07T13:39:19.334664",
+        "complexity_score": 0.136
+      },
+      "scripts/powershell/cloudrun_deploy_backend.ps1": {
+        "classification": "infrastructure",
+        "size_bytes": 9767,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.178
+      },
+      "scripts/powershell/README.md": {
+        "classification": "docs",
+        "size_bytes": 984,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.029
+      },
+      "scripts/powershell/cloudrun_deploy_streamlit.ps1": {
+        "classification": "infrastructure",
+        "size_bytes": 11173,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.189
+      },
+      "scripts/powershell/setup_dev_env.ps1": {
+        "classification": "infrastructure",
+        "size_bytes": 9295,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.172
+      },
+      "scripts/ml_training/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 41,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.0
+      },
+      "scripts/ml_training/evaluate_model.py": {
+        "classification": "backend",
+        "size_bytes": 331,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.7
+      },
+      "scripts/ml_training/agent_specialization.py": {
+        "classification": "backend",
+        "size_bytes": 15975,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.308
+      },
+      "scripts/ml_training/utils.py": {
+        "classification": "backend",
+        "size_bytes": 3772,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.263
+      },
+      "scripts/ml_training/train_risk_model.py": {
+        "classification": "backend",
+        "size_bytes": 10910,
+        "last_modified": "2025-08-07T13:39:19.333664",
+        "complexity_score": 0.249
+      },
+      "scripts/shell/deploy_vercel.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 8176,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.141
+      },
+      "scripts/shell/git_update_all.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 6568,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.17
+      },
+      "scripts/shell/README.md": {
+        "classification": "docs",
+        "size_bytes": 1200,
+        "last_modified": "2025-08-07T13:39:19.335664",
+        "complexity_score": 0.021
+      },
+      "scripts/shell/setup_mcp_dev.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 14393,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.079
+      },
+      "scripts/shell/restore_db.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 12006,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.189
+      },
+      "scripts/shell/iai_c_health_monitor.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 9481,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.139
+      },
+      "scripts/shell/deploy_streamlit.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 9329,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.095
+      },
+      "scripts/shell/setup_dev_env.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 8262,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.107
+      },
+      "scripts/shell/cloudrun_deploy.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 11080,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.175
+      },
+      "scripts/shell/auditoria_gcp.sh": {
+        "classification": "infrastructure",
+        "size_bytes": 11039,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.203
+      },
+      "scripts/batch/agendar_auditoria_mensal.bat": {
+        "classification": "infrastructure",
+        "size_bytes": 553,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.0
+      },
+      "scripts/batch/README.md": {
+        "classification": "docs",
+        "size_bytes": 718,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.029
+      },
+      "scripts/batch/compilar_instalador_windows.bat": {
+        "classification": "infrastructure",
+        "size_bytes": 22,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.0
+      },
+      "monitoring/prometheus.yml": {
+        "classification": "config",
+        "size_bytes": 604,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.037
+      },
+      "monitoring/basic_dashboard.html": {
+        "classification": "frontend",
+        "size_bytes": 2043,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.185
+      },
+      "monitoring/basic_alerts.json": {
+        "classification": "config",
+        "size_bytes": 403,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.105
+      },
+      "monitoring/dashboard.html": {
+        "classification": "frontend",
+        "size_bytes": 3612,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.347
+      },
+      "monitoring/metrics/metrics_config.json": {
+        "classification": "config",
+        "size_bytes": 2044,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.0
+      },
+      "monitoring/dashboards/business_overview.json": {
+        "classification": "config",
+        "size_bytes": 4241,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.071
+      },
+      "monitoring/dashboards/security_&_compliance.json": {
+        "classification": "config",
+        "size_bytes": 686,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.0
+      },
+      "monitoring/dashboards/technical_performance.json": {
+        "classification": "config",
+        "size_bytes": 4592,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.092
+      },
+      "monitoring/grafana/dashboards/dashboards.yml": {
+        "classification": "config",
+        "size_bytes": 260,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.0
+      },
+      "monitoring/grafana/datasources/datasources.yml": {
+        "classification": "config",
+        "size_bytes": 273,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.125
+      },
+      "monitoring/alerts/alerts_config.json": {
+        "classification": "config",
+        "size_bytes": 2340,
+        "last_modified": "2025-08-07T13:39:19.331664",
+        "complexity_score": 0.009
+      },
+      "portal_demandas/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 41,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.0
+      },
+      "portal_demandas/db.py": {
+        "classification": "backend",
+        "size_bytes": 5235,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.229
+      },
+      "portal_demandas/README.md": {
+        "classification": "docs",
+        "size_bytes": 8845,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.012
+      },
+      "portal_demandas/api.py": {
+        "classification": "backend",
+        "size_bytes": 16874,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.124
+      },
+      "portal_demandas/models.py": {
+        "classification": "backend",
+        "size_bytes": 6613,
+        "last_modified": "2025-08-07T13:39:19.332664",
+        "complexity_score": 0.249
+      },
+      "services/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 43,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 1.0
+      },
+      "services/ocr_utils.py": {
+        "classification": "backend",
+        "size_bytes": 352,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.231
+      },
+      "services/storage_utils.py": {
+        "classification": "backend",
+        "size_bytes": 1196,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.103
+      },
+      "services/README.md": {
+        "classification": "docs",
+        "size_bytes": 183,
+        "last_modified": "2025-08-07T13:39:19.336664",
+        "complexity_score": 0.0
+      },
+      "services/orchestrator.py": {
+        "classification": "backend",
+        "size_bytes": 523,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.059
+      },
+      "services/core/log_utils.py": {
+        "classification": "backend",
+        "size_bytes": 1314,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.149
+      },
+      "services/core/parametros_legais_schemas.py": {
+        "classification": "backend",
+        "size_bytes": 497,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.184
+      },
+      "services/core/validators.py": {
+        "classification": "backend",
+        "size_bytes": 560,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.304
+      },
+      "services/core/config.json": {
+        "classification": "config",
+        "size_bytes": 118,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.286
+      },
+      "services/core/config_manager.py": {
+        "classification": "backend",
+        "size_bytes": 1923,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.218
+      },
+      "services/ingestion/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 25,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.0
+      },
+      "services/ingestion/validate_entities.py": {
+        "classification": "backend",
+        "size_bytes": 425,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.176
+      },
+      "services/ingestion/docai_utils.py": {
+        "classification": "backend",
+        "size_bytes": 761,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.333
+      },
+      "services/ingestion/generate_data_hash.py": {
+        "classification": "backend",
+        "size_bytes": 381,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.059
+      },
+      "services/ingestion/README.md": {
+        "classification": "docs",
+        "size_bytes": 295,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.2
+      },
+      "services/ingestion/config_loader.py": {
+        "classification": "backend",
+        "size_bytes": 760,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.077
+      },
+      "services/ingestion/entity_schema.py": {
+        "classification": "backend",
+        "size_bytes": 886,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.278
+      },
+      "services/ingestion/bq_loader.py": {
+        "classification": "backend",
+        "size_bytes": 2359,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.388
+      },
+      "services/ingestion/main.py": {
+        "classification": "backend",
+        "size_bytes": 907,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.133
+      },
+      "services/ingestion/__main__.py": {
+        "classification": "backend",
+        "size_bytes": 189,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.143
+      },
+      "services/reporting/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 1014,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.452
+      },
+      "services/reporting/unified_reports.py": {
+        "classification": "backend",
+        "size_bytes": 15430,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.242
+      },
+      "services/api/explainability_routes.py": {
+        "classification": "backend",
+        "size_bytes": 378,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.062
+      },
+      "services/api/main.py": {
+        "classification": "backend",
+        "size_bytes": 11246,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.099
+      },
+      "services/ml/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 18,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.0
+      },
+      "services/ml/pipeline_runner.py": {
+        "classification": "backend",
+        "size_bytes": 654,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.172
+      },
+      "services/ml/README.md": {
+        "classification": "docs",
+        "size_bytes": 278,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.222
+      },
+      "services/ml/pipeline_definition.py": {
+        "classification": "backend",
+        "size_bytes": 1054,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.114
+      },
+      "services/ml/components/autoencoder.py": {
+        "classification": "backend",
+        "size_bytes": 708,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.136
+      },
+      "services/ml/components/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 26,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.0
+      },
+      "services/ml/components/vertex_utils.py": {
+        "classification": "backend",
+        "size_bytes": 32,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.0
+      },
+      "services/ml/components/README.md": {
+        "classification": "docs",
+        "size_bytes": 186,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.0
+      },
+      "services/ml/components/isolation_forest.py": {
+        "classification": "backend",
+        "size_bytes": 371,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.333
+      },
+      "services/ml/components/shap_explainer.py": {
+        "classification": "backend",
+        "size_bytes": 198,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.111
+      },
+      "services/ml/components/bias_detection.py": {
+        "classification": "backend",
+        "size_bytes": 784,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.231
+      },
+      "services/ml/components/models.py": {
+        "classification": "backend",
+        "size_bytes": 65,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.5
+      },
+      "services/ml/components/explainers.py": {
+        "classification": "backend",
+        "size_bytes": 426,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.062
+      },
+      "services/ml/components/train_model.py": {
+        "classification": "backend",
+        "size_bytes": 501,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.444
+      },
+      "services/ml/components/ks_test.py": {
+        "classification": "backend",
+        "size_bytes": 446,
+        "last_modified": "2025-08-07T13:39:19.337664",
+        "complexity_score": 0.231
+      },
+      "services/ml/llmops/__init__.py": {
+        "classification": "backend",
+        "size_bytes": 22,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.0
+      },
+      "services/ml/llmops/README.md": {
+        "classification": "docs",
+        "size_bytes": 154,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.0
+      },
+      "services/ml/llmops/report_generator.py": {
+        "classification": "backend",
+        "size_bytes": 145,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.167
+      },
+      "services/ml/llmops/prompt_manager.py": {
+        "classification": "backend",
+        "size_bytes": 131,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.25
+      },
+      "services/ml/llmops/prompt_templates.py": {
+        "classification": "backend",
+        "size_bytes": 377,
+        "last_modified": "2025-08-07T13:39:19.338664",
+        "complexity_score": 0.059
+      },
+      "api/deprecation_middleware.py": {
+        "classification": "backend",
+        "size_bytes": 22515,
+        "last_modified": "2025-08-07T13:39:19.321664",
+        "complexity_score": 0.217
+      },
+      "api/DEPRECATED.md": {
+        "classification": "backend",
+        "size_bytes": 1253,
+        "last_modified": "2025-08-07T13:39:19.321664",
+        "complexity_score": 0.024
+      },
+      "api/index.py": {
+        "classification": "backend",
+        "size_bytes": 33563,
+        "last_modified": "2025-08-07T13:39:19.321664",
+        "complexity_score": 0.21
+      },
+      "api/deprecation/deprecated_endpoints.json": {
+        "classification": "backend",
+        "size_bytes": 758,
+        "last_modified": "2025-08-07T13:39:19.321664",
+        "complexity_score": 0.0
+      },
+      "api/deprecation/tickets/MIG-20250806-12345678.json": {
+        "classification": "backend",
+        "size_bytes": 496,
+        "last_modified": "2025-08-07T13:39:19.321664",
+        "complexity_score": 0.0
+      },
+      "frontend/src/utils/navigationLogger.js": {
+        "classification": "frontend",
+        "size_bytes": 9360,
+        "last_modified": "2025-08-07T13:39:19.330664",
+        "complexity_score": 0.187
+      },
+      "data/raw": {
+        "classification": "other",
+        "size_bytes": 40,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/processed": {
+        "classification": "other",
+        "size_bytes": 40,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/external": {
+        "classification": "other",
+        "size_bytes": 40,
+        "last_modified": "2025-08-07T13:39:19.325664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/quarantine_exfiltration_stage1_reconnaissance_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 401,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/evidence_exfiltration_stage2_extraction_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 203,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/quarantine_esocial_robot_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 753,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.222
+      },
+      "data/quarantine/evidence_esocial_robot_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 189,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/quarantine_exfiltration_stage2_extraction_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 409,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/evidence_exfiltration_stage3_exfiltration_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 205,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/quarantine_exfiltration_stage3_exfiltration_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 449,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/quarantine_esocial_robot_20250806_185010.json": {
+        "classification": "config",
+        "size_bytes": 444,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.105
+      },
+      "data/quarantine/quarantine_coordinated_attack_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 400,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.059
+      },
+      "data/quarantine/incident_INCIDENT-20250806-191435.json": {
+        "classification": "config",
+        "size_bytes": 387,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/evidence_exfiltration_stage1_reconnaissance_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 207,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/quarantine/quarantine_esocial_robot_20250806_190854.json": {
+        "classification": "config",
+        "size_bytes": 444,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.105
+      },
+      "data/quarantine/evidence_coordinated_attack_20250806_191435.json": {
+        "classification": "config",
+        "size_bytes": 192,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      },
+      "data/input/sample_extrato.pdf": {
+        "classification": "other",
+        "size_bytes": 290473,
+        "last_modified": "2025-08-07T13:39:19.326664",
+        "complexity_score": 0.0
+      }
+    },
+    "health_indicators": {}
+  },
+  "vital_pulse_results": {
+    "timestamp": "2025-08-07T13:53:54.251958",
+    "overall_health": "good",
+    "classification_health": {
+      "config": {
+        "score": 0.9,
+        "status": "healthy",
+        "issues": [
+          "Configurações ausentes: docker-compose.yml"
+        ],
+        "details": "Análise de arquivos de configuração"
+      },
+      "docs": {
+        "score": 1.0,
+        "status": "healthy",
+        "issues": [],
+        "details": "Análise da documentação"
+      },
+      "other": {
+        "score": 0.5,
+        "status": "unknown",
+        "issues": []
+      },
+      "database": {
+        "score": 0.7,
+        "status": "healthy",
+        "issues": [
+          "SQLAlchemy não instalado"
+        ],
+        "details": "Análise de saúde do banco de dados"
+      },
+      "backend": {
+        "score": 0.6,
+        "status": "warning",
+        "issues": [
+          "Dependências críticas ausentes: No module named 'fastapi'"
+        ],
+        "details": "Análise de saúde dos componentes backend"
+      },
+      "frontend": {
+        "score": 0.9,
+        "status": "healthy",
+        "issues": [
+          "Diretório public ausente"
+        ],
+        "details": "Análise de saúde dos componentes frontend"
+      },
+      "infrastructure": {
+        "score": 0.8,
+        "status": "healthy",
+        "issues": [
+          "docker-compose.yml não encontrado"
+        ],
+        "details": "Análise da infraestrutura"
+      }
+    },
+    "critical_issues": [],
+    "recommendations": [
+      "✨ Sistema em boa saúde - manter monitoramento regular"
+    ],
+    "overall_score": 0.764
+  },
+  "soul_simulation": {
+    "timestamp": "2025-08-07T13:54:06.973416",
+    "environment_health": "healthy",
+    "simulation_score": 0.85,
+    "soul_indicators": {
+      "creativity": 0.9,
+      "resilience": 0.8,
+      "adaptability": 0.7,
+      "empathy": 0.95
+    },
+    "notes": "Simulação com dados realistas executada com sucesso"
+  },
+  "vitality_diagram_path": "artifacts/ach/vitality_diagram_20250807_135406.html"
+}

@@ -1,5 +1,27 @@
 # Guia de Contribuição - AUDITORIA360
 
+## 🚀 Guia de Onboarding Rápido
+
+### Primeiro Passo: ACH - Diagrama de Vitalidade
+**Para novos membros da equipe, comece sempre pelo Diagrama de Vitalidade Sistémica:**
+
+```bash
+# Execute o ACH (Agente de Consciência Holística)
+python scripts/python/run_holistic_consciousness_agent.py
+```
+
+Este comando gera um relatório HTML interativo em `artifacts/ach/` que mostra:
+- 📊 **Saúde geral do sistema** (76.4% na última análise)
+- 🧬 **Censo Genômico**: Classificação de todos os arquivos (636 analisados)
+- 💓 **Pulso Vital**: Estado de cada componente (frontend, backend, database, etc.)
+- 🎨 **Mapa Visual**: Diagrama interativo clicável dos componentes
+
+**Por que começar pelo ACH?**
+- Visão holística instantânea de todo o sistema
+- Identifica componentes críticos que precisam de atenção
+- Fornece contexto arquitetural antes de mergulhar no código
+- Acelera significativamente a curva de aprendizado
+
 ## 🐍 Política de Automação: Python First
 
 ### Princípio Fundamental
