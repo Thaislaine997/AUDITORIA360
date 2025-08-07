@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-f35a68ab-3fdb-4f7e-b2b3-fb57f6569464
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-f35a68ab-3fdb-4f7e-b2b3-fb57f6569464
-./.git/objects/pack/pack-8327ee2c30a5623c120ca37ae4248758c51c670f.idx
-./.git/objects/pack/pack-8327ee2c30a5623c120ca37ae4248758c51c670f.pack
-./.git/objects/pack/pack-8327ee2c30a5623c120ca37ae4248758c51c670f.rev
+./.git/objects/pack/pack-f9be486be8bf0562666c5fd604a304d4e278d033.idx
+./.git/objects/pack/pack-f9be486be8bf0562666c5fd604a304d4e278d033.pack
+./.git/objects/pack/pack-f9be486be8bf0562666c5fd604a304d4e278d033.rev
 ./.git/refs/heads/copilot/fix-f35a68ab-3fdb-4f7e-b2b3-fb57f6569464
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-f35a68ab-3fdb-4f7e-b2b3-fb57f6569464
