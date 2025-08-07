@@ -7,7 +7,9 @@
     "format": "prettier --write \"**/*.{html,css,js,ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{html,css,js,ts,tsx,md}\"",
     "format:html-css": "prettier --write \"**/*.{html,css}\"",
-    "lint:html-css": "prettier --check \"**/*.{html,css}\""
+    "lint:html-css": "prettier --check \"**/*.{html,css}\"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "prettier": "^3.6.2"
