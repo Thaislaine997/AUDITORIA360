@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-580bfe45-cc65-4761-a7ae-8fb755883880
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-580bfe45-cc65-4761-a7ae-8fb755883880
-./.git/objects/pack/pack-46596d9d95824c8b81d9dfe3eb894620a5847a40.idx
-./.git/objects/pack/pack-46596d9d95824c8b81d9dfe3eb894620a5847a40.pack
-./.git/objects/pack/pack-46596d9d95824c8b81d9dfe3eb894620a5847a40.rev
+./.git/objects/pack/pack-48a2bbfc5d3413ca1b01b14516de9ce1db3c0b31.idx
+./.git/objects/pack/pack-48a2bbfc5d3413ca1b01b14516de9ce1db3c0b31.pack
+./.git/objects/pack/pack-48a2bbfc5d3413ca1b01b14516de9ce1db3c0b31.rev
 ./.git/refs/heads/copilot/fix-580bfe45-cc65-4761-a7ae-8fb755883880
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-580bfe45-cc65-4761-a7ae-8fb755883880
@@ -344,6 +344,7 @@
 ./src/api/routers/automation.py
 ./src/api/routers/cct.py
 ./src/api/routers/compliance.py
+./src/api/routers/controle_mensal_router.py
 ./src/api/routers/core_business.py
 ./src/api/routers/documents.py
 ./src/api/routers/gamification.py
@@ -509,6 +510,8 @@
 ./src/models/notification_models.py
 ./src/models/payroll_models.py
 ./src/models/report_models.py
+./src/models/schemas/__init__.py
+./src/models/schemas/controle_mensal.py
 ./src/monitoring/__init__.py
 ./src/monitoring/alerts.py
 ./src/monitoring/core.py
@@ -545,6 +548,7 @@
 ./src/services/communication_gateway/gateway.py
 ./src/services/communication_gateway/github_integration.py
 ./src/services/communication_gateway/providers.py
+./src/services/controle_mensal_service.py
 ./src/services/duckdb_optimizer.py
 ./src/services/enhanced_notification_service.py
 ./src/services/ocr/__init__.py
