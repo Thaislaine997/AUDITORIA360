@@ -27,6 +27,10 @@
 ./.git/logs/refs/heads/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
+./.git/objects/pack/pack-2f7833e5ed1009f12e310a81e7f807f1428e7311.idx
+./.git/objects/pack/pack-2f7833e5ed1009f12e310a81e7f807f1428e7311.pack
+./.git/objects/pack/pack-2f7833e5ed1009f12e310a81e7f807f1428e7311.rev
+./.git/refs/heads/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
 ./.github/dependabot.yml
