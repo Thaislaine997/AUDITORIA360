@@ -4,21 +4,22 @@
       "src": "src/frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "dist",
+        "buildCommand": "npm run build"
       }
     },
     {
-      "src": "api/**/*.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/"
+      "destination": "/api/index.py"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api).*)",
       "destination": "/index.html"
     }
   ],
@@ -36,6 +37,8 @@
   "regions": ["iad1", "sfo1", "lhr1"],
   "framework": null,
   "outputDirectory": "src/frontend/dist",
+  "installCommand": "cd src/frontend && npm install",
+  "buildCommand": "cd src/frontend && npm run build",
   "crons": [
     {
       "path": "/api/v1/automation/reports/daily",
