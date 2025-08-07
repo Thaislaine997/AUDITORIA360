@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
-./.git/objects/pack/pack-abee7ccc25f77703b4d7d0e9f02007b51c2734fd.idx
-./.git/objects/pack/pack-abee7ccc25f77703b4d7d0e9f02007b51c2734fd.pack
-./.git/objects/pack/pack-abee7ccc25f77703b4d7d0e9f02007b51c2734fd.rev
+./.git/objects/pack/pack-1e31fbdbb7bd460daf52d45cb13c74b1b1cad02d.idx
+./.git/objects/pack/pack-1e31fbdbb7bd460daf52d45cb13c74b1b1cad02d.pack
+./.git/objects/pack/pack-1e31fbdbb7bd460daf52d45cb13c74b1b1cad02d.rev
 ./.git/refs/heads/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-35bc5133-1d08-4c8c-8dcf-83850b8aeeca
@@ -56,7 +56,9 @@
 ./api/deprecation_middleware.py
 ./api/index.py
 ./artifacts/ach/ach_complete_analysis_20250806_200102.json
+./artifacts/ach/ach_complete_analysis_20250806_205653.json
 ./artifacts/ach/vitality_diagram_20250806_200102.html
+./artifacts/ach/vitality_diagram_20250806_205653.html
 ./assets/bootstrap-grid.css
 ./assets/bootstrap.bundle.min.js
 ./assets/bootstrap.min.css
@@ -129,6 +131,7 @@
 ./docs/adr/001-escolha-da-arquitetura-de-dados-descentralizada-com-duckdb.md
 ./docs/adr/002-implementacao-sistema-mcp-multi-agente.md
 ./docs/adr/003-estrategia-api-as-a-product.md
+./docs/adr/004-observabilidade-profunda-acr-ach.md
 ./docs/adr/README.md
 ./docs/business_logic/README.md
 ./docs/business_logic/payroll_calculation_rules.md
