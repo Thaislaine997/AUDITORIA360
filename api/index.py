@@ -14,6 +14,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from fastapi.security import HTTPBearer
 
+# Configure logging first
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # ACR (Agente de Rastreamento Cinético) - OpenTelemetry Instrumentation
 try:
     from opentelemetry import trace
@@ -52,10 +56,6 @@ except ImportError as e:
     ACR_INSTRUMENTATION = False
     tracer = None
     logger.warning(f"⚠️ ACR OpenTelemetry instrumentation not available: {e}")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Import middleware for standardized error handling
 try:
