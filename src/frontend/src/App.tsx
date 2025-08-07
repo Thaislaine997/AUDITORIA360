@@ -29,6 +29,9 @@ const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
 const Templates = React.lazy(() => import("./pages/Templates"));
 const NeuroSymbolicDemo = React.lazy(() => import("./pages/NeuroSymbolicDemo"));
 
+// Monthly Control module
+const ControleMensalPage = React.lazy(() => import("./pages/ControleMensalPage").then(module => ({ default: module.ControleMensalPage })));
+
 // Grande Síntese - New pages (Initiative II, III, IV)
 const MasteryPaths = React.lazy(() => import("./pages/MasteryPaths"));
 const DeveloperPortal = React.lazy(() => import("./pages/DeveloperPortal"));
@@ -108,6 +111,9 @@ function App() {
               {/* OPERAÇÃO submenu */}
               <Route path="/demandas" element={<PortalDemandas />} />
               <Route path="/consultor-riscos" element={<ConsultorRiscos />} />
+              
+              {/* CONTROLE MENSAL module */}
+              <Route path="/controle-mensal" element={<ControleMensalPage />} />
               
               {/* GESTÃO submenu */}
               <Route path="/gestao/contabilidades" element={<GestaoContabilidades />} />

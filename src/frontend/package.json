@@ -21,6 +21,8 @@
     "@opentelemetry/sdk-trace-web": "^1.21.0",
     "@react-three/drei": "^9.77.1",
     "@react-three/fiber": "^8.13.7",
+    "@supabase/supabase-js": "^2.54.0",
+    "@tanstack/react-table": "^8.21.3",
     "@types/three": "^0.178.1",
     "axios": "^1.6.0",
     "date-fns": "^2.30.0",
