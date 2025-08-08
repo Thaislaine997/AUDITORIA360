@@ -620,7 +620,7 @@ def obter_controles_do_mes(
             controles=controles
         )
         
-        logger.info(f"Retrieved {len(controles)} controles for {ano}/{mes}")
+        logger.info(f"Retrieved {len(controles)} controles for {ano}/{mes} - {percentual_conclusao} completed")
         return response
 
     except Exception as e:
