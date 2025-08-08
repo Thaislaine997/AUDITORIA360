@@ -2,18 +2,27 @@
 Payroll Management API Router
 Módulo 1: Gestão de Folha de Pagamento
 Performance optimized with async operations and caching
+Now includes AI-powered dynamic calculation endpoints
 """
 
+import logging
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
+logger = logging.getLogger(__name__)
+
+from src.lib.supabase_client import get_supabase_async_client
 from src.models import User, get_db
-from src.schemas.payroll_schemas import (
+from src.schemas.payroll_schemas import (  # New AI-powered calculation schemas
     Employee,
     EmployeeCreate,
     EmployeeUpdate,
+    FgtsCalculationRequest,
+    FgtsCalculationResponse,
+    InssCalculationRequest,
+    InssCalculationResponse,
     PayrollCalculationRequest,
     PayrollCalculationResult,
     PayrollCompetency,
@@ -29,7 +38,9 @@ from src.schemas.payroll_schemas import (
     PayrollValidationResult,
 )
 from src.services.auth_service import get_current_user
-from src.services.payroll_service import (
+from src.services.cache_service import cached_response
+from src.services.payroll_service import (  # New AI-powered service
+    AIPayrollService,
     calculate_payroll_async,
     create_employee,
     create_payroll_competency,
@@ -44,7 +55,6 @@ from src.services.payroll_service import (
     update_payroll_competency,
     validate_payroll,
 )
-from src.services.cache_service import cached_response
 
 router = APIRouter()
 
@@ -215,11 +225,7 @@ async def get_competency_statistics(
 ):
     """Get payroll statistics for a competency - OPTIMIZED with caching"""
     statistics = await get_payroll_statistics_async(db, competency_id)
-    return {
-        "competency_id": competency_id,
-        "statistics": statistics,
-        "cached": True
-    }
+    return {"competency_id": competency_id, "statistics": statistics, "cached": True}
 
 
 @router.post("/validate", response_model=PayrollValidationResult)
@@ -341,3 +347,65 @@ async def update_payroll_item(
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail="Payroll item not found"
     )
+
+
+# New AI-powered calculation endpoints
+@router.post("/calculate-fgts", response_model=FgtsCalculationResponse)
+async def calculate_fgts(
+    payload: FgtsCalculationRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """Calcular FGTS usando regras dinâmicas da base de dados RegrasValidadas"""
+    supabase = await get_supabase_async_client()
+    ai_service = AIPayrollService(supabase)
+
+    try:
+        valor_fgts = await ai_service.calcular_fgts(
+            salario_base=payload.salario_base, data_folha=payload.data_referencia
+        )
+
+        # Buscar a taxa para retorno
+        taxa_fgts_str = await ai_service._obter_parametro(
+            "aliquota_fgts_geral", payload.data_referencia
+        )
+        taxa_fgts = float(taxa_fgts_str) / 100
+
+        return FgtsCalculationResponse(
+            salario_base=payload.salario_base,
+            data_referencia=payload.data_referencia,
+            taxa_fgts=taxa_fgts * 100,  # Retornando como percentual
+            valor_fgts=valor_fgts,
+        )
+    except Exception as e:
+        logger.error(f"Erro no cálculo FGTS: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        )
+
+
+@router.post("/calculate-inss", response_model=InssCalculationResponse)
+async def calculate_inss(
+    payload: InssCalculationRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """Calcular INSS usando regras dinâmicas da base de dados RegrasValidadas"""
+    supabase = await get_supabase_async_client()
+    ai_service = AIPayrollService(supabase)
+
+    try:
+        resultado_inss = await ai_service.calcular_inss(
+            salario_base=payload.salario_base, data_folha=payload.data_referencia
+        )
+
+        return InssCalculationResponse(
+            salario_base=payload.salario_base,
+            data_referencia=payload.data_referencia,
+            valor_inss=resultado_inss["valor_inss"],
+            aliquota_aplicada=resultado_inss["aliquota_aplicada"],
+            base_calculo=resultado_inss["base_calculo"],
+        )
+    except Exception as e:
+        logger.error(f"Erro no cálculo INSS: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
+        )

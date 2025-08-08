@@ -3,13 +3,12 @@
 Backup routine for AUDITORIA360 - Serverless version
 Simplified backup routine compatible with GitHub Actions
 """
+import datetime
+import json
+import logging
 import os
 import sys
-import json
-import shutil
-import datetime
 from pathlib import Path
-import logging
 
 # Configure logging
 logging.basicConfig(

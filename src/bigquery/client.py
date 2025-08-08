@@ -15,26 +15,26 @@ logger = logging.getLogger(__name__)
 
 class BigQueryClient:
     """Manages BigQuery client connections and configuration"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
         self._client = None
         self._project_id = None
-    
+
     @property
     def client(self) -> Optional[bigquery.Client]:
         """Get or create BigQuery client"""
         if self._client is None:
             self._client = self._create_client()
         return self._client
-    
-    @property 
+
+    @property
     def project_id(self) -> Optional[str]:
         """Get the project ID for the current client"""
         if self.client:
             return self.client.project
         return None
-    
+
     def _create_client(self) -> Optional[bigquery.Client]:
         """Create and configure BigQuery client"""
         try:
@@ -71,38 +71,44 @@ class BigQueryClient:
 
             # Validate client setup
             if client.project:
-                logger.info(f"BigQuery client initialized successfully. Project: {client.project}")
+                logger.info(
+                    f"BigQuery client initialized successfully. Project: {client.project}"
+                )
             else:
                 logger.warning(
                     "BigQuery client initialized but project not determined. "
                     "Operations requiring explicit project may fail."
                 )
-            
+
             return client
 
         except google_exceptions.GoogleCloudError as e:
-            logger.error(f"Google Cloud error initializing BigQuery client: {e}", exc_info=True)
+            logger.error(
+                f"Google Cloud error initializing BigQuery client: {e}", exc_info=True
+            )
             return None
         except Exception as e:
-            logger.error(f"Generic error initializing BigQuery client: {e}", exc_info=True)
+            logger.error(
+                f"Generic error initializing BigQuery client: {e}", exc_info=True
+            )
             return None
-    
+
     def test_connection(self) -> bool:
         """Test BigQuery connection by running a simple query"""
         try:
             if not self.client:
                 return False
-            
+
             # Run a simple query to test connection
             query = "SELECT 1 as test"
             query_job = self.client.query(query)
             results = list(query_job.result())
             return len(results) == 1 and results[0].test == 1
-            
+
         except Exception as e:
             logger.error(f"BigQuery connection test failed: {e}")
             return False
-    
+
     def close(self):
         """Close the client connection"""
         if self._client:
@@ -110,7 +116,9 @@ class BigQueryClient:
             self._client = None
 
 
-def get_bigquery_client(config: Optional[Dict[str, Any]] = None) -> Optional[bigquery.Client]:
+def get_bigquery_client(
+    config: Optional[Dict[str, Any]] = None,
+) -> Optional[bigquery.Client]:
     """
     Legacy function for backward compatibility.
     Creates and returns a BigQuery client.

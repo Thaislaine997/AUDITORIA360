@@ -16,6 +16,7 @@ try:
     import smtplib
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
+
     EMAIL_AVAILABLE = True
 except ImportError:
     EMAIL_AVAILABLE = False
@@ -26,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 class AlertSeverity(Enum):
     """Alert severity levels"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -35,6 +37,7 @@ class AlertSeverity(Enum):
 @dataclass
 class Alert:
     """Alert data structure"""
+
     id: str
     title: str
     description: str
@@ -101,7 +104,9 @@ class AlertManager:
             # Check if we need to resolve existing alerts
             self._check_alert_resolution(metric_name)
 
-    def _create_alert(self, metric_name: str, value: Union[int, float], rule: Dict[str, Any]):
+    def _create_alert(
+        self, metric_name: str, value: Union[int, float], rule: Dict[str, Any]
+    ):
         """Create a new alert"""
         # Check if alert already exists and is active
         existing_alert = self._find_existing_alert(metric_name)
@@ -200,10 +205,10 @@ class AlertManager:
     def _send_slack_notification(self, alert: Alert, config: Dict[str, Any]):
         """Send Slack notification"""
         color_map = {
-            AlertSeverity.LOW: "#36a64f",      # green
-            AlertSeverity.MEDIUM: "#ff9500",  # orange  
-            AlertSeverity.HIGH: "#ff0000",    # red
-            AlertSeverity.CRITICAL: "#8B0000" # dark red
+            AlertSeverity.LOW: "#36a64f",  # green
+            AlertSeverity.MEDIUM: "#ff9500",  # orange
+            AlertSeverity.HIGH: "#ff0000",  # red
+            AlertSeverity.CRITICAL: "#8B0000",  # dark red
         }
 
         payload = {
@@ -216,9 +221,21 @@ class AlertManager:
                     "text": alert.description,
                     "fields": [
                         {"title": "Metric", "value": alert.metric_name, "short": True},
-                        {"title": "Current Value", "value": str(alert.current_value), "short": True},
-                        {"title": "Threshold", "value": str(alert.threshold), "short": True},
-                        {"title": "Severity", "value": alert.severity.value.upper(), "short": True},
+                        {
+                            "title": "Current Value",
+                            "value": str(alert.current_value),
+                            "short": True,
+                        },
+                        {
+                            "title": "Threshold",
+                            "value": str(alert.threshold),
+                            "short": True,
+                        },
+                        {
+                            "title": "Severity",
+                            "value": alert.severity.value.upper(),
+                            "short": True,
+                        },
                     ],
                     "ts": alert.timestamp.timestamp(),
                 }

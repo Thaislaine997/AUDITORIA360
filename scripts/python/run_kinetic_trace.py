@@ -13,46 +13,53 @@ Este script orquestra o processo completo de rastreamento cinético:
 Parte da "Grande Síntese" - Iniciativa II
 """
 
-import subprocess
-import time
-import requests
-import json
-import sys
 import os
+import subprocess
+import sys
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any, Dict, List
+
 import graphviz
-from typing import Dict, List, Any, Optional
-import tempfile
+import requests
+
 
 class KineticTrackingAgent:
     """ACR - Agente de Rastreamento Cinético"""
-    
+
     def __init__(self, jaeger_url: str = "http://localhost:16686"):
         self.jaeger_url = jaeger_url
         self.jaeger_api = f"{jaeger_url}/api"
         self.output_dir = Path("artifacts/acr")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
     def start_monitoring_environment(self) -> bool:
         """Inicia o ambiente Docker com Jaeger"""
         print("🚀 ACR: Iniciando ambiente de monitoramento...")
-        
+
         try:
             # Verifica se Docker está rodando
             subprocess.run(["docker", "version"], check=True, capture_output=True)
-            
+
             # Inicia os serviços de monitoramento
-            result = subprocess.run([
-                "docker-compose", 
-                "-f", "docker-compose.monitoring.yml", 
-                "up", "-d", "jaeger"
-            ], capture_output=True, text=True)
-            
+            result = subprocess.run(
+                [
+                    "docker-compose",
+                    "-f",
+                    "docker-compose.monitoring.yml",
+                    "up",
+                    "-d",
+                    "jaeger",
+                ],
+                capture_output=True,
+                text=True,
+            )
+
             if result.returncode != 0:
                 print(f"❌ Erro ao iniciar Docker: {result.stderr}")
                 return False
-                
+
             # Aguarda Jaeger estar pronto
             print("⏳ Aguardando Jaeger estar pronto...")
             for i in range(30):
@@ -64,42 +71,47 @@ class KineticTrackingAgent:
                 except requests.RequestException:
                     pass
                 time.sleep(2)
-                
+
             print("❌ Timeout: Jaeger não respondeu em 60 segundos")
             return False
-            
+
         except subprocess.CalledProcessError as e:
             print(f"❌ Erro ao verificar Docker: {e}")
             return False
-            
+
     def run_instrumented_tests(self) -> bool:
         """Executa testes E2E com instrumentação"""
         print("🧪 ACR: Executando testes E2E instrumentados...")
-        
+
         try:
             # Define variáveis de ambiente para instrumentação
             env = os.environ.copy()
-            env.update({
-                "OTEL_EXPORTER_JAEGER_ENDPOINT": "http://localhost:14268/api/traces",
-                "OTEL_SERVICE_NAME": "auditoria360-e2e-tests",
-                "OTEL_RESOURCE_ATTRIBUTES": "service.version=1.0.0,environment=test",
-                "PYTHONPATH": str(Path.cwd() / "src"),
-            })
-            
+            env.update(
+                {
+                    "OTEL_EXPORTER_JAEGER_ENDPOINT": "http://localhost:14268/api/traces",
+                    "OTEL_SERVICE_NAME": "auditoria360-e2e-tests",
+                    "OTEL_RESOURCE_ATTRIBUTES": "service.version=1.0.0,environment=test",
+                    "PYTHONPATH": str(Path.cwd() / "src"),
+                }
+            )
+
             # Executa testes E2E específicos
             test_files = [
                 "tests/e2e/test_login_flow.py",
-                "tests/e2e/test_dashboard_navigation.py", 
-                "tests/e2e/test_payroll_process.py"
+                "tests/e2e/test_dashboard_navigation.py",
+                "tests/e2e/test_payroll_process.py",
             ]
-            
+
             for test_file in test_files:
                 if Path(test_file).exists():
                     print(f"   Executando: {test_file}")
-                    result = subprocess.run([
-                        "python", "-m", "pytest", test_file, "-v", "--tb=short"
-                    ], env=env, capture_output=True, text=True)
-                    
+                    result = subprocess.run(
+                        ["python", "-m", "pytest", test_file, "-v", "--tb=short"],
+                        env=env,
+                        capture_output=True,
+                        text=True,
+                    )
+
                     if result.returncode != 0:
                         print(f"⚠️  Teste falhou: {test_file}")
                         print(f"Stderr: {result.stderr}")
@@ -108,18 +120,18 @@ class KineticTrackingAgent:
                 else:
                     print(f"📝 Criando teste mock para: {test_file}")
                     self._create_mock_test(test_file)
-                    
+
             return True
-            
+
         except Exception as e:
             print(f"❌ Erro ao executar testes: {e}")
             return False
-            
+
     def _create_mock_test(self, test_file: str):
         """Cria um teste mock para demonstração"""
         test_dir = Path(test_file).parent
         test_dir.mkdir(parents=True, exist_ok=True)
-        
+
         mock_test_content = f'''"""
 Mock test for ACR demonstration
 Generated by Kinetic Tracking Agent
@@ -150,93 +162,97 @@ def test_mock_flow():
             
         assert True, "Mock test always passes"
 '''
-        
+
         Path(test_file).write_text(mock_test_content)
-        
+
     def query_jaeger_traces(self, hours_back: int = 1) -> List[Dict[str, Any]]:
         """Consulta traços do Jaeger"""
         print("🔍 ACR: Consultando traços do Jaeger...")
-        
+
         try:
             # Calcula intervalo de tempo
             end_time = datetime.now()
             start_time = end_time - timedelta(hours=hours_back)
-            
+
             # Converte para microsegundos (formato Jaeger)
             start_us = int(start_time.timestamp() * 1_000_000)
             end_us = int(end_time.timestamp() * 1_000_000)
-            
+
             # Busca serviços
             services_response = requests.get(f"{self.jaeger_api}/services")
             if services_response.status_code != 200:
                 print(f"❌ Erro ao buscar serviços: {services_response.status_code}")
                 return []
-                
+
             services = services_response.json().get("data", [])
             print(f"📋 Encontrados {len(services)} serviços")
-            
+
             all_traces = []
-            
+
             for service in services:
                 # Busca traces para cada serviço
                 params = {
                     "service": service,
                     "start": start_us,
                     "end": end_us,
-                    "limit": 100
+                    "limit": 100,
                 }
-                
-                traces_response = requests.get(f"{self.jaeger_api}/traces", params=params)
+
+                traces_response = requests.get(
+                    f"{self.jaeger_api}/traces", params=params
+                )
                 if traces_response.status_code == 200:
                     traces_data = traces_response.json()
                     traces = traces_data.get("data", [])
                     all_traces.extend(traces)
                     print(f"   {service}: {len(traces)} traces")
-                    
+
             print(f"📊 Total de traces coletados: {len(all_traces)}")
             return all_traces
-            
+
         except Exception as e:
             print(f"❌ Erro ao consultar Jaeger: {e}")
             return []
-            
+
     def analyze_traces(self, traces: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Analisa traços para identificar erros e gargalos"""
         print("🧠 ACR: Analisando traços...")
-        
+
         analysis = {
             "total_traces": len(traces),
             "error_traces": [],
             "slow_operations": [],
             "service_breakdown": {},
             "operation_stats": {},
-            "errors_detected": []
+            "errors_detected": [],
         }
-        
+
         for trace in traces:
             trace_id = trace.get("traceID", "unknown")
             spans = trace.get("spans", [])
-            
+
             service_operations = {}
             trace_errors = []
-            
+
             for span in spans:
                 process = span.get("process", {})
                 service_name = process.get("serviceName", "unknown")
                 operation_name = span.get("operationName", "unknown")
                 duration = span.get("duration", 0)
-                
+
                 # Coleta estatísticas por serviço
                 if service_name not in analysis["service_breakdown"]:
                     analysis["service_breakdown"][service_name] = {
                         "span_count": 0,
                         "total_duration": 0,
-                        "errors": 0
+                        "errors": 0,
                     }
-                    
+
                 analysis["service_breakdown"][service_name]["span_count"] += 1
-                analysis["service_breakdown"][service_name]["total_duration"] += duration
-                
+                analysis["service_breakdown"][service_name][
+                    "total_duration"
+                ] += duration
+
                 # Coleta estatísticas por operação
                 op_key = f"{service_name}:{operation_name}"
                 if op_key not in analysis["operation_stats"]:
@@ -244,111 +260,120 @@ def test_mock_flow():
                         "count": 0,
                         "total_duration": 0,
                         "max_duration": 0,
-                        "errors": 0
+                        "errors": 0,
                     }
-                    
+
                 op_stats = analysis["operation_stats"][op_key]
                 op_stats["count"] += 1
                 op_stats["total_duration"] += duration
                 op_stats["max_duration"] = max(op_stats["max_duration"], duration)
-                
+
                 # Verifica erros
                 tags = span.get("tags", [])
                 for tag in tags:
                     if tag.get("key") == "error" and tag.get("value") is True:
-                        trace_errors.append({
-                            "service": service_name,
-                            "operation": operation_name,
-                            "span_id": span.get("spanID"),
-                            "duration": duration
-                        })
+                        trace_errors.append(
+                            {
+                                "service": service_name,
+                                "operation": operation_name,
+                                "span_id": span.get("spanID"),
+                                "duration": duration,
+                            }
+                        )
                         analysis["service_breakdown"][service_name]["errors"] += 1
                         op_stats["errors"] += 1
-                        
+
                 # Identifica operações lentas (>500ms)
                 if duration > 500_000:  # 500ms em microsegundos
-                    analysis["slow_operations"].append({
-                        "trace_id": trace_id,
-                        "service": service_name,
-                        "operation": operation_name,
-                        "duration_ms": duration / 1000,
-                        "span_id": span.get("spanID")
-                    })
-                    
+                    analysis["slow_operations"].append(
+                        {
+                            "trace_id": trace_id,
+                            "service": service_name,
+                            "operation": operation_name,
+                            "duration_ms": duration / 1000,
+                            "span_id": span.get("spanID"),
+                        }
+                    )
+
             if trace_errors:
-                analysis["error_traces"].append({
-                    "trace_id": trace_id,
-                    "errors": trace_errors
-                })
-                
+                analysis["error_traces"].append(
+                    {"trace_id": trace_id, "errors": trace_errors}
+                )
+
         # Calcula médias
         for service_stats in analysis["service_breakdown"].values():
             if service_stats["span_count"] > 0:
-                service_stats["avg_duration"] = service_stats["total_duration"] / service_stats["span_count"]
-                
+                service_stats["avg_duration"] = (
+                    service_stats["total_duration"] / service_stats["span_count"]
+                )
+
         for op_stats in analysis["operation_stats"].values():
             if op_stats["count"] > 0:
-                op_stats["avg_duration"] = op_stats["total_duration"] / op_stats["count"]
-                
+                op_stats["avg_duration"] = (
+                    op_stats["total_duration"] / op_stats["count"]
+                )
+
         print(f"📊 Análise completa:")
         print(f"   - Traces com erro: {len(analysis['error_traces'])}")
         print(f"   - Operações lentas: {len(analysis['slow_operations'])}")
         print(f"   - Serviços analisados: {len(analysis['service_breakdown'])}")
-        
+
         return analysis
-        
-    def generate_flow_diagram(self, traces: List[Dict[str, Any]], analysis: Dict[str, Any]) -> str:
+
+    def generate_flow_diagram(
+        self, traces: List[Dict[str, Any]], analysis: Dict[str, Any]
+    ) -> str:
         """Gera diagrama de fluxo visual com graphviz"""
         print("🎨 ACR: Gerando diagrama de fluxo...")
-        
+
         try:
             # Cria grafo direcionado
-            dot = graphviz.Digraph(comment='ACR - Fluxo Cinético')
-            dot.attr(rankdir='TB')
-            dot.attr('node', shape='box', style='rounded,filled')
-            dot.attr('edge', fontsize='10')
-            
+            dot = graphviz.Digraph(comment="ACR - Fluxo Cinético")
+            dot.attr(rankdir="TB")
+            dot.attr("node", shape="box", style="rounded,filled")
+            dot.attr("edge", fontsize="10")
+
             # Configuração de cores Fluxo
-            dot.attr(bgcolor='#FDFDFD')  # Fluxo off-white
-            
+            dot.attr(bgcolor="#FDFDFD")  # Fluxo off-white
+
             services = set()
             operations = set()
             edges = set()
-            
+
             # Processa traces para extrair fluxo
             for trace in traces[:10]:  # Limita a 10 traces para clareza
                 spans = trace.get("spans", [])
                 span_dict = {span["spanID"]: span for span in spans}
-                
+
                 for span in spans:
                     process = span.get("process", {})
                     service_name = process.get("serviceName", "unknown")
                     operation_name = span.get("operationName", "unknown")
-                    
+
                     services.add(service_name)
-                    
+
                     # Determina cor baseada no status
                     has_error = any(
-                        tag.get("key") == "error" and tag.get("value") is True 
+                        tag.get("key") == "error" and tag.get("value") is True
                         for tag in span.get("tags", [])
                     )
-                    
+
                     duration = span.get("duration", 0)
                     is_slow = duration > 500_000  # 500ms
-                    
+
                     if has_error:
-                        color = '#EF4444'  # Vermelho
-                        fontcolor = 'white'
+                        color = "#EF4444"  # Vermelho
+                        fontcolor = "white"
                     elif is_slow:
-                        color = '#F59E0B'  # Amarelo
-                        fontcolor = 'black'
+                        color = "#F59E0B"  # Amarelo
+                        fontcolor = "black"
                     else:
-                        color = '#10B981'  # Verde Menta Fluxo
-                        fontcolor = 'white'
-                    
+                        color = "#10B981"  # Verde Menta Fluxo
+                        fontcolor = "white"
+
                     node_id = f"{service_name}\\n{operation_name}"
                     operations.add((node_id, color, fontcolor, duration))
-                    
+
                     # Adiciona arestas baseadas em parent spans
                     for ref in span.get("references", []):
                         if ref.get("refType") == "CHILD_OF":
@@ -356,71 +381,92 @@ def test_mock_flow():
                             if parent_span_id in span_dict:
                                 parent_span = span_dict[parent_span_id]
                                 parent_process = parent_span.get("process", {})
-                                parent_service = parent_process.get("serviceName", "unknown")
-                                parent_operation = parent_span.get("operationName", "unknown")
-                                parent_node_id = f"{parent_service}\\n{parent_operation}"
-                                
+                                parent_service = parent_process.get(
+                                    "serviceName", "unknown"
+                                )
+                                parent_operation = parent_span.get(
+                                    "operationName", "unknown"
+                                )
+                                parent_node_id = (
+                                    f"{parent_service}\\n{parent_operation}"
+                                )
+
                                 edges.add((parent_node_id, node_id))
-                                
+
             # Adiciona nós de serviços
             for service in services:
                 service_stats = analysis["service_breakdown"].get(service, {})
                 error_count = service_stats.get("errors", 0)
-                
+
                 if error_count > 0:
-                    color = '#EF4444'  # Vermelho
-                    fontcolor = 'white'
+                    color = "#EF4444"  # Vermelho
+                    fontcolor = "white"
                 else:
-                    color = '#0077FF'  # Electric Blue Fluxo
-                    fontcolor = 'white'
-                    
+                    color = "#0077FF"  # Electric Blue Fluxo
+                    fontcolor = "white"
+
                 dot.node(
-                    service, 
+                    service,
                     f"{service}\\n({service_stats.get('span_count', 0)} spans)",
                     fillcolor=color,
                     fontcolor=fontcolor,
-                    shape='ellipse'
+                    shape="ellipse",
                 )
-                
+
             # Adiciona nós de operações
             for node_id, color, fontcolor, duration in operations:
                 duration_ms = duration / 1000
                 label = f"{node_id}\\n({duration_ms:.1f}ms)"
                 dot.node(node_id, label, fillcolor=color, fontcolor=fontcolor)
-                
+
             # Adiciona arestas
             for parent, child in edges:
                 dot.edge(parent, child)
-                
+
             # Adiciona legenda
-            with dot.subgraph(name='cluster_legend') as legend:
-                legend.attr(label='Legenda ACR')
-                legend.attr(style='filled')
-                legend.attr(fillcolor='#F8F9FA')
-                legend.node('legend_success', 'Operação Normal', fillcolor='#10B981', fontcolor='white')
-                legend.node('legend_slow', 'Operação Lenta (>500ms)', fillcolor='#F59E0B', fontcolor='black')
-                legend.node('legend_error', 'Operação com Erro', fillcolor='#EF4444', fontcolor='white')
-                
+            with dot.subgraph(name="cluster_legend") as legend:
+                legend.attr(label="Legenda ACR")
+                legend.attr(style="filled")
+                legend.attr(fillcolor="#F8F9FA")
+                legend.node(
+                    "legend_success",
+                    "Operação Normal",
+                    fillcolor="#10B981",
+                    fontcolor="white",
+                )
+                legend.node(
+                    "legend_slow",
+                    "Operação Lenta (>500ms)",
+                    fillcolor="#F59E0B",
+                    fontcolor="black",
+                )
+                legend.node(
+                    "legend_error",
+                    "Operação com Erro",
+                    fillcolor="#EF4444",
+                    fontcolor="white",
+                )
+
             # Salva arquivo
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_file = self.output_dir / f"kinetic_flow_{timestamp}"
-            
-            dot.render(str(output_file), format='png', cleanup=True)
+
+            dot.render(str(output_file), format="png", cleanup=True)
             png_file = f"{output_file}.png"
-            
+
             print(f"✅ Diagrama gerado: {png_file}")
             return png_file
-            
+
         except Exception as e:
             print(f"❌ Erro ao gerar diagrama: {e}")
             return ""
-            
+
     def generate_report(self, analysis: Dict[str, Any], diagram_path: str) -> str:
         """Gera relatório HTML interativo"""
         print("📄 ACR: Gerando relatório...")
-        
+
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
+
         html_content = f"""
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -552,7 +598,7 @@ def test_mock_flow():
             </div>
         </div>
         """
-        
+
         if diagram_path and Path(diagram_path).exists():
             html_content += f"""
         <div class="diagram">
@@ -560,37 +606,37 @@ def test_mock_flow():
             <img src="{Path(diagram_path).name}" alt="Diagrama de Fluxo ACR">
         </div>
         """
-        
+
         # Adiciona detalhes dos erros
-        if analysis['error_traces']:
+        if analysis["error_traces"]:
             html_content += """
         <div class="error-list">
             <h3>❌ Traces com Erros Detectados</h3>
             <ul>
             """
-            for error_trace in analysis['error_traces'][:10]:
+            for error_trace in analysis["error_traces"][:10]:
                 html_content += f"<li>Trace {error_trace['trace_id'][:8]}... - {len(error_trace['errors'])} erros</li>"
             html_content += "</ul></div>"
-            
+
         # Adiciona operações lentas
-        if analysis['slow_operations']:
+        if analysis["slow_operations"]:
             html_content += """
         <div class="slow-list">
             <h3>🐌 Operações Lentas Detectadas</h3>
             <ul>
             """
-            for slow_op in analysis['slow_operations'][:10]:
+            for slow_op in analysis["slow_operations"][:10]:
                 html_content += f"<li>{slow_op['service']}:{slow_op['operation']} - {slow_op['duration_ms']:.1f}ms</li>"
             html_content += "</ul></div>"
-            
+
         # Adiciona estatísticas de serviços
         html_content += """
         <h3>🔧 Estatísticas por Serviço</h3>
         <div class="service-stats">
         """
-        
-        for service, stats in analysis['service_breakdown'].items():
-            avg_duration = stats.get('avg_duration', 0) / 1000  # Convert to ms
+
+        for service, stats in analysis["service_breakdown"].items():
+            avg_duration = stats.get("avg_duration", 0) / 1000  # Convert to ms
             html_content += f"""
         <div class="service-card">
             <h4>{service}</h4>
@@ -599,7 +645,7 @@ def test_mock_flow():
             <p>Erros: {stats['errors']}</p>
         </div>
         """
-        
+
         html_content += """
         </div>
         
@@ -610,66 +656,68 @@ def test_mock_flow():
 </body>
 </html>
         """
-        
+
         # Salva relatório
         timestamp_file = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_file = self.output_dir / f"acr_report_{timestamp_file}.html"
-        report_file.write_text(html_content, encoding='utf-8')
-        
+        report_file.write_text(html_content, encoding="utf-8")
+
         print(f"✅ Relatório gerado: {report_file}")
         return str(report_file)
-        
+
     def run_full_analysis(self) -> bool:
         """Executa análise completa do ACR"""
         print("🧠 Iniciando ACR - Agente de Rastreamento Cinético")
         print("=" * 60)
-        
+
         try:
             # 1. Inicia ambiente
             if not self.start_monitoring_environment():
                 print("❌ Falha ao iniciar ambiente de monitoramento")
                 return False
-                
+
             # 2. Executa testes instrumentados
             if not self.run_instrumented_tests():
                 print("❌ Falha ao executar testes instrumentados")
                 return False
-                
+
             # Aguarda traces serem processados
             print("⏳ Aguardando processamento de traces...")
             time.sleep(10)
-            
+
             # 3. Consulta traces
             traces = self.query_jaeger_traces()
             if not traces:
-                print("⚠️  Nenhum trace encontrado - gerando dados mock para demonstração")
+                print(
+                    "⚠️  Nenhum trace encontrado - gerando dados mock para demonstração"
+                )
                 traces = self._generate_mock_traces()
-                
+
             # 4. Analisa traces
             analysis = self.analyze_traces(traces)
-            
+
             # 5. Gera diagrama
             diagram_path = self.generate_flow_diagram(traces, analysis)
-            
+
             # 6. Gera relatório
             report_path = self.generate_report(analysis, diagram_path)
-            
+
             print("=" * 60)
             print("✅ ACR - Análise Completa!")
             print(f"📊 Relatório: {report_path}")
             print(f"🎨 Diagrama: {diagram_path}")
             print("=" * 60)
-            
+
             return True
-            
+
         except Exception as e:
             print(f"❌ Erro na análise ACR: {e}")
             return False
-            
+
     def _generate_mock_traces(self) -> List[Dict[str, Any]]:
         """Gera traces mock para demonstração"""
         print("🎭 Gerando traces mock para demonstração...")
-        
+
         mock_traces = [
             {
                 "traceID": "abc123def456",
@@ -680,15 +728,15 @@ def test_mock_flow():
                         "process": {"serviceName": "auth-service"},
                         "duration": 150000,  # 150ms
                         "tags": [],
-                        "references": []
+                        "references": [],
                     },
                     {
-                        "spanID": "span2", 
+                        "spanID": "span2",
                         "operationName": "validate_credentials",
                         "process": {"serviceName": "auth-service"},
                         "duration": 250000,  # 250ms
                         "tags": [],
-                        "references": [{"refType": "CHILD_OF", "spanID": "span1"}]
+                        "references": [{"refType": "CHILD_OF", "spanID": "span1"}],
                     },
                     {
                         "spanID": "span3",
@@ -696,9 +744,9 @@ def test_mock_flow():
                         "process": {"serviceName": "frontend"},
                         "duration": 600000,  # 600ms (slow)
                         "tags": [],
-                        "references": [{"refType": "CHILD_OF", "spanID": "span2"}]
-                    }
-                ]
+                        "references": [{"refType": "CHILD_OF", "spanID": "span2"}],
+                    },
+                ],
             },
             {
                 "traceID": "def456ghi789",
@@ -709,18 +757,20 @@ def test_mock_flow():
                         "process": {"serviceName": "payroll-service"},
                         "duration": 300000,  # 300ms
                         "tags": [{"key": "error", "value": True}],  # Error!
-                        "references": []
+                        "references": [],
                     }
-                ]
-            }
+                ],
+            },
         ]
-        
+
         return mock_traces
+
 
 def main():
     """Função principal"""
     if len(sys.argv) > 1 and sys.argv[1] == "--help":
-        print("""
+        print(
+            """
 ACR - Agente de Rastreamento Cinético
 
 Uso: python run_kinetic_trace.py [opções]
@@ -732,19 +782,21 @@ Opções:
 
 Exemplo:
   python run_kinetic_trace.py --jaeger-url http://localhost:16686 --hours-back 2
-        """)
+        """
+        )
         return
-        
+
     jaeger_url = "http://localhost:16686"
     if "--jaeger-url" in sys.argv:
         idx = sys.argv.index("--jaeger-url")
         if idx + 1 < len(sys.argv):
             jaeger_url = sys.argv[idx + 1]
-            
+
     acr = KineticTrackingAgent(jaeger_url)
     success = acr.run_full_analysis()
-    
+
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

@@ -23,6 +23,7 @@ class Entity(BaseModel):
             raise ValueError("CPF inválido")
         # Return cleaned CPF (numbers only)
         import re
+
         return re.sub(r"\D", "", v)
 
     @field_validator("data")

@@ -16,8 +16,9 @@ For all tests:
     pytest tests/ -v
 """
 
-import sys
 import subprocess
+import sys
+
 
 def main():
     print("🚀 AUDITORIA360 MCP Integration Tests")
@@ -29,15 +30,21 @@ def main():
     print("  pytest tests/ -v")
     print("\nRunning MCP integration tests now...")
     print("=" * 50)
-    
+
     # Run the pytest command
-    result = subprocess.run([
-        sys.executable, "-m", "pytest", 
-        "tests/integration/mcp/test_mcp_integration_simple.py", 
-        "-v"
-    ], cwd="../../..")
-    
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "tests/integration/mcp/test_mcp_integration_simple.py",
+            "-v",
+        ],
+        cwd="../../..",
+    )
+
     return result.returncode
+
 
 if __name__ == "__main__":
     sys.exit(main())

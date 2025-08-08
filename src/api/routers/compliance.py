@@ -8,10 +8,13 @@ from datetime import datetime
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import BaseModel, Field
+from pydantic import Field
 from sqlalchemy.orm import Session
 
-from src.api.common.responses import create_success_response, forbidden_error, validation_error
+from src.api.common.responses import (
+    create_success_response,
+    forbidden_error,
+)
 from src.api.common.validators import BaseValidationModel
 from src.models import User, get_db
 from src.services.auth_service import get_current_user
@@ -24,18 +27,30 @@ router = APIRouter()
 
 class ComplianceCheckRequest(BaseValidationModel):
     """Request model for compliance check"""
-    
-    entity_type: str = Field(..., pattern="^(payroll|employee|cct)$", description="Type of entity to check")
-    entity_id: str = Field(..., min_length=1, max_length=50, description="ID of the entity to check")
-    rule_categories: Optional[List[str]] = Field(None, description="Specific rule categories to check")
-    include_resolved: bool = Field(False, description="Include already resolved violations")
+
+    entity_type: str = Field(
+        ..., pattern="^(payroll|employee|cct)$", description="Type of entity to check"
+    )
+    entity_id: str = Field(
+        ..., min_length=1, max_length=50, description="ID of the entity to check"
+    )
+    rule_categories: Optional[List[str]] = Field(
+        None, description="Specific rule categories to check"
+    )
+    include_resolved: bool = Field(
+        False, description="Include already resolved violations"
+    )
 
 
 class ComplianceRuleRequest(BaseValidationModel):
     """Request model for executing compliance rules"""
-    
-    entity_type: str = Field(..., pattern="^(payroll|employee|cct)$", description="Type of entity to check")
-    entity_ids: List[str] = Field(..., min_items=1, max_items=100, description="List of entity IDs to check")
+
+    entity_type: str = Field(
+        ..., pattern="^(payroll|employee|cct)$", description="Type of entity to check"
+    )
+    entity_ids: List[str] = Field(
+        ..., min_items=1, max_items=100, description="List of entity IDs to check"
+    )
 
 
 @router.post("/check")
@@ -54,7 +69,7 @@ async def compliance_check(
     try:
         logger.info(
             f"Running compliance check for {request.entity_type}:{request.entity_id}",
-            extra={"entity_type": request.entity_type, "entity_id": request.entity_id}
+            extra={"entity_type": request.entity_type, "entity_id": request.entity_id},
         )
 
         # Simulate optimized compliance checking
@@ -65,7 +80,8 @@ async def compliance_check(
                 "checked_at": datetime.now().isoformat(),
             },
             "compliance_status": "COMPLIANT",  # COMPLIANT, NON_COMPLIANT, WARNING, NEEDS_REVIEW
-            "rules_checked": request.rule_categories or ["salary", "tax", "union", "vacation"],
+            "rules_checked": request.rule_categories
+            or ["salary", "tax", "union", "vacation"],
             "summary": {
                 "total_rules_applied": 0,
                 "violations_found": 0,
@@ -131,8 +147,7 @@ async def compliance_check(
             )
 
         return create_success_response(
-            data=compliance_result,
-            message="Compliance check completed successfully"
+            data=compliance_result, message="Compliance check completed successfully"
         )
 
     except Exception as e:
@@ -202,8 +217,7 @@ async def list_compliance_rules(
     }
 
     return create_success_response(
-        data=result_data,
-        message="Compliance rules retrieved successfully"
+        data=result_data, message="Compliance rules retrieved successfully"
     )
 
 
@@ -250,5 +264,5 @@ async def execute_compliance_rule(
 
     return create_success_response(
         data=execution_result,
-        message=f"Compliance rule {rule_id} executed successfully"
+        message=f"Compliance rule {rule_id} executed successfully",
     )

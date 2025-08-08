@@ -45,13 +45,14 @@ def test_permission_model_creation():
 def test_employee_model_creation():
     """Test Employee model can be instantiated"""
     from datetime import datetime
+
     employee = Employee(
-        nome="John Doe", 
-        cpf="123.456.789-00", 
+        nome="John Doe",
+        cpf="123.456.789-00",
         codigo="EMP001",
         admissao=datetime.now(),
         salario=5000.0,
-        cargo="Analista"
+        cargo="Analista",
     )
     assert employee.nome == "John Doe"
     assert employee.cpf == "123.456.789-00"

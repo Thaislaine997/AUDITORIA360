@@ -45,9 +45,9 @@ async def lifespan(app: FastAPI):
         logger.info("Portal demandas database initialized")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
-    
+
     yield
-    
+
     # Shutdown (if needed)
     logger.info("Portal demandas API shutting down")
 
@@ -494,7 +494,10 @@ def atualizar_status_bulk(
             db.query(TicketDB)
             .filter(TicketDB.id.in_(ticket_ids))
             .update(
-                {"status": new_status.value, "atualizado_em": datetime.now(timezone.utc)},
+                {
+                    "status": new_status.value,
+                    "atualizado_em": datetime.now(timezone.utc),
+                },
                 synchronize_session=False,
             )
         )

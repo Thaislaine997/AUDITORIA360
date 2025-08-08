@@ -6,12 +6,12 @@ Implements secure data scoping and permission checking for AUDITORIA360
 from functools import wraps
 from typing import Any, Dict, List, Optional
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+from ..core.tenant_middleware import TenantIsolationMiddleware
 from .unified_auth import UnifiedAuthManager
-from ..core.tenant_middleware import TenantIsolationMiddleware, TenantScope
 
 # Initialize auth manager and security
 auth_manager = UnifiedAuthManager()
@@ -39,7 +39,7 @@ class AuthorizationMiddleware:
         try:
             payload = self.auth_manager.verify_token(credentials.credentials)
             user_data = payload.get("user_data", {})
-            
+
             if not user_data:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -58,42 +58,43 @@ class AuthorizationMiddleware:
             )
 
     async def get_current_user_with_tenant(
-        self, 
+        self,
         credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
-        db: Session = None
+        db: Session = None,
     ) -> Dict[str, Any]:
         """Get current authenticated user with tenant scope and apply RLS"""
         user_data = await self.get_current_user(credentials)
-        
+
         # Extract tenant scope from user data
         tenant_scope = tenant_middleware.extract_tenant_from_user(user_data)
-        
+
         # Apply tenant-based filtering to database session if provided
         if db:
             tenant_middleware.apply_rls_filter(db, tenant_scope)
-        
+
         # Add tenant scope to user data
         user_data["tenant_scope"] = tenant_scope
-        
+
         return user_data
 
     def validate_tenant_operation(
         self,
         user_data: Dict[str, Any],
         target_data: Dict[str, Any],
-        operation: str = "read"
+        operation: str = "read",
     ) -> bool:
         """Validate if user can perform operation on target data within tenant scope"""
         tenant_scope = user_data.get("tenant_scope")
         if not tenant_scope:
             tenant_scope = tenant_middleware.extract_tenant_from_user(user_data)
-        
+
         return tenant_middleware.validate_tenant_access(
             tenant_scope, target_data, operation
         )
 
     def require_permission(self, required_permission: str):
         """Decorator to require specific permission"""
+
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -102,21 +103,26 @@ class AuthorizationMiddleware:
                 if not current_user:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="Authentication required"
+                        detail="Authentication required",
                     )
 
-                if not self.auth_manager.check_permission(current_user, required_permission):
+                if not self.auth_manager.check_permission(
+                    current_user, required_permission
+                ):
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
-                        detail=f"Permission '{required_permission}' required"
+                        detail=f"Permission '{required_permission}' required",
                     )
 
                 return await func(*args, **kwargs)
+
             return wrapper
+
         return decorator
 
     def require_user_type(self, allowed_types: List[str]):
         """Decorator to require specific user types"""
+
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -124,22 +130,25 @@ class AuthorizationMiddleware:
                 if not current_user:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="Authentication required"
+                        detail="Authentication required",
                     )
 
                 user_type = current_user.get("user_type", "")
                 if user_type not in allowed_types:
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
-                        detail=f"Access restricted to: {', '.join(allowed_types)}"
+                        detail=f"Access restricted to: {', '.join(allowed_types)}",
                     )
 
                 return await func(*args, **kwargs)
+
             return wrapper
+
         return decorator
 
     def scope_data_access(self, resource_type: str):
         """Decorator to automatically scope data access based on user permissions"""
+
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -147,7 +156,7 @@ class AuthorizationMiddleware:
                 if not current_user:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="Authentication required"
+                        detail="Authentication required",
                     )
 
                 # Add data scope filters to kwargs
@@ -157,54 +166,58 @@ class AuthorizationMiddleware:
                     kwargs["scope_type"] = scope.get("scope_type")
 
                 return await func(*args, **kwargs)
+
             return wrapper
+
         return decorator
 
     async def authorize_resource_access(
-        self, 
-        current_user: Dict[str, Any], 
-        resource_type: str, 
-        resource_id: str = None
+        self, current_user: Dict[str, Any], resource_type: str, resource_id: str = None
     ) -> bool:
         """Authorize user access to specific resource"""
-        return self.auth_manager.authorize_data_access(current_user, resource_type, resource_id)
+        return self.auth_manager.authorize_data_access(
+            current_user, resource_type, resource_id
+        )
 
 
 # Global middleware instance
 auth_middleware = AuthorizationMiddleware()
 
+
 # Dependency functions for FastAPI
 async def get_current_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
 ) -> Dict[str, Any]:
     """FastAPI dependency to get current user"""
     return await auth_middleware.get_current_user(credentials)
 
+
 async def get_super_admin_user(
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    current_user: Dict[str, Any] = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """FastAPI dependency for super admin only endpoints"""
     if current_user.get("user_type") != "super_admin":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Super admin access required"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Super admin access required"
         )
     return current_user
 
+
 async def get_contabilidade_user(
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    current_user: Dict[str, Any] = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """FastAPI dependency for contabilidade level access"""
     allowed_types = ["super_admin", "contabilidade"]
     if current_user.get("user_type") not in allowed_types:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Contabilidade or admin access required"
+            detail="Contabilidade or admin access required",
         )
     return current_user
 
+
 async def get_any_authenticated_user(
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    current_user: Dict[str, Any] = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """FastAPI dependency for any authenticated user"""
     return current_user
@@ -212,8 +225,12 @@ async def get_any_authenticated_user(
 
 # Decorator shortcuts
 require_super_admin = auth_middleware.require_user_type(["super_admin"])
-require_contabilidade = auth_middleware.require_user_type(["super_admin", "contabilidade"])
-require_any_auth = auth_middleware.require_user_type(["super_admin", "contabilidade", "cliente_final"])
+require_contabilidade = auth_middleware.require_user_type(
+    ["super_admin", "contabilidade"]
+)
+require_any_auth = auth_middleware.require_user_type(
+    ["super_admin", "contabilidade", "cliente_final"]
+)
 
 # Permission decorators
 require_full_access = auth_middleware.require_permission("full_access")

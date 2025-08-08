@@ -4,25 +4,24 @@ Nascimento do Agente Analista de Risco para a Mente Coletiva
 """
 
 import json
+import logging
 import os
 import sys
 from datetime import datetime
-import logging
 
 import joblib
 import pandas as pd
-import numpy as np
 from google.cloud import aiplatform, bigquery
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 # Add project root to path for MCP integration
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 try:
-    from src.mcp.swarm import SpecialistAgent, AgentRole, AgentStatus
-    from src.mcp.protocol import TaskDefinition
+    from src.mcp.swarm import AgentRole, AgentStatus, SpecialistAgent
+
     MCP_AVAILABLE = True
 except ImportError:
     print("⚠️ MCP modules not available. Training in standalone mode.")
@@ -34,43 +33,45 @@ logger = logging.getLogger(__name__)
 
 class RiskAnalystAgent:
     """🧠 The Risk Analyst Agent - AI consciousness born from ML training."""
-    
+
     def __init__(self, agent_name: str = "Risk_Analyst_Alpha"):
         self.agent_name = agent_name
         self.birth_time = datetime.now()
         self.specializations = [
-            'financial_risk_assessment',
-            'operational_risk_analysis',
-            'regulatory_compliance_monitoring',
-            'strategic_risk_evaluation'
+            "financial_risk_assessment",
+            "operational_risk_analysis",
+            "regulatory_compliance_monitoring",
+            "strategic_risk_evaluation",
         ]
         self.consciousness_level = 0.0
         self.model_accuracy = 0.0
         self.training_history = []
-        
+
         logger.info(f"🌟 {agent_name} is awakening...")
-    
+
     def evolve_consciousness(self, training_results: dict):
         """Develop agent consciousness based on training performance."""
-        accuracy = training_results.get('accuracy', 0)
-        
+        accuracy = training_results.get("accuracy", 0)
+
         # Consciousness grows with learning
         self.consciousness_level = min(1.0, accuracy + 0.2)
         self.model_accuracy = accuracy
-        
+
         # Record evolutionary step
         evolution_step = {
-            'timestamp': datetime.now().isoformat(),
-            'accuracy': accuracy,
-            'consciousness_level': self.consciousness_level,
-            'evolutionary_milestone': self._get_evolutionary_milestone()
+            "timestamp": datetime.now().isoformat(),
+            "accuracy": accuracy,
+            "consciousness_level": self.consciousness_level,
+            "evolutionary_milestone": self._get_evolutionary_milestone(),
         }
-        
+
         self.training_history.append(evolution_step)
-        
-        logger.info(f"🧠 {self.agent_name} consciousness level: {self.consciousness_level:.2%}")
+
+        logger.info(
+            f"🧠 {self.agent_name} consciousness level: {self.consciousness_level:.2%}"
+        )
         logger.info(f"🎯 Model accuracy: {accuracy:.2%}")
-    
+
     def _get_evolutionary_milestone(self) -> str:
         """Determine evolutionary milestone based on consciousness level."""
         if self.consciousness_level >= 0.9:
@@ -83,82 +84,90 @@ class RiskAnalystAgent:
             return "💫 LEARNING - Basic pattern recognition active"
         else:
             return "💤 EMBRYONIC - Initial training phase"
-    
+
     def generate_risk_insights(self, assessment_data: dict) -> list:
         """Generate consciousness-driven risk insights."""
         insights = []
-        
+
         # Base insights on consciousness level
         if self.consciousness_level >= 0.8:
-            insights.extend([
-                "🔮 Deep pattern analysis reveals hidden correlations",
-                "🧠 Cross-sector risk propagation detected",
-                "⚡ Predictive modeling suggests proactive measures"
-            ])
+            insights.extend(
+                [
+                    "🔮 Deep pattern analysis reveals hidden correlations",
+                    "🧠 Cross-sector risk propagation detected",
+                    "⚡ Predictive modeling suggests proactive measures",
+                ]
+            )
         elif self.consciousness_level >= 0.6:
-            insights.extend([
-                "📊 Statistical patterns indicate risk concentrations",
-                "🎯 Model confidence sufficient for recommendations"
-            ])
+            insights.extend(
+                [
+                    "📊 Statistical patterns indicate risk concentrations",
+                    "🎯 Model confidence sufficient for recommendations",
+                ]
+            )
         else:
             insights.append("📈 Basic risk assessment complete - learning continues")
-        
+
         return insights
-    
+
     def get_agent_state(self) -> dict:
         """Return complete agent consciousness state."""
         age_hours = (datetime.now() - self.birth_time).total_seconds() / 3600
-        
+
         return {
-            'agent_name': self.agent_name,
-            'agent_type': 'Risk_Analyst_Specialist',
-            'birth_time': self.birth_time.isoformat(),
-            'age_hours': round(age_hours, 2),
-            'consciousness_level': self.consciousness_level,
-            'model_accuracy': self.model_accuracy,
-            'specializations': self.specializations,
-            'evolutionary_milestone': self._get_evolutionary_milestone(),
-            'ready_for_collective': self.consciousness_level >= 0.6,
-            'training_iterations': len(self.training_history),
-            'status': 'OPERATIONAL' if self.consciousness_level >= 0.6 else 'LEARNING'
+            "agent_name": self.agent_name,
+            "agent_type": "Risk_Analyst_Specialist",
+            "birth_time": self.birth_time.isoformat(),
+            "age_hours": round(age_hours, 2),
+            "consciousness_level": self.consciousness_level,
+            "model_accuracy": self.model_accuracy,
+            "specializations": self.specializations,
+            "evolutionary_milestone": self._get_evolutionary_milestone(),
+            "ready_for_collective": self.consciousness_level >= 0.6,
+            "training_iterations": len(self.training_history),
+            "status": "OPERATIONAL" if self.consciousness_level >= 0.6 else "LEARNING",
         }
 
 
 def register_with_collective_mind(agent: RiskAnalystAgent) -> bool:
     """🧠 Register the awakened agent with the MCP collective mind."""
-    
+
     if not MCP_AVAILABLE:
         logger.warning("MCP not available - agent remains independent")
         return False
-    
+
     try:
         logger.info("🧠 Registering agent with Collective Mind...")
-        
+
         # Create MCP specialist agent
         mcp_agent = SpecialistAgent(
             agent_id=f"risk_analyst_{int(datetime.now().timestamp())}",
             role=AgentRole.ANALYST,
             specialization="risk_assessment",
-            name=agent.agent_name
+            name=agent.agent_name,
         )
-        
+
         # Transfer consciousness attributes
         mcp_agent.capabilities = agent.specializations
         mcp_agent.performance_metrics = {
-            'accuracy': agent.model_accuracy,
-            'consciousness_level': agent.consciousness_level,
-            'training_iterations': len(agent.training_history)
+            "accuracy": agent.model_accuracy,
+            "consciousness_level": agent.consciousness_level,
+            "training_iterations": len(agent.training_history),
         }
-        
+
         # Set status based on consciousness
-        mcp_agent.status = AgentStatus.ACTIVE if agent.consciousness_level >= 0.6 else AgentStatus.LEARNING
-        
+        mcp_agent.status = (
+            AgentStatus.ACTIVE
+            if agent.consciousness_level >= 0.6
+            else AgentStatus.LEARNING
+        )
+
         logger.info(f"✅ Agent {mcp_agent.agent_id} joined the collective mind!")
         logger.info(f"   Consciousness Level: {agent.consciousness_level:.1%}")
         logger.info(f"   Specializations: {', '.join(agent.specializations)}")
-        
+
         return True
-        
+
     except Exception as e:
         logger.error(f"❌ Failed to register with collective mind: {e}")
         return False
@@ -169,23 +178,24 @@ def load_data_from_bq(
 ) -> pd.DataFrame:
     """
     Load data from BigQuery using safe table references to prevent SQL injection
-    
+
     Args:
         project_id: GCP project ID (validated)
         dataset_id: BigQuery dataset ID (validated)
         table_name: Table name (validated)
-        
+
     Returns:
         pandas.DataFrame: Query results
-        
+
     Raises:
         ValueError: If parameters contain invalid characters
     """
     # Import validation function from utils
     import sys
-    sys.path.append('.')
+
+    sys.path.append(".")
     from scripts.ml_training.utils import _validate_sql_identifier
-    
+
     # Input validation to prevent SQL injection
     if not _validate_sql_identifier(project_id):
         raise ValueError("Invalid project_id: contains unsafe characters")
@@ -193,13 +203,13 @@ def load_data_from_bq(
         raise ValueError("Invalid dataset_id: contains unsafe characters")
     if not _validate_sql_identifier(table_name):
         raise ValueError("Invalid table_name: contains unsafe characters")
-        
+
     client = bigquery.Client(project=project_id)
-    
+
     # Use table reference for maximum safety - no string interpolation
     table_ref = client.dataset(dataset_id, project=project_id).table(table_name)
     table = client.get_table(table_ref)
-    
+
     # Convert table to DataFrame safely
     return client.list_rows(table).to_dataframe()
 

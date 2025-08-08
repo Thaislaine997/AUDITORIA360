@@ -6,10 +6,11 @@ Basic validation of MCP components without external dependencies
 import asyncio
 import os
 import sys
+
 import pytest
 
 # Add project root to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 from src.mcp.config import get_config_manager
 from src.mcp.protocol import ClientInfo, InitializeRequest, MCPResponse

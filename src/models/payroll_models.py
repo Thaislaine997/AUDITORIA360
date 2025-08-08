@@ -44,10 +44,12 @@ class Employee(Base):
     __tablename__ = "employees"
 
     id = Column(Integer, primary_key=True, index=True)
-    
+
     # 7 essential fields as required
     nome = Column(String(255), nullable=False)  # nome (full_name)
-    codigo = Column(String(50), unique=True, nullable=False, index=True)  # código (employee_id)
+    codigo = Column(
+        String(50), unique=True, nullable=False, index=True
+    )  # código (employee_id)
     admissao = Column(DateTime, nullable=False)  # admissão (hire_date)
     salario = Column(Float, nullable=False)  # salário (salary)
     dependentes = Column(Integer, default=0)  # dependentes (number of dependents)

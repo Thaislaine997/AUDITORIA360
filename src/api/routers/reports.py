@@ -4,11 +4,13 @@ Handles customizable report template management
 """
 
 from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 from src.models import get_db
+
 
 # Mock User for testing without auth
 class MockUser:
@@ -17,9 +19,11 @@ class MockUser:
         self.role = "contabilidade"
         self.username = "test_user"
 
+
 def get_current_user_mock():
     """Mock current user for testing"""
     return MockUser()
+
 
 router = APIRouter()
 
@@ -51,7 +55,7 @@ class ReportTemplateResponse(BaseModel):
     is_active: bool
     usage_count: int
     created_at: str
-    
+
     class Config:
         from_attributes = True
 
@@ -76,7 +80,7 @@ async def list_report_templates(
             "is_default": True,
             "is_active": True,
             "usage_count": 15,
-            "created_at": "2024-01-01T00:00:00Z"
+            "created_at": "2024-01-01T00:00:00Z",
         },
         {
             "id": 2,
@@ -86,8 +90,8 @@ async def list_report_templates(
             "is_default": False,
             "is_active": True,
             "usage_count": 8,
-            "created_at": "2024-01-05T10:30:00Z"
-        }
+            "created_at": "2024-01-05T10:30:00Z",
+        },
     ]
 
 
@@ -99,12 +103,12 @@ async def create_report_template(
 ):
     """Create a new report template"""
     # Check if user has permission (only contabilidade role)
-    if not hasattr(current_user, 'role') or current_user.role != "contabilidade":
+    if not hasattr(current_user, "role") or current_user.role != "contabilidade":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only accounting users can create report templates"
+            detail="Only accounting users can create report templates",
         )
-    
+
     # TODO: Implement actual database creation
     # For now, return mock response
     return {
@@ -115,7 +119,7 @@ async def create_report_template(
         "is_default": False,
         "is_active": True,
         "usage_count": 0,
-        "created_at": "2024-01-01T00:00:00Z"
+        "created_at": "2024-01-01T00:00:00Z",
     }
 
 
@@ -144,7 +148,7 @@ async def get_report_template(
                     "title": "Cabeçalho do Relatório",
                     "position_order": 1,
                     "width_percentage": 100.0,
-                    "config": {"show_logo": True, "show_date": True}
+                    "config": {"show_logo": True, "show_date": True},
                 },
                 {
                     "id": 2,
@@ -152,7 +156,7 @@ async def get_report_template(
                     "title": "Análise de Despesas",
                     "position_order": 2,
                     "width_percentage": 100.0,
-                    "config": {"chart_type": "bar", "period": "monthly"}
+                    "config": {"chart_type": "bar", "period": "monthly"},
                 },
                 {
                     "id": 3,
@@ -160,9 +164,9 @@ async def get_report_template(
                     "title": "Balanço Patrimonial Simplificado",
                     "position_order": 3,
                     "width_percentage": 100.0,
-                    "config": {"simplified": True}
-                }
-            ]
+                    "config": {"simplified": True},
+                },
+            ],
         }
     else:
         raise HTTPException(status_code=404, detail="Template not found")
@@ -177,12 +181,12 @@ async def update_report_template(
 ):
     """Update an existing report template"""
     # Check if user has permission
-    if not hasattr(current_user, 'role') or current_user.role != "contabilidade":
+    if not hasattr(current_user, "role") or current_user.role != "contabilidade":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only accounting users can update report templates"
+            detail="Only accounting users can update report templates",
         )
-    
+
     # TODO: Implement actual database update
     return {"message": f"Template {template_id} updated successfully"}
 
@@ -195,12 +199,12 @@ async def delete_report_template(
 ):
     """Delete a report template"""
     # Check if user has permission
-    if not hasattr(current_user, 'role') or current_user.role != "contabilidade":
+    if not hasattr(current_user, "role") or current_user.role != "contabilidade":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only accounting users can delete report templates"
+            detail="Only accounting users can delete report templates",
         )
-    
+
     # TODO: Implement actual database deletion
     return {"message": f"Template {template_id} deleted successfully"}
 
@@ -219,7 +223,7 @@ async def generate_report(
         "message": f"Report generation started using template {template_id}",
         "report_id": 999,
         "status": "generating",
-        "estimated_completion": "2024-01-01T00:05:00Z"
+        "estimated_completion": "2024-01-01T00:05:00Z",
     }
 
 
@@ -239,16 +243,16 @@ async def get_template_blocks(
                 "block_type": "header",
                 "title": "Cabeçalho do Relatório",
                 "position_order": 1,
-                "width_percentage": 100.0
+                "width_percentage": 100.0,
             },
             {
                 "id": 2,
                 "block_type": "expense_analysis",
                 "title": "Análise de Despesas",
                 "position_order": 2,
-                "width_percentage": 100.0
-            }
-        ]
+                "width_percentage": 100.0,
+            },
+        ],
     }
 
 
@@ -261,37 +265,37 @@ async def get_available_block_types():
                 "type": "header",
                 "name": "Cabeçalho",
                 "description": "Cabeçalho do relatório com logo e informações básicas",
-                "icon": "header"
+                "icon": "header",
             },
             {
                 "type": "expense_analysis",
                 "name": "Análise de Despesas",
                 "description": "Gráficos e tabelas de análise de despesas",
-                "icon": "chart-bar"
+                "icon": "chart-bar",
             },
             {
                 "type": "balance_sheet",
                 "name": "Balanço Patrimonial Simplificado",
                 "description": "Resumo do balanço patrimonial",
-                "icon": "balance-scale"
+                "icon": "balance-scale",
             },
             {
                 "type": "monthly_revenue_chart",
                 "name": "Gráfico de Faturamento Mensal",
                 "description": "Gráfico de evolução do faturamento",
-                "icon": "chart-line"
+                "icon": "chart-line",
             },
             {
                 "type": "payroll_summary",
                 "name": "Resumo da Folha",
                 "description": "Resumo da folha de pagamento",
-                "icon": "users"
+                "icon": "users",
             },
             {
                 "type": "footer",
                 "name": "Rodapé",
                 "description": "Rodapé do relatório",
-                "icon": "footer"
-            }
+                "icon": "footer",
+            },
         ]
     }

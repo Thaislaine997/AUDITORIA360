@@ -14,6 +14,7 @@ try:
     from .mcp.config import MCPConfiguration, get_config_manager
     from .mcp.server import AuditoriaResourceProvider, MCPServer
     from .mcp.tools import AuditoriaToolProvider
+
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
@@ -22,6 +23,7 @@ except ImportError:
 
 try:
     from .services.openai_service import get_openai_service
+
     OPENAI_AVAILABLE = True
 except ImportError:
     OPENAI_AVAILABLE = False
@@ -73,7 +75,7 @@ class EnhancedAIAgent:
             logger.warning("MCP not available, skipping MCP initialization")
             self.status = "ready"
             return
-            
+
         try:
             # Load configuration
             self.config = self.config_manager.load_config()
@@ -286,35 +288,37 @@ class EnhancedAIAgent:
     async def _general_ai_processing(self, action: str, context: Dict[str, Any]) -> str:
         """General AI processing using OpenAI GPT for actions not mapped to specific MCP tools"""
         logger.info(f"Processing general action with OpenAI: {action}")
-        
+
         if not OPENAI_AVAILABLE or not self.openai_service:
             return f"Processed action '{action}' with basic AI. Context: {json.dumps(context, indent=2)}"
-        
+
         try:
             # Use OpenAI for chat-like interactions
             if action.lower().startswith("chat:"):
                 message = action[5:].strip()  # Remove "chat:" prefix
-                result = await self.openai_service.get_auditoria_response(message, context)
-                
+                result = await self.openai_service.get_auditoria_response(
+                    message, context
+                )
+
                 if result["success"]:
                     return {
                         "response": result["response"],
                         "confidence": result.get("confidence", 0.8),
                         "suggestions": result.get("suggestions", []),
                         "source": "OpenAI GPT",
-                        "usage": result.get("usage", {})
+                        "usage": result.get("usage", {}),
                     }
                 else:
                     return f"Error processing with OpenAI: {result['error']}"
-            
+
             # For other actions, use as general assistant
             result = await self.openai_service.get_auditoria_response(action, context)
-            
+
             if result["success"]:
                 return result["response"]
             else:
                 return f"Error processing with OpenAI: {result['error']}"
-                
+
         except Exception as e:
             logger.error(f"Error in OpenAI processing: {e}")
             return f"Error processing action with AI: {str(e)}"
@@ -339,18 +343,22 @@ class EnhancedAIAgent:
         # Try OpenAI first if available
         if OPENAI_AVAILABLE and self.openai_service:
             try:
-                result = await self.openai_service.get_auditoria_response(comando, full_context)
-                
+                result = await self.openai_service.get_auditoria_response(
+                    comando, full_context
+                )
+
                 if result["success"]:
                     return {
                         "response": result["response"],
                         "context_used": full_context,
                         "mcp_tools_available": len(mcp_context.get("tools", [])),
-                        "mcp_resources_available": len(mcp_context.get("resources", [])),
+                        "mcp_resources_available": len(
+                            mcp_context.get("resources", [])
+                        ),
                         "provider": "OpenAI GPT",
                         "confidence": result.get("confidence", 0.8),
                         "suggestions": result.get("suggestions", []),
-                        "usage": result.get("usage", {})
+                        "usage": result.get("usage", {}),
                     }
                 else:
                     logger.warning(f"OpenAI integration failed: {result['error']}")
@@ -364,7 +372,7 @@ class EnhancedAIAgent:
             "mcp_tools_available": len(mcp_context.get("tools", [])),
             "mcp_resources_available": len(mcp_context.get("resources", [])),
             "provider": "Fallback",
-            "note": "OpenAI integration not available"
+            "note": "OpenAI integration not available",
         }
 
     async def _get_mcp_context(self) -> Dict[str, Any]:
@@ -401,21 +409,26 @@ class EnhancedAIAgent:
                 "cct_comparison": MCP_AVAILABLE,
             },
         }
-        
+
         if MCP_AVAILABLE and self.mcp_server:
             tools = [tool.model_dump() for tool in self.mcp_server._tools.values()]
             resources = [
-                resource.model_dump() for resource in self.mcp_server._resources.values()
+                resource.model_dump()
+                for resource in self.mcp_server._resources.values()
             ]
-            capabilities.update({
-                "tools": tools,
-                "resources": resources,
-            })
+            capabilities.update(
+                {
+                    "tools": tools,
+                    "resources": resources,
+                }
+            )
         else:
-            capabilities.update({
-                "tools": [],
-                "resources": [],
-            })
+            capabilities.update(
+                {
+                    "tools": [],
+                    "resources": [],
+                }
+            )
 
         return capabilities
 
@@ -427,38 +440,44 @@ class EnhancedAIAgent:
         return await self.mcp_server.handle_request(request_data)
 
     # New OpenAI-specific methods
-    
-    async def chat_with_openai(self, message: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+
+    async def chat_with_openai(
+        self, message: str, context: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """Direct chat with OpenAI GPT"""
         if not OPENAI_AVAILABLE or not self.openai_service:
             return {
                 "success": False,
                 "error": "OpenAI service not available",
-                "response": None
+                "response": None,
             }
-        
+
         return await self.openai_service.get_auditoria_response(message, context)
-    
-    async def analyze_document_with_ai(self, content: str, doc_type: str = "general") -> Dict[str, Any]:
+
+    async def analyze_document_with_ai(
+        self, content: str, doc_type: str = "general"
+    ) -> Dict[str, Any]:
         """Analyze document using OpenAI"""
         if not OPENAI_AVAILABLE or not self.openai_service:
             return {
                 "success": False,
                 "error": "OpenAI service not available",
-                "response": None
+                "response": None,
             }
-        
+
         return await self.openai_service.analyze_document_content(content, doc_type)
-    
-    async def get_ai_recommendations(self, user_context: Dict[str, Any]) -> Dict[str, Any]:
+
+    async def get_ai_recommendations(
+        self, user_context: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Get AI-powered recommendations"""
         if not OPENAI_AVAILABLE or not self.openai_service:
             return {
                 "success": False,
                 "error": "OpenAI service not available",
-                "response": None
+                "response": None,
             }
-        
+
         return await self.openai_service.get_recommendations(user_context)
 
 

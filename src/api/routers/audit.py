@@ -11,7 +11,11 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from src.api.common.responses import create_success_response, create_paginated_response, not_found_error, forbidden_error
+from src.api.common.responses import (
+    create_paginated_response,
+    create_success_response,
+    forbidden_error,
+)
 from src.api.common.validators import StandardListParams
 from src.models import User, get_db
 from src.services.auth_service import get_current_user
@@ -43,8 +47,7 @@ async def execute_audit(
     }
 
     return create_success_response(
-        data=audit_result,
-        message="Audit execution initiated successfully"
+        data=audit_result, message="Audit execution initiated successfully"
     )
 
 
@@ -56,51 +59,55 @@ async def list_audit_executions(
     db: Session = Depends(get_db),
 ):
     """List audit executions with caching and standardized pagination"""
-    
+
     # Mock audit executions data
     mock_executions = [
         {
             "id": f"audit_{i}",
             "status": "completed" if i % 2 == 0 else "running",
             "started_at": (datetime.now() - timedelta(hours=i)).isoformat(),
-            "completed_at": (datetime.now() - timedelta(hours=i-1)).isoformat() if i % 2 == 0 else None,
-            "user": current_user.name if hasattr(current_user, 'name') else "System",
+            "completed_at": (
+                (datetime.now() - timedelta(hours=i - 1)).isoformat()
+                if i % 2 == 0
+                else None
+            ),
+            "user": current_user.name if hasattr(current_user, "name") else "System",
             "summary": {
                 "total_checks": 150 + i * 10,
                 "passed": 140 + i * 8,
                 "failed": 10 + i * 2,
-                "warnings": 5 + i
-            }
+                "warnings": 5 + i,
+            },
         }
         for i in range(1, 25)  # 24 mock executions
     ]
-    
+
     # Apply search filter
     if params.search:
         mock_executions = [
-            exec for exec in mock_executions 
+            exec
+            for exec in mock_executions
             if params.search.lower() in exec["status"].lower()
         ]
-    
+
     # Apply active filter
     if params.active_only:
         mock_executions = [
-            exec for exec in mock_executions 
-            if exec["status"] == "running"
+            exec for exec in mock_executions if exec["status"] == "running"
         ]
-    
+
     # Calculate pagination
     total_items = len(mock_executions)
     start_idx = (params.page - 1) * params.page_size
     end_idx = start_idx + params.page_size
     page_items = mock_executions[start_idx:end_idx]
-    
+
     return create_paginated_response(
         items=page_items,
         page=params.page,
         page_size=params.page_size,
         total_items=total_items,
-        message="Audit executions retrieved successfully"
+        message="Audit executions retrieved successfully",
     )
 
 

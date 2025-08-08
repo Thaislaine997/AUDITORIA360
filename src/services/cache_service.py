@@ -96,7 +96,13 @@ class CacheService:
 
     def invalidate_reports_cache(self):
         """Invalidate all report-related caches"""
-        patterns = ["report:*", "audit:report:*", "compliance:report:*", "stats:*", "payroll_*"]
+        patterns = [
+            "report:*",
+            "audit:report:*",
+            "compliance:report:*",
+            "stats:*",
+            "payroll_*",
+        ]
 
         total_cleared = 0
         for pattern in patterns:
@@ -117,17 +123,18 @@ class CacheService:
                     "keyspace_hits": info.get("keyspace_hits", 0),
                     "keyspace_misses": info.get("keyspace_misses", 0),
                     "hit_rate": self._calculate_hit_rate(
-                        info.get("keyspace_hits", 0), 
-                        info.get("keyspace_misses", 0)
+                        info.get("keyspace_hits", 0), info.get("keyspace_misses", 0)
                     ),
-                    "total_keys": len(self.redis_client.keys("*")) if self.redis_client else 0
+                    "total_keys": (
+                        len(self.redis_client.keys("*")) if self.redis_client else 0
+                    ),
                 }
             else:
                 return {
                     "backend": "memory",
                     "total_keys": len(self.in_memory_cache),
                     "hit_rate": 0,  # Not tracked for in-memory
-                    "status": "fallback"
+                    "status": "fallback",
                 }
         except Exception as e:
             logger.error(f"Error getting cache stats: {e}")
@@ -143,11 +150,11 @@ class CacheService:
         if patterns is None:
             patterns = [
                 "employees:active",
-                "competencies:recent", 
+                "competencies:recent",
                 "reports:dashboard",
-                "statistics:summary"
+                "statistics:summary",
             ]
-        
+
         warmed_count = 0
         for pattern in patterns:
             try:
@@ -157,7 +164,7 @@ class CacheService:
                 warmed_count += 1
             except Exception as e:
                 logger.error(f"Error warming cache pattern {pattern}: {e}")
-        
+
         logger.info(f"Cache warming completed: {warmed_count} patterns")
         return warmed_count
 

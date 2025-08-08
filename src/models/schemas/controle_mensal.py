@@ -1,13 +1,16 @@
 # /auditoria360/src/models/schemas/controle_mensal.py
 
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
+
 
 # --- Schemas para Tarefas ---
 class TarefaBase(BaseModel):
     nome_tarefa: str
     concluido: bool = False
+
 
 class Tarefa(TarefaBase):
     id: int
@@ -17,6 +20,7 @@ class Tarefa(TarefaBase):
     class Config:
         from_attributes = True
 
+
 # --- Schemas para o Controle Mensal ---
 class ControleMensalBase(BaseModel):
     mes: int = Field(..., ge=1, le=12)
@@ -25,6 +29,7 @@ class ControleMensalBase(BaseModel):
     status_dados: str = "AGUARD. DADOS"
     observacoes: Optional[str] = None
 
+
 class ControleMensal(ControleMensalBase):
     id: int
     empresa_id: int
@@ -32,6 +37,7 @@ class ControleMensal(ControleMensalBase):
 
     class Config:
         from_attributes = True
+
 
 # --- Schema para a visualização completa, incluindo dados da empresa ---
 class ControleMensalDetalhado(BaseModel):

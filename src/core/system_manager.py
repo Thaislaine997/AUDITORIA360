@@ -5,18 +5,17 @@ This module activates the systemic architecture as described in the problem stat
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
-from dataclasses import dataclass
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
-from src.models.client_models import Client, ClientStatus
-from src.models.payroll_models import Employee, PayrollCompetency
-from src.models.database import get_db
 from src.auth.unified_auth import UnifiedAuthManager
+from src.models.client_models import Client
+from src.models.database import get_db
+from src.models.payroll_models import Employee, PayrollCompetency
 from src.services.cache_service import cache_service
 
 logger = logging.getLogger(__name__)
@@ -25,11 +24,12 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SystemContext:
     """Context object that provides unified access to system resources"""
+
     client_id: Optional[int] = None
     user_id: Optional[int] = None
     session_id: Optional[str] = None
     permissions: List[str] = None
-    
+
     def __post_init__(self):
         if self.permissions is None:
             self.permissions = []
@@ -44,18 +44,18 @@ class CoreSystemManager:
     - Automation context provisioning
     - ML data stream activation
     """
-    
+
     def __init__(self):
         self.auth_manager = UnifiedAuthManager()
         self.cache = cache_service
         self._initialized = False
         self.logger = logger
-        
+
     async def initialize(self) -> None:
         """Initialize the core system components"""
         if self._initialized:
             return
-            
+
         try:
             # Cache service is already initialized in its constructor
             # Just test that it's working
@@ -64,22 +64,24 @@ class CoreSystemManager:
             test_result = self.cache.get(test_key)
             if test_result:
                 logger.info("Cache service is operational")
-            
+
             # Validate authentication system
             auth_status = await self._validate_auth_system()
             if not auth_status:
-                logger.warning("Authentication system validation failed - using fallback mode")
-            
+                logger.warning(
+                    "Authentication system validation failed - using fallback mode"
+                )
+
             # Initialize monitoring hooks
             await self._setup_monitoring_hooks()
-            
+
             self._initialized = True
             logger.info("Core system manager initialized successfully")
-            
+
         except Exception as e:
             logger.error(f"Failed to initialize core system: {e}")
             raise
-    
+
     async def _validate_auth_system(self) -> bool:
         """Validate the unified authentication system"""
         try:
@@ -91,22 +93,26 @@ class CoreSystemManager:
         except Exception as e:
             logger.error(f"Auth system validation failed: {e}")
             return False
-    
+
     async def _setup_monitoring_hooks(self) -> None:
         """Setup monitoring and observability hooks"""
         try:
             # Cache monitoring metrics
-            self.cache.set("system:health", {
-                "status": "active",
-                "last_check": datetime.utcnow().isoformat(),
-                "version": "1.0.0"
-            }, ttl_seconds=300)
-            
+            self.cache.set(
+                "system:health",
+                {
+                    "status": "active",
+                    "last_check": datetime.utcnow().isoformat(),
+                    "version": "1.0.0",
+                },
+                ttl_seconds=300,
+            )
+
             logger.info("Monitoring hooks setup completed")
-            
+
         except Exception as e:
             logger.warning(f"Failed to setup monitoring hooks: {e}")
-    
+
     @asynccontextmanager
     async def get_system_context(self, user_id: int, client_id: Optional[int] = None):
         """
@@ -116,35 +122,37 @@ class CoreSystemManager:
         context = SystemContext(
             client_id=client_id,
             user_id=user_id,
-            session_id=f"session_{datetime.utcnow().timestamp()}"
+            session_id=f"session_{datetime.utcnow().timestamp()}",
         )
-        
+
         try:
             # Load user permissions (simplified for now)
             context.permissions = await self._get_user_permissions(user_id)
-            
+
             # Cache context for session management
             self.cache.set(
-                f"context:{context.session_id}", 
-                context.__dict__, 
-                ttl_seconds=3600
+                f"context:{context.session_id}", context.__dict__, ttl_seconds=3600
             )
-            
-            logger.info(f"System context created for user {user_id}, client {client_id}")
+
+            logger.info(
+                f"System context created for user {user_id}, client {client_id}"
+            )
             yield context
-            
+
         finally:
             # Cleanup context
             self.cache.delete(f"context:{context.session_id}")
             logger.debug(f"System context cleaned up for session {context.session_id}")
-    
+
     async def _get_user_permissions(self, user_id: int) -> List[str]:
         """Get user permissions (simplified implementation)"""
         # For now, return basic permissions based on user role
         # This will be expanded with proper RBAC integration
         return ["read:clients", "write:payroll", "read:reports"]
-    
-    async def get_client_automation_context(self, client_id: int, user_id: int) -> Dict[str, Any]:
+
+    async def get_client_automation_context(
+        self, client_id: int, user_id: int
+    ) -> Dict[str, Any]:
         """
         Get client context for automation scripts (robot_esocial.py, rpa_folha.py)
         This enables automation to work with real client data instead of generic data
@@ -156,10 +164,9 @@ class CoreSystemManager:
                 client = db.query(Client).filter(Client.id == client_id).first()
                 if not client:
                     raise HTTPException(
-                        status_code=status.HTTP_404_NOT_FOUND,
-                        detail="Client not found"
+                        status_code=status.HTTP_404_NOT_FOUND, detail="Client not found"
                     )
-                
+
                 # Get latest payroll data for context
                 latest_payroll = (
                     db.query(PayrollCompetency)
@@ -167,7 +174,7 @@ class CoreSystemManager:
                     .order_by(PayrollCompetency.created_at.desc())
                     .first()
                 )
-                
+
                 # Build automation context
                 automation_context = {
                     "client": {
@@ -176,38 +183,40 @@ class CoreSystemManager:
                         "document_number": client.document_number,
                         "business_segment": client.business_segment,
                         "tax_regime": client.tax_regime,
-                        "status": client.status.value if client.status else "active"
+                        "status": client.status.value if client.status else "active",
                     },
                     "payroll": {
-                        "latest_competency": latest_payroll.id if latest_payroll else None,
+                        "latest_competency": (
+                            latest_payroll.id if latest_payroll else None
+                        ),
                         "year": latest_payroll.year if latest_payroll else None,
-                        "month": latest_payroll.month if latest_payroll else None
+                        "month": latest_payroll.month if latest_payroll else None,
                     },
                     "automation_config": {
                         "esocial_enabled": True,
                         "rpa_folha_enabled": True,
-                        "credentials_context": f"client_{client_id}"
+                        "credentials_context": f"client_{client_id}",
                     },
                     "session": {
                         "id": context.session_id,
                         "user_id": user_id,
-                        "timestamp": datetime.utcnow().isoformat()
-                    }
+                        "timestamp": datetime.utcnow().isoformat(),
+                    },
                 }
-                
+
                 # Cache for automation scripts
                 self.cache.set(
-                    f"automation:context:{client_id}", 
-                    automation_context, 
-                    ttl_seconds=1800
+                    f"automation:context:{client_id}",
+                    automation_context,
+                    ttl_seconds=1800,
                 )
-                
+
                 logger.info(f"Automation context created for client {client_id}")
                 return automation_context
-                
+
             finally:
                 db.close()
-    
+
     async def get_ml_data_pipeline_context(self, client_id: int) -> Dict[str, Any]:
         """
         Get data context for ML risk model training
@@ -219,10 +228,12 @@ class CoreSystemManager:
             client = db.query(Client).filter(Client.id == client_id).first()
             if not client:
                 return {}
-            
+
             # Get employee statistics
-            employee_count = db.query(Employee).filter(Employee.is_active == True).count()
-            
+            employee_count = (
+                db.query(Employee).filter(Employee.is_active == True).count()
+            )
+
             # Get payroll statistics
             payroll_competencies = (
                 db.query(PayrollCompetency)
@@ -230,7 +241,7 @@ class CoreSystemManager:
                 .limit(12)  # Last 12 months
                 .all()
             )
-            
+
             # Build ML training context
             ml_context = {
                 "client_features": {
@@ -241,54 +252,64 @@ class CoreSystemManager:
                     "churn_risk_score": client.churn_risk_score,
                     "total_configurations": client.total_configurations,
                     "failed_sends_count": client.failed_sends_count,
-                    "successful_sends_count": client.successful_sends_count
+                    "successful_sends_count": client.successful_sends_count,
                 },
                 "payroll_features": {
                     "competencies_count": len(payroll_competencies),
-                    "avg_employees": sum(p.total_employees for p in payroll_competencies) / max(len(payroll_competencies), 1),
-                    "avg_gross_amount": sum(p.total_gross_amount for p in payroll_competencies) / max(len(payroll_competencies), 1),
-                    "last_processing_date": payroll_competencies[0].created_at.isoformat() if payroll_competencies else None
+                    "avg_employees": sum(
+                        p.total_employees for p in payroll_competencies
+                    )
+                    / max(len(payroll_competencies), 1),
+                    "avg_gross_amount": sum(
+                        p.total_gross_amount for p in payroll_competencies
+                    )
+                    / max(len(payroll_competencies), 1),
+                    "last_processing_date": (
+                        payroll_competencies[0].created_at.isoformat()
+                        if payroll_competencies
+                        else None
+                    ),
                 },
                 "risk_indicators": {
                     "payment_delays": 0,  # To be calculated from payroll data
                     "compliance_issues": 0,  # To be calculated from audit data
                     "employee_turnover": 0,  # To be calculated from employee data
-                    "calculation_errors": sum(p.divergences_count for p in payroll_competencies)
+                    "calculation_errors": sum(
+                        p.divergences_count for p in payroll_competencies
+                    ),
                 },
                 "data_quality": {
                     "completeness_score": 0.85,  # To be calculated
                     "last_updated": datetime.utcnow().isoformat(),
-                    "data_points": employee_count + len(payroll_competencies)
-                }
+                    "data_points": employee_count + len(payroll_competencies),
+                },
             }
-            
+
             # Cache for ML processing
-            self.cache.set(
-                f"ml:context:{client_id}", 
-                ml_context, 
-                ttl_seconds=3600
-            )
-            
+            self.cache.set(f"ml:context:{client_id}", ml_context, ttl_seconds=3600)
+
             logger.info(f"ML data pipeline context created for client {client_id}")
             return ml_context
-            
+
         finally:
             db.close()
-    
-    async def create_business_data_flow(self, user_id: int, client_id: int) -> Dict[str, Any]:
+
+    async def create_business_data_flow(
+        self, user_id: int, client_id: int
+    ) -> Dict[str, Any]:
         """
         Create the first functional business data flow between frontend and backend
         This is the core function that activates the system architecture
         """
         try:
             async with self.get_system_context(user_id, client_id) as context:
-                
+
                 # Get comprehensive client and business data
                 client_data = await self._get_enriched_client_data(client_id)
                 payroll_data = await self._get_enriched_payroll_data(client_id)
                 automation_status = await self._get_automation_status(client_id)
                 ml_insights = await self._get_ml_insights(client_id)
-                
+
                 # Build the unified business data flow
                 business_flow = {
                     "client": client_data,
@@ -299,34 +320,36 @@ class CoreSystemManager:
                         "auth_validated": True,
                         "cache_active": self.cache.cache_backend == "redis",
                         "context_id": context.session_id,
-                        "timestamp": datetime.utcnow().isoformat()
+                        "timestamp": datetime.utcnow().isoformat(),
                     },
                     "available_actions": [
                         "process_payroll",
-                        "generate_reports", 
+                        "generate_reports",
                         "run_automation",
                         "analyze_risks",
-                        "audit_compliance"
-                    ]
+                        "audit_compliance",
+                    ],
                 }
-                
+
                 # Cache the business flow for frontend consumption
                 self.cache.set(
                     f"business_flow:{client_id}:{user_id}",
                     business_flow,
-                    ttl_seconds=600  # 10 minutes
+                    ttl_seconds=600,  # 10 minutes
                 )
-                
-                logger.info(f"Business data flow activated for client {client_id}, user {user_id}")
+
+                logger.info(
+                    f"Business data flow activated for client {client_id}, user {user_id}"
+                )
                 return business_flow
-                
+
         except Exception as e:
             logger.error(f"Failed to create business data flow: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to activate business data flow"
+                detail="Failed to activate business data flow",
             )
-    
+
     async def _get_enriched_client_data(self, client_id: int) -> Dict[str, Any]:
         """Get enriched client data for the business flow"""
         db = next(get_db())
@@ -334,7 +357,7 @@ class CoreSystemManager:
             client = db.query(Client).filter(Client.id == client_id).first()
             if not client:
                 return {}
-            
+
             return {
                 "id": client.id,
                 "name": client.name,
@@ -342,13 +365,21 @@ class CoreSystemManager:
                 "document_number": client.document_number,
                 "business_segment": client.business_segment,
                 "status": client.status.value if client.status else "active",
-                "employee_count": db.query(Employee).filter(Employee.is_active == True).count(),
-                "last_interaction": client.last_interaction.isoformat() if client.last_interaction else None,
-                "risk_level": client.churn_risk_level.value if client.churn_risk_level else "low"
+                "employee_count": db.query(Employee)
+                .filter(Employee.is_active == True)
+                .count(),
+                "last_interaction": (
+                    client.last_interaction.isoformat()
+                    if client.last_interaction
+                    else None
+                ),
+                "risk_level": (
+                    client.churn_risk_level.value if client.churn_risk_level else "low"
+                ),
             }
         finally:
             db.close()
-    
+
     async def _get_enriched_payroll_data(self, client_id: int) -> Dict[str, Any]:
         """Get enriched payroll data for the business flow"""
         db = next(get_db())
@@ -358,57 +389,63 @@ class CoreSystemManager:
                 .order_by(PayrollCompetency.created_at.desc())
                 .first()
             )
-            
+
             return {
-                "latest_competency": {
-                    "id": latest_competency.id,
-                    "year": latest_competency.year,
-                    "month": latest_competency.month,
-                    "status": latest_competency.status.value,
-                    "total_employees": latest_competency.total_employees,
-                    "total_gross_amount": latest_competency.total_gross_amount,
-                    "divergences_count": latest_competency.divergences_count
-                } if latest_competency else None,
+                "latest_competency": (
+                    {
+                        "id": latest_competency.id,
+                        "year": latest_competency.year,
+                        "month": latest_competency.month,
+                        "status": latest_competency.status.value,
+                        "total_employees": latest_competency.total_employees,
+                        "total_gross_amount": latest_competency.total_gross_amount,
+                        "divergences_count": latest_competency.divergences_count,
+                    }
+                    if latest_competency
+                    else None
+                ),
                 "total_competencies": db.query(PayrollCompetency).count(),
-                "active_employees": db.query(Employee).filter(Employee.is_active == True).count()
+                "active_employees": db.query(Employee)
+                .filter(Employee.is_active == True)
+                .count(),
             }
         finally:
             db.close()
-    
+
     async def _get_automation_status(self, client_id: int) -> Dict[str, Any]:
         """Get automation status for the business flow"""
         return {
             "esocial_robot": {
                 "status": "ready",
                 "last_execution": None,
-                "configured": True
+                "configured": True,
             },
             "rpa_folha": {
-                "status": "ready", 
+                "status": "ready",
                 "last_execution": None,
-                "configured": True
+                "configured": True,
             },
-            "schedules_active": 0
+            "schedules_active": 0,
         }
-    
+
     async def _get_ml_insights(self, client_id: int) -> Dict[str, Any]:
         """Get ML insights for the business flow"""
         return {
             "risk_model": {
                 "status": "trained",
                 "last_update": datetime.utcnow().isoformat(),
-                "confidence": 0.85
+                "confidence": 0.85,
             },
             "predictions": {
                 "churn_risk": "low",
-                "compliance_risk": "medium", 
-                "calculation_accuracy": "high"
+                "compliance_risk": "medium",
+                "calculation_accuracy": "high",
             },
             "recommendations": [
                 "Review overtime calculations for accuracy",
                 "Update employee data for better predictions",
-                "Schedule quarterly compliance audit"
-            ]
+                "Schedule quarterly compliance audit",
+            ],
         }
 
 

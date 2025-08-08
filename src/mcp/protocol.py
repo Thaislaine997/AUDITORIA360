@@ -4,22 +4,25 @@ Defines core protocol messages and types according to MCP specification
 Enhanced with Consensus Mechanism for "Grande Síntese" - Initiative IV
 """
 
+import logging
+from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
-from datetime import datetime
-import uuid
-import logging
 
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
+
 class MCPVersion(str, Enum):
     """Supported MCP protocol versions"""
+
     V1_0 = "1.0"
+
 
 class ErrorCode(int, Enum):
     """Standard MCP error codes"""
+
     PARSE_ERROR = -32700
     INVALID_REQUEST = -32600
     METHOD_NOT_FOUND = -32601
@@ -30,15 +33,19 @@ class ErrorCode(int, Enum):
     QUORUM_NOT_REACHED = -32002
     AGENT_CONFLICT = -32003
 
+
 class ConsensusLevel(str, Enum):
     """Consensus requirement levels"""
+
     SIMPLE = "simple"  # 51% agreement
-    MAJORITY = "majority"  # 66% agreement 
+    MAJORITY = "majority"  # 66% agreement
     SUPERMAJORITY = "supermajority"  # 75% agreement
     UNANIMOUS = "unanimous"  # 100% agreement
 
+
 class AgentRole(str, Enum):
     """Types of agents in the consensus system"""
+
     SECURITY_AGENT = "security"
     VALIDATION_AGENT = "validation"
     RISK_AGENT = "risk"
@@ -46,8 +53,10 @@ class AgentRole(str, Enum):
     AUDIT_AGENT = "audit"
     BUSINESS_AGENT = "business"
 
+
 class ConsensusVote(BaseModel):
     """Individual agent vote in consensus"""
+
     agent_id: str
     agent_role: AgentRole
     vote: bool  # True = approve, False = reject
@@ -56,8 +65,10 @@ class ConsensusVote(BaseModel):
     timestamp: datetime
     supporting_data: Optional[Dict[str, Any]] = None
 
+
 class ConsensusResult(BaseModel):
     """Result of a consensus process"""
+
     consensus_id: str
     decision_approved: bool
     total_agents: int
@@ -73,10 +84,14 @@ class ConsensusResult(BaseModel):
     timestamp: datetime
     processing_time_ms: int
 
+
 class MCPConsensusRequest(BaseModel):
     """Request for MCP consensus on critical insights"""
+
     insight_id: str
-    insight_type: str  # e.g., "risk_assessment", "security_decision", "compliance_ruling"
+    insight_type: (
+        str  # e.g., "risk_assessment", "security_decision", "compliance_ruling"
+    )
     insight_data: Dict[str, Any]
     consensus_level_required: ConsensusLevel = ConsensusLevel.MAJORITY
     timeout_seconds: int = 300  # 5 minute default timeout
@@ -84,21 +99,27 @@ class MCPConsensusRequest(BaseModel):
     context: Optional[Dict[str, Any]] = None
     priority: Literal["low", "medium", "high", "critical"] = "medium"
 
+
 class MCPError(BaseModel):
     """MCP error response format"""
+
     code: ErrorCode
     message: str
     data: Optional[Dict[str, Any]] = None
 
+
 class MCPRequest(BaseModel):
     """Base MCP request message"""
+
     jsonrpc: Literal["2.0"] = "2.0"
     id: Union[str, int, None] = None
     method: str
     params: Optional[Dict[str, Any]] = None
 
+
 class MCPResponse(BaseModel):
     """Base MCP response message"""
+
     jsonrpc: Literal["2.0"] = "2.0"
     id: Union[str, int, None] = None
     result: Optional[Dict[str, Any]] = None
@@ -261,9 +282,10 @@ class ToolUpdateNotification(MCPNotification):
 
 # Swarm Intelligence Extensions for Master Collective Protocol
 
+
 class AgentRole(str, Enum):
     """Agent specialization roles in the collective"""
-    
+
     COORDINATOR = "coordinator"
     ANALYST = "analyst"
     LEGISLATOR = "legislator"
@@ -276,7 +298,7 @@ class AgentRole(str, Enum):
 
 class AgentStatus(str, Enum):
     """Agent operational status"""
-    
+
     ACTIVE = "active"
     IDLE = "idle"
     BUSY = "busy"
@@ -287,7 +309,7 @@ class AgentStatus(str, Enum):
 
 class AgentInfo(BaseModel):
     """Information about an agent in the collective"""
-    
+
     agent_id: str
     name: str
     role: AgentRole
@@ -302,7 +324,7 @@ class AgentInfo(BaseModel):
 
 class SwarmMessage(BaseModel):
     """Message format for inter-agent communication"""
-    
+
     message_id: str
     sender_id: str
     recipient_id: Optional[str] = None  # None means broadcast
@@ -316,7 +338,7 @@ class SwarmMessage(BaseModel):
 
 class ConsensusProposal(BaseModel):
     """Proposal for collective decision making"""
-    
+
     proposal_id: str
     proposer_id: str
     proposal_type: str
@@ -329,7 +351,7 @@ class ConsensusProposal(BaseModel):
 
 class TaskDefinition(BaseModel):
     """Definition of a task for the collective"""
-    
+
     task_id: str
     title: str
     description: str
@@ -344,124 +366,132 @@ class TaskDefinition(BaseModel):
 
 # Swarm-specific MCP Messages
 
+
 class RegisterAgentRequest(MCPRequest):
     """Register a new agent in the collective"""
-    
+
     method: Literal["swarm/agent/register"] = "swarm/agent/register"
     params: AgentInfo
 
 
 class RegisterAgentResponse(MCPResponse):
     """Agent registration response"""
-    
+
     result: Dict[Literal["success", "agent_id"], Union[bool, str]]
 
 
 class ListAgentsRequest(MCPRequest):
     """List all agents in the collective"""
-    
+
     method: Literal["swarm/agents/list"] = "swarm/agents/list"
     params: Optional[Dict[str, Any]] = None
 
 
 class ListAgentsResponse(MCPResponse):
     """Agents list response"""
-    
+
     result: Dict[Literal["agents"], List[AgentInfo]]
 
 
 class SendMessageRequest(MCPRequest):
     """Send message between agents"""
-    
+
     method: Literal["swarm/message/send"] = "swarm/message/send"
     params: SwarmMessage
 
 
 class SendMessageResponse(MCPResponse):
     """Message sending response"""
-    
+
     result: Dict[Literal["delivered"], bool]
 
 
 class ProposeConsensusRequest(MCPRequest):
     """Propose something for collective decision"""
-    
+
     method: Literal["swarm/consensus/propose"] = "swarm/consensus/propose"
     params: ConsensusProposal
 
 
 class VoteConsensusRequest(MCPRequest):
     """Vote on a consensus proposal"""
-    
+
     method: Literal["swarm/consensus/vote"] = "swarm/consensus/vote"
     params: Dict[Literal["proposal_id", "vote"], Union[str, bool]]
 
 
 class DistributeTaskRequest(MCPRequest):
     """Distribute a task to the collective"""
-    
+
     method: Literal["swarm/task/distribute"] = "swarm/task/distribute"
     params: TaskDefinition
 
 
 class ClaimTaskRequest(MCPRequest):
     """Agent claims a task"""
-    
+
     method: Literal["swarm/task/claim"] = "swarm/task/claim"
     params: Dict[Literal["task_id", "agent_id"], str]
 
 
 class IsolateAgentRequest(MCPRequest):
     """Isolate a corrupted agent"""
-    
+
     method: Literal["swarm/agent/isolate"] = "swarm/agent/isolate"
     params: Dict[Literal["agent_id", "reason"], str]
 
 
 class SwarmHealthRequest(MCPRequest):
     """Get collective health status"""
-    
+
     method: Literal["swarm/health"] = "swarm/health"
 
 
 class SwarmHealthResponse(MCPResponse):
     """Collective health status"""
-    
+
     result: Dict[str, Any]  # Contains metrics, agent counts, etc.
 
 
 # Swarm Notifications
 
+
 class AgentJoinedNotification(MCPNotification):
     """Notify when new agent joins collective"""
-    
-    method: Literal["notifications/swarm/agent_joined"] = "notifications/swarm/agent_joined"
+
+    method: Literal["notifications/swarm/agent_joined"] = (
+        "notifications/swarm/agent_joined"
+    )
     params: Dict[Literal["agent"], AgentInfo]
 
 
 class AgentLeftNotification(MCPNotification):
     """Notify when agent leaves collective"""
-    
+
     method: Literal["notifications/swarm/agent_left"] = "notifications/swarm/agent_left"
     params: Dict[Literal["agent_id", "reason"], str]
 
 
 class MessageBroadcastNotification(MCPNotification):
     """Broadcast message to all agents"""
-    
-    method: Literal["notifications/swarm/message_broadcast"] = "notifications/swarm/message_broadcast"
+
+    method: Literal["notifications/swarm/message_broadcast"] = (
+        "notifications/swarm/message_broadcast"
+    )
     params: SwarmMessage
 
 
 class ConsensusUpdateNotification(MCPNotification):
     """Notify about consensus proposal updates"""
-    
-    method: Literal["notifications/swarm/consensus_update"] = "notifications/swarm/consensus_update"
+
+    method: Literal["notifications/swarm/consensus_update"] = (
+        "notifications/swarm/consensus_update"
+    )
     params: ConsensusProposal
 
 
 class EmergencyProtocolNotification(MCPNotification):
     """Emergency protocol activation"""
-    
+
     method: Literal["notifications/swarm/emergency"] = "notifications/swarm/emergency"
     params: Dict[str, Any]

@@ -3,7 +3,6 @@ Configuração para scripts de demonstração do AUDITORIA360.
 Centraliza valores configuráveis para melhorar modularidade.
 """
 
-import os
 from pathlib import Path
 from typing import Any, Dict
 

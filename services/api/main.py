@@ -6,14 +6,14 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# Importar as funções de processamento
-from src.main import process_control_sheet, process_document_ocr
+# --- 2. IMPORTAR O ROUTER DO MÓDULO DE CONTROLE MENSAL ---
+from src.api.routers.controle_mensal_router import router as controle_mensal_router
 
 # --- 1. IMPORTAR O NOSSO NOVO ROUTER DE TESTE ---
 from src.api.routers.supabase_test_router import router as supabase_test_router
 
-# --- 2. IMPORTAR O ROUTER DO MÓDULO DE CONTROLE MENSAL ---
-from src.api.routers.controle_mensal_router import router as controle_mensal_router
+# Importar as funções de processamento
+from src.main import process_control_sheet, process_document_ocr
 
 # Importar os roteadores
 # from .explainability_routes import router as explainability_router  # Temporariamente comentado

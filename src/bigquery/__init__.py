@@ -4,14 +4,14 @@ Provides modular BigQuery client management, schema handling, and data operation
 """
 
 from .client import BigQueryClient, get_bigquery_client
-from .schema import SchemaManager
-from .operations import DataOperations
 from .loaders import ControleFolhaLoader
+from .operations import DataOperations
+from .schema import SchemaManager
 
 __all__ = [
     "BigQueryClient",
-    "get_bigquery_client", 
+    "get_bigquery_client",
     "SchemaManager",
     "DataOperations",
-    "ControleFolhaLoader"
+    "ControleFolhaLoader",
 ]

@@ -10,28 +10,27 @@ Author: AUDITORIA360 Team
 Date: 2024-07-31
 """
 
-import os
-import json
-import sys
-from pathlib import Path
-from typing import Dict, List, Tuple, Any
-from datetime import datetime
 import hashlib
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
+
 
 class MasterExecutionChecklist:
     """Master execution checklist validator for AUDITORIA360 project"""
-    
+
     def __init__(self, project_root: str = None):
         self.project_root = Path(project_root) if project_root else Path.cwd()
         self.checklist_data = self._load_checklist_definition()
         self.results = {}
-        
+
     def _load_checklist_definition(self) -> Dict[str, List[str]]:
         """Load the master checklist definition"""
         return {
             "PARTE_1_ALICERCE_E_GOVERNANCA": [
                 ".coverage",
-                ".coveragerc", 
+                ".coveragerc",
                 ".env.example",
                 ".env.template",
                 ".flake8",
@@ -57,7 +56,7 @@ class MasterExecutionChecklist:
                 "scripts/seed_blueprint_data.py",
                 "tests/test_api_features.py",
                 "tests/test_api_server.py",
-                "vercel.json"
+                "vercel.json",
             ],
             "PARTE_2_CONFIGURACAO_E_AUTOMACAO_CI_CD": [
                 ".github/dependabot.yml",
@@ -243,7 +242,7 @@ class MasterExecutionChecklist:
                 "src/utils/__init__.py",
                 "src/utils/api_integration.py",
                 "src/utils/monitoring.py",
-                "src/utils/performance.py"
+                "src/utils/performance.py",
             ],
             "PARTE_5_NOVO_MUNDO_FRONTEND_KAIROS": [
                 "frontend/src/utils/navigationLogger.js",
@@ -336,7 +335,7 @@ class MasterExecutionChecklist:
                 "src/frontend/src/test/setup.ts",
                 "src/frontend/tsconfig.json",
                 "src/frontend/tsconfig.node.json",
-                "src/frontend/vite.config.ts"
+                "src/frontend/vite.config.ts",
             ],
             "PARTE_6_DOCUMENTACAO_TESTES_ECOSSISTEMA": [
                 "auth/README.md",
@@ -584,10 +583,10 @@ class MasterExecutionChecklist:
                 "tests/unit/test_tenant_isolation.py",
                 "tests/unit/test_unified_auth.py",
                 "tests/unit/test_utils.py",
-                "tests/unit/test_vertex_utils.py"
-            ]
+                "tests/unit/test_vertex_utils.py",
+            ],
         }
-    
+
     def validate_file(self, file_path: str) -> Dict[str, Any]:
         """Validate a single file"""
         full_path = self.project_root / file_path
@@ -598,72 +597,75 @@ class MasterExecutionChecklist:
             "last_modified": None,
             "file_hash": None,
             "syntax_valid": None,
-            "validation_errors": []
+            "validation_errors": [],
         }
-        
+
         if full_path.exists():
             try:
                 stat = full_path.stat()
                 result["size"] = stat.st_size
-                result["last_modified"] = datetime.fromtimestamp(stat.st_mtime).isoformat()
-                
+                result["last_modified"] = datetime.fromtimestamp(
+                    stat.st_mtime
+                ).isoformat()
+
                 # Calculate file hash
-                with open(full_path, 'rb') as f:
+                with open(full_path, "rb") as f:
                     content = f.read()
                     result["file_hash"] = hashlib.sha256(content).hexdigest()[:16]
-                
+
                 # Basic syntax validation based on file extension
                 result["syntax_valid"] = self._validate_syntax(full_path)
-                
+
             except Exception as e:
                 result["validation_errors"].append(f"Error reading file: {str(e)}")
         else:
             result["validation_errors"].append("File does not exist")
-            
+
         return result
-    
+
     def _validate_syntax(self, file_path: Path) -> bool:
         """Basic syntax validation based on file type"""
         try:
             suffix = file_path.suffix.lower()
-            
-            if suffix == '.py':
-                with open(file_path, 'r', encoding='utf-8') as f:
+
+            if suffix == ".py":
+                with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
-                    compile(content, str(file_path), 'exec')
+                    compile(content, str(file_path), "exec")
                 return True
-                
-            elif suffix == '.json':
-                with open(file_path, 'r', encoding='utf-8') as f:
+
+            elif suffix == ".json":
+                with open(file_path, "r", encoding="utf-8") as f:
                     json.load(f)
                 return True
-                
-            elif suffix in ['.yml', '.yaml']:
+
+            elif suffix in [".yml", ".yaml"]:
                 import yaml
-                with open(file_path, 'r', encoding='utf-8') as f:
+
+                with open(file_path, "r", encoding="utf-8") as f:
                     yaml.safe_load(f)
                 return True
-                
-            elif suffix in ['.md', '.txt', '.toml']:
+
+            elif suffix in [".md", ".txt", ".toml"]:
                 # Basic text file validation
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     f.read()
                 return True
-                
+
             else:
                 # For other files, just check if readable
-                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                     f.read()
                 return True
-                
+
         except Exception:
             return False
-    
+
     def validate_section(self, section_name: str) -> Dict[str, Any]:
         """Validate all files in a section"""
         if section_name not in self.checklist_data:
             return {"error": f"Section {section_name} not found"}
-        
+
         files = self.checklist_data[section_name]
         section_results = {
             "section": section_name,
@@ -671,25 +673,25 @@ class MasterExecutionChecklist:
             "files_found": 0,
             "files_valid": 0,
             "completion_percentage": 0,
-            "files": {}
+            "files": {},
         }
-        
+
         for file_path in files:
             file_result = self.validate_file(file_path)
             section_results["files"][file_path] = file_result
-            
+
             if file_result["exists"]:
                 section_results["files_found"] += 1
-                
+
             if file_result["exists"] and file_result["syntax_valid"]:
                 section_results["files_valid"] += 1
-        
+
         section_results["completion_percentage"] = (
             section_results["files_valid"] / section_results["total_files"] * 100
         )
-        
+
         return section_results
-    
+
     def validate_all(self) -> Dict[str, Any]:
         """Validate all sections of the checklist"""
         overall_results = {
@@ -701,46 +703,47 @@ class MasterExecutionChecklist:
                 "total_files": 0,
                 "files_found": 0,
                 "files_valid": 0,
-                "overall_completion_percentage": 0
-            }
+                "overall_completion_percentage": 0,
+            },
         }
-        
+
         for section_name in self.checklist_data:
             section_result = self.validate_section(section_name)
             overall_results["sections"][section_name] = section_result
-            
+
             # Accumulate summary statistics
             overall_results["summary"]["total_files"] += section_result["total_files"]
             overall_results["summary"]["files_found"] += section_result["files_found"]
             overall_results["summary"]["files_valid"] += section_result["files_valid"]
-        
+
         # Calculate overall completion percentage
         if overall_results["summary"]["total_files"] > 0:
             overall_results["summary"]["overall_completion_percentage"] = (
-                overall_results["summary"]["files_valid"] / 
-                overall_results["summary"]["total_files"] * 100
+                overall_results["summary"]["files_valid"]
+                / overall_results["summary"]["total_files"]
+                * 100
             )
-        
+
         self.results = overall_results
         return overall_results
-    
+
     def generate_report(self, output_format: str = "json") -> str:
         """Generate a validation report"""
         if not self.results:
             self.validate_all()
-        
+
         if output_format == "json":
             return json.dumps(self.results, indent=2)
-        
+
         elif output_format == "markdown":
             return self._generate_markdown_report()
-        
+
         elif output_format == "html":
             return self._generate_html_report()
-        
+
         else:
             raise ValueError(f"Unsupported output format: {output_format}")
-    
+
     def _generate_markdown_report(self) -> str:
         """Generate a markdown validation report"""
         md_lines = [
@@ -757,13 +760,13 @@ class MasterExecutionChecklist:
             f"- **Percentual de Conclusão**: {self.results['summary']['overall_completion_percentage']:.1f}%",
             "",
             "## 📋 Status por Seção",
-            ""
+            "",
         ]
-        
+
         for section_name, section_data in self.results["sections"].items():
             section_title = section_name.replace("_", " ").title()
             completion = section_data["completion_percentage"]
-            
+
             # Status icon based on completion
             if completion == 100:
                 status_icon = "✅"
@@ -771,14 +774,16 @@ class MasterExecutionChecklist:
                 status_icon = "🟡"
             else:
                 status_icon = "❌"
-            
-            md_lines.extend([
-                f"### {status_icon} {section_title}",
-                "",
-                f"**Progresso**: {completion:.1f}% ({section_data['files_valid']}/{section_data['total_files']})",
-                ""
-            ])
-            
+
+            md_lines.extend(
+                [
+                    f"### {status_icon} {section_title}",
+                    "",
+                    f"**Progresso**: {completion:.1f}% ({section_data['files_valid']}/{section_data['total_files']})",
+                    "",
+                ]
+            )
+
             # List files with status
             for file_path, file_data in section_data["files"].items():
                 if file_data["exists"] and file_data["syntax_valid"]:
@@ -787,13 +792,13 @@ class MasterExecutionChecklist:
                     icon = "⚠️"
                 else:
                     icon = "❌"
-                
+
                 md_lines.append(f"- {icon} `{file_path}`")
-            
+
             md_lines.append("")
-        
+
         return "\n".join(md_lines)
-    
+
     def _generate_html_report(self) -> str:
         """Generate an HTML validation report"""
         html_template = """
@@ -842,13 +847,13 @@ class MasterExecutionChecklist:
 </body>
 </html>
         """
-        
+
         # Generate sections HTML
         sections_html = ""
         for section_name, section_data in self.results["sections"].items():
             section_title = section_name.replace("_", " ").title()
             completion = section_data["completion_percentage"]
-            
+
             files_html = ""
             for file_path, file_data in section_data["files"].items():
                 if file_data["exists"] and file_data["syntax_valid"]:
@@ -860,16 +865,16 @@ class MasterExecutionChecklist:
                 else:
                     css_class = "file-missing"
                     icon = "❌"
-                
+
                 files_html += f'<div class="file-item {css_class}">{icon} <code>{file_path}</code></div>'
-            
+
             sections_html += f"""
             <div class="section">
                 <div class="section-header">{section_title} - {completion:.1f}%</div>
                 <div class="section-content">{files_html}</div>
             </div>
             """
-        
+
         return html_template.format(
             timestamp=self.results["timestamp"],
             project_root=self.results["project_root"],
@@ -877,42 +882,49 @@ class MasterExecutionChecklist:
             total_files=self.results["summary"]["total_files"],
             files_found=self.results["summary"]["files_found"],
             files_valid=self.results["summary"]["files_valid"],
-            sections_html=sections_html
+            sections_html=sections_html,
         )
-    
+
     def save_report(self, filename: str, output_format: str = "json"):
         """Save validation report to file"""
         report_content = self.generate_report(output_format)
-        
+
         output_path = self.project_root / filename
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(report_content)
-        
+
         print(f"Report saved to: {output_path}")
 
 
 def main():
     """Main function for command line usage"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description="AUDITORIA360 Master Execution Checklist Validator")
+
+    parser = argparse.ArgumentParser(
+        description="AUDITORIA360 Master Execution Checklist Validator"
+    )
     parser.add_argument("--project-root", default=".", help="Project root directory")
-    parser.add_argument("--output-format", choices=["json", "markdown", "html"], default="json", help="Output format")
+    parser.add_argument(
+        "--output-format",
+        choices=["json", "markdown", "html"],
+        default="json",
+        help="Output format",
+    )
     parser.add_argument("--output-file", help="Output file name")
     parser.add_argument("--section", help="Validate specific section only")
-    
+
     args = parser.parse_args()
-    
+
     # Initialize checklist validator
     checklist = MasterExecutionChecklist(args.project_root)
-    
+
     # Validate
     if args.section:
         results = checklist.validate_section(args.section)
         print(json.dumps(results, indent=2))
     else:
         results = checklist.validate_all()
-        
+
         if args.output_file:
             checklist.save_report(args.output_file, args.output_format)
         else:

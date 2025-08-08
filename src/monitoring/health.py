@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class HealthCheck:
     """Health check result structure"""
+
     name: str
     status: str  # "healthy", "degraded", "unhealthy"
     timestamp: datetime
@@ -69,14 +70,14 @@ class HealthChecker:
     async def _run_check(self, check: Dict[str, Any]) -> HealthCheck:
         """Run a single health check"""
         start_time = time.time()
-        
+
         try:
             # Run the check function
             if asyncio.iscoroutinefunction(check["func"]):
                 result = await check["func"]()
             else:
                 result = check["func"]()
-            
+
             response_time = (time.time() - start_time) * 1000
 
             # Parse result
@@ -105,7 +106,7 @@ class HealthChecker:
         except Exception as e:
             response_time = (time.time() - start_time) * 1000
             logger.error(f"Health check failed: {e}")
-            
+
             return HealthCheck(
                 name="",  # Will be set by caller
                 status="unhealthy",
@@ -125,7 +126,7 @@ class HealthChecker:
             return "unknown"
 
         statuses = [result.status for result in self.last_results.values()]
-        
+
         if all(status == "healthy" for status in statuses):
             return "healthy"
         elif any(status == "unhealthy" for status in statuses):

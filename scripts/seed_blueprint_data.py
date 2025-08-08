@@ -3,21 +3,18 @@ Seed data for AUDITORIA360 Blueprint features
 Creates initial achievements, skills, onboarding missions, and templates
 """
 
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-from datetime import datetime
 import json
 
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
 from ..models.auth_models import (
-    Achievement, 
-    Skill, 
-    OnboardingMission, 
-    NotificationPreference
+    Achievement,
+    NotificationPreference,
+    OnboardingMission,
+    Skill,
 )
-from ..models.client_models import (
-    ConfigurationTemplate,
-    AIInsight
-)
+from ..models.client_models import AIInsight, ConfigurationTemplate
 
 
 def seed_achievements(db: Session):
@@ -34,7 +31,7 @@ def seed_achievements(db: Session):
             "criteria_resource": "clients",
         },
         {
-            "name": "Mestre da Configuração", 
+            "name": "Mestre da Configuração",
             "description": "Completou uma configuração completa de envio",
             "icon": "configuration_master",
             "badge_class": "silver",
@@ -84,17 +81,19 @@ def seed_achievements(db: Session):
             "criteria_resource": "security_config",
         },
     ]
-    
+
     for achievement_data in achievements:
         # Check if achievement already exists
-        existing = db.query(Achievement).filter(
-            Achievement.name == achievement_data["name"]
-        ).first()
-        
+        existing = (
+            db.query(Achievement)
+            .filter(Achievement.name == achievement_data["name"])
+            .first()
+        )
+
         if not existing:
             achievement = Achievement(**achievement_data)
             db.add(achievement)
-    
+
     db.commit()
 
 
@@ -156,22 +155,20 @@ def seed_skills(db: Session):
             "action_type": "reports_created",
         },
     ]
-    
+
     for skill_data in skills:
-        existing = db.query(Skill).filter(
-            Skill.name == skill_data["name"]
-        ).first()
-        
+        existing = db.query(Skill).filter(Skill.name == skill_data["name"]).first()
+
         if not existing:
             skill = Skill(**skill_data)
             db.add(skill)
-    
+
     db.commit()
 
 
 def seed_onboarding_missions(db: Session):
     """Seed onboarding missions for different user profiles"""
-    
+
     # Missions for Gestores (Managers)
     gestor_missions = [
         {
@@ -193,7 +190,9 @@ def seed_onboarding_missions(db: Session):
             "profile_target": "gestor",
             "xp_reward": 250,
             "badge_reward": "Mestre da Configuração",
-            "completion_criteria": json.dumps({"action": "automation_configured", "count": 1}),
+            "completion_criteria": json.dumps(
+                {"action": "automation_configured", "count": 1}
+            ),
             "is_optional": False,
         },
         {
@@ -204,7 +203,9 @@ def seed_onboarding_missions(db: Session):
             "profile_target": "gestor",
             "xp_reward": 150,
             "badge_reward": "Líder de Equipe",
-            "completion_criteria": json.dumps({"action": "team_member_invited", "count": 1}),
+            "completion_criteria": json.dumps(
+                {"action": "team_member_invited", "count": 1}
+            ),
             "is_optional": True,
         },
         {
@@ -215,11 +216,13 @@ def seed_onboarding_missions(db: Session):
             "profile_target": "gestor",
             "xp_reward": 100,
             "badge_reward": None,
-            "completion_criteria": json.dumps({"action": "dashboard_customized", "count": 1}),
+            "completion_criteria": json.dumps(
+                {"action": "dashboard_customized", "count": 1}
+            ),
             "is_optional": True,
         },
     ]
-    
+
     # Missions for Analistas (Analysts)
     analista_missions = [
         {
@@ -238,10 +241,12 @@ def seed_onboarding_missions(db: Session):
             "description": "Adicione novos destinatários para um cliente",
             "instructions": "Acesse a configuração do cliente e adicione contatos que devem receber os documentos.",
             "order_sequence": 2,
-            "profile_target": "analista", 
+            "profile_target": "analista",
             "xp_reward": 150,
             "badge_reward": "Organizador",
-            "completion_criteria": json.dumps({"action": "recipients_added", "count": 1}),
+            "completion_criteria": json.dumps(
+                {"action": "recipients_added", "count": 1}
+            ),
             "is_optional": False,
         },
         {
@@ -252,7 +257,9 @@ def seed_onboarding_missions(db: Session):
             "profile_target": "analista",
             "xp_reward": 200,
             "badge_reward": "Eficiência",
-            "completion_criteria": json.dumps({"action": "template_applied", "count": 1}),
+            "completion_criteria": json.dumps(
+                {"action": "template_applied", "count": 1}
+            ),
             "is_optional": False,
         },
         {
@@ -267,19 +274,23 @@ def seed_onboarding_missions(db: Session):
             "is_optional": True,
         },
     ]
-    
+
     all_missions = gestor_missions + analista_missions
-    
+
     for mission_data in all_missions:
-        existing = db.query(OnboardingMission).filter(
-            OnboardingMission.name == mission_data["name"],
-            OnboardingMission.profile_target == mission_data["profile_target"]
-        ).first()
-        
+        existing = (
+            db.query(OnboardingMission)
+            .filter(
+                OnboardingMission.name == mission_data["name"],
+                OnboardingMission.profile_target == mission_data["profile_target"],
+            )
+            .first()
+        )
+
         if not existing:
             mission = OnboardingMission(**mission_data)
             db.add(mission)
-    
+
     db.commit()
 
 
@@ -300,16 +311,12 @@ def seed_configuration_templates(db: Session):
                 "auto_send": True,
                 "notification_preferences": {
                     "send_confirmation": True,
-                    "failure_alerts": True
-                }
+                    "failure_alerts": True,
+                },
             },
             "conditional_rules": {
-                "if_revenue_gt_1m": {
-                    "add_documents": ["DEFIS"]
-                },
-                "if_employees_gt_10": {
-                    "add_documents": ["RAIS_Detalhada"]
-                }
+                "if_revenue_gt_1m": {"add_documents": ["DEFIS"]},
+                "if_employees_gt_10": {"add_documents": ["RAIS_Detalhada"]},
             },
             "suggested_documents": ["GFIP", "DIRF"],
             "success_rate": 0.92,
@@ -329,13 +336,11 @@ def seed_configuration_templates(db: Session):
                 "auto_send": True,
                 "notification_preferences": {
                     "send_confirmation": True,
-                    "failure_alerts": True
-                }
+                    "failure_alerts": True,
+                },
             },
             "conditional_rules": {
-                "if_revenue_gt_10m": {
-                    "add_documents": ["ECF", "ECD"]
-                }
+                "if_revenue_gt_10m": {"add_documents": ["ECF", "ECD"]}
             },
             "suggested_documents": ["GFIP", "DCTF"],
             "success_rate": 0.89,
@@ -357,44 +362,48 @@ def seed_configuration_templates(db: Session):
                 "notification_preferences": {
                     "send_confirmation": True,
                     "failure_alerts": True,
-                    "compliance_alerts": True
-                }
+                    "compliance_alerts": True,
+                },
             },
             "conditional_rules": {
-                "always": {
-                    "add_documents": ["Certificações_Sanitárias"]
-                }
+                "always": {"add_documents": ["Certificações_Sanitárias"]}
             },
             "suggested_documents": ["ANVISA_Reports", "CNS_Documents"],
             "success_rate": 0.95,
             "is_active": True,
         },
     ]
-    
+
     for template_data in templates:
-        existing = db.query(ConfigurationTemplate).filter(
-            ConfigurationTemplate.name == template_data["name"]
-        ).first()
-        
+        existing = (
+            db.query(ConfigurationTemplate)
+            .filter(ConfigurationTemplate.name == template_data["name"])
+            .first()
+        )
+
         if not existing:
             template = ConfigurationTemplate(**template_data)
             db.add(template)
-    
+
     db.commit()
 
 
 def seed_default_notification_preferences(db: Session):
     """Create default notification preferences for existing users"""
     # This would typically be run as a migration for existing users
-    users_without_preferences = db.execute(text("""
+    users_without_preferences = db.execute(
+        text(
+            """
         SELECT u.id FROM users u 
         LEFT JOIN enhanced_notification_preferences enp ON u.id = enp.user_id 
         WHERE enp.user_id IS NULL
-    """)).fetchall()
-    
+    """
+        )
+    ).fetchall()
+
     for user_row in users_without_preferences:
         user_id = user_row[0]
-        
+
         # Create default preferences
         default_prefs = NotificationPreference(
             user_id=user_id,
@@ -415,10 +424,10 @@ def seed_default_notification_preferences(db: Session):
             auto_dismiss_read_notifications=False,
             enable_sound_notifications=True,
             enable_desktop_notifications=True,
-            preferred_sound="default"
+            preferred_sound="default",
         )
         db.add(default_prefs)
-    
+
     db.commit()
 
 
@@ -456,12 +465,12 @@ def seed_sample_ai_insights(db: Session):
             "generation_prompt": "Summarize weekly activity and performance",
         },
     ]
-    
+
     # These would be generated per user, but for demo we'll leave user_id null
     for insight_data in insights:
         insight = AIInsight(**insight_data)
         db.add(insight)
-    
+
     db.commit()
 
 
@@ -469,28 +478,28 @@ def run_all_seeds(db: Session):
     """Run all seed functions"""
     print("🌱 Seeding achievements...")
     seed_achievements(db)
-    
+
     print("🌱 Seeding skills...")
     seed_skills(db)
-    
+
     print("🌱 Seeding onboarding missions...")
     seed_onboarding_missions(db)
-    
+
     print("🌱 Seeding configuration templates...")
     seed_configuration_templates(db)
-    
+
     print("🌱 Seeding notification preferences...")
     seed_default_notification_preferences(db)
-    
+
     print("🌱 Seeding AI insights...")
     seed_sample_ai_insights(db)
-    
+
     print("✅ All seeds completed successfully!")
 
 
 if __name__ == "__main__":
     from .models.database import SessionLocal
-    
+
     db = SessionLocal()
     try:
         run_all_seeds(db)

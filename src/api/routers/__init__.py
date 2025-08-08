@@ -9,9 +9,10 @@ from .auth import router as auth_router
 from .cct import router as cct_router
 from .documents import router as document_router
 from .notifications import router as notification_router
+from .performance import router as performance_router
+
 # from .payroll import router as payroll_router  # Temporarily commented due to import_payroll_data missing
 from .reports import router as reports_router
-from .performance import router as performance_router
 
 __all__ = [
     "auth_router",

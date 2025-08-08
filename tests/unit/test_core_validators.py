@@ -5,11 +5,11 @@ Unit tests for src.core.validators module.
 import pytest
 
 from src.core.validators import (
-    validate_cpf, 
-    validate_cnpj, 
-    validate_email, 
+    ValidationError,
+    validate_cnpj,
+    validate_cpf,
+    validate_email,
     validate_required_fields,
-    ValidationError
 )
 
 
@@ -145,7 +145,7 @@ class TestValidateRequiredFields:
         """Test validation with all required fields present."""
         data = {"name": "John", "email": "john@example.com", "age": 30}
         required_fields = ["name", "email"]
-        
+
         # Should not raise any exception
         validate_required_fields(data, required_fields)
 
@@ -153,7 +153,7 @@ class TestValidateRequiredFields:
         """Test validation with missing required field."""
         data = {"name": "John", "age": 30}
         required_fields = ["name", "email"]
-        
+
         with pytest.raises(ValidationError, match="Missing required fields: email"):
             validate_required_fields(data, required_fields)
 
@@ -161,7 +161,7 @@ class TestValidateRequiredFields:
         """Test validation with multiple missing required fields."""
         data = {"age": 30}
         required_fields = ["name", "email", "phone"]
-        
+
         with pytest.raises(ValidationError, match="Missing required fields"):
             validate_required_fields(data, required_fields)
 
@@ -169,7 +169,7 @@ class TestValidateRequiredFields:
         """Test validation with empty string field."""
         data = {"name": "", "email": "john@example.com"}
         required_fields = ["name", "email"]
-        
+
         with pytest.raises(ValidationError, match="Empty required fields: name"):
             validate_required_fields(data, required_fields)
 
@@ -177,7 +177,7 @@ class TestValidateRequiredFields:
         """Test validation with whitespace-only field."""
         data = {"name": "   ", "email": "john@example.com"}
         required_fields = ["name", "email"]
-        
+
         with pytest.raises(ValidationError, match="Empty required fields: name"):
             validate_required_fields(data, required_fields)
 
@@ -185,7 +185,7 @@ class TestValidateRequiredFields:
         """Test validation with None field value."""
         data = {"name": None, "email": "john@example.com"}
         required_fields = ["name", "email"]
-        
+
         with pytest.raises(ValidationError, match="Empty required fields: name"):
             validate_required_fields(data, required_fields)
 
@@ -193,7 +193,7 @@ class TestValidateRequiredFields:
         """Test that zero is considered a valid field value."""
         data = {"score": 0, "name": "John"}
         required_fields = ["score", "name"]
-        
+
         # Should not raise any exception
         validate_required_fields(data, required_fields)
 
@@ -201,7 +201,7 @@ class TestValidateRequiredFields:
         """Test that False is considered a valid field value."""
         data = {"active": False, "name": "John"}
         required_fields = ["active", "name"]
-        
+
         # Should not raise any exception
         validate_required_fields(data, required_fields)
 
@@ -209,6 +209,6 @@ class TestValidateRequiredFields:
         """Test validation with empty required fields list."""
         data = {"name": "John"}
         required_fields = []
-        
+
         # Should not raise any exception
         validate_required_fields(data, required_fields)

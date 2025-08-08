@@ -12,7 +12,7 @@ Melhorias da refatoração:
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 # Import from the new modular structure - only when needed to avoid breaking tests
 try:
