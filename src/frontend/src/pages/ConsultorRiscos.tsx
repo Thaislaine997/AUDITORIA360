@@ -178,7 +178,8 @@ const ConsultorRiscos: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
+    <>
+      <Container maxWidth="xl">
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           🔮 Consultor de Riscos
@@ -433,8 +434,6 @@ const ConsultorRiscos: React.FC = () => {
               </Paper>
             )}
           </Paper>
-
-          </Paper>
         </Grid>
 
         <Grid item xs={12} md={4}>
@@ -605,7 +604,8 @@ const ConsultorRiscos: React.FC = () => {
           )}
         </Box>
       </Modal>
-    </Container>
+      </Container>
+    </>
   );
 };
 

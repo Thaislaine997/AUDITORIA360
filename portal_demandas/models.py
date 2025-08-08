@@ -354,6 +354,183 @@ class AuditoriaFolhaRequest(BaseModel):
     # Note: PDF file will be handled through multipart/form-data upload
 
 
+# ===== CCT MANAGEMENT MODELS =====
+
+class TipoDocumento(str, Enum):
+    """Document type enumeration for legislation"""
+    LEI = "lei"
+    DECRETO = "decreto" 
+    PORTARIA = "portaria"
+    RESOLUCAO = "resolucao"
+    CCT = "cct"
+    ACORDOS_COLETIVOS = "acordos_coletivos"
+
+
+class StatusProcessamento(str, Enum):
+    """Processing status enumeration"""
+    PENDENTE = "pendente"
+    PROCESSANDO = "processando"
+    CONCLUIDO = "concluido"
+    ERRO = "erro"
+
+
+class Sindicato(BaseModel):
+    """Model for syndicates"""
+    
+    id: int
+    nome_sindicato: str
+    cnpj: Optional[str] = None
+    base_territorial: Optional[str] = None
+    categoria_representada: Optional[str] = None
+    criado_em: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class SindicatoCreate(BaseModel):
+    """Model for creating syndicates"""
+    
+    nome_sindicato: str = Field(..., min_length=3, max_length=200)
+    cnpj: Optional[str] = Field(None, max_length=18)
+    base_territorial: Optional[str] = Field(None, max_length=100)
+    categoria_representada: Optional[str] = Field(None, max_length=100)
+
+
+class ConvencaoColetivaCCT(BaseModel):
+    """Model for CCT (Collective Work Agreements)"""
+    
+    id: int
+    sindicato_id: int
+    numero_registro_mte: str
+    vigencia_inicio: date
+    vigencia_fim: date
+    link_documento_oficial: Optional[str] = None
+    dados_cct: Optional[Dict[str, Any]] = None
+    criado_em: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class ConvencaoColetivaCCTCreate(BaseModel):
+    """Model for creating CCTs"""
+    
+    sindicato_id: int
+    numero_registro_mte: str = Field(..., min_length=3, max_length=50)
+    vigencia_inicio: date
+    vigencia_fim: date
+    link_documento_oficial: Optional[str] = Field(None, max_length=500)
+    dados_cct: Optional[Dict[str, Any]] = None
+    
+    @field_validator("vigencia_fim")
+    @classmethod
+    def validate_vigencia(cls, v, info):
+        """Validate that end date is after start date"""
+        if info.data.get("vigencia_inicio") and v <= info.data["vigencia_inicio"]:
+            raise ValueError("vigencia_fim deve ser posterior a vigencia_inicio")
+        return v
+
+
+class CCTListResponse(BaseModel):
+    """Response model for CCT listing with statistics"""
+    
+    ccts: List[ConvencaoColetivaCCT]
+    total: int
+    ativas: int
+    expiradas: int
+    expirando_30_dias: int
+
+
+# ===== LEGISLATION MANAGEMENT MODELS =====
+
+class LegislacaoDocumento(BaseModel):
+    """Model for legislation documents"""
+    
+    id: int
+    titulo: str
+    tipo_documento: str
+    numero_documento: Optional[str] = None
+    data_publicacao: Optional[date] = None
+    orgao_emissor: Optional[str] = None
+    status_processamento: str
+    dados_extraidos: Optional[Dict[str, Any]] = None
+    arquivo_pdf: Optional[str] = None
+    criado_em: Optional[datetime] = None
+    processado_em: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class LegislacaoDocumentoCreate(BaseModel):
+    """Model for creating legislation documents"""
+    
+    titulo: str = Field(..., min_length=3, max_length=200)
+    tipo_documento: TipoDocumento
+    numero_documento: Optional[str] = Field(None, max_length=50)
+    data_publicacao: Optional[date] = None
+    orgao_emissor: Optional[str] = Field(None, max_length=100)
+
+
+class ExtrairPDFResponse(BaseModel):
+    """Response model for PDF extraction"""
+    
+    documento_id: int
+    dados_extraidos: Dict[str, Any]
+    confidence_score: float
+    processamento_tempo_segundos: float
+    sugestoes_validacao: List[str]
+
+
+# ===== RISK ANALYSIS MODELS =====
+
+class RiscoDetalhado(BaseModel):
+    """Model for detailed risk information"""
+    
+    categoria: str  # TRABALHISTA, FISCAL, OPERACIONAL, CONFORMIDADE
+    tipo_risco: str
+    descricao: str
+    evidencia: str
+    impacto_potencial: str
+    plano_acao: str
+    severidade: int = Field(..., ge=1, le=5)  # 1=lowest, 5=critical
+
+
+class AnaliseRiscoRequest(BaseModel):
+    """Request model for risk analysis"""
+    
+    empresa_id: int
+
+
+class AnaliseRiscoResponse(BaseModel):
+    """Response model for risk analysis"""
+    
+    empresa_id: int
+    empresa_nome: str
+    score_risco: int = Field(..., ge=0, le=100)
+    nivel_risco: str  # BAIXO, MÉDIO, ALTO, CRÍTICO
+    data_analise: datetime
+    progresso_analise: Dict[str, str]
+    riscos_encontrados: List[RiscoDetalhado]
+    total_riscos: int
+    riscos_criticos: int
+    riscos_altos: int
+    riscos_medios: int
+    riscos_baixos: int
+    score_anterior: Optional[int] = None
+    variacao_score: Optional[int] = None
+
+
+class HistoricoAnaliseRisco(BaseModel):
+    """Model for historical risk analysis"""
+    
+    id: int
+    empresa_id: int
+    contabilidade_id: int
+    score_risco: int
+    data_analise: datetime
+    relatorio_resumo: Dict[str, Any]
     
     class Config:
         from_attributes = True
