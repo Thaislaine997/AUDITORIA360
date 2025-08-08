@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
-./.git/objects/pack/pack-60abd78077bd448d74a859f52acbeff226710253.idx
-./.git/objects/pack/pack-60abd78077bd448d74a859f52acbeff226710253.pack
-./.git/objects/pack/pack-60abd78077bd448d74a859f52acbeff226710253.rev
+./.git/objects/pack/pack-ff1eb3e517c65333e001efaabe6f280138229be6.idx
+./.git/objects/pack/pack-ff1eb3e517c65333e001efaabe6f280138229be6.pack
+./.git/objects/pack/pack-ff1eb3e517c65333e001efaabe6f280138229be6.rev
 ./.git/refs/heads/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
@@ -186,6 +186,7 @@
 ./migrations/002_simplify_employee_model.sql
 ./migrations/003_criar_tabela_parametros_legais.sql
 ./migrations/004_criar_tabela_documentos.sql
+./migrations/005_evoluir_schema_ia.sql
 ./migrations/performance_indices.sql
 ./monitoring/alerts/alerts_config.json
 ./monitoring/basic_alerts.json
@@ -390,6 +391,7 @@
 ./src/frontend/src/components/PersonalizedOnboarding.tsx
 ./src/frontend/src/components/Sidebar.tsx
 ./src/frontend/src/components/UploadComponent.tsx
+./src/frontend/src/components/ValidacaoIARow.tsx
 ./src/frontend/src/components/Widgets/ActivityFeedWidget.tsx
 ./src/frontend/src/components/Widgets/HealthMapWidget.tsx
 ./src/frontend/src/components/Widgets/KPIWidget.tsx
@@ -450,6 +452,7 @@
 ./src/frontend/src/pages/RelatoriosAvancados.tsx
 ./src/frontend/src/pages/ReportTemplatesPage.tsx
 ./src/frontend/src/pages/Templates.tsx
+./src/frontend/src/pages/ValidacaoIAPage.tsx
 ./src/frontend/src/services/acr.ts
 ./src/frontend/src/services/ai.ts
 ./src/frontend/src/services/api.ts
