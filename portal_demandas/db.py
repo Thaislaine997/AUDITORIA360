@@ -188,6 +188,27 @@ class TemplateControleTarefaDB(Base):
     descricao_tarefa = Column(String(200), nullable=False)
 
 
+class ProcessamentosFolhaDB(Base):
+    """
+    Payroll processing audit records - stores results of AI-powered auditing
+    """
+    
+    __tablename__ = "ProcessamentosFolha"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    mes = Column(Integer, nullable=False)
+    ano = Column(Integer, nullable=False)
+    arquivo_pdf = Column(String(500), nullable=False)  # Path or name of the uploaded PDF
+    dados_extraidos = Column(Text, nullable=True)  # JSON with extracted payroll data
+    relatorio_divergencias = Column(Text, nullable=True)  # JSON with audit results
+    total_funcionarios = Column(Integer, default=0)
+    total_divergencias = Column(Integer, default=0)
+    status_processamento = Column(String(50), default="PROCESSANDO", nullable=False)  # PROCESSANDO, CONCLUIDO, ERRO
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    concluido_em = Column(DateTime, nullable=True)
+
+
 def get_db():
     """
     Database dependency for portal_demandas
@@ -249,6 +270,7 @@ __all__ = [
     "TarefaControleDB", 
     "TemplateControleDB",
     "TemplateControleTarefaDB",
+    "ProcessamentosFolhaDB",
     "get_db",
     "init_portal_db",
     "test_db_connection",
