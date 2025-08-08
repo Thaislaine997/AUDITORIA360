@@ -1,6 +1,7 @@
 // src/frontend/src/components/TemplateManager.tsx
 
 import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 
 interface Template {
   id: number;
@@ -31,11 +32,8 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({ onTemplateAppl
   const fetchTemplates = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/v1/templates');
-      if (response.ok) {
-        const data = await response.json();
-        setTemplates(data);
-      }
+      const response = await api.get('/v1/templates');
+      setTemplates(response.data);
     } catch (error) {
       console.error('Erro ao carregar templates:', error);
     } finally {
@@ -54,28 +52,18 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({ onTemplateAppl
         return;
       }
 
-      const response = await fetch('/api/v1/templates', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...newTemplate,
-          tarefas: validTarefas
-        })
+      await api.post('/v1/templates', {
+        ...newTemplate,
+        tarefas: validTarefas
       });
 
-      if (response.ok) {
-        await fetchTemplates();
-        setShowCreateForm(false);
-        setNewTemplate({ nome_template: '', descricao: '', tarefas: [''] });
-      } else {
-        const error = await response.json();
-        alert(`Erro ao criar template: ${error.detail}`);
-      }
-    } catch (error) {
+      await fetchTemplates();
+      setShowCreateForm(false);
+      setNewTemplate({ nome_template: '', descricao: '', tarefas: [''] });
+    } catch (error: any) {
       console.error('Erro ao criar template:', error);
-      alert('Erro ao criar template');
+      const errorMsg = error.response?.data?.detail || 'Erro ao criar template';
+      alert(`Erro ao criar template: ${errorMsg}`);
     }
   };
 
@@ -85,32 +73,21 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({ onTemplateAppl
     const ano = currentDate.getFullYear();
 
     try {
-      const response = await fetch('/api/v1/controles/aplicar-template', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          template_id: templateId,
-          mes,
-          ano,
-          empresas_ids: null // Apply to all companies
-        })
+      const response = await api.post('/v1/controles/aplicar-template', {
+        template_id: templateId,
+        mes,
+        ano,
+        empresas_ids: null // Apply to all companies
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        alert(result.message);
-        if (onTemplateApplied) {
-          onTemplateApplied();
-        }
-      } else {
-        const error = await response.json();
-        alert(`Erro ao aplicar template: ${error.detail}`);
+      alert(response.data.message);
+      if (onTemplateApplied) {
+        onTemplateApplied();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao aplicar template:', error);
-      alert('Erro ao aplicar template');
+      const errorMsg = error.response?.data?.detail || 'Erro ao aplicar template';
+      alert(`Erro ao aplicar template: ${errorMsg}`);
     }
   };
 
