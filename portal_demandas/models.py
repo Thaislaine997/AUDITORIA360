@@ -3,9 +3,9 @@ Portal Demandas Pydantic Models
 Data validation and serialization models for the demands portal
 """
 
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -352,3 +352,141 @@ class AuditoriaFolhaRequest(BaseModel):
     mes: int = Field(..., ge=1, le=12)
     ano: int = Field(..., ge=2020, le=2030)
     # Note: PDF file will be handled through multipart/form-data upload
+
+
+# ===== CCT AND LEGISLATION MODELS =====
+
+class TipoDocumento(str, Enum):
+    """Document type enumeration for legislation"""
+    
+    LEI = "lei"
+    DECRETO = "decreto"
+    CCT = "cct"
+    MEDIDA_PROVISORIA = "medida_provisoria"
+    PORTARIA = "portaria"
+    RESOLUCAO = "resolucao"
+
+
+class StatusProcessamento(str, Enum):
+    """Processing status enumeration"""
+    
+    PENDENTE = "pendente"
+    PROCESSANDO = "processando" 
+    CONCLUIDO = "concluido"
+    ERRO = "erro"
+
+
+class SindicatoBase(BaseModel):
+    """Base model for labor unions/syndicates"""
+    
+    nome_sindicato: str = Field(..., min_length=3, max_length=200)
+    cnpj: Optional[str] = Field(None, max_length=20)
+    base_territorial: Optional[str] = Field(None, max_length=100)
+    categoria_representada: Optional[str] = Field(None, max_length=200)
+
+
+class SindicatoCreate(SindicatoBase):
+    """Model for creating a new syndicate"""
+    pass
+
+
+class Sindicato(SindicatoBase):
+    """Complete syndicate model"""
+    
+    id: int
+    criado_em: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class ConvencaoColetivaCCTBase(BaseModel):
+    """Base model for CCTs"""
+    
+    sindicato_id: int
+    numero_registro_mte: Optional[str] = Field(None, max_length=50)
+    vigencia_inicio: date
+    vigencia_fim: date
+    link_documento_oficial: Optional[str] = Field(None, max_length=500)
+    dados_cct: Optional[Dict[str, Any]] = None
+
+
+class ConvencaoColetivaCCTCreate(ConvencaoColetivaCCTBase):
+    """Model for creating a new CCT"""
+    
+    @field_validator("vigencia_fim")
+    @classmethod
+    def validate_vigencia(cls, v, info):
+        """Validate that end date is after start date"""
+        if info.data.get('vigencia_inicio') and v <= info.data.get('vigencia_inicio'):
+            raise ValueError("vigencia_fim deve ser posterior a vigencia_inicio")
+        return v
+
+
+class ConvencaoColetivaCCT(ConvencaoColetivaCCTBase):
+    """Complete CCT model"""
+    
+    id: int
+    criado_em: datetime
+    atualizado_em: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class LegislacaoDocumentoBase(BaseModel):
+    """Base model for legislation documents"""
+    
+    titulo: str = Field(..., min_length=3, max_length=300)
+    tipo_documento: TipoDocumento
+    numero_documento: Optional[str] = Field(None, max_length=100)
+    data_publicacao: Optional[date] = None
+    orgao_emissor: Optional[str] = Field(None, max_length=200)
+
+
+class LegislacaoDocumentoCreate(LegislacaoDocumentoBase):
+    """Model for creating legislation documents"""
+    pass
+
+
+class LegislacaoDocumento(LegislacaoDocumentoBase):
+    """Complete legislation document model"""
+    
+    id: int
+    arquivo_pdf: Optional[str] = None
+    dados_extraidos: Optional[Dict[str, Any]] = None
+    status_processamento: StatusProcessamento = StatusProcessamento.PENDENTE
+    criado_em: datetime
+    processado_em: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class CCTListResponse(BaseModel):
+    """Response model for CCT listing"""
+    
+    ccts: List[ConvencaoColetivaCCT]
+    total: int
+    ativas: int
+    expiradas: int
+    expirando_30_dias: int
+
+
+class ExtrairPDFResponse(BaseModel):
+    """Response model for PDF extraction"""
+    
+    documento_id: int
+    dados_extraidos: Dict[str, Any]
+    confidence_score: float
+    processamento_tempo_segundos: float
+    sugestoes_validacao: List[str] = []
+
+
+class CCTSearchFilters(BaseModel):
+    """Model for CCT search and filtering"""
+    
+    sindicato_id: Optional[int] = None
+    vigente: Optional[bool] = None  # True = active, False = expired, None = all
+    search_text: Optional[str] = None
+    categoria: Optional[str] = None

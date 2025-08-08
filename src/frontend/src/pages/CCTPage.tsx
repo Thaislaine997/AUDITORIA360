@@ -1,9 +1,14 @@
 /**
- * 🔮 CCTPage - Assistente Contextual Telepático
- * Página com assistência precognitiva para códigos CCT
+ * 📋 CCTPage - Módulo de Gestão de Legislação e CCTs
+ * 
+ * A "Biblioteca Digital" inteligente para CCTs que implementa:
+ * - Listagem pesquisável com filtros poderosos
+ * - Status dinâmico: Ativo, Expirado, Expirando em breve
+ * - Cadastro manual e assistido por IA (upload de PDF)
+ * - Gestão centralizada do conhecimento de CCTs
  */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Container, 
   Typography, 
@@ -16,521 +21,552 @@ import {
   Chip,
   Button,
   IconButton,
-  Collapse,
   Alert,
   List,
   ListItem,
   ListItemText,
   ListItemIcon,
-  Tooltip,
-  Fade
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Fab,
+  Badge,
+  Divider,
+  Stack,
+  LinearProgress
 } from "@mui/material";
 import {
-  Psychology,
-  Lightbulb,
-  Code,
   Search,
-  Info,
+  Add,
+  FilterList,
   CheckCircle,
-  AutoAwesome,
-  KeyboardArrowDown,
-  KeyboardArrowUp
+  Warning,
+  Error,
+  Info,
+  UploadFile,
+  Save,
+  Refresh,
+  Business,
+  DateRange,
+  Description,
+  CloudUpload,
+  AutoFixHigh,
+  Visibility
 } from "@mui/icons-material";
 
-interface CCTData {
-  code: string;
-  title: string;
-  sector: string;
-  description: string;
-  applicableRegions: string[];
-  lastUpdated: string;
-  commonFields: string[];
+interface Sindicato {
+  id: number;
+  nome_sindicato: string;
+  cnpj?: string;
+  base_territorial?: string;
+  categoria_representada?: string;
+  criado_em: string;
 }
 
-interface TelepathicAssistance {
-  isActive: boolean;
-  suggestedCCT: CCTData | null;
-  confidence: number;
-  reasoning: string;
-  pauseDetected: boolean;
+interface CCT {
+  id: number;
+  sindicato_id: number;
+  numero_registro_mte?: string;
+  vigencia_inicio: string;
+  vigencia_fim: string;
+  link_documento_oficial?: string;
+  dados_cct?: any;
+  criado_em: string;
+  atualizado_em: string;
+}
+
+interface CCTListResponse {
+  ccts: CCT[];
+  total: number;
+  ativas: number;
+  expiradas: number;
+  expirando_30_dias: number;
 }
 
 const CCTPage: React.FC = () => {
+  const [ccts, setCcts] = useState<CCT[]>([]);
+  const [sindicatos, setSindicatos] = useState<Sindicato[]>([]);
+  const [stats, setStats] = useState<CCTListResponse | null>(null);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCCT, setSelectedCCT] = useState<CCTData | null>(null);
-  const [telepathicAssistance, setTelepathicAssistance] = useState<TelepathicAssistance>({
-    isActive: false,
-    suggestedCCT: null,
-    confidence: 0,
-    reasoning: "",
-    pauseDetected: false
-  });
-  const [showAdvancedInfo, setShowAdvancedInfo] = useState(false);
+  const [selectedSindicato, setSelectedSindicato] = useState<number | "">("");
+  const [filterVigencia, setFilterVigencia] = useState<string>("todas");
   
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const pauseStartTime = useRef<number | null>(null);
+  // Dialog states
+  const [showNewCCTDialog, setShowNewCCTDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [selectedCCT, setSelectedCCT] = useState<CCT | null>(null);
+  
+  // Form states
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [processingAI, setProcessingAI] = useState(false);
+  const [aiResults, setAIResults] = useState<any>(null);
 
-  // 🧠 CCT Database (simplified for demo)
-  const cctDatabase: CCTData[] = [
-    {
-      code: "CCT-001",
-      title: "Contrato Coletivo de Trabalho - Setor Público",
-      sector: "Administração Pública",
-      description: "CCT aplicável aos funcionários da administração pública central e local",
-      applicableRegions: ["Lisboa", "Porto", "Nacional"],
-      lastUpdated: "2024-01-15",
-      commonFields: ["Escalão", "Subsídio de refeição", "Horário flexível", "Licenças especiais"]
-    },
-    {
-      code: "CCT-002", 
-      title: "Contrato Coletivo de Trabalho - Setor Privado",
-      sector: "Setor Privado Geral",
-      description: "CCT para empresas do setor privado com regime geral de trabalho",
-      applicableRegions: ["Nacional"],
-      lastUpdated: "2024-02-10",
-      commonFields: ["Salário base", "Subsídio de Natal", "Férias", "Horas extraordinárias"]
-    },
-    {
-      code: "CCT-003",
-      title: "Contrato Coletivo de Trabalho - Setor da Saúde", 
-      sector: "Saúde",
-      description: "CCT específico para profissionais de saúde e instituições hospitalares",
-      applicableRegions: ["Nacional"],
-      lastUpdated: "2024-01-30",
-      commonFields: ["Turnos", "Risco profissional", "Formação contínua", "Especialização"]
-    },
-    {
-      code: "CCT-004",
-      title: "Contrato Coletivo de Trabalho - Setor da Educação",
-      sector: "Educação",
-      description: "CCT para docentes e não docentes do sistema educativo",
-      applicableRegions: ["Nacional"],
-      lastUpdated: "2024-02-05",
-      commonFields: ["Escalão docente", "Componente letiva", "Férias escolares", "Formação"]
-    },
-    {
-      code: "CCT-005",
-      title: "Contrato Coletivo de Trabalho - Setor Bancário",
-      sector: "Banca e Seguros",
-      description: "CCT aplicável a trabalhadores do setor bancário e segurador",
-      applicableRegions: ["Nacional"],
-      lastUpdated: "2024-01-20",
-      commonFields: ["Comissões", "Objetivos", "Responsabilidade civil", "Sigilo bancário"]
-    }
-  ];
+  // Load initial data
+  useEffect(() => {
+    carregarDados();
+  }, []);
 
-  // 🔮 Telepathic search behavior analysis
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-    
-    // Clear existing timeout
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
+  // Apply filters when they change
+  useEffect(() => {
+    carregarCCTs();
+  }, [searchTerm, selectedSindicato, filterVigencia]);
+
+  const carregarDados = async () => {
+    setLoading(true);
+    try {
+      // Load syndicates
+      const sindicatosResponse = await fetch('/api/v1/sindicatos');
+      const sindicatosData = await sindicatosResponse.json();
+      setSindicatos(sindicatosData);
+
+      // Load CCTs
+      await carregarCCTs();
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    // Start pause detection
-    pauseStartTime.current = Date.now();
-    
-    // Set timeout to detect search pause (1.5 seconds)
-    searchTimeoutRef.current = setTimeout(() => {
-      if (value.length > 0) {
-        activateTelepathicAssistance(value);
-      }
-    }, 1500);
   };
 
-  // 🧠 Activate telepathic assistance based on search behavior
-  const activateTelepathicAssistance = (searchValue: string) => {
-    const pauseDuration = pauseStartTime.current ? Date.now() - pauseStartTime.current : 0;
-    
-    if (pauseDuration >= 1500) { // User paused for 1.5+ seconds
-      // Analyze search intent
-      const suggestedCCT = findBestMatch(searchValue);
-      const confidence = calculateConfidence(searchValue, suggestedCCT);
-      const reasoning = generateReasoning(searchValue, suggestedCCT);
+  const carregarCCTs = async () => {
+    try {
+      let url = '/api/v1/cct?';
+      const params = new URLSearchParams();
       
-      setTelepathicAssistance({
-        isActive: true,
-        suggestedCCT,
-        confidence,
-        reasoning,
-        pauseDetected: true
-      });
-    }
-  };
-
-  // 🎯 Find best CCT match based on search intent
-  const findBestMatch = (searchValue: string): CCTData | null => {
-    const search = searchValue.toLowerCase();
-    
-    // Exact code match
-    const exactMatch = cctDatabase.find(cct => 
-      cct.code.toLowerCase().includes(search)
-    );
-    if (exactMatch) return exactMatch;
-    
-    // Sector-based matching
-    const sectorKeywords = {
-      'público': 'CCT-001',
-      'privado': 'CCT-002', 
-      'saúde': 'CCT-003',
-      'hospital': 'CCT-003',
-      'educação': 'CCT-004',
-      'escola': 'CCT-004',
-      'docente': 'CCT-004',
-      'banco': 'CCT-005',
-      'banca': 'CCT-005',
-      'seguro': 'CCT-005'
-    };
-    
-    for (const [keyword, code] of Object.entries(sectorKeywords)) {
-      if (search.includes(keyword)) {
-        return cctDatabase.find(cct => cct.code === code) || null;
+      if (selectedSindicato) params.append('sindicato_id', selectedSindicato.toString());
+      if (searchTerm) params.append('search_text', searchTerm);
+      if (filterVigencia !== 'todas') {
+        params.append('vigente', filterVigencia === 'ativas' ? 'true' : 'false');
       }
+      
+      const response = await fetch(`${url}${params}`);
+      const data: CCTListResponse = await response.json();
+      
+      setCcts(data.ccts);
+      setStats(data);
+    } catch (error) {
+      console.error('Erro ao carregar CCTs:', error);
     }
-    
-    // Default to most common (private sector)
-    return cctDatabase.find(cct => cct.code === 'CCT-002') || null;
   };
 
-  // 📊 Calculate confidence in suggestion
-  const calculateConfidence = (searchValue: string, suggestedCCT: CCTData | null): number => {
-    if (!suggestedCCT) return 0;
+  const handleUploadPDF = async () => {
+    if (!uploadFile) return;
     
-    const search = searchValue.toLowerCase();
-    
-    // Exact code match = 100% confidence
-    if (suggestedCCT.code.toLowerCase().includes(search)) return 1.0;
-    
-    // Sector keyword match = 80% confidence
-    if (suggestedCCT.sector.toLowerCase().includes(search) || 
-        suggestedCCT.title.toLowerCase().includes(search)) return 0.8;
-    
-    // Partial match = 60% confidence
-    return 0.6;
+    setProcessingAI(true);
+    try {
+      const formData = new FormData();
+      formData.append('arquivo_pdf', uploadFile);
+      
+      const response = await fetch('/api/v1/legislacao/extrair-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const result = await response.json();
+      setAIResults(result);
+      
+      // Refresh data after processing
+      await carregarDados();
+    } catch (error) {
+      console.error('Erro no processamento do PDF:', error);
+    } finally {
+      setProcessingAI(false);
+    }
   };
 
-  // 💡 Generate reasoning for the suggestion
-  const generateReasoning = (searchValue: string, suggestedCCT: CCTData | null): string => {
-    if (!suggestedCCT) return "Nenhuma correspondência encontrada";
+  const getStatusChip = (cct: CCT) => {
+    const hoje = new Date();
+    const inicio = new Date(cct.vigencia_inicio);
+    const fim = new Date(cct.vigencia_fim);
+    const treintaDias = new Date();
+    treintaDias.setDate(hoje.getDate() + 30);
     
-    const search = searchValue.toLowerCase();
-    
-    if (suggestedCCT.code.toLowerCase().includes(search)) {
-      return `Correspondência exata com código ${suggestedCCT.code}`;
+    if (fim < hoje) {
+      return <Chip label="Expirado" color="error" size="small" icon={<Error />} />;
+    } else if (fim <= treintaDias) {
+      return <Chip label="Expirando em Breve" color="warning" size="small" icon={<Warning />} />;
+    } else if (inicio <= hoje && fim >= hoje) {
+      return <Chip label="Ativo" color="success" size="small" icon={<CheckCircle />} />;
+    } else {
+      return <Chip label="Futuro" color="info" size="small" icon={<Info />} />;
     }
-    
-    if (search.includes('público')) {
-      return "Detectado interesse no setor público - CCT mais relevante sugerido";
-    }
-    
-    if (search.includes('saúde') || search.includes('hospital')) {
-      return "Área da saúde identificada - CCT específico para profissionais de saúde";
-    }
-    
-    if (search.includes('educação') || search.includes('escola') || search.includes('docente')) {
-      return "Setor educativo detectado - CCT para pessoal docente e não docente";
-    }
-    
-    if (search.includes('banco') || search.includes('banca')) {
-      return "Setor bancário identificado - CCT específico para banca e seguros";
-    }
-    
-    return `Sugestão baseada em análise semântica de "${searchValue}"`;
   };
 
-  // 🎊 Apply suggested CCT
-  const applySuggestion = (cct: CCTData) => {
-    setSelectedCCT(cct);
-    setSearchTerm(cct.code);
-    setTelepathicAssistance({
-      isActive: false,
-      suggestedCCT: null,
-      confidence: 0,
-      reasoning: "",
-      pauseDetected: false
-    });
+  const getSindicatoNome = (sindicato_id: number) => {
+    const sindicato = sindicatos.find(s => s.id === sindicato_id);
+    return sindicato?.nome_sindicato || 'Sindicato não encontrado';
   };
-
-  // Filter CCTs based on search
-  const filteredCCTs = cctDatabase.filter(cct =>
-    cct.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cct.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cct.sector.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      {/* Header with Telepathic Status */}
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      {/* Header with Statistics */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          📋 CCT - Convenção Coletiva de Trabalho
-          {telepathicAssistance.isActive && (
-            <Chip 
-              icon={<Psychology />} 
-              label="Assistência Telepática Ativa" 
-              color="primary" 
-              size="small"
-            />
-          )}
+          📋 CCT - Convenções Coletivas de Trabalho
+          <Chip 
+            label="Biblioteca Digital Inteligente" 
+            color="primary" 
+            size="small"
+            icon={<AutoFixHigh />}
+          />
         </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Sistema inteligente de pesquisa e gestão de CCT com assistência precognitiva
-        </Typography>
+        
+        {stats && (
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card>
+                <CardContent sx={{ textAlign: 'center', py: 2 }}>
+                  <Typography variant="h3" color="primary.main">{stats.total}</Typography>
+                  <Typography variant="body2" color="text.secondary">Total de CCTs</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card>
+                <CardContent sx={{ textAlign: 'center', py: 2 }}>
+                  <Typography variant="h3" color="success.main">{stats.ativas}</Typography>
+                  <Typography variant="body2" color="text.secondary">Ativas</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card>
+                <CardContent sx={{ textAlign: 'center', py: 2 }}>
+                  <Typography variant="h3" color="warning.main">{stats.expirando_30_dias}</Typography>
+                  <Typography variant="body2" color="text.secondary">Expirando em 30 dias</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card>
+                <CardContent sx={{ textAlign: 'center', py: 2 }}>
+                  <Typography variant="h3" color="error.main">{stats.expiradas}</Typography>
+                  <Typography variant="body2" color="text.secondary">Expiradas</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        )}
       </Box>
 
-      {/* Telepathic Assistance Alert */}
-      <Collapse in={telepathicAssistance.isActive}>
-        <Alert 
-          severity="info" 
-          icon={<AutoAwesome />}
-          sx={{ mb: 3 }}
-          action={
-            telepathicAssistance.suggestedCCT && (
-              <Button 
-                color="inherit" 
-                size="small"
-                onClick={() => applySuggestion(telepathicAssistance.suggestedCCT!)}
-              >
-                Aplicar Sugestão
-              </Button>
-            )
-          }
-        >
-          <Typography variant="subtitle2" gutterBottom>
-            🔮 Assistência Telepática Detectada
-          </Typography>
-          <Typography variant="body2">
-            <strong>Pausa detectada:</strong> {telepathicAssistance.reasoning}
-          </Typography>
-          {telepathicAssistance.suggestedCCT && (
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Sugestão:</strong> {telepathicAssistance.suggestedCCT.code} - {telepathicAssistance.suggestedCCT.title}
-              <br />
-              <strong>Confiança:</strong> {(telepathicAssistance.confidence * 100).toFixed(0)}%
-            </Typography>
-          )}
-        </Alert>
-      </Collapse>
-
       <Grid container spacing={3}>
-        {/* Search and Filter Section */}
+        {/* Filter and Search Panel */}
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
+          <Paper sx={{ p: 3, sticky: true, top: 20 }}>
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Search /> Pesquisa Inteligente
+              <FilterList /> Filtros Poderosos
             </Typography>
             
-            <TextField
-              fullWidth
-              label="Código CCT ou Setor"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Ex: CCT-001, público, saúde..."
-              sx={{ mb: 2 }}
-            />
-            
-            <Box sx={{ mb: 2 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => setShowAdvancedInfo(!showAdvancedInfo)}
-                endIcon={showAdvancedInfo ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-              >
-                Informações Avançadas
-              </Button>
-            </Box>
-            
-            <Collapse in={showAdvancedInfo}>
-              <Alert severity="info" sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  💡 Dicas da Interface Telepática:
-                </Typography>
-                <List dense>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 30 }}>
-                      <Lightbulb fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Digite e pause para ativar sugestões"
-                      primaryTypographyProps={{ variant: 'body2' }}
-                    />
-                  </ListItem>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 30 }}>
-                      <Code fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Códigos diretos: CCT-001, CCT-002..."
-                      primaryTypographyProps={{ variant: 'body2' }}
-                    />
-                  </ListItem>
-                  <ListItem sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 30 }}>
-                      <Info fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Setores: público, privado, saúde, educação"
-                      primaryTypographyProps={{ variant: 'body2' }}
-                    />
-                  </ListItem>
-                </List>
-              </Alert>
-            </Collapse>
-            
-            {/* Quick Sector Filters */}
-            <Typography variant="subtitle2" gutterBottom>
-              Filtros Rápidos:
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-              {['Público', 'Privado', 'Saúde', 'Educação', 'Bancário'].map((sector) => (
-                <Chip
-                  key={sector}
-                  label={sector}
-                  size="small"
-                  onClick={() => setSearchTerm(sector.toLowerCase())}
-                  sx={{ cursor: 'pointer' }}
-                />
-              ))}
-            </Box>
+            <Stack spacing={3}>
+              {/* Search */}
+              <TextField
+                fullWidth
+                label="Busca Inteligente"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Nome do sindicato, registro MTE..."
+                InputProps={{
+                  startAdornment: <Search sx={{ mr: 1, color: 'action.active' }} />,
+                }}
+              />
+
+              {/* Syndicate Filter */}
+              <FormControl fullWidth>
+                <InputLabel>Filtrar por Sindicato</InputLabel>
+                <Select
+                  value={selectedSindicato}
+                  label="Filtrar por Sindicato"
+                  onChange={(e) => setSelectedSindicato(e.target.value as number)}
+                >
+                  <MenuItem value="">Todos os Sindicatos</MenuItem>
+                  {sindicatos.map((sindicato) => (
+                    <MenuItem key={sindicato.id} value={sindicato.id}>
+                      {sindicato.nome_sindicato}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* Validity Filter */}
+              <FormControl fullWidth>
+                <InputLabel>Filtrar por Vigência</InputLabel>
+                <Select
+                  value={filterVigencia}
+                  label="Filtrar por Vigência"
+                  onChange={(e) => setFilterVigencia(e.target.value)}
+                >
+                  <MenuItem value="todas">Todas as CCTs</MenuItem>
+                  <MenuItem value="ativas">Apenas Ativas</MenuItem>
+                  <MenuItem value="expiradas">Apenas Expiradas</MenuItem>
+                </Select>
+              </FormControl>
+
+              <Divider />
+
+              {/* Action Buttons */}
+              <Stack spacing={2}>
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={() => setShowNewCCTDialog(true)}
+                  fullWidth
+                >
+                  Cadastrar Nova CCT
+                </Button>
+                
+                <Button
+                  variant="outlined"
+                  startIcon={<CloudUpload />}
+                  onClick={() => setShowUploadDialog(true)}
+                  fullWidth
+                  color="secondary"
+                >
+                  Upload com IA
+                </Button>
+                
+                <Button
+                  variant="text"
+                  startIcon={<Refresh />}
+                  onClick={carregarDados}
+                  fullWidth
+                  disabled={loading}
+                >
+                  Atualizar Dados
+                </Button>
+              </Stack>
+            </Stack>
           </Paper>
         </Grid>
 
-        {/* CCT Results */}
+        {/* CCT List */}
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              📋 Resultados ({filteredCCTs.length} encontrados)
+              📋 Resultados ({stats?.total || 0} CCTs encontradas)
             </Typography>
             
-            <Grid container spacing={2}>
-              {filteredCCTs.map((cct) => (
-                <Grid item xs={12} key={cct.code}>
-                  <Card 
-                    sx={{ 
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      '&:hover': { 
-                        boxShadow: 3,
-                        transform: 'translateY(-2px)'
-                      },
-                      border: selectedCCT?.code === cct.code ? 2 : 1,
-                      borderColor: selectedCCT?.code === cct.code ? 'primary.main' : 'divider'
-                    }}
-                    onClick={() => setSelectedCCT(cct)}
-                  >
-                    <CardContent>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                        <Typography variant="h6" color="primary">
-                          {cct.code}
-                        </Typography>
-                        <Chip 
-                          label={cct.sector} 
-                          size="small" 
-                          color="secondary"
-                        />
-                      </Box>
-                      
-                      <Typography variant="subtitle1" gutterBottom>
-                        {cct.title}
-                      </Typography>
-                      
-                      <Typography variant="body2" color="text.secondary" paragraph>
-                        {cct.description}
-                      </Typography>
-                      
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {cct.commonFields.slice(0, 3).map((field) => (
-                          <Chip 
-                            key={field}
-                            label={field}
-                            size="small"
-                            variant="outlined"
-                          />
-                        ))}
-                        {cct.commonFields.length > 3 && (
-                          <Chip 
-                            label={`+${cct.commonFields.length - 3} mais`}
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                          />
+            {loading && <LinearProgress sx={{ mb: 2 }} />}
+            
+            {ccts.length === 0 && !loading ? (
+              <Alert severity="info" sx={{ my: 3 }}>
+                <Typography variant="subtitle1">Nenhuma CCT encontrada</Typography>
+                <Typography variant="body2">
+                  Comece cadastrando um novo sindicato e sua CCT, ou faça upload de um PDF para análise automática.
+                </Typography>
+              </Alert>
+            ) : (
+              <Grid container spacing={2}>
+                {ccts.map((cct) => (
+                  <Grid item xs={12} key={cct.id}>
+                    <Card 
+                      sx={{ 
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        '&:hover': { 
+                          boxShadow: 3,
+                          transform: 'translateY(-2px)'
+                        },
+                      }}
+                      onClick={() => setSelectedCCT(cct)}
+                    >
+                      <CardContent>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                          <Box sx={{ flexGrow: 1 }}>
+                            <Typography variant="h6" color="primary" gutterBottom>
+                              {getSindicatoNome(cct.sindicato_id)}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              <Business fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
+                              Registro MTE: {cct.numero_registro_mte || 'Não informado'}
+                            </Typography>
+                          </Box>
+                          {getStatusChip(cct)}
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                          <DateRange fontSize="small" color="action" />
+                          <Typography variant="body2">
+                            Vigência: {new Date(cct.vigencia_inicio).toLocaleDateString()} até {new Date(cct.vigencia_fim).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+                        
+                        {cct.dados_cct && (
+                          <Box sx={{ mt: 2 }}>
+                            <Typography variant="caption" color="text.secondary">
+                              📊 Dados estruturados disponíveis • Processado pela IA
+                            </Typography>
+                          </Box>
                         )}
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
           </Paper>
         </Grid>
-
-        {/* Selected CCT Details */}
-        {selectedCCT && (
-          <Grid item xs={12}>
-            <Fade in>
-              <Paper sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                  <CheckCircle color="success" />
-                  <Typography variant="h5">
-                    Detalhes do CCT Selecionado
-                  </Typography>
-                </Box>
-                
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Typography variant="h6" gutterBottom>
-                      {selectedCCT.code} - {selectedCCT.title}
-                    </Typography>
-                    <Typography variant="body1" paragraph>
-                      {selectedCCT.description}
-                    </Typography>
-                    
-                    <Typography variant="subtitle2" gutterBottom>
-                      Regiões Aplicáveis:
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                      {selectedCCT.applicableRegions.map((region) => (
-                        <Chip key={region} label={region} size="small" />
-                      ))}
-                    </Box>
-                    
-                    <Typography variant="caption" color="text.secondary">
-                      Última atualização: {new Date(selectedCCT.lastUpdated).toLocaleDateString('pt-PT')}
-                    </Typography>
-                  </Grid>
-                  
-                  <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      Campos Comuns no Processamento:
-                    </Typography>
-                    <List dense>
-                      {selectedCCT.commonFields.map((field) => (
-                        <ListItem key={field}>
-                          <ListItemIcon>
-                            <CheckCircle color="success" fontSize="small" />
-                          </ListItemIcon>
-                          <ListItemText primary={field} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Grid>
-                </Grid>
-                
-                <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-                  <Button variant="contained" startIcon={<PlayArrow />}>
-                    Aplicar este CCT
-                  </Button>
-                  <Button variant="outlined">
-                    Ver Detalhes Completos
-                  </Button>
-                </Box>
-              </Paper>
-            </Fade>
-          </Grid>
-        )}
       </Grid>
+
+      {/* Upload Dialog */}
+      <Dialog 
+        open={showUploadDialog} 
+        onClose={() => setShowUploadDialog(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          🤖 Cadastro Assistido por IA
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+            Arraste o PDF da CCT ou da Lei para que nossa IA extraia os dados automaticamente.
+          </Typography>
+          
+          <Box
+            sx={{
+              border: '2px dashed',
+              borderColor: uploadFile ? 'primary.main' : 'grey.300',
+              borderRadius: 2,
+              p: 4,
+              textAlign: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              '&:hover': {
+                borderColor: 'primary.main',
+                backgroundColor: 'action.hover'
+              }
+            }}
+            onClick={() => document.getElementById('file-upload')?.click()}
+          >
+            <input
+              id="file-upload"
+              type="file"
+              accept=".pdf"
+              hidden
+              onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+            />
+            <CloudUpload sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+            <Typography variant="h6" gutterBottom>
+              {uploadFile ? `✓ ${uploadFile.name}` : 'Clique ou arraste um PDF aqui'}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Formatos aceitos: PDF (máximo 50MB)
+            </Typography>
+          </Box>
+
+          {processingAI && (
+            <Box sx={{ mt: 3, textAlign: 'center' }}>
+              <CircularProgress />
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                🧠 Processando com IA... Analisando documento e extraindo dados estruturados
+              </Typography>
+            </Box>
+          )}
+
+          {aiResults && (
+            <Alert severity="success" sx={{ mt: 3 }}>
+              <Typography variant="subtitle1">✓ Processamento Concluído!</Typography>
+              <Typography variant="body2">
+                Documento processado com {(aiResults.confidence_score * 100).toFixed(1)}% de confiança.
+                Os dados extraídos estão prontos para validação.
+              </Typography>
+            </Alert>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowUploadDialog(false)}>
+            Cancelar
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={handleUploadPDF}
+            disabled={!uploadFile || processingAI}
+            startIcon={processingAI ? <CircularProgress size={20} /> : <AutoFixHigh />}
+          >
+            {processingAI ? 'Processando...' : 'Processar com IA'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* CCT Details Dialog */}
+      {selectedCCT && (
+        <Dialog 
+          open={Boolean(selectedCCT)} 
+          onClose={() => setSelectedCCT(null)}
+          maxWidth="lg"
+          fullWidth
+        >
+          <DialogTitle>
+            📋 Detalhes da CCT - {getSindicatoNome(selectedCCT.sindicato_id)}
+          </DialogTitle>
+          <DialogContent>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle2" gutterBottom>Informações Básicas:</Typography>
+                <List dense>
+                  <ListItem>
+                    <ListItemIcon><Business /></ListItemIcon>
+                    <ListItemText 
+                      primary="Sindicato" 
+                      secondary={getSindicatoNome(selectedCCT.sindicato_id)}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon><Description /></ListItemIcon>
+                    <ListItemText 
+                      primary="Registro MTE" 
+                      secondary={selectedCCT.numero_registro_mte || 'Não informado'}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon><DateRange /></ListItemIcon>
+                    <ListItemText 
+                      primary="Vigência" 
+                      secondary={`${new Date(selectedCCT.vigencia_inicio).toLocaleDateString()} - ${new Date(selectedCCT.vigencia_fim).toLocaleDateString()}`}
+                    />
+                  </ListItem>
+                </List>
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle2" gutterBottom>Status:</Typography>
+                <Box sx={{ mb: 2 }}>{getStatusChip(selectedCCT)}</Box>
+                
+                {selectedCCT.dados_cct && (
+                  <>
+                    <Typography variant="subtitle2" gutterBottom>Dados Estruturados (IA):</Typography>
+                    <Box sx={{ backgroundColor: 'grey.50', p: 2, borderRadius: 1 }}>
+                      <Typography variant="caption" component="pre" sx={{ fontSize: '0.75rem' }}>
+                        {JSON.stringify(selectedCCT.dados_cct, null, 2)}
+                      </Typography>
+                    </Box>
+                  </>
+                )}
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setSelectedCCT(null)}>Fechar</Button>
+            {selectedCCT.link_documento_oficial && (
+              <Button 
+                variant="contained" 
+                startIcon={<Visibility />}
+                href={selectedCCT.link_documento_oficial}
+                target="_blank"
+              >
+                Ver Documento Oficial
+              </Button>
+            )}
+          </DialogActions>
+        </Dialog>
+      )}
     </Container>
   );
 };
