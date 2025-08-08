@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-c0dc93b7-a370-49af-9a4c-88a1725032ef
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-c0dc93b7-a370-49af-9a4c-88a1725032ef
-./.git/objects/pack/pack-d008fbfcb4caa7f1e5727bd18ca8af7cfa7026bc.idx
-./.git/objects/pack/pack-d008fbfcb4caa7f1e5727bd18ca8af7cfa7026bc.pack
-./.git/objects/pack/pack-d008fbfcb4caa7f1e5727bd18ca8af7cfa7026bc.rev
+./.git/objects/pack/pack-39384f4a8d61276ad0b40d3ff212460a996c7ae6.idx
+./.git/objects/pack/pack-39384f4a8d61276ad0b40d3ff212460a996c7ae6.pack
+./.git/objects/pack/pack-39384f4a8d61276ad0b40d3ff212460a996c7ae6.rev
 ./.git/refs/heads/copilot/fix-c0dc93b7-a370-49af-9a4c-88a1725032ef
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-c0dc93b7-a370-49af-9a4c-88a1725032ef
@@ -51,6 +51,7 @@
 ./Dockerfile
 ./MANUAL_TESTE_IA_EVOLUCAO.md
 ./METAMORFOSE_RELATORIO_FINAL.md
+./MULTI_TENANT_IMPLEMENTATION_SUMMARY.md
 ./Makefile
 ./README.md
 ./README_IA_INTEGRATION.md
@@ -137,6 +138,7 @@
 ./deploy/kubernetes/redis-deployment.yaml
 ./docker-compose.monitoring.yml
 ./docs/AI_TEXT_ANALYSIS_IMPLEMENTATION.md
+./docs/MULTI_TENANT_IMPLEMENTATION_GUIDE.md
 ./docs/PERFORMANCE_OPTIMIZATION_STRATEGY.md
 ./docs/QUANTUM_VALIDATION.md
 ./docs/README.md
@@ -190,6 +192,7 @@
 ./migrations/003_criar_tabela_parametros_legais.sql
 ./migrations/004_criar_tabela_documentos.sql
 ./migrations/005_evoluir_schema_ia.sql
+./migrations/006_unified_multi_tenant_security.sql
 ./migrations/performance_indices.sql
 ./monitoring/alerts/alerts_config.json
 ./monitoring/basic_alerts.json
@@ -233,6 +236,7 @@
 ./scripts/implementation_summary.py
 ./scripts/main.py
 ./scripts/master_execution_checklist.py
+./scripts/migracao.py
 ./scripts/ml_training/__init__.py
 ./scripts/ml_training/agent_specialization.py
 ./scripts/ml_training/evaluate_model.py
@@ -273,6 +277,7 @@
 ./scripts/quick_checklist.py
 ./scripts/reorganizar_estrutura.sh
 ./scripts/repository_analysis.py
+./scripts/requirements-migration.txt
 ./scripts/security_validation.py
 ./scripts/seed_blueprint_data.py
 ./scripts/shell/README.md
@@ -286,6 +291,7 @@
 ./scripts/shell/setup_dev_env.sh
 ./scripts/shell/setup_mcp_dev.sh
 ./scripts/validate_ci.py
+./scripts/validate_multi_tenant_implementation.py
 ./scripts/validate_openai_integration.py
 ./scripts/validate_production_deploy.py
 ./scripts/validate_swarm_intelligence.py
