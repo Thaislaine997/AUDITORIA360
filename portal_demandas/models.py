@@ -3,9 +3,9 @@ Portal Demandas Pydantic Models
 Data validation and serialization models for the demands portal
 """
 
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -354,65 +354,9 @@ class AuditoriaFolhaRequest(BaseModel):
     # Note: PDF file will be handled through multipart/form-data upload
 
 
-# ===== RISK ANALYSIS MODELS =====
-
-class RiscoDetalhado(BaseModel):
-    """Model for detailed risk item"""
-    
-    categoria: str  # Trabalhista, Fiscal, Operacional
-    tipo_risco: str  # Type of risk
-    descricao: str  # Risk description
-    evidencia: str  # Evidence found
-    impacto_potencial: str  # Potential impact description
-    plano_acao: str  # Action plan recommendations
-    severidade: int = Field(..., ge=1, le=5)  # Severity from 1 (low) to 5 (critical)
-
-
-class AnaliseRiscoResponse(BaseModel):
-    """Response model for risk analysis"""
-    
-    empresa_id: int
-    empresa_nome: str
-    score_risco: int = Field(..., ge=0, le=100)  # Risk score from 0-100
-    nivel_risco: str  # BAIXO, MÉDIO, ALTO, CRÍTICO
-    data_analise: datetime
-    
-    # Analysis progress tracking
-    progresso_analise: dict = {}
-    
-    # Detailed risks by category
-    riscos_encontrados: List[RiscoDetalhado] = []
-    
-    # Summary statistics
-    total_riscos: int = 0
-    riscos_criticos: int = 0
-    riscos_altos: int = 0
-    riscos_medios: int = 0
-    riscos_baixos: int = 0
-    
-    # Evolution tracking
-    score_anterior: Optional[int] = None
-    variacao_score: Optional[int] = None
     
     class Config:
         from_attributes = True
 
 
-class AnaliseRiscoRequest(BaseModel):
-    """Request model for risk analysis"""
-    
-    empresa_id: int = Field(..., description="ID da empresa a ser analisada")
 
-
-class HistoricoAnaliseRisco(BaseModel):
-    """Model for risk analysis history"""
-    
-    id: int
-    empresa_id: int
-    contabilidade_id: int
-    score_risco: int
-    data_analise: datetime
-    relatorio_resumo: dict = {}
-    
-    class Config:
-        from_attributes = True

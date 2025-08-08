@@ -9,7 +9,7 @@ import os
 import sys
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import declarative_base, relationship
 import json
 
@@ -130,7 +130,61 @@ class EmpresaDB(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nome = Column(String(200), nullable=False)
     contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=False)
+    sindicato_id = Column(Integer, ForeignKey("Sindicatos.id"), nullable=True)  # Added for CCT module
     criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class SindicatoDB(Base):
+    """
+    Labor unions/syndicates - for CCT management module
+    """
+    
+    __tablename__ = "Sindicatos"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    nome_sindicato = Column(String(200), nullable=False)
+    cnpj = Column(String(20), nullable=True, unique=True)
+    base_territorial = Column(String(100), nullable=True)  # Ex: "São Paulo - SP"
+    categoria_representada = Column(String(200), nullable=True)  # Ex: "Trabalhadores no Comércio"
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class ConvencaoColetivaCCTDB(Base):
+    """
+    Collective Bargaining Agreements (CCTs) - for CCT management module
+    """
+    
+    __tablename__ = "ConvencoesColetivas"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    sindicato_id = Column(Integer, ForeignKey("Sindicatos.id"), nullable=False)
+    numero_registro_mte = Column(String(50), nullable=True, unique=True)  # MTE registry code
+    vigencia_inicio = Column(Date, nullable=False)
+    vigencia_fim = Column(Date, nullable=False)
+    link_documento_oficial = Column(String(500), nullable=True)  # URL to official PDF
+    dados_cct = Column(JSON, nullable=True)  # Flexible JSON field for extracted CCT data
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class LegislacaoDocumentoDB(Base):
+    """
+    Legislation documents - for legislation management module
+    """
+    
+    __tablename__ = "DocumentosLegislacao"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    titulo = Column(String(300), nullable=False)
+    tipo_documento = Column(String(50), nullable=False)  # LEI, DECRETO, CCT, MEDIDA_PROVISORIA
+    numero_documento = Column(String(100), nullable=True)  # Ex: "Lei 13.467/2017"
+    data_publicacao = Column(Date, nullable=True)
+    orgao_emissor = Column(String(200), nullable=True)  # Ex: "Ministério do Trabalho"
+    arquivo_pdf = Column(String(500), nullable=True)  # Path to uploaded PDF
+    dados_extraidos = Column(JSON, nullable=True)  # AI-extracted structured data
+    status_processamento = Column(String(50), default="pendente", nullable=False)  # pendente, processando, concluido, erro
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    processado_em = Column(DateTime, nullable=True)
 
 
 class ControleMensalDB(Base):
@@ -287,6 +341,9 @@ __all__ = [
     "TicketComment",
     "ContabilidadeDB", 
     "EmpresaDB",
+    "SindicatoDB",
+    "ConvencaoColetivaCCTDB", 
+    "LegislacaoDocumentoDB",
     "ControleMensalDB",
     "TarefaControleDB", 
     "TemplateControleDB",

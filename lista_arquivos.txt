@@ -24,17 +24,17 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-402116f9-26b6-4c4a-b944-99f8409e7ee8
+./.git/logs/refs/heads/copilot/fix-41358cd9-11f3-475a-b83f-6aea16008ddb
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-402116f9-26b6-4c4a-b944-99f8409e7ee8
-./.git/logs/refs/remotes/origin/copilot/fix-8ad5cdba-7178-4c08-bfe5-16e35648eeec
-./.git/objects/pack/pack-ff8cd479d01025fc92e8f452d94b7541cef5aa84.idx
-./.git/objects/pack/pack-ff8cd479d01025fc92e8f452d94b7541cef5aa84.pack
-./.git/objects/pack/pack-ff8cd479d01025fc92e8f452d94b7541cef5aa84.rev
-./.git/refs/heads/copilot/fix-402116f9-26b6-4c4a-b944-99f8409e7ee8
+./.git/logs/refs/remotes/origin/copilot/fix-41358cd9-11f3-475a-b83f-6aea16008ddb
+./.git/objects/pack/pack-809086f06bbdbdf919a632b5e6c7d7b94b89e19d.idx
+./.git/objects/pack/pack-809086f06bbdbdf919a632b5e6c7d7b94b89e19d.pack
+./.git/objects/pack/pack-809086f06bbdbdf919a632b5e6c7d7b94b89e19d.rev
+./.git/refs/heads/copilot/fix-41358cd9-11f3-475a-b83f-6aea16008ddb
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-402116f9-26b6-4c4a-b944-99f8409e7ee8
-./.git/refs/remotes/origin/copilot/fix-8ad5cdba-7178-4c08-bfe5-16e35648eeec
+./.git/refs/remotes/origin/copilot/fix-41358cd9-11f3-475a-b83f-6aea16008ddb
 ./.github/dependabot.yml
 ./.github/workflows/atualiza-lista-arquivos.yml
 ./.github/workflows/automation.yml
@@ -106,6 +106,7 @@
 ./config/streamlit_config.toml
 ./data/external
 ./data/input/sample_extrato.pdf
+./data/legislacao_updates/monitorizacao_2025-08-08.json
 ./data/processed
 ./data/quarantine/evidence_coordinated_attack_20250806_191435.json
 ./data/quarantine/evidence_esocial_robot_20250806_191435.json
@@ -225,6 +226,7 @@
 ./requirements-ml.txt
 ./requirements-monitoring.txt
 ./requirements.txt
+./risk_advisor_demo.html
 ./scripts/README.md
 ./scripts/__main__.py
 ./scripts/audit/01_schema_validation.sql
@@ -484,6 +486,7 @@
 ./src/frontend/src/services/ai.ts
 ./src/frontend/src/services/api.ts
 ./src/frontend/src/services/controleMensalService.ts
+./src/frontend/src/services/riskAnalysisService.ts
 ./src/frontend/src/stores/authStore.ts
 ./src/frontend/src/stores/dashboardStore.ts
 ./src/frontend/src/stores/gamificationStore.ts
@@ -611,6 +614,7 @@
 ./supabase/config.toml
 ./supabase/functions/analisar-texto-com-ia/index.ts
 ./supabase/functions/processar-pdf/index.ts
+./test_risk_analysis.py
 ./tests/README.md
 ./tests/__init__.py
 ./tests/auth/login.yaml
