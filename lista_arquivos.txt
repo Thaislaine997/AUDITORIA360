@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
-./.git/objects/pack/pack-0b24a9b02b60931770aff0e2be1c581eb1b1fad2.idx
-./.git/objects/pack/pack-0b24a9b02b60931770aff0e2be1c581eb1b1fad2.pack
-./.git/objects/pack/pack-0b24a9b02b60931770aff0e2be1c581eb1b1fad2.rev
+./.git/objects/pack/pack-c7af252d668ac8b92b4ec3f857f338e488942cee.idx
+./.git/objects/pack/pack-c7af252d668ac8b92b4ec3f857f338e488942cee.pack
+./.git/objects/pack/pack-c7af252d668ac8b92b4ec3f857f338e488942cee.rev
 ./.git/refs/heads/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
@@ -121,6 +121,7 @@
 ./data_base/schemas/dataset_treinamento_riscos_folha.sql
 ./data_base/schemas/features_engineering.sql
 ./data_base/schemas/predicoes_risco_folha.sql
+./demo_ai_integration.py
 ./demos/README.md
 ./demos/demo_first_stage.py
 ./demos/demo_modular_backend.py
@@ -601,6 +602,7 @@
 ./tests/integration/portal_demandas/__init__.py
 ./tests/integration/portal_demandas/test_api.py
 ./tests/integration/portal_demandas/test_api_integration.py
+./tests/integration/test_ai_payroll_endpoints.py
 ./tests/integration/test_api_auditorias.py
 ./tests/integration/test_api_auth.py
 ./tests/integration/test_api_dashboard.py
@@ -663,6 +665,7 @@
 ./tests/unit/ml/__init__.py
 ./tests/unit/ml/test_isolation_forest.py
 ./tests/unit/ml/test_pipeline_definition.py
+./tests/unit/test_ai_payroll_service.py
 ./tests/unit/test_auth_flow.py
 ./tests/unit/test_auth_service.py
 ./tests/unit/test_automation_serverless.py
