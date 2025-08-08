@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-82dfafbf-ef80-46fb-b231-58a010915661
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-82dfafbf-ef80-46fb-b231-58a010915661
-./.git/objects/pack/pack-124911ec058280f8b1fa127eac2b4c56801c4f23.idx
-./.git/objects/pack/pack-124911ec058280f8b1fa127eac2b4c56801c4f23.pack
-./.git/objects/pack/pack-124911ec058280f8b1fa127eac2b4c56801c4f23.rev
+./.git/objects/pack/pack-512617ffdff7de6f4fbe357bc0f9736bcf5af613.idx
+./.git/objects/pack/pack-512617ffdff7de6f4fbe357bc0f9736bcf5af613.pack
+./.git/objects/pack/pack-512617ffdff7de6f4fbe357bc0f9736bcf5af613.rev
 ./.git/refs/heads/copilot/fix-82dfafbf-ef80-46fb-b231-58a010915661
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-82dfafbf-ef80-46fb-b231-58a010915661
@@ -46,6 +46,7 @@
 ./.pre-commit-config.yaml
 ./.prettierignore
 ./.prettierrc
+./BLUEPRINT_IMPLEMENTATION.md
 ./CNAME
 ./CONTRIBUTING.md
 ./Dockerfile
@@ -55,6 +56,7 @@
 ./Makefile
 ./README.md
 ./README_IA_INTEGRATION.md
+./VALIDATION_CHECKLIST.md
 ./api/DEPRECATED.md
 ./api/deprecation/deprecated_endpoints.json
 ./api/deprecation/tickets/MIG-20250806-12345678.json
@@ -125,6 +127,7 @@
 ./data_base/schemas/features_engineering.sql
 ./data_base/schemas/predicoes_risco_folha.sql
 ./demo_ai_integration.py
+./demo_implementation.py
 ./demos/README.md
 ./demos/demo_first_stage.py
 ./demos/demo_modular_backend.py
