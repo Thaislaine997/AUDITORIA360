@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
-./.git/objects/pack/pack-c7af252d668ac8b92b4ec3f857f338e488942cee.idx
-./.git/objects/pack/pack-c7af252d668ac8b92b4ec3f857f338e488942cee.pack
-./.git/objects/pack/pack-c7af252d668ac8b92b4ec3f857f338e488942cee.rev
+./.git/objects/pack/pack-b3ef35e226d18cdb6296634f0aaea3919d357d92.idx
+./.git/objects/pack/pack-b3ef35e226d18cdb6296634f0aaea3919d357d92.pack
+./.git/objects/pack/pack-b3ef35e226d18cdb6296634f0aaea3919d357d92.rev
 ./.git/refs/heads/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-bd053af4-e33c-4774-82d7-23d19b0a3146
@@ -53,6 +53,7 @@
 ./METAMORFOSE_RELATORIO_FINAL.md
 ./Makefile
 ./README.md
+./README_IA_INTEGRATION.md
 ./api/DEPRECATED.md
 ./api/deprecation/deprecated_endpoints.json
 ./api/deprecation/tickets/MIG-20250806-12345678.json
