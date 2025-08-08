@@ -9,8 +9,8 @@ import os
 import sys
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +104,90 @@ class TicketComment(Base):
         return f"<TicketComment(id={self.id}, ticket_id={self.ticket_id}, autor='{self.autor}')>"
 
 
+# ===== CONTROLE MENSAL DATABASE MODELS =====
+
+class ContabilidadeDB(Base):
+    """
+    Accounting firms (tenants) - mirrors the existing Contabilidades table
+    """
+    
+    __tablename__ = "Contabilidades"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    nome_contabilidade = Column(String(200), nullable=False)
+    cnpj = Column(String(20), nullable=False, unique=True)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class EmpresaDB(Base):
+    """
+    Client companies - mirrors the existing Empresas table
+    """
+    
+    __tablename__ = "Empresas"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    nome = Column(String(200), nullable=False)
+    contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=False)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class ControleMensalDB(Base):
+    """
+    Monthly controls - mirrors the existing ControlesMensais table
+    """
+    
+    __tablename__ = "ControlesMensais"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    mes = Column(Integer, nullable=False)
+    ano = Column(Integer, nullable=False)
+    status = Column(String(50), default="PENDENTE", nullable=False)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class TarefaControleDB(Base):
+    """
+    Control tasks - mirrors the existing TarefasControle table
+    """
+    
+    __tablename__ = "TarefasControle"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    controle_mensal_id = Column(Integer, ForeignKey("ControlesMensais.id"), nullable=False)
+    descricao_tarefa = Column(String(200), nullable=False)
+    concluida = Column(Boolean, default=False, nullable=False)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    data_conclusao = Column(DateTime, nullable=True)
+
+
+class TemplateControleDB(Base):
+    """
+    Control templates for different types of companies
+    """
+    
+    __tablename__ = "TemplatesControle"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=False)
+    nome_template = Column(String(100), nullable=False)
+    descricao = Column(Text, nullable=True)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class TemplateControleTarefaDB(Base):
+    """
+    Template tasks for control templates
+    """
+    
+    __tablename__ = "TemplatesControle_Tarefas"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    template_id = Column(Integer, ForeignKey("TemplatesControle.id"), nullable=False)
+    descricao_tarefa = Column(String(200), nullable=False)
+
+
 def get_db():
     """
     Database dependency for portal_demandas
@@ -156,6 +240,12 @@ except Exception as e:
 __all__ = [
     "TicketDB",
     "TicketComment",
+    "ContabilidadeDB", 
+    "EmpresaDB",
+    "ControleMensalDB",
+    "TarefaControleDB", 
+    "TemplateControleDB",
+    "TemplateControleTarefaDB",
     "get_db",
     "init_portal_db",
     "test_db_connection",

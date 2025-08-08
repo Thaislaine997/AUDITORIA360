@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getControlesDoMes, ControleMensalDetalhado } from '../services/controleMensalService';
 // Vamos criar este componente a seguir
 import { ControleMensalTable } from '../components/ControleMensalTable';
+import { TemplateManager } from '../components/TemplateManager';
 
 export const ControleMensalPage: React.FC = () => {
   const [controles, setControles] = useState<ControleMensalDetalhado[]>([]);
@@ -13,23 +14,28 @@ export const ControleMensalPage: React.FC = () => {
   // Lógica para selecionar o mês/ano
   const [date, setDate] = useState({ month: new Date().getMonth() + 1, year: new Date().getFullYear() });
 
-  useEffect(() => {
-    const fetchControles = async () => {
-      try {
-        setLoading(true);
-        const data = await getControlesDoMes(date.year, date.month);
-        setControles(data);
-        setError(null);
-      } catch (err) {
-        setError('Falha ao carregar os dados de controle.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchControles = async () => {
+    try {
+      setLoading(true);
+      const data = await getControlesDoMes(date.year, date.month);
+      setControles(data);
+      setError(null);
+    } catch (err) {
+      setError('Falha ao carregar os dados de controle.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchControles();
   }, [date]);
+
+  const handleTemplateApplied = () => {
+    // Recarregar os dados após aplicar template
+    fetchControles();
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -77,6 +83,9 @@ export const ControleMensalPage: React.FC = () => {
           Mostrando dados para <strong>{new Date(date.year, date.month - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</strong>
         </div>
       </div>
+
+      {/* Template Management Section */}
+      <TemplateManager onTemplateApplied={handleTemplateApplied} />
 
       {loading && (
         <div className="flex justify-center items-center py-8">

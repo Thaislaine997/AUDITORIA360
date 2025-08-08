@@ -226,3 +226,88 @@ class TicketFilter(BaseModel):
 
     class Config:
         use_enum_values = True
+
+
+# ===== CONTROLE MENSAL MODELS =====
+
+class Tarefa(BaseModel):
+    """Model for individual task in monthly control"""
+    
+    id: int
+    nome_tarefa: str
+    concluido: bool
+    data_conclusao: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class ControleMensalDetalhado(BaseModel):
+    """Model for detailed monthly control with tasks"""
+    
+    id_controle: int
+    mes: int
+    ano: int
+    status_dados: str
+    id_empresa: int
+    nome_empresa: str
+    tarefas: List[Tarefa]
+
+    class Config:
+        from_attributes = True
+
+
+class ControleMensalSumario(BaseModel):
+    """Summary model for monthly controls overview"""
+    
+    total_empresas: int
+    controles_iniciados: int
+    controles_concluidos: int
+    percentual_conclusao: str
+
+
+class ControleMensalResponse(BaseModel):
+    """Response model for controles endpoint"""
+    
+    sumario: ControleMensalSumario
+    controles: List[ControleMensalDetalhado]
+
+
+class TemplateControle(BaseModel):
+    """Model for control templates"""
+    
+    id: int
+    contabilidade_id: int
+    nome_template: str
+    descricao: Optional[str] = None
+    criado_em: datetime
+    tarefas: List[str]  # List of task descriptions
+
+    class Config:
+        from_attributes = True
+
+
+class TemplateControleCreate(BaseModel):
+    """Model for creating control templates"""
+    
+    nome_template: str = Field(..., min_length=3, max_length=100)
+    descricao: Optional[str] = Field(None, max_length=500)
+    tarefas: List[str] = Field(..., min_items=1, max_items=20)
+
+    @field_validator("tarefas")
+    @classmethod
+    def validate_tarefas(cls, v):
+        """Validate tasks format"""
+        for tarefa in v:
+            if not tarefa or len(tarefa.strip()) < 3:
+                raise ValueError("Cada tarefa deve ter pelo menos 3 caracteres")
+        return v
+
+
+class TemplateAplicacao(BaseModel):
+    """Model for applying templates to monthly controls"""
+    
+    template_id: int
+    mes: int = Field(..., ge=1, le=12)
+    ano: int = Field(..., ge=2020, le=2030)
+    empresas_ids: Optional[List[int]] = None  # If None, applies to all companies
