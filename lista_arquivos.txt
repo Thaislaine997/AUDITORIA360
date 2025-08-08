@@ -24,13 +24,13 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/Principal
+./.git/logs/refs/heads/copilot/fix-4ea20446-1c87-4f4a-90cb-8c07ac081f29
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-4ea20446-1c87-4f4a-90cb-8c07ac081f29
-./.git/objects/pack/pack-1a34802a5fccabfb053fe51a39c3d5581551b992.idx
-./.git/objects/pack/pack-1a34802a5fccabfb053fe51a39c3d5581551b992.pack
-./.git/objects/pack/pack-1a34802a5fccabfb053fe51a39c3d5581551b992.rev
-./.git/refs/heads/Principal
+./.git/objects/pack/pack-c8ecb78be2fdb4bf5317f57cbb80360418938112.idx
+./.git/objects/pack/pack-c8ecb78be2fdb4bf5317f57cbb80360418938112.pack
+./.git/objects/pack/pack-c8ecb78be2fdb4bf5317f57cbb80360418938112.rev
+./.git/refs/heads/copilot/fix-4ea20446-1c87-4f4a-90cb-8c07ac081f29
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-4ea20446-1c87-4f4a-90cb-8c07ac081f29
 ./.github/dependabot.yml
@@ -378,6 +378,7 @@
 ./src/frontend/package.json
 ./src/frontend/public/CNAME
 ./src/frontend/src/App.tsx
+./src/frontend/src/components/ControleMensalTable.tsx
 ./src/frontend/src/components/ExportButton.tsx
 ./src/frontend/src/components/GamificationToast.tsx
 ./src/frontend/src/components/Navbar.tsx
@@ -418,6 +419,7 @@
 ./src/frontend/src/components/ui/index.ts
 ./src/frontend/src/hooks/useAuth.ts
 ./src/frontend/src/hooks/useNeuralSignals.ts
+./src/frontend/src/lib/supabaseClient.ts
 ./src/frontend/src/main.tsx
 ./src/frontend/src/modules/auth/authService.ts
 ./src/frontend/src/modules/dashboard/dashboardService.ts
@@ -426,6 +428,7 @@
 ./src/frontend/src/pages/CCTPage.tsx
 ./src/frontend/src/pages/ChatbotPage.tsx
 ./src/frontend/src/pages/ConsultorRiscos.tsx
+./src/frontend/src/pages/ControleMensalPage.tsx
 ./src/frontend/src/pages/Dashboard.tsx
 ./src/frontend/src/pages/DeveloperPortal.tsx
 ./src/frontend/src/pages/DocumentsPage.tsx
@@ -443,6 +446,8 @@
 ./src/frontend/src/pages/Templates.tsx
 ./src/frontend/src/services/acr.ts
 ./src/frontend/src/services/ai.ts
+./src/frontend/src/services/api.ts
+./src/frontend/src/services/controleMensalService.ts
 ./src/frontend/src/stores/authStore.ts
 ./src/frontend/src/stores/dashboardStore.ts
 ./src/frontend/src/stores/gamificationStore.ts
