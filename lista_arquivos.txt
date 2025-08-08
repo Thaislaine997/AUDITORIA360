@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
-./.git/objects/pack/pack-e138022a3923700f8027dcfe4216941d719c531f.idx
-./.git/objects/pack/pack-e138022a3923700f8027dcfe4216941d719c531f.pack
-./.git/objects/pack/pack-e138022a3923700f8027dcfe4216941d719c531f.rev
+./.git/objects/pack/pack-59bf057abb144230d139bd910606aabecbb9d4d3.idx
+./.git/objects/pack/pack-59bf057abb144230d139bd910606aabecbb9d4d3.pack
+./.git/objects/pack/pack-59bf057abb144230d139bd910606aabecbb9d4d3.rev
 ./.git/refs/heads/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
@@ -193,6 +193,7 @@
 ./migrations/004_criar_tabela_documentos.sql
 ./migrations/005_evoluir_schema_ia.sql
 ./migrations/006_unified_multi_tenant_security.sql
+./migrations/007_modulo_cct_sindicatos.sql
 ./migrations/performance_indices.sql
 ./monitoring/alerts/alerts_config.json
 ./monitoring/basic_alerts.json
@@ -579,6 +580,7 @@
 ./src/services/__init__.py
 ./src/services/auth_service.py
 ./src/services/cache_service.py
+./src/services/cct_service.py
 ./src/services/communication_gateway/__init__.py
 ./src/services/communication_gateway/gateway.py
 ./src/services/communication_gateway/github_integration.py
@@ -665,6 +667,7 @@
 ./tests/test-ai-analysis.js
 ./tests/test_api_features.py
 ./tests/test_api_server.py
+./tests/test_cct_module.py
 ./tests/test_collective_mind_ethics.py
 ./tests/test_enhanced_auth.py
 ./tests/test_monitoring_phase4.py
