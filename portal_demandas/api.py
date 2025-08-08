@@ -696,6 +696,36 @@ def atualizar_status_tarefa(
 
 # ===== TEMPLATE ENDPOINTS =====
 
+@app.get("/v1/debug/db", tags=["debug"])
+def debug_database(db: Session = Depends(get_db)):
+    """Debug endpoint to check database connection and data"""
+    try:
+        from sqlalchemy import text
+        
+        # Check database file path
+        db_url = str(db.bind.url)
+        
+        # Count records in various tables
+        contabilidades_count = db.execute(text("SELECT COUNT(*) FROM Contabilidades")).scalar()
+        templates_count = db.execute(text("SELECT COUNT(*) FROM TemplatesControle")).scalar()
+        empresas_count = db.execute(text("SELECT COUNT(*) FROM Empresas")).scalar()
+        
+        # Get templates with raw SQL
+        templates_result = db.execute(text("SELECT id, nome_template FROM TemplatesControle WHERE contabilidade_id = 1")).fetchall()
+        
+        return {
+            "database_url": db_url,
+            "counts": {
+                "contabilidades": contabilidades_count,
+                "templates": templates_count,
+                "empresas": empresas_count
+            },
+            "templates_raw_sql": [{"id": t[0], "nome": t[1]} for t in templates_result]
+        }
+        
+    except Exception as e:
+        return {"error": str(e)}
+
 @app.get("/v1/templates", response_model=List[TemplateControle], tags=["templates"])
 def listar_templates(db: Session = Depends(get_db)):
     """
