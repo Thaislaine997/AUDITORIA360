@@ -1,9 +1,10 @@
 import os
 
 import pytest
-from tests.e2e.e2e_config import e2e_context_instance  # Corrigir import path
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from playwright.sync_api import sync_playwright
+
+from tests.e2e.e2e_config import e2e_context_instance  # Corrigir import path
 
 CLIENTES = [
     # Usar os nomes de usuário como definidos no mock_yaml_config_content em conftest.py

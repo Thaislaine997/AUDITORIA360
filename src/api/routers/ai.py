@@ -73,11 +73,11 @@ async def chat_with_bot(
         context_data = {
             "session_id": chat_request.session_id,
             "user_id": str(current_user.id),
-            "user_role": getattr(current_user, 'role', 'user'),
+            "user_role": getattr(current_user, "role", "user"),
         }
         if chat_request.context:
             context_data.update(chat_request.context)
-        
+
         result = await agent.chat_with_openai(chat_request.message, context_data)
 
         if result.get("success"):
@@ -95,7 +95,7 @@ async def chat_with_bot(
             mcp_result = await agent.executar_acao(
                 f"chat: {chat_request.message}", chat_request.context
             )
-            
+
             if mcp_result.get("success"):
                 return {
                     "response": mcp_result.get("result", "Processed successfully"),
@@ -160,14 +160,14 @@ async def get_ai_recommendations(
         # Prepare user context for recommendations
         user_context = {
             "user_id": str(current_user.id),
-            "user_role": getattr(current_user, 'role', 'user'),
-            "username": getattr(current_user, 'username', 'unknown'),
-            "timestamp": datetime.now().isoformat()
+            "user_role": getattr(current_user, "role", "user"),
+            "username": getattr(current_user, "username", "unknown"),
+            "timestamp": datetime.now().isoformat(),
         }
 
         # Try OpenAI recommendations first
         ai_result = await agent.get_ai_recommendations(user_context)
-        
+
         if ai_result.get("success"):
             return {
                 "recommendations": ai_result.get("response", ""),
@@ -268,6 +268,7 @@ async def create_knowledge_base_entry(
 
 
 # New OpenAI-specific endpoints
+
 
 @router.post("/analyze-document")
 async def analyze_document_with_ai(
@@ -465,7 +466,7 @@ async def get_ai_status(current_user: User = Depends(get_current_user)):
     """Get AI agent status including OpenAI integration"""
     try:
         agent = get_ai_agent()
-        
+
         capabilities = await agent.get_mcp_capabilities()
 
         return {

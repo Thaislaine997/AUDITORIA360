@@ -12,144 +12,160 @@ Este script implementa o ACH que realiza:
 Parte da "Grande Síntese" - Iniciativa III
 """
 
-import os
-import subprocess
 import json
+import os
+import re
+import subprocess
 import sys
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
-import re
-import tempfile
-import shutil
-from collections import defaultdict, Counter
+from typing import Any, Dict, List
+
 
 class HolisticConsciousnessAgent:
     """ACH - Agente de Consciência Holística"""
-    
+
     def __init__(self, repository_path: str = "."):
         self.repo_path = Path(repository_path).resolve()
         self.output_dir = Path("artifacts/ach")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Arquivo classification patterns
         self.classification_patterns = {
             "frontend": {
                 "patterns": [r"\.tsx?$", r"\.jsx?$", r"\.css$", r"\.scss$", r"\.html$"],
                 "paths": ["src/frontend/", "frontend/", "web/", "client/"],
-                "health_weight": 0.25
+                "health_weight": 0.25,
             },
             "backend": {
                 "patterns": [r"\.py$", r"\.fastapi", r"\.uvicorn"],
                 "paths": ["src/api/", "api/", "src/", "backend/", "server/"],
-                "health_weight": 0.30
+                "health_weight": 0.30,
             },
             "database": {
                 "patterns": [r"\.sql$", r"\.db$", r"migration", r"schema"],
                 "paths": ["migrations/", "data_base/", "database/", "sql/"],
-                "health_weight": 0.15
+                "health_weight": 0.15,
             },
             "config": {
                 "patterns": [r"\.ya?ml$", r"\.json$", r"\.env", r"\.toml$", r"\.ini$"],
                 "paths": ["config/", "conf/", ".github/"],
-                "health_weight": 0.10
+                "health_weight": 0.10,
             },
             "docs": {
                 "patterns": [r"\.md$", r"\.txt$", r"\.rst$"],
                 "paths": ["docs/", "documentation/"],
-                "health_weight": 0.05
+                "health_weight": 0.05,
             },
             "tests": {
-                "patterns": [r"test_.*\.py$", r".*_test\.py$", r"\.spec\.", r"\.test\."],
+                "patterns": [
+                    r"test_.*\.py$",
+                    r".*_test\.py$",
+                    r"\.spec\.",
+                    r"\.test\.",
+                ],
                 "paths": ["tests/", "test/", "__tests__/"],
-                "health_weight": 0.10
+                "health_weight": 0.10,
             },
             "infrastructure": {
                 "patterns": [r"Dockerfile", r"docker-compose", r"\.sh$", r"Makefile"],
                 "paths": ["deploy/", "infra/", "scripts/"],
-                "health_weight": 0.05
-            }
+                "health_weight": 0.05,
+            },
         }
-        
+
     def run_genomic_census(self) -> Dict[str, Any]:
         """Executa o Censo Genômico classificando todos os arquivos"""
         print("📊 ACH: Executando Censo Genômico...")
-        
+
         census_data = {
             "timestamp": datetime.now().isoformat(),
             "repository_path": str(self.repo_path),
             "total_files": 0,
             "classification_summary": {},
             "file_details": {},
-            "health_indicators": {}
+            "health_indicators": {},
         }
-        
+
         all_files = []
-        
+
         # Coleta todos os arquivos (exceto .git, node_modules, etc)
-        excluded_dirs = {'.git', 'node_modules', '__pycache__', '.venv', 'venv', 'dist', 'build'}
-        
+        excluded_dirs = {
+            ".git",
+            "node_modules",
+            "__pycache__",
+            ".venv",
+            "venv",
+            "dist",
+            "build",
+        }
+
         for root, dirs, files in os.walk(self.repo_path):
             # Remove diretórios excluídos da busca
             dirs[:] = [d for d in dirs if d not in excluded_dirs]
-            
+
             for file in files:
-                if not file.startswith('.') or file.startswith('.env'):
+                if not file.startswith(".") or file.startswith(".env"):
                     file_path = Path(root) / file
                     rel_path = file_path.relative_to(self.repo_path)
                     all_files.append(rel_path)
-                    
+
         census_data["total_files"] = len(all_files)
-        
+
         # Classifica cada arquivo
         classification_counts = defaultdict(int)
-        
+
         for file_path in all_files:
             classification = self._classify_file(file_path)
             classification_counts[classification] += 1
-            
+
             # Armazena detalhes do arquivo
             file_info = {
                 "classification": classification,
                 "size_bytes": self._get_file_size(file_path),
                 "last_modified": self._get_last_modified(file_path),
-                "complexity_score": self._calculate_complexity(file_path)
+                "complexity_score": self._calculate_complexity(file_path),
             }
-            
+
             census_data["file_details"][str(file_path)] = file_info
-            
+
         # Sumariza classificações
         for classification, count in classification_counts.items():
             census_data["classification_summary"][classification] = {
                 "count": count,
                 "percentage": round((count / census_data["total_files"]) * 100, 2),
-                "health_weight": self.classification_patterns.get(classification, {}).get("health_weight", 0.01)
+                "health_weight": self.classification_patterns.get(
+                    classification, {}
+                ).get("health_weight", 0.01),
             }
-            
+
         print(f"   📁 Total de arquivos analisados: {census_data['total_files']}")
         for classification, data in census_data["classification_summary"].items():
-            print(f"   📋 {classification}: {data['count']} arquivos ({data['percentage']}%)")
-            
+            print(
+                f"   📋 {classification}: {data['count']} arquivos ({data['percentage']}%)"
+            )
+
         return census_data
-        
+
     def _classify_file(self, file_path: Path) -> str:
         """Classifica um arquivo baseado em padrões e caminhos"""
         file_str = str(file_path).lower()
         file_name = file_path.name.lower()
-        
+
         for classification, config in self.classification_patterns.items():
             # Verifica padrões de nome/extensão
             for pattern in config["patterns"]:
                 if re.search(pattern, file_name):
                     return classification
-                    
+
             # Verifica padrões de caminho
             for path_pattern in config.get("paths", []):
                 if path_pattern.lower() in file_str:
                     return classification
-                    
+
         return "other"
-        
+
     def _get_file_size(self, file_path: Path) -> int:
         """Obtém o tamanho do arquivo em bytes"""
         try:
@@ -157,7 +173,7 @@ class HolisticConsciousnessAgent:
             return full_path.stat().st_size
         except (OSError, FileNotFoundError):
             return 0
-            
+
     def _get_last_modified(self, file_path: Path) -> str:
         """Obtém a data de última modificação"""
         try:
@@ -166,49 +182,61 @@ class HolisticConsciousnessAgent:
             return datetime.fromtimestamp(timestamp).isoformat()
         except (OSError, FileNotFoundError):
             return ""
-            
+
     def _calculate_complexity(self, file_path: Path) -> float:
         """Calcula score de complexidade baseado no conteúdo do arquivo"""
         try:
             full_path = self.repo_path / file_path
             if full_path.stat().st_size > 1024 * 1024:  # > 1MB
                 return 1.0  # Muito complexo para analisar
-                
-            content = full_path.read_text(encoding='utf-8', errors='ignore')
-            
+
+            content = full_path.read_text(encoding="utf-8", errors="ignore")
+
             # Métricas simples de complexidade
-            lines = len(content.split('\n'))
+            lines = len(content.split("\n"))
             if lines == 0:
                 return 0.0
-                
+
             # Conta estruturas de controle em código
-            complexity_keywords = ['if', 'for', 'while', 'switch', 'try', 'catch', 'class', 'function', 'def']
-            complexity_count = sum(content.lower().count(keyword) for keyword in complexity_keywords)
-            
+            complexity_keywords = [
+                "if",
+                "for",
+                "while",
+                "switch",
+                "try",
+                "catch",
+                "class",
+                "function",
+                "def",
+            ]
+            complexity_count = sum(
+                content.lower().count(keyword) for keyword in complexity_keywords
+            )
+
             # Normaliza pela quantidade de linhas
             complexity_score = min(complexity_count / lines, 1.0)
             return round(complexity_score, 3)
-            
+
         except (OSError, UnicodeDecodeError, Exception):
             return 0.0
-            
+
     def run_vital_pulse_tests(self, census_data: Dict[str, Any]) -> Dict[str, Any]:
         """Executa Testes de Pulso Vital para cada classe de arquivo"""
         print("💓 ACH: Executando Testes de Pulso Vital...")
-        
+
         pulse_results = {
             "timestamp": datetime.now().isoformat(),
             "overall_health": "unknown",
             "classification_health": {},
             "critical_issues": [],
-            "recommendations": []
+            "recommendations": [],
         }
-        
+
         health_scores = {}
-        
+
         for classification in census_data["classification_summary"].keys():
             print(f"   🔍 Testando pulso: {classification}")
-            
+
             if classification == "frontend":
                 health_score = self._test_frontend_pulse()
             elif classification == "backend":
@@ -225,28 +253,30 @@ class HolisticConsciousnessAgent:
                 health_score = self._test_infrastructure_pulse()
             else:
                 health_score = {"score": 0.5, "status": "unknown", "issues": []}
-                
+
             health_scores[classification] = health_score
             pulse_results["classification_health"][classification] = health_score
-            
+
             # Coleta issues críticos
             if health_score["score"] < 0.3:
                 pulse_results["critical_issues"].extend(health_score.get("issues", []))
-                
+
         # Calcula saúde geral ponderada
         total_weighted_score = 0
         total_weight = 0
-        
+
         for classification, health_data in health_scores.items():
-            weight = self.classification_patterns.get(classification, {}).get("health_weight", 0.01)
+            weight = self.classification_patterns.get(classification, {}).get(
+                "health_weight", 0.01
+            )
             total_weighted_score += health_data["score"] * weight
             total_weight += weight
-            
+
         if total_weight > 0:
             overall_score = total_weighted_score / total_weight
         else:
             overall_score = 0.5
-            
+
         # Determina status geral
         if overall_score >= 0.8:
             pulse_results["overall_health"] = "excellent"
@@ -256,21 +286,23 @@ class HolisticConsciousnessAgent:
             pulse_results["overall_health"] = "fair"
         else:
             pulse_results["overall_health"] = "poor"
-            
+
         pulse_results["overall_score"] = round(overall_score, 3)
-        
+
         # Gera recomendações
         pulse_results["recommendations"] = self._generate_recommendations(health_scores)
-        
-        print(f"   💚 Saúde geral do sistema: {pulse_results['overall_health']} ({pulse_results['overall_score']:.1%})")
-        
+
+        print(
+            f"   💚 Saúde geral do sistema: {pulse_results['overall_health']} ({pulse_results['overall_score']:.1%})"
+        )
+
         return pulse_results
-        
+
     def _test_frontend_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital dos componentes frontend"""
         issues = []
         score = 1.0
-        
+
         # Verifica se package.json existe
         package_json = self.repo_path / "src/frontend/package.json"
         if not package_json.exists():
@@ -286,182 +318,192 @@ class HolisticConsciousnessAgent:
             except (json.JSONDecodeError, Exception):
                 issues.append("package.json inválido")
                 score -= 0.2
-                
+
         # Verifica se consegue fazer build
         try:
-            build_result = subprocess.run([
-                "npm", "run", "build"
-            ], 
-            cwd=self.repo_path / "src/frontend",
-            capture_output=True, 
-            text=True, 
-            timeout=60
+            build_result = subprocess.run(
+                ["npm", "run", "build"],
+                cwd=self.repo_path / "src/frontend",
+                capture_output=True,
+                text=True,
+                timeout=60,
             )
-            
+
             if build_result.returncode != 0:
                 issues.append("Frontend build falhou")
                 score -= 0.3
-                
-        except (subprocess.TimeoutExpired, subprocess.CalledProcessError, FileNotFoundError):
+
+        except (
+            subprocess.TimeoutExpired,
+            subprocess.CalledProcessError,
+            FileNotFoundError,
+        ):
             issues.append("Não foi possível testar build do frontend")
             score -= 0.2
-            
+
         # Verifica estrutura de diretórios
         expected_dirs = ["src", "public"]
         frontend_root = self.repo_path / "src/frontend"
-        
+
         for expected_dir in expected_dirs:
             if not (frontend_root / expected_dir).exists():
                 issues.append(f"Diretório {expected_dir} ausente")
                 score -= 0.1
-                
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": "Análise de saúde dos componentes frontend"
+            "details": "Análise de saúde dos componentes frontend",
         }
-        
+
     def _test_backend_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital dos componentes backend"""
         issues = []
         score = 1.0
-        
+
         # Verifica se requirements.txt existe
         requirements_file = self.repo_path / "requirements.txt"
         if not requirements_file.exists():
             issues.append("requirements.txt não encontrado")
             score -= 0.3
-            
+
         # Verifica se main FastAPI app existe
         api_files = [
             self.repo_path / "api/index.py",
             self.repo_path / "src/main.py",
-            self.repo_path / "main.py"
+            self.repo_path / "main.py",
         ]
-        
+
         api_file_found = any(f.exists() for f in api_files)
         if not api_file_found:
             issues.append("Arquivo principal da API não encontrado")
             score -= 0.3
-            
+
         # Verifica importações críticas
         try:
-            import fastapi
-            import uvicorn
+            pass
         except ImportError as e:
             issues.append(f"Dependências críticas ausentes: {e}")
             score -= 0.4
-            
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": "Análise de saúde dos componentes backend"
+            "details": "Análise de saúde dos componentes backend",
         }
-        
+
     def _test_database_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital dos componentes de banco de dados"""
         issues = []
         score = 1.0
-        
+
         # Verifica se existem arquivos de migração
         migration_dirs = [
             self.repo_path / "migrations",
             self.repo_path / "data_base",
         ]
-        
-        migration_found = any(d.exists() and any(d.iterdir()) for d in migration_dirs if d.exists())
+
+        migration_found = any(
+            d.exists() and any(d.iterdir()) for d in migration_dirs if d.exists()
+        )
         if not migration_found:
             issues.append("Nenhum arquivo de migração encontrado")
             score -= 0.2
-            
+
         # Verifica se SQLAlchemy está configurado
         try:
-            import sqlalchemy
+            pass
         except ImportError:
             issues.append("SQLAlchemy não instalado")
             score -= 0.3
-            
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": "Análise de saúde do banco de dados"
+            "details": "Análise de saúde do banco de dados",
         }
-        
+
     def _test_config_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital dos arquivos de configuração"""
         issues = []
         score = 1.0
-        
+
         # Verifica arquivos de configuração essenciais
-        essential_configs = [
-            ".env.example",
-            "docker-compose.yml",
-            "pyproject.toml"
-        ]
-        
+        essential_configs = [".env.example", "docker-compose.yml", "pyproject.toml"]
+
         missing_configs = []
         for config in essential_configs:
             if not (self.repo_path / config).exists():
                 missing_configs.append(config)
-                
+
         if missing_configs:
             issues.append(f"Configurações ausentes: {', '.join(missing_configs)}")
             score -= 0.1 * len(missing_configs)
-            
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": "Análise de arquivos de configuração"
+            "details": "Análise de arquivos de configuração",
         }
-        
+
     def _test_tests_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital da suite de testes"""
         issues = []
         score = 1.0
-        
+
         # Verifica se pytest está disponível
         try:
-            import pytest
+            pass
         except ImportError:
             issues.append("pytest não instalado")
             score -= 0.3
-            
+
         # Conta arquivos de teste
         test_files = list(self.repo_path.glob("tests/**/*test*.py"))
         test_files.extend(self.repo_path.glob("test/**/*test*.py"))
-        
+
         if len(test_files) < 5:
             issues.append(f"Poucos arquivos de teste encontrados: {len(test_files)}")
             score -= 0.2
-            
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": f"Análise da suite de testes ({len(test_files)} arquivos)"
+            "details": f"Análise da suite de testes ({len(test_files)} arquivos)",
         }
-        
+
     def _test_docs_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital da documentação"""
         issues = []
         score = 1.0
-        
+
         # Verifica README
         readme_files = [
             self.repo_path / "README.md",
             self.repo_path / "README.txt",
-            self.repo_path / "readme.md"
+            self.repo_path / "readme.md",
         ]
-        
+
         readme_found = any(f.exists() for f in readme_files)
         if not readme_found:
             issues.append("README não encontrado")
             score -= 0.5
-            
+
         # Verifica documentação técnica
         docs_dir = self.repo_path / "docs"
         if docs_dir.exists():
@@ -472,34 +514,35 @@ class HolisticConsciousnessAgent:
         else:
             issues.append("Diretório docs/ não encontrado")
             score -= 0.3
-            
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": "Análise da documentação"
+            "details": "Análise da documentação",
         }
-        
+
     def _test_infrastructure_pulse(self) -> Dict[str, Any]:
         """Testa o pulso vital da infraestrutura"""
         issues = []
         score = 1.0
-        
+
         # Verifica Docker
         dockerfile_found = (self.repo_path / "Dockerfile").exists()
-        docker_compose_found = (
-            (self.repo_path / "docker-compose.yml").exists() or 
-            (self.repo_path / "docker-compose.yaml").exists()
-        )
-        
+        docker_compose_found = (self.repo_path / "docker-compose.yml").exists() or (
+            self.repo_path / "docker-compose.yaml"
+        ).exists()
+
         if not dockerfile_found:
             issues.append("Dockerfile não encontrado")
             score -= 0.3
-            
+
         if not docker_compose_found:
             issues.append("docker-compose.yml não encontrado")
             score -= 0.2
-            
+
         # Verifica CI/CD
         github_workflows = self.repo_path / ".github/workflows"
         if github_workflows.exists():
@@ -510,86 +553,110 @@ class HolisticConsciousnessAgent:
         else:
             issues.append("Diretório .github/workflows não encontrado")
             score -= 0.3
-            
+
         return {
             "score": max(0.0, score),
-            "status": "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical",
+            "status": (
+                "healthy" if score >= 0.7 else "warning" if score >= 0.4 else "critical"
+            ),
             "issues": issues,
-            "details": "Análise da infraestrutura"
+            "details": "Análise da infraestrutura",
         }
-        
-    def _generate_recommendations(self, health_scores: Dict[str, Dict[str, Any]]) -> List[str]:
+
+    def _generate_recommendations(
+        self, health_scores: Dict[str, Dict[str, Any]]
+    ) -> List[str]:
         """Gera recomendações baseadas nos scores de saúde"""
         recommendations = []
-        
+
         for classification, health_data in health_scores.items():
             if health_data["score"] < 0.5:
-                recommendations.append(f"🔧 Melhorar {classification}: {', '.join(health_data['issues'][:2])}")
-                
+                recommendations.append(
+                    f"🔧 Melhorar {classification}: {', '.join(health_data['issues'][:2])}"
+                )
+
         # Recomendações gerais
         if len([h for h in health_scores.values() if h["score"] < 0.6]) > 2:
-            recommendations.append("🚨 Sistema requer atenção urgente em múltiplos componentes")
-            
+            recommendations.append(
+                "🚨 Sistema requer atenção urgente em múltiplos componentes"
+            )
+
         if not recommendations:
-            recommendations.append("✨ Sistema em boa saúde - manter monitoramento regular")
-            
+            recommendations.append(
+                "✨ Sistema em boa saúde - manter monitoramento regular"
+            )
+
         return recommendations[:5]  # Máximo 5 recomendações
-        
-    def generate_vitality_diagram(self, census_data: Dict[str, Any], pulse_results: Dict[str, Any]) -> str:
+
+    def generate_vitality_diagram(
+        self, census_data: Dict[str, Any], pulse_results: Dict[str, Any]
+    ) -> str:
         """Gera Diagrama de Vitalidade Sistémica interativo"""
         print("🎨 ACH: Gerando Diagrama de Vitalidade Sistémica...")
-        
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         diagram_file = self.output_dir / f"vitality_diagram_{timestamp}.html"
-        
+
         # Cria HTML interativo com D3.js e Fluxo design system
         html_content = self._create_vitality_html(census_data, pulse_results)
-        
-        diagram_file.write_text(html_content, encoding='utf-8')
-        
+
+        diagram_file.write_text(html_content, encoding="utf-8")
+
         print(f"✅ Diagrama de Vitalidade gerado: {diagram_file}")
         return str(diagram_file)
-        
-    def _create_vitality_html(self, census_data: Dict[str, Any], pulse_results: Dict[str, Any]) -> str:
+
+    def _create_vitality_html(
+        self, census_data: Dict[str, Any], pulse_results: Dict[str, Any]
+    ) -> str:
         """Cria o HTML do diagrama de vitalidade com design Fluxo"""
-        
+
         # Prepara dados para visualização
         nodes_data = []
         links_data = []
-        
+
         # Nó central do sistema
-        nodes_data.append({
-            "id": "system",
-            "name": "AUDITORIA360",
-            "type": "system",
-            "health": pulse_results["overall_health"],
-            "score": pulse_results["overall_score"],
-            "size": 40
-        })
-        
+        nodes_data.append(
+            {
+                "id": "system",
+                "name": "AUDITORIA360",
+                "type": "system",
+                "health": pulse_results["overall_health"],
+                "score": pulse_results["overall_score"],
+                "size": 40,
+            }
+        )
+
         # Nós para cada classificação
-        for classification, health_data in pulse_results["classification_health"].items():
-            classification_info = census_data["classification_summary"].get(classification, {})
-            
-            nodes_data.append({
-                "id": classification,
-                "name": classification.title(),
-                "type": "component",
-                "health": health_data["status"],
-                "score": health_data["score"],
-                "count": classification_info.get("count", 0),
-                "percentage": classification_info.get("percentage", 0),
-                "issues": health_data.get("issues", []),
-                "size": max(10, min(30, classification_info.get("count", 0) / 5))
-            })
-            
+        for classification, health_data in pulse_results[
+            "classification_health"
+        ].items():
+            classification_info = census_data["classification_summary"].get(
+                classification, {}
+            )
+
+            nodes_data.append(
+                {
+                    "id": classification,
+                    "name": classification.title(),
+                    "type": "component",
+                    "health": health_data["status"],
+                    "score": health_data["score"],
+                    "count": classification_info.get("count", 0),
+                    "percentage": classification_info.get("percentage", 0),
+                    "issues": health_data.get("issues", []),
+                    "size": max(10, min(30, classification_info.get("count", 0) / 5)),
+                }
+            )
+
             # Link do sistema para cada componente
-            links_data.append({
-                "source": "system",
-                "target": classification,
-                "strength": health_data["score"]
-            })
-            
+            links_data.append(
+                {
+                    "source": "system",
+                    "target": classification,
+                    "strength": health_data["score"],
+                }
+            )
+
         html_template = f"""
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -895,13 +962,13 @@ class HolisticConsciousnessAgent:
 </body>
 </html>
         """
-        
+
         return html_template
-        
+
     def run_soul_simulation(self, census_data: Dict[str, Any]) -> Dict[str, Any]:
         """Executa Simulação com Alma usando dados seed"""
         print("🌟 ACH: Executando Simulação com Alma...")
-        
+
         simulation_results = {
             "timestamp": datetime.now().isoformat(),
             "environment_health": "healthy",
@@ -910,38 +977,38 @@ class HolisticConsciousnessAgent:
                 "creativity": 0.9,
                 "resilience": 0.8,
                 "adaptability": 0.7,
-                "empathy": 0.95
+                "empathy": 0.95,
             },
-            "notes": "Simulação com dados realistas executada com sucesso"
+            "notes": "Simulação com dados realistas executada com sucesso",
         }
-        
+
         # Mock simulation for demonstration
         # In a real implementation, this would:
         # 1. Use seed_blueprint_data.py to create test data
         # 2. Execute test scenarios
         # 3. Measure system responses
         # 4. Evaluate "soul" qualities like adaptability
-        
+
         return simulation_results
-        
+
     def run_full_consciousness_analysis(self) -> bool:
         """Executa análise completa do ACH"""
         print("🧠 Iniciando ACH - Agente de Consciência Holística")
         print("=" * 70)
-        
+
         try:
             # 1. Censo Genômico
             census_data = self.run_genomic_census()
-            
+
             # 2. Testes de Pulso Vital
             pulse_results = self.run_vital_pulse_tests(census_data)
-            
+
             # 3. Simulação com Alma
             soul_results = self.run_soul_simulation(census_data)
-            
+
             # 4. Gera Diagrama de Vitalidade
             diagram_path = self.generate_vitality_diagram(census_data, pulse_results)
-            
+
             # 5. Salva relatório completo
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_data = {
@@ -950,29 +1017,35 @@ class HolisticConsciousnessAgent:
                 "genomic_census": census_data,
                 "vital_pulse_results": pulse_results,
                 "soul_simulation": soul_results,
-                "vitality_diagram_path": diagram_path
+                "vitality_diagram_path": diagram_path,
             }
-            
+
             report_file = self.output_dir / f"ach_complete_analysis_{timestamp}.json"
-            report_file.write_text(json.dumps(report_data, indent=2, ensure_ascii=False))
-            
+            report_file.write_text(
+                json.dumps(report_data, indent=2, ensure_ascii=False)
+            )
+
             print("=" * 70)
             print("✅ ACH - Análise de Consciência Holística Completa!")
             print(f"📊 Relatório: {report_file}")
             print(f"🎨 Diagrama: {diagram_path}")
-            print(f"💚 Saúde Geral: {pulse_results['overall_health']} ({pulse_results['overall_score']:.1%})")
+            print(
+                f"💚 Saúde Geral: {pulse_results['overall_health']} ({pulse_results['overall_score']:.1%})"
+            )
             print("=" * 70)
-            
+
             return True
-            
+
         except Exception as e:
             print(f"❌ Erro na análise ACH: {e}")
             return False
 
+
 def main():
     """Função principal"""
     if len(sys.argv) > 1 and sys.argv[1] == "--help":
-        print("""
+        print(
+            """
 ACH - Agente de Consciência Holística
 
 Uso: python run_holistic_consciousness_agent.py [opções]
@@ -983,19 +1056,21 @@ Opções:
 
 Exemplo:
   python run_holistic_consciousness_agent.py --repo-path /path/to/repo
-        """)
+        """
+        )
         return
-        
+
     repo_path = "."
     if "--repo-path" in sys.argv:
         idx = sys.argv.index("--repo-path")
         if idx + 1 < len(sys.argv):
             repo_path = sys.argv[idx + 1]
-            
+
     ach = HolisticConsciousnessAgent(repo_path)
     success = ach.run_full_consciousness_analysis()
-    
+
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

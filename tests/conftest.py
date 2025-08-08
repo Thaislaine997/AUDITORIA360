@@ -10,11 +10,11 @@ import pytest
 # Add project root and services to Python path for testing
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'services'))
-sys.path.insert(0, os.path.join(project_root, 'src'))
+sys.path.insert(0, os.path.join(project_root, "services"))
+sys.path.insert(0, os.path.join(project_root, "src"))
 
 # Set testing environment variables
-os.environ.setdefault('TESTING', 'true')
+os.environ.setdefault("TESTING", "true")
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from e2e.e2e_config import e2e_context_instance

@@ -194,6 +194,7 @@ def test_logout():
     assert result["message"] == "Successfully logged out"
     assert result["status"] == "success"
 
+
 def test_convenience_functions():
     """Test convenience functions"""
     from src.auth.unified_auth import (

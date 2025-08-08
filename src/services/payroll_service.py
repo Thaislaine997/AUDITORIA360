@@ -1,11 +1,13 @@
 """
 Payroll service for AUDITORIA360
 Performance optimized with caching and async operations
+Now powered by AI-extracted rules from RegrasValidadas table
 """
 
 import asyncio
 import logging
-from typing import List, Optional, Any
+from datetime import date
+from typing import Any, List, Optional
 
 from fastapi import HTTPException, status
 from sqlalchemy import text
@@ -24,9 +26,107 @@ from src.schemas.payroll_schemas import (
     PayrollValidationRequest,
     PayrollValidationResult,
 )
-from src.services.cache_service import cached_query, cache_service, CacheKeys
+from src.services.cache_service import CacheKeys, cache_service, cached_query
+from supabase import AsyncClient
 
 logger = logging.getLogger(__name__)
+
+
+class AIPayrollService:
+    """
+    AI-powered Payroll Service that queries dynamic rules from RegrasValidadas table
+    instead of using hard-coded values.
+    """
+
+    def __init__(self, supabase: AsyncClient):
+        self.db = supabase
+
+    async def _obter_parametro(self, nome_parametro: str, data_referencia: date) -> str:
+        """
+        Busca na tabela 'RegrasValidadas' o valor de um parâmetro
+        que esteja em vigor na data de referência.
+        """
+        try:
+            response = (
+                await self.db.from_("RegrasValidadas")
+                .select("valor_parametro")
+                .eq("nome_parametro", nome_parametro)
+                .lte("data_inicio_vigencia", data_referencia.isoformat())
+                .or_(
+                    f"data_fim_vigencia.is.null,data_fim_vigencia.gte.{data_referencia.isoformat()}"
+                )
+                .order("data_inicio_vigencia", desc=True)
+                .limit(1)
+                .execute()
+            )
+
+            if not response.data:
+                logger.warning(
+                    f"Parâmetro '{nome_parametro}' não encontrado na base de dados para a data {data_referencia}."
+                )
+                raise ValueError(f"Parâmetro não encontrado: {nome_parametro}")
+
+            return response.data[0]["valor_parametro"]
+        except Exception as e:
+            logger.error(f"Erro ao obter parâmetro '{nome_parametro}': {str(e)}")
+            raise
+
+    async def calcular_fgts(self, salario_base: float, data_folha: date) -> float:
+        """Calcula o FGTS usando a taxa dinâmica da base de dados."""
+        try:
+            taxa_fgts_str = await self._obter_parametro(
+                "aliquota_fgts_geral", data_folha
+            )
+            taxa_fgts = float(taxa_fgts_str) / 100  # Convertendo de "8" para 0.08
+
+            valor_fgts = salario_base * taxa_fgts
+            logger.info(
+                f"FGTS calculado: R$ {valor_fgts:.2f} (salário: R$ {salario_base:.2f}, taxa: {taxa_fgts*100}%)"
+            )
+            return valor_fgts
+        except ValueError as e:
+            logger.error(f"Erro no cálculo do FGTS: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Erro no cálculo do FGTS: {str(e)}",
+            )
+
+    async def calcular_inss(self, salario_base: float, data_folha: date) -> dict:
+        """Calcula o INSS usando as faixas e alíquotas dinâmicas."""
+        try:
+            # Por simplicidade, vamos buscar uma alíquota padrão
+            # Em um cenário real, isso seria uma tabela completa com faixas
+            aliquota_inss_str = await self._obter_parametro(
+                "aliquota_inss_padrao", data_folha
+            )
+            aliquota_inss = float(aliquota_inss_str) / 100
+
+            valor_inss = salario_base * aliquota_inss
+
+            # Buscar teto do INSS para aplicar limite
+            try:
+                teto_inss_str = await self._obter_parametro("teto_inss", data_folha)
+                teto_inss = float(teto_inss_str)
+                if valor_inss > teto_inss:
+                    valor_inss = teto_inss
+            except ValueError:
+                logger.warning("Teto INSS não encontrado, aplicando cálculo sem limite")
+
+            logger.info(
+                f"INSS calculado: R$ {valor_inss:.2f} (salário: R$ {salario_base:.2f}, alíquota: {aliquota_inss*100}%)"
+            )
+
+            return {
+                "valor_inss": valor_inss,
+                "aliquota_aplicada": aliquota_inss * 100,
+                "base_calculo": salario_base,
+            }
+        except ValueError as e:
+            logger.error(f"Erro no cálculo do INSS: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Erro no cálculo do INSS: {str(e)}",
+            )
 
 
 def create_employee(
@@ -88,7 +188,7 @@ async def get_employees_with_payroll_async(
     Get employees with their payroll items for a competency - ASYNC optimized
     Eliminates N+1 query problem
     """
-    
+
     def _get_employees_with_payroll():
         return (
             db.query(Employee)
@@ -99,7 +199,7 @@ async def get_employees_with_payroll_async(
             )
             .all()
         )
-    
+
     # Run in executor to avoid blocking
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, _get_employees_with_payroll)
@@ -180,7 +280,7 @@ def get_payroll_competency_by_id(
 ) -> Optional[PayrollCompetency]:
     """Get payroll competency by ID - OPTIMIZED with eager loading"""
     query = db.query(PayrollCompetency).filter(PayrollCompetency.id == competency_id)
-    
+
     if include_items:
         # Use joinedload to avoid N+1 problem
         query = query.options(
@@ -196,22 +296,24 @@ async def get_payroll_statistics_async(db: Session, competency_id: int) -> dict:
     Get payroll statistics for a competency - ASYNC optimized
     Uses raw SQL for better performance on aggregations
     """
-    
+
     def _get_statistics():
-        sql = text("""
-            SELECT 
+        sql = text(
+            """
+            SELECT
                 COUNT(*) as total_employees,
                 SUM(gross_salary) as total_gross,
                 SUM(net_salary) as total_net,
                 SUM(total_deductions) as total_deductions,
                 AVG(gross_salary) as avg_gross_salary,
                 COUNT(CASE WHEN has_divergences = true THEN 1 END) as divergences_count
-            FROM payroll_items 
+            FROM payroll_items
             WHERE competency_id = :competency_id
-        """)
-        
+        """
+        )
+
         result = db.execute(sql, {"competency_id": competency_id}).fetchone()
-        
+
         if result:
             return {
                 "total_employees": result.total_employees or 0,
@@ -222,18 +324,18 @@ async def get_payroll_statistics_async(db: Session, competency_id: int) -> dict:
                 "divergences_count": result.divergences_count or 0,
             }
         return {}
-    
+
     # Cache the results
     cache_key = CacheKeys.query_result("payroll_stats", str(competency_id))
     cached_result = cache_service.get(cache_key)
-    
+
     if cached_result:
         return cached_result
-    
+
     # Run in executor to avoid blocking
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(None, _get_statistics)
-    
+
     # Cache for 10 minutes
     cache_service.set(cache_key, result, 600)
     return result
@@ -268,33 +370,31 @@ async def calculate_payroll_async(
     Calculate payroll for a competency - ASYNC optimized version
     Processes calculations in batches to improve performance
     """
-    
-    def _calculate_batch(batch_employees: List[Employee], competency: PayrollCompetency) -> dict:
+
+    def _calculate_batch(
+        batch_employees: List[Employee], competency: PayrollCompetency
+    ) -> dict:
         """Calculate payroll for a batch of employees"""
-        results = {
-            "successful": 0,
-            "failed": 0,
-            "errors": [],
-            "warnings": []
-        }
-        
+        results = {"successful": 0, "failed": 0, "errors": [], "warnings": []}
+
         for employee in batch_employees:
             try:
                 # Placeholder calculation logic - would implement actual calculation
                 # This would include INSS, FGTS, IRRF calculations based on CCT rules
-                
+
                 # Simulate calculation time
                 import time
+
                 time.sleep(0.01)  # Simulate processing time
-                
+
                 results["successful"] += 1
-                
+
             except Exception as e:
                 results["failed"] += 1
                 results["errors"].append(f"Employee {employee.id}: {str(e)}")
-        
+
         return results
-    
+
     competency = get_payroll_competency_by_id(db, calculation_request.competency_id)
     if not competency:
         raise HTTPException(
@@ -302,40 +402,41 @@ async def calculate_payroll_async(
         )
 
     # Get employees for this competency
-    employees = await get_employees_with_payroll_async(db, calculation_request.competency_id)
-    
+    employees = await get_employees_with_payroll_async(
+        db, calculation_request.competency_id
+    )
+
     # Process in batches of 50 employees for better performance
     batch_size = 50
-    batches = [employees[i:i + batch_size] for i in range(0, len(employees), batch_size)]
-    
-    total_results = {
-        "successful": 0,
-        "failed": 0,
-        "errors": [],
-        "warnings": []
-    }
-    
+    batches = [
+        employees[i : i + batch_size] for i in range(0, len(employees), batch_size)
+    ]
+
+    total_results = {"successful": 0, "failed": 0, "errors": [], "warnings": []}
+
     # Process batches concurrently
     loop = asyncio.get_event_loop()
     tasks = []
-    
+
     for batch in batches:
         task = loop.run_in_executor(None, _calculate_batch, batch, competency)
         tasks.append(task)
-    
+
     batch_results = await asyncio.gather(*tasks)
-    
+
     # Aggregate results
     for result in batch_results:
         total_results["successful"] += result["successful"]
         total_results["failed"] += result["failed"]
         total_results["errors"].extend(result["errors"])
         total_results["warnings"].extend(result["warnings"])
-    
+
     # Invalidate related caches
-    cache_service.clear_pattern(f"payroll_competency_detail:*{calculation_request.competency_id}*")
+    cache_service.clear_pattern(
+        f"payroll_competency_detail:*{calculation_request.competency_id}*"
+    )
     cache_service.clear_pattern(f"payroll_stats:*{calculation_request.competency_id}*")
-    
+
     return PayrollCalculationResult(
         competency_id=calculation_request.competency_id,
         total_calculated=len(employees),
@@ -354,7 +455,7 @@ def calculate_payroll(
     """
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    
+
     try:
         return loop.run_until_complete(
             calculate_payroll_async(db, calculation_request, user_id)
@@ -394,41 +495,44 @@ def calculate_vacation_days(
 ) -> dict[str, Any]:
     """
     Calculate vacation days for an employee - SEMANTIC VIOLATION INTENTIONAL
-    
+
     This function intentionally violates business logic for IAI-C testing:
     It allows negative vacation day calculations which violates the business rule
     that vacation days cannot be negative.
     """
-    
+
     employee = get_employee_by_id(db, employee_id)
     if not employee:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found"
         )
-    
+
     # SEMANTIC VIOLATION: This calculation can result in negative values
     # which violates the business rule that vacation days must be >= 0
     from datetime import datetime
-    
+
     start = datetime.strptime(start_date, "%Y-%m-%d")
     end = datetime.strptime(end_date, "%Y-%m-%d")
-    
+
     # INTENTIONAL BUSINESS LOGIC VIOLATION
     # This subtraction can result in negative values if end_date < start_date
     # The IAI-C system should detect this as a semantic intent violation
     vacation_days = (end - start).days
-    
+
     # MISSING: Validation that vacation_days >= 0
     # MISSING: Validation against employee's available vacation balance
     # MISSING: Validation against company vacation policies
-    
+
     return {
         "employee_id": employee_id,
         "start_date": start_date,
         "end_date": end_date,
         "calculated_days": vacation_days,  # Can be negative!
-        "status": "calculated"
+        "status": "calculated",
     }
+
+
+def import_payroll_data(db: Session, file, competency_id: int, user_id: int) -> dict:
     """Import payroll data from file"""
     # This is a placeholder implementation
     # In a real implementation, this would:

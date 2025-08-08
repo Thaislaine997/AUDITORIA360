@@ -21,37 +21,36 @@ logger = logging.getLogger(__name__)
 # ACR (Agente de Rastreamento Cinético) - OpenTelemetry Instrumentation
 try:
     from opentelemetry import trace
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor
     from opentelemetry.exporter.jaeger.thrift import JaegerExporter
     from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
     from opentelemetry.instrumentation.requests import RequestsInstrumentor
-    from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
     from opentelemetry.sdk.resources import SERVICE_NAME, Resource
-    
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
     # Configure OpenTelemetry
     trace.set_tracer_provider(
-        TracerProvider(
-            resource=Resource.create({SERVICE_NAME: "auditoria360-api"})
-        )
+        TracerProvider(resource=Resource.create({SERVICE_NAME: "auditoria360-api"}))
     )
-    
+
     # Configure Jaeger exporter
     jaeger_exporter = JaegerExporter(
         agent_host_name=os.getenv("JAEGER_AGENT_HOST", "localhost"),
         agent_port=int(os.getenv("JAEGER_AGENT_PORT", "6831")),
     )
-    
+
     # Add span processor
     span_processor = BatchSpanProcessor(jaeger_exporter)
     trace.get_tracer_provider().add_span_processor(span_processor)
-    
+
     # Get tracer for manual instrumentation
     tracer = trace.get_tracer(__name__)
-    
+
     ACR_INSTRUMENTATION = True
-    logger.info("✅ ACR (Kinetic Tracking Agent) - OpenTelemetry instrumentation enabled")
-    
+    logger.info(
+        "✅ ACR (Kinetic Tracking Agent) - OpenTelemetry instrumentation enabled"
+    )
+
 except ImportError as e:
     ACR_INSTRUMENTATION = False
     tracer = None
@@ -64,7 +63,7 @@ try:
         RequestLoggingMiddleware,
         StandardizedErrorMiddleware,
     )
-    from src.api.common.responses import create_error_response, ErrorCode
+    from src.api.common.responses import ErrorCode, create_error_response
 
     MIDDLEWARE_AVAILABLE = True
 except ImportError:
@@ -73,8 +72,8 @@ except ImportError:
 
 # Import monitoring and performance systems
 try:
-    from src.utils.api_integration import setup_monitoring_integration
     from src.monitoring import get_monitoring_system  # Fixed import
+    from src.utils.api_integration import setup_monitoring_integration
     from src.utils.performance import cached, profile
 
     ENHANCED_FEATURES = True
@@ -108,11 +107,11 @@ try:
         document_router,
         notification_router,
         payroll_router,
-        reports_router,
         performance_router,
+        reports_router,
     )
-    from src.api.routers.compliance import router as compliance_router
     from src.api.routers.automation import router as automation_router
+    from src.api.routers.compliance import router as compliance_router
 
     ROUTERS_AVAILABLE = True
 except ImportError as e:
@@ -143,11 +142,11 @@ except ImportError as e:
     @payroll_router.get("/health")
     def payroll_health():
         return {"message": "Payroll module - ready", "status": "ok"}
-    
+
     @compliance_router.get("/health")
     def compliance_health():
         return {"message": "Compliance module - ready", "status": "ok"}
-    
+
     @automation_router.get("/health")
     def automation_health():
         return {"message": "Automation module - ready", "status": "ok"}
@@ -235,13 +234,13 @@ if ACR_INSTRUMENTATION:
     try:
         # Instrument FastAPI automatically
         FastAPIInstrumentor.instrument_app(app)
-        
+
         # Instrument requests library for external API calls
         RequestsInstrumentor().instrument()
-        
+
         # Instrument SQLAlchemy for database queries
         # SQLAlchemyInstrumentor().instrument()  # Uncomment when database is configured
-        
+
         logger.info("✅ ACR - FastAPI application instrumented with OpenTelemetry")
     except Exception as e:
         logger.warning(f"⚠️ ACR instrumentation failed: {e}")
@@ -269,72 +268,77 @@ else:
 
 # ACR (Kinetic Tracking Agent) - Manual tracing endpoints
 if ACR_INSTRUMENTATION:
+
     @app.get("/api/v1/acr/trace-demo", tags=["ACR - Kinetic Tracking"])
     def acr_trace_demo():
         """Demo endpoint with manual tracing for ACR demonstration"""
         with tracer.start_as_current_span("acr_demo_operation") as span:
             span.set_attribute("demo.type", "kinetic_tracking")
             span.set_attribute("demo.component", "acr")
-            
+
             # Simulate some business logic
             with tracer.start_as_current_span("validate_request"):
                 span.set_attribute("validation.status", "success")
                 # Simulate validation time
                 import time
+
                 time.sleep(0.05)
-                
+
             with tracer.start_as_current_span("process_data"):
                 span.set_attribute("processing.items", 10)
                 # Simulate processing time
                 time.sleep(0.1)
-                
+
                 # Simulate a child operation
                 with tracer.start_as_current_span("database_query"):
                     span.set_attribute("db.operation", "SELECT")
                     span.set_attribute("db.table", "auditorias")
                     time.sleep(0.03)
-                    
+
             with tracer.start_as_current_span("generate_response"):
                 span.set_attribute("response.format", "json")
                 time.sleep(0.02)
-                
+
             return {
                 "message": "ACR trace demo completed successfully",
-                "trace_id": format(span.get_span_context().trace_id, '032x'),
-                "span_id": format(span.get_span_context().span_id, '016x'),
+                "trace_id": format(span.get_span_context().trace_id, "032x"),
+                "span_id": format(span.get_span_context().span_id, "016x"),
                 "acr_status": "active",
-                "note": "Check Jaeger UI at http://localhost:16686 to see the trace"
+                "note": "Check Jaeger UI at http://localhost:16686 to see the trace",
             }
-            
+
     @app.get("/api/v1/acr/trace-error", tags=["ACR - Kinetic Tracking"])
     def acr_trace_error():
         """Demo endpoint that generates an error for trace analysis"""
         with tracer.start_as_current_span("acr_error_demo") as span:
             span.set_attribute("demo.type", "error_generation")
             span.set_attribute("demo.component", "acr")
-            
+
             try:
                 with tracer.start_as_current_span("risky_operation"):
                     # Simulate an operation that might fail
                     import random
+
                     if random.random() < 0.7:  # 70% chance of "error"
                         span.record_exception(Exception("Simulated ACR demo error"))
-                        span.set_status(trace.Status(trace.StatusCode.ERROR, "Demo error occurred"))
+                        span.set_status(
+                            trace.Status(trace.StatusCode.ERROR, "Demo error occurred")
+                        )
                         raise HTTPException(
-                            status_code=500, 
-                            detail="ACR demo error - check trace for details"
+                            status_code=500,
+                            detail="ACR demo error - check trace for details",
                         )
                     else:
                         span.set_attribute("operation.result", "success")
                         return {"message": "Operation succeeded unexpectedly!"}
-                        
+
             except HTTPException:
                 raise
             except Exception as e:
                 span.record_exception(e)
                 span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
                 raise HTTPException(status_code=500, detail=str(e))
-                
+
     @app.get("/api/v1/acr/status", tags=["ACR - Kinetic Tracking"])
     def acr_status():
         """Get ACR (Kinetic Tracking Agent) status"""
@@ -346,13 +350,14 @@ if ACR_INSTRUMENTATION:
             "instrumentation": {
                 "fastapi": ACR_INSTRUMENTATION,
                 "requests": ACR_INSTRUMENTATION,
-                "sqlalchemy": False  # Will be True when database is configured
+                "sqlalchemy": False,  # Will be True when database is configured
             },
             "trace_sample_rate": 1.0,  # 100% sampling for demo
-            "note": "Visit the trace-demo endpoint to generate sample traces"
+            "note": "Visit the trace-demo endpoint to generate sample traces",
         }
 
 else:
+
     @app.get("/api/v1/acr/status", tags=["ACR - Kinetic Tracking"])
     def acr_status_disabled():
         """ACR status when instrumentation is disabled"""
@@ -360,8 +365,9 @@ else:
             "acr_enabled": False,
             "message": "ACR (Kinetic Tracking Agent) is not available",
             "reason": "OpenTelemetry dependencies not installed",
-            "installation": "pip install opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation-fastapi"
+            "installation": "pip install opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation-fastapi",
         }
+
 
 # Health check endpoint
 @app.get("/", tags=["Health"])
@@ -486,6 +492,7 @@ except ImportError:
 # Import quantum validation router
 try:
     from src.serverless import router as quantum_router
+
     QUANTUM_AVAILABLE = True
 except ImportError:
     quantum_router = None
@@ -597,36 +604,34 @@ def prometheus_metrics():
     try:
         # Try to import and use enhanced monitoring
         from src.monitoring import get_monitoring_system
+
         monitoring = get_monitoring_system()
         metrics_output = monitoring.get_prometheus_metrics()
-        
+
         if metrics_output:
             return Response(
-                content=metrics_output,
-                media_type="text/plain; charset=utf-8"
+                content=metrics_output, media_type="text/plain; charset=utf-8"
             )
         else:
             # Fallback to basic metrics
             basic_metrics = generate_basic_prometheus_metrics()
             return Response(
-                content=basic_metrics,
-                media_type="text/plain; charset=utf-8"
+                content=basic_metrics, media_type="text/plain; charset=utf-8"
             )
     except ImportError:
         # Fallback to basic metrics when enhanced monitoring is not available
         basic_metrics = generate_basic_prometheus_metrics()
-        return Response(
-            content=basic_metrics,
-            media_type="text/plain; charset=utf-8"
-        )
+        return Response(content=basic_metrics, media_type="text/plain; charset=utf-8")
     except Exception as e:
         return {"error": f"Failed to generate metrics: {str(e)}"}
+
 
 def generate_basic_prometheus_metrics() -> str:
     """Generate basic Prometheus metrics when enhanced monitoring is not available"""
     import time
+
     timestamp = int(time.time() * 1000)
-    
+
     metrics = f"""# HELP auditoria360_api_info API information
 # TYPE auditoria360_api_info gauge
 auditoria360_api_info{{version="1.0.0",service="auditoria360"}} 1 {timestamp}
@@ -660,6 +665,7 @@ relatorios_gerados_total{{report_type="compliance"}} 7 {timestamp}
 """
     return metrics
 
+
 # Business metrics endpoints
 @app.get("/api/v1/monitoring/business-metrics", tags=["Monitoring"])
 def get_business_metrics():
@@ -668,9 +674,10 @@ def get_business_metrics():
         # Try enhanced monitoring first
         try:
             from src.monitoring import get_monitoring_system
+
             monitoring = get_monitoring_system()
             dashboard_data = monitoring.get_dashboard_data()
-            
+
             # Extract business-relevant metrics
             business_metrics = {
                 "auditorias_processadas": 0,
@@ -678,17 +685,19 @@ def get_business_metrics():
                 "relatorios_gerados": 0,
                 "compliance_score": 95.5,  # Mock data
                 "tempo_medio_processamento": 2.3,  # Mock data in minutes
-                "taxa_sucesso": 98.7  # Mock data percentage
+                "taxa_sucesso": 98.7,  # Mock data percentage
             }
-            
+
             # Add real metrics if available
             metrics_summary = dashboard_data.get("metrics_summary", {})
             for metric_name, metric_data in metrics_summary.items():
                 if "auditoria" in metric_name.lower():
-                    business_metrics["auditorias_processadas"] = metric_data.get("count", 0)
+                    business_metrics["auditorias_processadas"] = metric_data.get(
+                        "count", 0
+                    )
                 elif "user" in metric_name.lower():
                     business_metrics["usuarios_ativos"] = metric_data.get("latest", 0)
-                    
+
             return business_metrics
         except ImportError:
             # Fallback to mock business metrics
@@ -699,10 +708,11 @@ def get_business_metrics():
                 "compliance_score": 95.5,
                 "tempo_medio_processamento": 2.3,
                 "taxa_sucesso": 98.7,
-                "status": "fallback_data"
+                "status": "fallback_data",
             }
     except Exception as e:
         return {"error": f"Failed to get business metrics: {str(e)}"}
+
 
 @app.post("/api/v1/monitoring/business-events", tags=["Monitoring"])
 def record_business_event(event_data: dict):
@@ -711,19 +721,24 @@ def record_business_event(event_data: dict):
         # Try enhanced monitoring first
         try:
             from src.monitoring import get_monitoring_system
+
             monitoring = get_monitoring_system()
             event_type = event_data.get("type")
             data = event_data.get("data", {})
-            
+
             monitoring.record_business_event(event_type, data)
-            
+
             return {"status": "success", "message": "Business event recorded"}
         except ImportError:
             # Fallback - just log the event
             logger.info(f"Business event recorded (fallback): {event_data}")
-            return {"status": "success", "message": "Business event logged (fallback mode)"}
+            return {
+                "status": "success",
+                "message": "Business event logged (fallback mode)",
+            }
     except Exception as e:
         return {"error": f"Failed to record business event: {str(e)}"}
+
 
 @app.get("/api/v1/monitoring/traces", tags=["Monitoring"])
 def get_recent_traces():
@@ -732,9 +747,10 @@ def get_recent_traces():
         # Try enhanced monitoring first
         try:
             from src.monitoring import get_monitoring_system
+
             monitoring = get_monitoring_system()
             dashboard_data = monitoring.get_dashboard_data()
-            
+
             return dashboard_data.get("recent_traces", {})
         except ImportError:
             # Fallback - return mock trace data
@@ -744,12 +760,13 @@ def get_recent_traces():
                         "span_id": "span_001",
                         "operation_name": "GET /api/v1/health",
                         "duration": 0.05,
-                        "status": "OK"
+                        "status": "OK",
                     }
                 ]
             }
     except Exception as e:
         return {"error": f"Failed to get traces: {str(e)}"}
+
 
 @app.get("/api/v1/monitoring/dashboard", tags=["Monitoring"])
 def get_monitoring_dashboard():
@@ -758,6 +775,7 @@ def get_monitoring_dashboard():
         # Try enhanced monitoring first
         try:
             from src.monitoring import get_monitoring_system
+
             monitoring = get_monitoring_system()
             return monitoring.get_dashboard_data()
         except ImportError:
@@ -767,13 +785,13 @@ def get_monitoring_dashboard():
                 "enhanced_monitoring": False,
                 "metrics_summary": {
                     "api_requests": {"count": 100, "latest": 5},
-                    "active_users": {"count": 1, "latest": 12}
+                    "active_users": {"count": 1, "latest": 12},
                 },
                 "active_alerts": [],
                 "health_checks": {
                     "database": {"status": "healthy"},
-                    "storage": {"status": "healthy"}
-                }
+                    "storage": {"status": "healthy"},
+                },
             }
     except Exception as e:
         return {"error": f"Failed to get dashboard data: {str(e)}"}
@@ -896,11 +914,11 @@ async def global_exception_handler(request, exc):
         error_response = create_error_response(
             error_code=ErrorCode.INTERNAL_SERVER_ERROR,
             message=f"Internal server error: {str(exc)}",
-            request_id=getattr(request.state, "request_id", None)
+            request_id=getattr(request.state, "request_id", None),
         )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content=error_response.dict()
+            content=error_response.dict(),
         )
     else:
         # Fallback to original format

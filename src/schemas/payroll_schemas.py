@@ -259,3 +259,33 @@ class PayrollReportResponse(BaseModel):
     file_url: str
     file_size: int
     generated_at: datetime
+
+
+# New AI-powered calculation schemas
+class FgtsCalculationRequest(BaseModel):
+    salario_base: float = Field(..., gt=0)
+    data_referencia: date = Field(
+        ..., description="Data de referência para buscar as regras vigentes"
+    )
+
+
+class FgtsCalculationResponse(BaseModel):
+    salario_base: float
+    data_referencia: date
+    taxa_fgts: float
+    valor_fgts: float
+
+
+class InssCalculationRequest(BaseModel):
+    salario_base: float = Field(..., gt=0)
+    data_referencia: date = Field(
+        ..., description="Data de referência para buscar as regras vigentes"
+    )
+
+
+class InssCalculationResponse(BaseModel):
+    salario_base: float
+    data_referencia: date
+    valor_inss: float
+    aliquota_aplicada: float
+    base_calculo: float

@@ -3,8 +3,7 @@ System monitoring for AUDITORIA360 - tracks system resources and performance
 """
 
 import logging
-import time
-from typing import Dict, Any
+from typing import Any, Dict
 
 import psutil
 
@@ -30,11 +29,13 @@ class SystemMonitor:
             cpu_percent = psutil.cpu_percent(interval=1)
             self.metrics_collector.set_gauge("system_cpu_percent", cpu_percent)
 
-            # Memory metrics  
+            # Memory metrics
             memory = psutil.virtual_memory()
             self.metrics_collector.set_gauge("system_memory_percent", memory.percent)
             self.metrics_collector.set_gauge("system_memory_used_bytes", memory.used)
-            self.metrics_collector.set_gauge("system_memory_available_bytes", memory.available)
+            self.metrics_collector.set_gauge(
+                "system_memory_available_bytes", memory.available
+            )
 
             # Disk metrics
             disk = psutil.disk_usage("/")
@@ -45,10 +46,18 @@ class SystemMonitor:
             # Network metrics (if available)
             try:
                 network = psutil.net_io_counters()
-                self.metrics_collector.set_gauge("system_network_bytes_sent", network.bytes_sent)
-                self.metrics_collector.set_gauge("system_network_bytes_recv", network.bytes_recv)
-                self.metrics_collector.set_gauge("system_network_packets_sent", network.packets_sent)
-                self.metrics_collector.set_gauge("system_network_packets_recv", network.packets_recv)
+                self.metrics_collector.set_gauge(
+                    "system_network_bytes_sent", network.bytes_sent
+                )
+                self.metrics_collector.set_gauge(
+                    "system_network_bytes_recv", network.bytes_recv
+                )
+                self.metrics_collector.set_gauge(
+                    "system_network_packets_sent", network.packets_sent
+                )
+                self.metrics_collector.set_gauge(
+                    "system_network_packets_recv", network.packets_recv
+                )
             except Exception as e:
                 logger.debug(f"Network metrics not available: {e}")
 

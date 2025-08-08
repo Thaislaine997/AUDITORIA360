@@ -9,8 +9,8 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 # Import models with fallbacks
 try:
@@ -38,6 +38,7 @@ except ImportError:
 
     MODELS_AVAILABLE = False
 
+
 # Define a simple user schema for responses
 class SimpleUserSchema(BaseModel):
     username: str
@@ -46,9 +47,11 @@ class SimpleUserSchema(BaseModel):
     role: str = "user"
     full_name: str = ""
 
+
 class SimpleLoginResponse(BaseModel):
     user: SimpleUserSchema
     token: dict  # Use dict instead of forward reference
+
 
 # Import schemas with fallbacks
 try:
@@ -145,7 +148,7 @@ except ImportError:
         # Use environment variables for test credentials instead of hardcoded values
         test_username = os.getenv("TEST_USERNAME", "admin")
         test_password = os.getenv("TEST_PASSWORD")
-        
+
         if test_password and username == test_username and password == test_password:
             from unittest.mock import Mock
 
@@ -238,9 +241,11 @@ security = HTTPBearer()
 # Import unified auth
 try:
     from src.auth.unified_auth import auth_manager
+
     UNIFIED_AUTH_AVAILABLE = True
 except ImportError:
     UNIFIED_AUTH_AVAILABLE = False
+
 
 # Authentication endpoints
 @router.post("/login", response_model=SimpleLoginResponse)
@@ -251,24 +256,24 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         try:
             login_result = auth_manager.login(login_data.username, login_data.password)
             user_data = login_result["user"]
-            
+
             return SimpleLoginResponse(
                 user=SimpleUserSchema(
                     username=user_data["username"],
                     email=user_data.get("email", ""),
                     id=1,  # Mock ID for now
                     role=user_data.get("user_type", "user"),
-                    full_name=user_data.get("name", user_data["username"])
+                    full_name=user_data.get("name", user_data["username"]),
                 ),
                 token={
                     "access_token": login_result["access_token"],
                     "token_type": "bearer",
-                    "expires_in": login_result["expires_in"]
+                    "expires_in": login_result["expires_in"],
                 },
             )
         except HTTPException:
             pass  # Fall through to original authentication
-    
+
     # Original authentication logic as fallback
     user = authenticate_user(db, login_data.username, login_data.password)
     if not user:
@@ -294,9 +299,13 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
             email=getattr(user, "email", ""),
             id=getattr(user, "id", 1),
             role=getattr(user, "role", "user"),
-            full_name=getattr(user, "full_name", user.username)
+            full_name=getattr(user, "full_name", user.username),
         ),
-        token={"access_token": access_token, "token_type": "bearer", "expires_in": 3600},
+        token={
+            "access_token": access_token,
+            "token_type": "bearer",
+            "expires_in": 3600,
+        },
     )
 
 

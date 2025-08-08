@@ -8,29 +8,28 @@ import logging
 from datetime import datetime
 from typing import Any, Callable, Dict, List
 
-from .protocol import (
+from .protocol import (  # Swarm Intelligence imports
+    AgentInfo,
+    AgentJoinedNotification,
+    AgentLeftNotification,
+    ConsensusProposal,
+    ConsensusUpdateNotification,
+    EmergencyProtocolNotification,
     ErrorCode,
     MCPError,
     MCPNotification,
     MCPRequest,
     MCPResponse,
+    MessageBroadcastNotification,
     ResourceInfo,
     ResourceUpdateNotification,
     ServerInfo,
+    SwarmMessage,
+    TaskDefinition,
     ToolInfo,
     ToolUpdateNotification,
-    # Swarm Intelligence imports
-    AgentInfo,
-    SwarmMessage,
-    ConsensusProposal,
-    TaskDefinition,
-    AgentJoinedNotification,
-    AgentLeftNotification,
-    MessageBroadcastNotification,
-    ConsensusUpdateNotification,
-    EmergencyProtocolNotification,
 )
-from .swarm import CollectiveMind, BaseAgent, SpecialistAgent, AgentRole
+from .swarm import AgentRole, BaseAgent, CollectiveMind, SpecialistAgent
 
 logger = logging.getLogger(__name__)
 
@@ -73,11 +72,13 @@ class MCPServer:
 
         # Notification callbacks
         self._notification_callbacks: List[Callable] = []
-        
+
         # Swarm Intelligence - Master Collective Protocol
         self.collective_mind = CollectiveMind()
 
-        logger.info(f"MCP Server {self.name} v{self.version} initialized with Swarm Intelligence")
+        logger.info(
+            f"MCP Server {self.name} v{self.version} initialized with Swarm Intelligence"
+        )
 
     async def handle_request(self, request_data: str) -> str:
         """Handle incoming MCP request"""
@@ -264,19 +265,21 @@ class MCPServer:
             )
 
         if not request.params:
-            return MCPError(
-                code=ErrorCode.INVALID_PARAMS, message="Missing agent info"
-            )
+            return MCPError(code=ErrorCode.INVALID_PARAMS, message="Missing agent info")
 
         try:
             agent_info = AgentInfo(**request.params)
-            
+
             # Create appropriate agent type based on role
             if agent_info.role == AgentRole.SPECIALIST:
                 agent = SpecialistAgent(
                     agent_info.agent_id,
-                    agent_info.specializations[0] if agent_info.specializations else "general",
-                    "default_domain"
+                    (
+                        agent_info.specializations[0]
+                        if agent_info.specializations
+                        else "general"
+                    ),
+                    "default_domain",
                 )
             else:
                 agent = BaseAgent(agent_info.agent_id, agent_info.role, agent_info.name)
@@ -285,24 +288,22 @@ class MCPServer:
                 agent.trust_score = agent_info.trust_score
 
             success = await self.collective_mind.register_agent(agent)
-            
+
             if success:
                 # Send notification
                 notification = AgentJoinedNotification(params={"agent": agent_info})
                 await self._send_notification(notification)
-                
+
                 return {"success": True, "agent_id": agent_info.agent_id}
             else:
                 return MCPError(
-                    code=ErrorCode.INTERNAL_ERROR,
-                    message="Failed to register agent"
+                    code=ErrorCode.INTERNAL_ERROR, message="Failed to register agent"
                 )
-                
+
         except Exception as e:
             logger.error(f"Error registering agent: {e}")
             return MCPError(
-                code=ErrorCode.INTERNAL_ERROR,
-                message=f"Registration failed: {str(e)}"
+                code=ErrorCode.INTERNAL_ERROR, message=f"Registration failed: {str(e)}"
             )
 
     async def _handle_list_agents(self, request: MCPRequest) -> Dict[str, Any]:
@@ -330,19 +331,19 @@ class MCPServer:
         try:
             message = SwarmMessage(**request.params)
             delivered = await self.collective_mind.send_message(message)
-            
+
             # Send notification if broadcast
             if not message.recipient_id:
                 notification = MessageBroadcastNotification(params=message)
                 await self._send_notification(notification)
-            
+
             return {"delivered": delivered}
-            
+
         except Exception as e:
             logger.error(f"Error sending message: {e}")
             return MCPError(
                 code=ErrorCode.INTERNAL_ERROR,
-                message=f"Message sending failed: {str(e)}"
+                message=f"Message sending failed: {str(e)}",
             )
 
     async def _handle_propose_consensus(self, request: MCPRequest) -> Dict[str, Any]:
@@ -360,18 +361,18 @@ class MCPServer:
         try:
             proposal = ConsensusProposal(**request.params)
             proposal_id = await self.collective_mind.propose_consensus(proposal)
-            
+
             # Send notification
             notification = ConsensusUpdateNotification(params=proposal)
             await self._send_notification(notification)
-            
+
             return {"proposal_id": proposal_id, "status": "proposed"}
-            
+
         except Exception as e:
             logger.error(f"Error proposing consensus: {e}")
             return MCPError(
                 code=ErrorCode.INTERNAL_ERROR,
-                message=f"Consensus proposal failed: {str(e)}"
+                message=f"Consensus proposal failed: {str(e)}",
             )
 
     async def _handle_vote_consensus(self, request: MCPRequest) -> Dict[str, Any]:
@@ -381,7 +382,11 @@ class MCPServer:
                 code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
             )
 
-        if not request.params or "proposal_id" not in request.params or "vote" not in request.params:
+        if (
+            not request.params
+            or "proposal_id" not in request.params
+            or "vote" not in request.params
+        ):
             return MCPError(
                 code=ErrorCode.INVALID_PARAMS, message="Missing proposal_id or vote"
             )
@@ -390,28 +395,29 @@ class MCPServer:
             proposal_id = request.params["proposal_id"]
             vote = request.params["vote"]
             agent_id = request.params.get("agent_id", "unknown")
-            
-            success = await self.collective_mind.vote_consensus(proposal_id, agent_id, vote)
-            
+
+            success = await self.collective_mind.vote_consensus(
+                proposal_id, agent_id, vote
+            )
+
             if success:
                 # Get updated proposal and send notification
                 proposal = self.collective_mind.consensus_proposals.get(proposal_id)
                 if proposal:
                     notification = ConsensusUpdateNotification(params=proposal)
                     await self._send_notification(notification)
-                
+
                 return {"voted": True, "proposal_id": proposal_id}
             else:
                 return MCPError(
                     code=ErrorCode.INVALID_PARAMS,
-                    message="Invalid proposal or voting failed"
+                    message="Invalid proposal or voting failed",
                 )
-                
+
         except Exception as e:
             logger.error(f"Error voting on consensus: {e}")
             return MCPError(
-                code=ErrorCode.INTERNAL_ERROR,
-                message=f"Voting failed: {str(e)}"
+                code=ErrorCode.INTERNAL_ERROR, message=f"Voting failed: {str(e)}"
             )
 
     async def _handle_distribute_task(self, request: MCPRequest) -> Dict[str, Any]:
@@ -422,21 +428,19 @@ class MCPServer:
             )
 
         if not request.params:
-            return MCPError(
-                code=ErrorCode.INVALID_PARAMS, message="Missing task data"
-            )
+            return MCPError(code=ErrorCode.INVALID_PARAMS, message="Missing task data")
 
         try:
             task = TaskDefinition(**request.params)
             task_id = await self.collective_mind.distribute_task(task)
-            
+
             return {"task_id": task_id, "status": "distributed"}
-            
+
         except Exception as e:
             logger.error(f"Error distributing task: {e}")
             return MCPError(
                 code=ErrorCode.INTERNAL_ERROR,
-                message=f"Task distribution failed: {str(e)}"
+                message=f"Task distribution failed: {str(e)}",
             )
 
     async def _handle_claim_task(self, request: MCPRequest) -> Dict[str, Any]:
@@ -446,14 +450,18 @@ class MCPServer:
                 code=ErrorCode.INVALID_REQUEST, message="Server not initialized"
             )
 
-        if not request.params or "task_id" not in request.params or "agent_id" not in request.params:
+        if (
+            not request.params
+            or "task_id" not in request.params
+            or "agent_id" not in request.params
+        ):
             return MCPError(
                 code=ErrorCode.INVALID_PARAMS, message="Missing task_id or agent_id"
             )
 
         task_id = request.params["task_id"]
         agent_id = request.params["agent_id"]
-        
+
         # Implementation for task claiming logic
         if task_id in self.collective_mind.tasks:
             task = self.collective_mind.tasks[task_id]
@@ -461,10 +469,7 @@ class MCPServer:
                 task.assigned_agents.append(agent_id)
             return {"claimed": True, "task_id": task_id}
         else:
-            return MCPError(
-                code=ErrorCode.INVALID_PARAMS,
-                message="Task not found"
-            )
+            return MCPError(code=ErrorCode.INVALID_PARAMS, message="Task not found")
 
     async def _handle_isolate_agent(self, request: MCPRequest) -> Dict[str, Any]:
         """Handle agent isolation"""
@@ -474,36 +479,33 @@ class MCPServer:
             )
 
         if not request.params or "agent_id" not in request.params:
-            return MCPError(
-                code=ErrorCode.INVALID_PARAMS, message="Missing agent_id"
-            )
+            return MCPError(code=ErrorCode.INVALID_PARAMS, message="Missing agent_id")
 
         try:
             agent_id = request.params["agent_id"]
             reason = request.params.get("reason", "manual_isolation")
-            
+
             success = await self.collective_mind.isolate_agent(agent_id, reason)
-            
+
             if success:
                 # Send notification
-                notification = AgentLeftNotification(params={
-                    "agent_id": agent_id,
-                    "reason": f"isolated: {reason}"
-                })
+                notification = AgentLeftNotification(
+                    params={"agent_id": agent_id, "reason": f"isolated: {reason}"}
+                )
                 await self._send_notification(notification)
-                
+
                 return {"isolated": True, "agent_id": agent_id}
             else:
                 return MCPError(
                     code=ErrorCode.INVALID_PARAMS,
-                    message="Agent not found or isolation failed"
+                    message="Agent not found or isolation failed",
                 )
-                
+
         except Exception as e:
             logger.error(f"Error isolating agent: {e}")
             return MCPError(
                 code=ErrorCode.INTERNAL_ERROR,
-                message=f"Agent isolation failed: {str(e)}"
+                message=f"Agent isolation failed: {str(e)}",
             )
 
     async def _handle_swarm_health(self, request: MCPRequest) -> Dict[str, Any]:
@@ -515,18 +517,19 @@ class MCPServer:
 
         try:
             health = self.collective_mind.get_collective_health()
-            
+
             # Resolve async consciousness cost if present
-            if "consciousness_cost" in health and hasattr(health["consciousness_cost"], "result"):
+            if "consciousness_cost" in health and hasattr(
+                health["consciousness_cost"], "result"
+            ):
                 health["consciousness_cost"] = await health["consciousness_cost"]
-            
+
             return health
-            
+
         except Exception as e:
             logger.error(f"Error getting swarm health: {e}")
             return MCPError(
-                code=ErrorCode.INTERNAL_ERROR,
-                message=f"Health check failed: {str(e)}"
+                code=ErrorCode.INTERNAL_ERROR, message=f"Health check failed: {str(e)}"
             )
 
 

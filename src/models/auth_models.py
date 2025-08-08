@@ -90,15 +90,19 @@ class User(Base):
     department = Column(String(100))
     position = Column(String(100))
     employee_id = Column(String(50))
-    user_profile = Column(Enum(UserProfile), nullable=False, default=UserProfile.COLABORADOR)
+    user_profile = Column(
+        Enum(UserProfile), nullable=False, default=UserProfile.COLABORADOR
+    )
 
     # Gamification fields
     xp_points = Column(Integer, default=0)
     level = Column(Integer, default=1)
     total_missions_completed = Column(Integer, default=0)
-    
+
     # Onboarding tracking
-    onboarding_status = Column(Enum(OnboardingStatus), default=OnboardingStatus.NOT_STARTED)
+    onboarding_status = Column(
+        Enum(OnboardingStatus), default=OnboardingStatus.NOT_STARTED
+    )
     onboarding_completed_at = Column(DateTime(timezone=True))
     current_mission_id = Column(Integer, ForeignKey("onboarding_missions.id"))
 
@@ -109,7 +113,7 @@ class User(Base):
     # Accessibility and productivity preferences
     keyboard_navigation_enabled = Column(Boolean, default=True)
     predictive_loading_enabled = Column(Boolean, default=True)
-    
+
     # Custom role (when role is CUSTOM)
     custom_role_id = Column(Integer, ForeignKey("custom_roles.id"))
 
@@ -137,7 +141,9 @@ class User(Base):
     )
     xp_history = relationship("XPHistory", back_populates="user")
     skill_progress = relationship("UserSkillProgress", back_populates="user")
-    custom_role = relationship("CustomRole", back_populates="users", foreign_keys=[custom_role_id])
+    custom_role = relationship(
+        "CustomRole", back_populates="users", foreign_keys=[custom_role_id]
+    )
     current_mission = relationship("OnboardingMission")
 
     # Use default __repr__ from BaseModel
@@ -185,6 +191,7 @@ class AccessLog(Base):
 
 class CustomRole(Base):
     """Custom roles builder for enterprise-level permissions"""
+
     __tablename__ = "custom_roles"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -192,20 +199,23 @@ class CustomRole(Base):
     description = Column(Text)
     created_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_active = Column(Boolean, default=True)
-    
+
     # JSON field for custom permissions configuration
     permissions_config = Column(Text)  # JSON string with custom permissions
-    
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
-    users = relationship("User", back_populates="custom_role", foreign_keys="User.custom_role_id")
+    users = relationship(
+        "User", back_populates="custom_role", foreign_keys="User.custom_role_id"
+    )
     created_by = relationship("User", foreign_keys=[created_by_user_id])
 
 
 class Achievement(Base):
     """Achievement system for gamification"""
+
     __tablename__ = "achievements"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -214,21 +224,24 @@ class Achievement(Base):
     icon = Column(String(50))  # Icon identifier
     badge_class = Column(String(50))  # CSS class for styling
     xp_reward = Column(Integer, default=0)
-    
+
     # Achievement criteria
     criteria_type = Column(String(50))  # "count", "streak", "milestone", etc.
     criteria_target = Column(Integer)
     criteria_resource = Column(String(100))  # What to count/track
-    
+
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
-    users = relationship("User", secondary=user_achievements, back_populates="achievements")
+    users = relationship(
+        "User", secondary=user_achievements, back_populates="achievements"
+    )
 
 
 class XPHistory(Base):
     """Track XP earning history"""
+
     __tablename__ = "xp_history"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -237,7 +250,7 @@ class XPHistory(Base):
     reason = Column(String(255))  # "mission_completed", "achievement_unlocked", etc.
     related_resource = Column(String(100))  # Reference to what earned the XP
     related_resource_id = Column(String(100))
-    
+
     earned_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -246,6 +259,7 @@ class XPHistory(Base):
 
 class Skill(Base):
     """Skills in the skill tree system"""
+
     __tablename__ = "skills"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -253,12 +267,12 @@ class Skill(Base):
     description = Column(Text)
     icon = Column(String(50))
     category = Column(String(50))  # "WhatsApp", "Automation", "Configuration", etc.
-    
+
     # Unlock requirements
     required_xp = Column(Integer, default=0)
     required_actions = Column(Integer, default=0)
     action_type = Column(String(100))  # What action unlocks this skill
-    
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -267,16 +281,17 @@ class Skill(Base):
 
 class UserSkillProgress(Base):
     """Track user progress in skills"""
+
     __tablename__ = "user_skill_progress"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     skill_id = Column(Integer, ForeignKey("skills.id"), nullable=False)
-    
+
     current_progress = Column(Integer, default=0)
     is_unlocked = Column(Boolean, default=False)
     unlocked_at = Column(DateTime(timezone=True))
-    
+
     # Relationships
     user = relationship("User", back_populates="skill_progress")
     skill = relationship("Skill", back_populates="user_progress")
@@ -284,50 +299,54 @@ class UserSkillProgress(Base):
 
 class OnboardingMission(Base):
     """Onboarding missions for the gamified journey"""
+
     __tablename__ = "onboarding_missions"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     description = Column(Text)
     instructions = Column(Text)
-    
+
     # Mission configuration
     order_sequence = Column(Integer, nullable=False)
     profile_target = Column(String(50))  # "gestor", "analista", "all"
     xp_reward = Column(Integer, default=100)
     badge_reward = Column(String(100))  # Badge name to award
-    
+
     # Mission completion criteria
     completion_criteria = Column(Text)  # JSON with criteria
     is_optional = Column(Boolean, default=False)
-    
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     is_active = Column(Boolean, default=True)
 
 
 class NotificationPreference(Base):
     """Granular notification preferences for users"""
+
     __tablename__ = "notification_preferences"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    
+
     # Email preferences
     email_enabled = Column(Boolean, default=True)
     email_critical_only = Column(Boolean, default=False)
-    email_digest_frequency = Column(String(50), default="daily")  # "instant", "daily", "weekly", "never"
-    
+    email_digest_frequency = Column(
+        String(50), default="daily"
+    )  # "instant", "daily", "weekly", "never"
+
     # In-app preferences
     inapp_enabled = Column(Boolean, default=True)
     show_success_notifications = Column(Boolean, default=False)
     show_failure_notifications = Column(Boolean, default=True)
-    
+
     # Specific notification types
     notify_client_issues = Column(Boolean, default=True)
     notify_config_changes = Column(Boolean, default=True)
     notify_system_updates = Column(Boolean, default=False)
     notify_achievements = Column(Boolean, default=True)
-    
+
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships

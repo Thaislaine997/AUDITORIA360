@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-
 import yaml
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -48,7 +47,7 @@ class UnifiedAuthManager:
             else:
                 # Get secure passwords from secrets manager
                 secure_passwords = secrets_manager.get_default_passwords()
-                
+
                 # Enhanced multi-level access configuration with secure passwords
                 self.yaml_config = {
                     "credentials": {
@@ -57,33 +56,48 @@ class UnifiedAuthManager:
                             "admin@auditoria360-exemplo.com": {
                                 "email": "admin@auditoria360-exemplo.com",
                                 "name": "Super Administrator",
-                                "password": self.hash_password(secure_passwords["admin"]),
+                                "password": self.hash_password(
+                                    secure_passwords["admin"]
+                                ),
                                 "user_type": "super_admin",
                                 "company_id": None,  # Access to all companies
                                 "client_id": "SUPER_ADMIN",
                                 "roles": ["super_admin", "admin", "user"],
-                                "permissions": ["full_access", "manage_users", "manage_companies", "view_all_data"],
+                                "permissions": [
+                                    "full_access",
+                                    "manage_users",
+                                    "manage_companies",
+                                    "view_all_data",
+                                ],
                             },
                             # Contabilidade A - Gestor
                             "gestor@contabilidade-a.com": {
-                                "email": "gestor@contabilidade-a.com", 
+                                "email": "gestor@contabilidade-a.com",
                                 "name": "Gestor Contabilidade A",
-                                "password": self.hash_password(secure_passwords["gestor_a"]),
+                                "password": self.hash_password(
+                                    secure_passwords["gestor_a"]
+                                ),
                                 "user_type": "contabilidade",
                                 "company_id": "CONTAB_A",  # Restricted to Contabilidade A
                                 "client_id": "CONTAB_A_GESTOR",
                                 "roles": ["gestor", "user"],
-                                "permissions": ["view_company_data", "manage_clients", "generate_reports"],
+                                "permissions": [
+                                    "view_company_data",
+                                    "manage_clients",
+                                    "generate_reports",
+                                ],
                                 "data_scope": {
                                     "contabilidade": "CONTAB_A",
-                                    "clients": ["EMPRESA_X", "EMPRESA_Y"]
-                                }
+                                    "clients": ["EMPRESA_X", "EMPRESA_Y"],
+                                },
                             },
                             # Cliente da Contabilidade A
                             "contato@empresa-teste-x.com": {
                                 "email": "contato@empresa-teste-x.com",
-                                "name": "Cliente Empresa X", 
-                                "password": self.hash_password(secure_passwords["client_x"]),
+                                "name": "Cliente Empresa X",
+                                "password": self.hash_password(
+                                    secure_passwords["client_x"]
+                                ),
                                 "user_type": "cliente_final",
                                 "company_id": "EMPRESA_X",  # Restricted to specific company
                                 "client_id": "EMPRESA_X_USER",
@@ -91,23 +105,29 @@ class UnifiedAuthManager:
                                 "permissions": ["view_own_data", "download_documents"],
                                 "data_scope": {
                                     "empresa": "EMPRESA_X",
-                                    "contabilidade": "CONTAB_A"
-                                }
+                                    "contabilidade": "CONTAB_A",
+                                },
                             },
                             # Contabilidade B - Gestor
                             "gestor@contabilidade-b.com": {
                                 "email": "gestor@contabilidade-b.com",
                                 "name": "Gestor Contabilidade B",
-                                "password": self.hash_password(secure_passwords["gestor_b"]),
+                                "password": self.hash_password(
+                                    secure_passwords["gestor_b"]
+                                ),
                                 "user_type": "contabilidade",
                                 "company_id": "CONTAB_B",  # Restricted to Contabilidade B
                                 "client_id": "CONTAB_B_GESTOR",
                                 "roles": ["gestor", "user"],
-                                "permissions": ["view_company_data", "manage_clients", "generate_reports"],
+                                "permissions": [
+                                    "view_company_data",
+                                    "manage_clients",
+                                    "generate_reports",
+                                ],
                                 "data_scope": {
                                     "contabilidade": "CONTAB_B",
-                                    "clients": ["EMPRESA_Z"]
-                                }
+                                    "clients": ["EMPRESA_Z"],
+                                },
                             },
                             # Legacy users for compatibility
                             "admin": {
@@ -124,7 +144,7 @@ class UnifiedAuthManager:
                                 "email": "contabilidade@auditoria360.com",
                                 "name": "Contabilidade User",
                                 "password": self.hash_password("conta123"),
-                                "user_type": "contabilidade", 
+                                "user_type": "contabilidade",
                                 "company_id": "DEFAULT_CONTAB",
                                 "client_id": "CONTAB001",
                                 "roles": ["gestor", "user"],
@@ -210,7 +230,7 @@ class UnifiedAuthManager:
     def get_user_data_scope(self, user: Dict[str, Any]) -> Dict[str, Any]:
         """Get user's data access scope for query filtering"""
         user_type = user.get("user_type", "user")
-        
+
         if user_type == "super_admin":
             return {"scope_type": "all", "filters": {}}
         elif user_type == "contabilidade":
@@ -218,24 +238,26 @@ class UnifiedAuthManager:
                 "scope_type": "company",
                 "filters": {
                     "contabilidade_id": user.get("company_id"),
-                    "client_ids": user.get("data_scope", {}).get("clients", [])
-                }
+                    "client_ids": user.get("data_scope", {}).get("clients", []),
+                },
             }
         elif user_type == "cliente_final":
             return {
-                "scope_type": "enterprise", 
+                "scope_type": "enterprise",
                 "filters": {
                     "empresa_id": user.get("company_id"),
-                    "contabilidade_id": user.get("data_scope", {}).get("contabilidade")
-                }
+                    "contabilidade_id": user.get("data_scope", {}).get("contabilidade"),
+                },
             }
         else:
             return {"scope_type": "none", "filters": {}}
 
-    def authorize_data_access(self, user: Dict[str, Any], resource_type: str, resource_id: str = None) -> bool:
+    def authorize_data_access(
+        self, user: Dict[str, Any], resource_type: str, resource_id: str = None
+    ) -> bool:
         """Authorize user access to specific data resource"""
         scope = self.get_user_data_scope(user)
-        
+
         if scope["scope_type"] == "all":
             return True
         elif scope["scope_type"] == "company":
@@ -248,7 +270,7 @@ class UnifiedAuthManager:
             # Cliente final can only access their own enterprise data
             if resource_type == "empresa":
                 return resource_id == scope["filters"]["empresa_id"]
-        
+
         return False
 
     def _authenticate_yaml_user(self, username: str, password: str) -> bool:

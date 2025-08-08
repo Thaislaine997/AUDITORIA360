@@ -2,8 +2,8 @@
 Authentication service for AUDITORIA360
 """
 
-import os
 import logging
+import os
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -71,12 +71,18 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
         logger.warning(f"Database authentication failed: {e}")
         # For development/testing only - use environment variables for mock credentials
         test_username = os.getenv("TEST_USERNAME")
-        test_password = os.getenv("TEST_PASSWORD") 
-        
-        if test_username and test_password and username == test_username and password == test_password:
+        test_password = os.getenv("TEST_PASSWORD")
+
+        if (
+            test_username
+            and test_password
+            and username == test_username
+            and password == test_password
+        ):
             from unittest.mock import Mock
+
             logger.info("Using test authentication - development mode only")
-            
+
             mock_user = Mock()
             mock_user.username = username
             mock_user.email = f"{username}@example.com"

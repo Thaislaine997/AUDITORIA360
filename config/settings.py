@@ -1,9 +1,8 @@
 import os
 from pathlib import Path
-from typing import Dict, Any
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
 import yaml
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -11,31 +10,32 @@ class Settings(BaseSettings):
     Classe de configurações globais para a aplicação.
     Lê as variáveis do sistema ou de um ficheiro .env.
     """
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="allow"  # Allow extra fields for backward compatibility
+        extra="allow",  # Allow extra fields for backward compatibility
     )
-    
+
     # --- Variáveis existentes ---
     APP_NAME: str = "Auditoria360"
     DATABASE_URL: str = "duckdb:///auditoria360.db"
-    
+
     # --- NOSSAS NOVAS VARIÁVEIS PARA SUPABASE ---
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
     SUPABASE_SERVICE_KEY: str = ""
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)  # Call Pydantic BaseSettings init first
         base = Path(__file__).parent
-        
+
         # Initialize config as a regular dict attribute (not a Pydantic field)
-        object.__setattr__(self, 'config', {})
-        object.__setattr__(self, 'common', {})
-        object.__setattr__(self, 'docai', {})
-        object.__setattr__(self, 'ml', {})
-        
+        object.__setattr__(self, "config", {})
+        object.__setattr__(self, "common", {})
+        object.__setattr__(self, "docai", {})
+        object.__setattr__(self, "ml", {})
+
         # Carrega YAMLs principais
         self.common = yaml.safe_load((base / "config_common.yaml").read_text())
         self.docai = yaml.safe_load((base / "config_docai.yaml").read_text())

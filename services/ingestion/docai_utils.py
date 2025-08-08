@@ -18,9 +18,9 @@ def process_document(document_path):
 # Mock Google Cloud Document AI for compatibility
 class DocumentProcessorServiceClient:
     """Mock Document AI client for testing"""
-    
+
     def __init__(self):
         pass
-    
+
     def process_document(self, request):
         return {"entities": []}

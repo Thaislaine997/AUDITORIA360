@@ -5,8 +5,6 @@ Creates necessary tables and initial data for the new authentication system
 
 import asyncio
 import os
-from datetime import datetime
-from typing import Any, Dict
 
 import asyncpg
 from passlib.context import CryptContext
@@ -18,14 +16,24 @@ except ImportError:
     # Fallback for direct execution
     class SimpleSecretsManager:
         def get_database_url(self):
-            return os.getenv("DATABASE_URL", "postgresql://user:password@localhost/auditoria360")
+            return os.getenv(
+                "DATABASE_URL", "postgresql://user:password@localhost/auditoria360"
+            )
+
         def get_default_passwords(self):
             return {
                 "admin": os.getenv("DEFAULT_ADMIN_PASSWORD", "secure_admin_pass_123!"),
-                "gestor_a": os.getenv("DEFAULT_GESTOR_A_PASSWORD", "secure_gestor_a_123!"),
-                "gestor_b": os.getenv("DEFAULT_GESTOR_B_PASSWORD", "secure_gestor_b_123!"),
-                "client_x": os.getenv("DEFAULT_CLIENT_X_PASSWORD", "secure_client_x_123!"),
+                "gestor_a": os.getenv(
+                    "DEFAULT_GESTOR_A_PASSWORD", "secure_gestor_a_123!"
+                ),
+                "gestor_b": os.getenv(
+                    "DEFAULT_GESTOR_B_PASSWORD", "secure_gestor_b_123!"
+                ),
+                "client_x": os.getenv(
+                    "DEFAULT_CLIENT_X_PASSWORD", "secure_client_x_123!"
+                ),
             }
+
     secrets_manager = SimpleSecretsManager()
 
 # Configuration - using secrets manager
@@ -35,7 +43,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def create_enhanced_user_tables():
     """Create enhanced user and access control tables"""
-    
+
     migration_sql = """
     -- Enhanced Users table with multi-level access support
     CREATE TABLE IF NOT EXISTS users_enhanced (
@@ -154,22 +162,22 @@ async def create_enhanced_user_tables():
         BEFORE UPDATE ON companies 
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
     """
-    
+
     return migration_sql
 
 
 async def insert_initial_data():
     """Insert initial companies and test users with secure passwords"""
-    
+
     # Get secure passwords from secrets manager
     secure_passwords = secrets_manager.get_default_passwords()
-    
+
     # Hash passwords securely
     admin_password = pwd_context.hash(secure_passwords["admin"])
     gestor_a_password = pwd_context.hash(secure_passwords["gestor_a"])
     gestor_b_password = pwd_context.hash(secure_passwords["gestor_b"])
     cliente_x_password = pwd_context.hash(secure_passwords["client_x"])
-    
+
     data_sql = f"""
     -- Insert companies
     INSERT INTO companies (id, name, company_type, contact_email) VALUES
@@ -238,42 +246,42 @@ async def insert_initial_data():
     WHERE u.user_type = 'cliente_final'
     ON CONFLICT DO NOTHING;
     """
-    
+
     return data_sql
 
 
 async def run_migration():
     """Execute the complete migration"""
     print("🚀 Starting Enhanced Authentication Migration...")
-    
+
     try:
         # Connect to database
         conn = await asyncpg.connect(DATABASE_URL)
         print("✅ Connected to database")
-        
+
         # Create tables
         print("📋 Creating enhanced tables...")
         migration_sql = await create_enhanced_user_tables()
         await conn.execute(migration_sql)
         print("✅ Tables created successfully")
-        
+
         # Insert initial data
         print("📊 Inserting initial data...")
         data_sql = await insert_initial_data()
         await conn.execute(data_sql)
         print("✅ Initial data inserted successfully")
-        
+
         # Verify installation
         user_count = await conn.fetchval("SELECT COUNT(*) FROM users_enhanced")
         company_count = await conn.fetchval("SELECT COUNT(*) FROM companies")
-        
+
         print(f"✅ Migration completed successfully!")
         print(f"   - Created {user_count} test users")
         print(f"   - Created {company_count} companies")
         print(f"   - Enhanced security tables are ready")
-        
+
         await conn.close()
-        
+
     except Exception as e:
         print(f"❌ Migration failed: {str(e)}")
         raise
@@ -282,7 +290,7 @@ async def run_migration():
 async def rollback_migration():
     """Rollback the migration (for development/testing)"""
     print("🔄 Rolling back Enhanced Authentication Migration...")
-    
+
     rollback_sql = """
     DROP TABLE IF EXISTS user_sessions CASCADE;
     DROP TABLE IF EXISTS access_audit_log CASCADE;
@@ -293,13 +301,13 @@ async def rollback_migration():
     DROP TABLE IF EXISTS companies CASCADE;
     DROP FUNCTION IF EXISTS update_updated_at_column() CASCADE;
     """
-    
+
     try:
         conn = await asyncpg.connect(DATABASE_URL)
         await conn.execute(rollback_sql)
         print("✅ Rollback completed successfully")
         await conn.close()
-        
+
     except Exception as e:
         print(f"❌ Rollback failed: {str(e)}")
         raise
@@ -307,7 +315,7 @@ async def rollback_migration():
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) > 1 and sys.argv[1] == "rollback":
         asyncio.run(rollback_migration())
     else:

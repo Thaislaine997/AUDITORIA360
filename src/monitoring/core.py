@@ -15,9 +15,10 @@ from .metrics import MetricsCollector
 from .system import SystemMonitor
 
 try:
-    from .prometheus import PrometheusExporter, get_prometheus_exporter
+    from .prometheus import get_prometheus_exporter
     from .structured_logging import setup_structured_logging
-    from .tracing import Tracer, setup_tracing
+    from .tracing import setup_tracing
+
     ENHANCED_MONITORING = True
 except ImportError:
     ENHANCED_MONITORING = False
@@ -35,7 +36,7 @@ class MonitoringSystem:
         self.health_checker = HealthChecker(self.metrics_collector)
         self.running = False
         self._monitoring_thread = None
-        
+
         # Enhanced monitoring components
         if ENHANCED_MONITORING:
             self.prometheus_exporter = get_prometheus_exporter(self.metrics_collector)
@@ -54,7 +55,9 @@ class MonitoringSystem:
 
         self.running = True
         self._setup_default_alerts()
-        self._monitoring_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
+        self._monitoring_thread = threading.Thread(
+            target=self._monitoring_loop, daemon=True
+        )
         self._monitoring_thread.start()
         logger.info("Monitoring system started")
 
@@ -74,16 +77,16 @@ class MonitoringSystem:
             "greater_than",
             AlertSeverity.HIGH,
             "High CPU Usage",
-            "CPU usage is above 80%"
+            "CPU usage is above 80%",
         )
 
         self.alert_manager.add_alert_rule(
             "system_memory_percent",
             85,
-            "greater_than", 
+            "greater_than",
             AlertSeverity.HIGH,
             "High Memory Usage",
-            "Memory usage is above 85%"
+            "Memory usage is above 85%",
         )
 
         self.alert_manager.add_alert_rule(
@@ -92,7 +95,7 @@ class MonitoringSystem:
             "greater_than",
             AlertSeverity.CRITICAL,
             "Disk Space Critical",
-            "Disk usage is above 90%"
+            "Disk usage is above 90%",
         )
 
     def _monitoring_loop(self):
@@ -106,7 +109,9 @@ class MonitoringSystem:
                 for metric_name in self.metrics_collector.metrics:
                     latest_value = self.metrics_collector.get_latest_value(metric_name)
                     if latest_value is not None:
-                        self.alert_manager.check_metric_alerts(metric_name, latest_value)
+                        self.alert_manager.check_metric_alerts(
+                            metric_name, latest_value
+                        )
 
                 # Run health checks
                 asyncio.run(self.health_checker.run_all_checks())
@@ -122,12 +127,17 @@ class MonitoringSystem:
         dashboard_data = {
             "metrics_summary": self.metrics_collector.get_metrics_summary(),
             "system_info": self.system_monitor.get_system_info(),
-            "active_alerts": [alert.__dict__ for alert in self.alert_manager.get_active_alerts()],
-            "health_checks": {name: check.__dict__ for name, check in self.health_checker.get_latest_results().items()},
+            "active_alerts": [
+                alert.__dict__ for alert in self.alert_manager.get_active_alerts()
+            ],
+            "health_checks": {
+                name: check.__dict__
+                for name, check in self.health_checker.get_latest_results().items()
+            },
             "system_status": self._get_system_status(),
-            "enhanced_monitoring": ENHANCED_MONITORING
+            "enhanced_monitoring": ENHANCED_MONITORING,
         }
-        
+
         # Add enhanced monitoring data if available
         if ENHANCED_MONITORING and self.tracer:
             recent_traces = self.tracer.collector.get_recent_traces(10)
@@ -135,46 +145,54 @@ class MonitoringSystem:
                 trace_id: [span.__dict__ for span in spans]
                 for trace_id, spans in recent_traces.items()
             }
-            
+
         return dashboard_data
-    
+
     def get_prometheus_metrics(self) -> str:
         """Get Prometheus metrics if available"""
         if ENHANCED_MONITORING and self.prometheus_exporter:
             return self.prometheus_exporter.get_metrics_output()
         return ""
-    
+
     def record_business_event(self, event_type: str, data: Dict[str, Any]):
         """Record business event for monitoring"""
         if ENHANCED_MONITORING and self.prometheus_exporter:
             if event_type == "audit_completed":
-                self.prometheus_exporter.update_business_metrics({
-                    "auditorias_processadas": [data]
-                })
+                self.prometheus_exporter.update_business_metrics(
+                    {"auditorias_processadas": [data]}
+                )
             elif event_type == "report_generated":
-                self.prometheus_exporter.update_business_metrics({
-                    "relatorios_gerados": [data]
-                })
-    
-    def record_http_request(self, method: str, endpoint: str, status_code: int, duration: float):
+                self.prometheus_exporter.update_business_metrics(
+                    {"relatorios_gerados": [data]}
+                )
+
+    def record_http_request(
+        self, method: str, endpoint: str, status_code: int, duration: float
+    ):
         """Record HTTP request metrics"""
         if ENHANCED_MONITORING and self.prometheus_exporter:
-            self.prometheus_exporter.record_http_request(method, endpoint, status_code, duration)
+            self.prometheus_exporter.record_http_request(
+                method, endpoint, status_code, duration
+            )
 
     def _get_system_status(self) -> str:
         """Get overall system status"""
         # Check if there are any critical alerts
         active_alerts = self.alert_manager.get_active_alerts()
-        critical_alerts = [a for a in active_alerts if a.severity == AlertSeverity.CRITICAL]
-        
+        critical_alerts = [
+            a for a in active_alerts if a.severity == AlertSeverity.CRITICAL
+        ]
+
         if critical_alerts:
             return "critical"
-        
+
         # Check health status
         health_status = self.health_checker.get_overall_health()
         if health_status == "unhealthy":
             return "unhealthy"
-        elif health_status == "degraded" or any(a.severity == AlertSeverity.HIGH for a in active_alerts):
+        elif health_status == "degraded" or any(
+            a.severity == AlertSeverity.HIGH for a in active_alerts
+        ):
             return "degraded"
         else:
             return "healthy"

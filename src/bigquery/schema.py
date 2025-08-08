@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 
 class SchemaManager:
     """Manages BigQuery schemas and table structures"""
-    
+
     def __init__(self, client: bigquery.Client):
         self.client = client
-    
+
     def get_controle_folha_schema(self) -> List[bigquery.SchemaField]:
         """Get schema for controle_folha table"""
         return [
@@ -46,7 +46,7 @@ class SchemaManager:
             bigquery.SchemaField("versao_schema", "STRING"),
             bigquery.SchemaField("metadata", "JSON"),
         ]
-    
+
     def get_employees_schema(self) -> List[bigquery.SchemaField]:
         """Get schema for employees table"""
         return [
@@ -66,7 +66,7 @@ class SchemaManager:
             bigquery.SchemaField("created_at", "TIMESTAMP"),
             bigquery.SchemaField("updated_at", "TIMESTAMP"),
         ]
-    
+
     def get_payroll_schema(self) -> List[bigquery.SchemaField]:
         """Get schema for payroll table"""
         return [
@@ -85,12 +85,14 @@ class SchemaManager:
             bigquery.SchemaField("created_at", "TIMESTAMP"),
             bigquery.SchemaField("updated_at", "TIMESTAMP"),
         ]
-    
-    def create_dataset_if_not_exists(self, dataset_id: str, location: str = "US") -> bool:
+
+    def create_dataset_if_not_exists(
+        self, dataset_id: str, location: str = "US"
+    ) -> bool:
         """Create dataset if it doesn't exist"""
         try:
             full_dataset_id = f"{self.client.project}.{dataset_id}"
-            
+
             # Check if dataset exists
             try:
                 self.client.get_dataset(full_dataset_id)
@@ -99,30 +101,30 @@ class SchemaManager:
             except Exception:
                 # Dataset doesn't exist, create it
                 logger.info(f"Creating dataset {dataset_id}")
-                
+
                 dataset = bigquery.Dataset(full_dataset_id)
                 dataset.location = location
                 dataset.description = f"AUDITORIA360 dataset: {dataset_id}"
-                
+
                 dataset = self.client.create_dataset(dataset, timeout=30)
                 logger.info(f"Dataset {dataset_id} created successfully")
                 return True
-                
+
         except Exception as e:
             logger.error(f"Error creating dataset {dataset_id}: {e}")
             return False
-    
+
     def create_table_if_not_exists(
-        self, 
-        dataset_id: str, 
-        table_id: str, 
+        self,
+        dataset_id: str,
+        table_id: str,
         schema: List[bigquery.SchemaField],
-        description: Optional[str] = None
+        description: Optional[str] = None,
     ) -> bool:
         """Create table if it doesn't exist"""
         try:
             full_table_id = f"{self.client.project}.{dataset_id}.{table_id}"
-            
+
             # Check if table exists
             try:
                 self.client.get_table(full_table_id)
@@ -131,49 +133,48 @@ class SchemaManager:
             except Exception:
                 # Table doesn't exist, create it
                 logger.info(f"Creating table {table_id}")
-                
+
                 table = bigquery.Table(full_table_id, schema=schema)
                 if description:
                     table.description = description
-                
+
                 table = self.client.create_table(table)
                 logger.info(f"Table {table_id} created successfully")
                 return True
-                
+
         except Exception as e:
             logger.error(f"Error creating table {table_id}: {e}")
             return False
-    
+
     def update_table_schema(
-        self, 
-        dataset_id: str, 
-        table_id: str, 
-        new_schema: List[bigquery.SchemaField]
+        self, dataset_id: str, table_id: str, new_schema: List[bigquery.SchemaField]
     ) -> bool:
         """Update table schema (only allows adding new fields)"""
         try:
             full_table_id = f"{self.client.project}.{dataset_id}.{table_id}"
-            
+
             table = self.client.get_table(full_table_id)
             original_schema = table.schema
-            
+
             # Update the schema
             table.schema = new_schema
             table = self.client.update_table(table, ["schema"])
-            
+
             logger.info(f"Table {table_id} schema updated successfully")
             return True
-            
+
         except Exception as e:
             logger.error(f"Error updating table schema for {table_id}: {e}")
             return False
-    
-    def get_table_info(self, dataset_id: str, table_id: str) -> Optional[Dict[str, Any]]:
+
+    def get_table_info(
+        self, dataset_id: str, table_id: str
+    ) -> Optional[Dict[str, Any]]:
         """Get information about a table"""
         try:
             full_table_id = f"{self.client.project}.{dataset_id}.{table_id}"
             table = self.client.get_table(full_table_id)
-            
+
             return {
                 "table_id": table.table_id,
                 "dataset_id": table.dataset_id,
@@ -186,7 +187,7 @@ class SchemaManager:
                 "schema_fields": len(table.schema),
                 "location": table.location,
             }
-            
+
         except Exception as e:
             logger.error(f"Error getting table info for {table_id}: {e}")
             return None

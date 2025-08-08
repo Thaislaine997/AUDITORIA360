@@ -73,12 +73,12 @@ from .payroll_models import (
     PayrollType,
 )
 from .report_models import (
-    ReportTemplate,
-    ReportBlock,
-    GeneratedReport,
-    ReportDataSource,
-    ReportType,
     BlockType,
+    GeneratedReport,
+    ReportBlock,
+    ReportDataSource,
+    ReportTemplate,
+    ReportType,
 )
 
 # Export all models for easy importing
@@ -155,7 +155,7 @@ __all__ = [
     "IntentCategory",
     # Report models
     "ReportTemplate",
-    "ReportBlock", 
+    "ReportBlock",
     "GeneratedReport",
     "ReportDataSource",
     "ReportType",

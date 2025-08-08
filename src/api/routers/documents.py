@@ -47,20 +47,20 @@ async def list_documents(
                 "category": "fiscal",
                 "upload_date": "2024-01-10T09:30:00Z",
                 "size": "2.5 MB",
-                "uploaded_by": "Cliente ABC"
+                "uploaded_by": "Cliente ABC",
             },
             {
                 "id": 2,
                 "title": "Contrato Social.pdf",
                 "category": "legal",
-                "upload_date": "2024-01-08T14:15:00Z", 
+                "upload_date": "2024-01-08T14:15:00Z",
                 "size": "1.8 MB",
-                "uploaded_by": "Empresa XYZ"
-            }
+                "uploaded_by": "Empresa XYZ",
+            },
         ],
         "total": 2,
         "skip": skip,
-        "limit": limit
+        "limit": limit,
     }
 
 
@@ -75,13 +75,13 @@ async def export_documents_csv(
     csv_data = """ID,Title,Category,Upload Date,Size,Uploaded By
 1,Nota Fiscal 001.pdf,fiscal,2024-01-10T09:30:00Z,2.5 MB,Cliente ABC
 2,Contrato Social.pdf,legal,2024-01-08T14:15:00Z,1.8 MB,Empresa XYZ"""
-    
+
     return {
         "filename": "documents_export.csv",
         "content_type": "text/csv",
         "data": csv_data,
         "exported_at": "2024-01-10T16:30:00Z",
-        "record_count": 2
+        "record_count": 2,
     }
 
 
@@ -99,7 +99,7 @@ async def export_documents_pdf(
         "message": "PDF export ready for download",
         "exported_at": "2024-01-10T16:30:00Z",
         "record_count": 2,
-        "download_url": "/api/v1/documents/download/documents_export.pdf"
+        "download_url": "/api/v1/documents/download/documents_export.pdf",
     }
 
 

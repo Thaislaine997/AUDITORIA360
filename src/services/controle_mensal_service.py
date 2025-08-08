@@ -1,10 +1,18 @@
 # /auditoria360/src/services/controle_mensal_service.py
 
-from supabase import AsyncClient
-from typing import List, Dict
 import logging
+from typing import Dict, List
 
-TAREFAS_PADRAO = ["INFO_FOLHA", "ENVIO_CLIENTE", "GUIA_FGTS", "DARF_INSS", "ESOCIAL_DCTFWEB"]
+from supabase import AsyncClient
+
+TAREFAS_PADRAO = [
+    "INFO_FOLHA",
+    "ENVIO_CLIENTE",
+    "GUIA_FGTS",
+    "DARF_INSS",
+    "ESOCIAL_DCTFWEB",
+]
+
 
 class ControleMensalService:
     def __init__(self, supabase: AsyncClient):
@@ -16,7 +24,9 @@ class ControleMensalService:
 
         # Usamos uma RPC (Remote Procedure Call) para fazer um JOIN mais complexo no Supabase
         # Esta função precisará ser criada na base de dados (ver Parte 4)
-        response = await self.db.rpc('obter_controles_detalhados', {'p_ano': ano, 'p_mes': mes}).execute()
+        response = await self.db.rpc(
+            "obter_controles_detalhados", {"p_ano": ano, "p_mes": mes}
+        ).execute()
 
         if response.data is None:
             return []
@@ -35,8 +45,16 @@ class ControleMensalService:
         # Por simplicidade, vamos retornar um placeholder. A implementação completa virá no PR #3.
         logging.info("Iniciando a geração de controles para o mês corrente.")
         # Placeholder para a lógica
-        num_empresas_ativas = (await self.db.from_("Empresas").select("id", count='exact').eq("ativo", True).execute()).count
-        return {"message": f"Simulação: {num_empresas_ativas} empresas ativas encontradas. A lógica de geração será implementada.", "count": num_empresas_ativas}
+        num_empresas_ativas = (
+            await self.db.from_("Empresas")
+            .select("id", count="exact")
+            .eq("ativo", True)
+            .execute()
+        ).count
+        return {
+            "message": f"Simulação: {num_empresas_ativas} empresas ativas encontradas. A lógica de geração será implementada.",
+            "count": num_empresas_ativas,
+        }
 
     async def atualizar_status_tarefa(self, tarefa_id: int, concluido: bool) -> Dict:
         """Atualiza o status de uma tarefa e a data de conclusão."""
@@ -44,10 +62,17 @@ class ControleMensalService:
 
         update_data = {
             "concluido": concluido,
-            "data_conclusao": datetime.now(timezone.utc).isoformat() if concluido else None
+            "data_conclusao": (
+                datetime.now(timezone.utc).isoformat() if concluido else None
+            ),
         }
 
-        response = await self.db.from_("TarefasControle").update(update_data).eq("id", tarefa_id).execute()
+        response = (
+            await self.db.from_("TarefasControle")
+            .update(update_data)
+            .eq("id", tarefa_id)
+            .execute()
+        )
 
         if not response.data:
             raise ValueError(f"Tarefa com ID {tarefa_id} não encontrada.")

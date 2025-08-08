@@ -9,15 +9,14 @@ to Python equivalents with enhanced security and auditability.
 import asyncio
 import json
 import logging
-import os
-import subprocess
-import shutil
-import sys
 import re
+import shutil
+import subprocess
+import sys
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, asdict
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +24,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class LegacyScript:
     """Represents a legacy script to be migrated"""
+
     file_path: str
     script_type: str  # powershell, batch
     original_size: int
@@ -38,6 +38,7 @@ class LegacyScript:
 @dataclass
 class MigrationResult:
     """Results of script migration"""
+
     original_script: str
     migrated_script: str
     migration_type: str  # encapsulated, converted, replaced
@@ -50,63 +51,69 @@ class MigrationResult:
 
 class LegacyScriptMigrator:
     """Handles migration of legacy PowerShell and Batch scripts"""
-    
+
     def __init__(self):
         self.legacy_scripts = []
         self.migration_results = []
         self.migration_log = []
-        
+
         # Create migration directories
         self.migration_dir = Path("src/migration")
         self.encapsulated_dir = self.migration_dir / "encapsulated"
         self.python_scripts_dir = self.migration_dir / "python_equivalents"
         self.legacy_backup_dir = self.migration_dir / "legacy_backup"
-        
-        for dir_path in [self.migration_dir, self.encapsulated_dir, 
-                        self.python_scripts_dir, self.legacy_backup_dir]:
+
+        for dir_path in [
+            self.migration_dir,
+            self.encapsulated_dir,
+            self.python_scripts_dir,
+            self.legacy_backup_dir,
+        ]:
             dir_path.mkdir(parents=True, exist_ok=True)
-    
+
     async def discover_legacy_scripts(self) -> List[LegacyScript]:
         """Discover all legacy scripts in the repository"""
         logger.info("🔍 Discovering legacy scripts...")
-        
+
         legacy_scripts = []
         base_path = Path(".")
-        
+
         # Find PowerShell scripts
         for ps_file in base_path.rglob("*.ps1"):
             if ps_file.exists():
                 script = await self._analyze_script(ps_file, "powershell")
                 legacy_scripts.append(script)
-                
+
         # Find Batch scripts
         for bat_file in base_path.rglob("*.bat"):
             if bat_file.exists():
                 script = await self._analyze_script(bat_file, "batch")
                 legacy_scripts.append(script)
-                
+
         self.legacy_scripts = legacy_scripts
         logger.info(f"📊 Found {len(legacy_scripts)} legacy scripts")
-        
+
         return legacy_scripts
-    
+
     async def _analyze_script(self, file_path: Path, script_type: str) -> LegacyScript:
         """Analyze a legacy script to determine migration approach"""
         stat = file_path.stat()
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
         except Exception:
-            with open(file_path, 'r', encoding='latin-1', errors='ignore') as f:
+            with open(file_path, "r", encoding="latin-1", errors="ignore") as f:
                 content = f.read()
-        
+
         # Analyze functionality and security issues
         functionality = self._determine_functionality(content, script_type)
         security_issues = self._detect_security_issues(content, script_type)
         dependencies = self._extract_dependencies(content, script_type)
-        priority = self._assess_migration_priority(content, functionality, security_issues)
-        
+        priority = self._assess_migration_priority(
+            content, functionality, security_issues
+        )
+
         return LegacyScript(
             file_path=str(file_path),
             script_type=script_type,
@@ -115,19 +122,21 @@ class LegacyScriptMigrator:
             dependencies=dependencies,
             functionality=functionality,
             migration_priority=priority,
-            security_issues=security_issues
+            security_issues=security_issues,
         )
-    
+
     def _determine_functionality(self, content: str, script_type: str) -> str:
         """Determine the primary functionality of the script"""
         content_lower = content.lower()
-        
+
         # Common functionality patterns
         if any(pattern in content_lower for pattern in ["deploy", "build", "compile"]):
             return "build_deployment"
         elif any(pattern in content_lower for pattern in ["backup", "copy", "move"]):
             return "file_management"
-        elif any(pattern in content_lower for pattern in ["install", "setup", "config"]):
+        elif any(
+            pattern in content_lower for pattern in ["install", "setup", "config"]
+        ):
             return "system_configuration"
         elif any(pattern in content_lower for pattern in ["test", "validate", "check"]):
             return "testing_validation"
@@ -137,81 +146,92 @@ class LegacyScriptMigrator:
             return "audit_reporting"
         else:
             return "general_utility"
-    
+
     def _detect_security_issues(self, content: str, script_type: str) -> List[str]:
         """Detect potential security issues in legacy scripts"""
         issues = []
         content_lower = content.lower()
-        
+
         # Common security issues
         security_patterns = {
-            "hardcoded_credentials": ["password=", "passwd=", "pwd=", "apikey=", "secret="],
+            "hardcoded_credentials": [
+                "password=",
+                "passwd=",
+                "pwd=",
+                "apikey=",
+                "secret=",
+            ],
             "network_calls": ["invoke-webrequest", "wget", "curl", "net use"],
             "system_modification": ["registry", "regedit", "sc create", "sc config"],
             "file_execution": ["invoke-expression", "iex", "& ", "cmd /c"],
             "privilege_escalation": ["runas", "sudo", "elevate", "admin"],
             "external_downloads": ["downloadstring", "downloadfile", "iwr"],
         }
-        
+
         for issue_type, patterns in security_patterns.items():
             if any(pattern in content_lower for pattern in patterns):
                 issues.append(issue_type)
-                
+
         # Script-specific checks
         if script_type == "powershell":
             if "executionpolicy" in content_lower:
                 issues.append("execution_policy_bypass")
             if "-encoded" in content_lower:
                 issues.append("encoded_commands")
-                
+
         elif script_type == "batch":
             if "echo off" not in content_lower:
                 issues.append("command_visibility")
             if any(pattern in content_lower for pattern in ["del /f /q", "rd /s /q"]):
                 issues.append("destructive_operations")
-        
+
         return issues
-    
+
     def _extract_dependencies(self, content: str, script_type: str) -> List[str]:
         """Extract external dependencies from script"""
         dependencies = []
         content_lower = content.lower()
-        
+
         if script_type == "powershell":
             # PowerShell modules
-            module_matches = re.findall(r'import-module\s+([^\s\n]+)', content_lower)
+            module_matches = re.findall(r"import-module\s+([^\s\n]+)", content_lower)
             dependencies.extend(module_matches)
-            
+
             # External executables
-            exe_matches = re.findall(r'([a-zA-Z0-9_-]+\.exe)', content_lower)
+            exe_matches = re.findall(r"([a-zA-Z0-9_-]+\.exe)", content_lower)
             dependencies.extend(list(set(exe_matches)))
-            
+
         elif script_type == "batch":
             # External commands
-            cmd_matches = re.findall(r'call\s+([^\s\n]+)', content_lower)
+            cmd_matches = re.findall(r"call\s+([^\s\n]+)", content_lower)
             dependencies.extend(cmd_matches)
-            
+
         return list(set(dependencies))
-    
-    def _assess_migration_priority(self, content: str, functionality: str, security_issues: List[str]) -> str:
+
+    def _assess_migration_priority(
+        self, content: str, functionality: str, security_issues: List[str]
+    ) -> str:
         """Assess migration priority based on functionality and security"""
         if security_issues:
-            if any(issue in security_issues for issue in ["hardcoded_credentials", "privilege_escalation"]):
+            if any(
+                issue in security_issues
+                for issue in ["hardcoded_credentials", "privilege_escalation"]
+            ):
                 return "critical"
             elif len(security_issues) >= 3:
                 return "high"
-                
+
         if functionality in ["system_configuration", "audit_reporting"]:
             return "high"
         elif functionality in ["build_deployment", "task_scheduling"]:
             return "medium"
         else:
             return "low"
-    
+
     async def migrate_script(self, script: LegacyScript) -> MigrationResult:
         """Migrate a single legacy script"""
         logger.info(f"🔄 Migrating {script.file_path}")
-        
+
         result = MigrationResult(
             original_script=script.file_path,
             migrated_script="",
@@ -220,13 +240,13 @@ class LegacyScriptMigrator:
             warnings=[],
             errors=[],
             test_results={},
-            timestamp=datetime.now().isoformat()
+            timestamp=datetime.now().isoformat(),
         )
-        
+
         try:
             # Backup original script
             await self._backup_original_script(script)
-            
+
             # Determine migration strategy
             if script.migration_priority in ["critical", "high"]:
                 # Full conversion to Python
@@ -234,68 +254,77 @@ class LegacyScriptMigrator:
             else:
                 # Encapsulation with security wrapper
                 result = await self._encapsulate_script(script, result)
-                
+
             # Test migrated script
             test_results = await self._test_migrated_script(result)
             result.test_results = test_results
-            
+
             if test_results.get("success", False):
                 result.success = True
                 logger.info(f"✅ Successfully migrated {script.file_path}")
             else:
                 result.errors.append("Migration testing failed")
-                logger.warning(f"⚠️ Migration completed with test failures: {script.file_path}")
-                
+                logger.warning(
+                    f"⚠️ Migration completed with test failures: {script.file_path}"
+                )
+
         except Exception as e:
             result.errors.append(f"Migration failed: {str(e)}")
             logger.error(f"❌ Failed to migrate {script.file_path}: {e}")
-            
+
         self.migration_results.append(result)
         return result
-    
+
     async def _backup_original_script(self, script: LegacyScript):
         """Backup original script before migration"""
         original_path = Path(script.file_path)
         backup_path = self.legacy_backup_dir / original_path.name
-        
+
         # Add timestamp to avoid conflicts
         if backup_path.exists():
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            backup_path = self.legacy_backup_dir / f"{original_path.stem}_{timestamp}{original_path.suffix}"
-            
+            backup_path = (
+                self.legacy_backup_dir
+                / f"{original_path.stem}_{timestamp}{original_path.suffix}"
+            )
+
         shutil.copy2(original_path, backup_path)
         logger.info(f"💾 Backed up {script.file_path} to {backup_path}")
-    
-    async def _convert_to_python(self, script: LegacyScript, result: MigrationResult) -> MigrationResult:
+
+    async def _convert_to_python(
+        self, script: LegacyScript, result: MigrationResult
+    ) -> MigrationResult:
         """Convert legacy script to Python equivalent"""
         logger.info(f"🐍 Converting {script.file_path} to Python")
-        
+
         try:
-            with open(script.file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(script.file_path, "r", encoding="utf-8", errors="ignore") as f:
                 original_content = f.read()
         except Exception:
-            with open(script.file_path, 'r', encoding='latin-1', errors='ignore') as f:
+            with open(script.file_path, "r", encoding="latin-1", errors="ignore") as f:
                 original_content = f.read()
-        
+
         # Generate Python equivalent based on functionality
         python_script = self._generate_python_equivalent(script, original_content)
-        
+
         # Save Python script
         original_path = Path(script.file_path)
         python_path = self.python_scripts_dir / f"{original_path.stem}.py"
-        
-        with open(python_path, 'w', encoding='utf-8') as f:
+
+        with open(python_path, "w", encoding="utf-8") as f:
             f.write(python_script)
-            
+
         result.migrated_script = str(python_path)
         result.migration_type = "converted"
-        
+
         # Add security improvements
         result.warnings.append("Converted to Python with enhanced security controls")
-        
+
         return result
-    
-    def _generate_python_equivalent(self, script: LegacyScript, original_content: str) -> str:
+
+    def _generate_python_equivalent(
+        self, script: LegacyScript, original_content: str
+    ) -> str:
         """Generate Python equivalent of legacy script"""
         template = f'''#!/usr/bin/env python3
 """
@@ -357,11 +386,13 @@ if __name__ == "__main__":
     sys.exit(main())
 '''
         return template
-    
-    def _convert_functionality_to_python(self, script: LegacyScript, content: str) -> str:
+
+    def _convert_functionality_to_python(
+        self, script: LegacyScript, content: str
+    ) -> str:
         """Convert specific functionality to Python code"""
         if script.functionality == "file_management":
-            return '''
+            return """
         # File management operations
         source_dir = os.getenv("SOURCE_DIR", ".")
         target_dir = os.getenv("TARGET_DIR", "./backup")
@@ -372,9 +403,9 @@ if __name__ == "__main__":
             if file_path.is_file():
                 shutil.copy2(file_path, target_dir)
                 logger.info(f"Copied {file_path} to {target_dir}")
-'''
+"""
         elif script.functionality == "system_configuration":
-            return '''
+            return """
         # System configuration operations
         config_items = {
             "LOG_LEVEL": os.getenv("LOG_LEVEL", "INFO"),
@@ -385,9 +416,9 @@ if __name__ == "__main__":
         for key, value in config_items.items():
             logger.info(f"Configuration: {key} = {value}")
             # Apply configuration as needed
-'''
+"""
         elif script.functionality == "build_deployment":
-            return '''
+            return """
         # Build and deployment operations
         build_dir = Path("./build")
         build_dir.mkdir(exist_ok=True)
@@ -402,36 +433,38 @@ if __name__ == "__main__":
         else:
             logger.error(f"Build failed: {result.stderr}")
             raise Exception("Build process failed")
-'''
+"""
         else:
-            return '''
+            return """
         # General utility operations
         logger.info("Executing migrated functionality")
         
         # Original script logic would be converted here
         # This is a placeholder for the actual conversion
         print("Legacy script functionality migrated to Python")
-'''
-    
-    async def _encapsulate_script(self, script: LegacyScript, result: MigrationResult) -> MigrationResult:
+"""
+
+    async def _encapsulate_script(
+        self, script: LegacyScript, result: MigrationResult
+    ) -> MigrationResult:
         """Encapsulate legacy script with security wrapper"""
         logger.info(f"📦 Encapsulating {script.file_path}")
-        
+
         # Create Python wrapper for legacy script
         original_path = Path(script.file_path)
         wrapper_path = self.encapsulated_dir / f"{original_path.stem}_wrapper.py"
-        
+
         wrapper_content = self._generate_security_wrapper(script)
-        
-        with open(wrapper_path, 'w', encoding='utf-8') as f:
+
+        with open(wrapper_path, "w", encoding="utf-8") as f:
             f.write(wrapper_content)
-            
+
         result.migrated_script = str(wrapper_path)
         result.migration_type = "encapsulated"
         result.warnings.append("Legacy script encapsulated with security wrapper")
-        
+
         return result
-    
+
     def _generate_security_wrapper(self, script: LegacyScript) -> str:
         """Generate secure wrapper for legacy script"""
         return f'''#!/usr/bin/env python3
@@ -568,47 +601,49 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 '''
-    
+
     async def _test_migrated_script(self, result: MigrationResult) -> Dict[str, Any]:
         """Test the migrated script"""
         if not result.migrated_script:
             return {"success": False, "error": "No migrated script to test"}
-            
+
         logger.info(f"🧪 Testing migrated script: {result.migrated_script}")
-        
+
         try:
             # Basic syntax check
             migrated_path = Path(result.migrated_script)
             if not migrated_path.exists():
                 return {"success": False, "error": "Migrated script file not found"}
-                
+
             # Python syntax check
-            result_check = subprocess.run([
-                sys.executable, "-m", "py_compile", str(migrated_path)
-            ], capture_output=True, text=True)
-            
+            result_check = subprocess.run(
+                [sys.executable, "-m", "py_compile", str(migrated_path)],
+                capture_output=True,
+                text=True,
+            )
+
             if result_check.returncode != 0:
                 return {
-                    "success": False, 
-                    "error": f"Syntax check failed: {result_check.stderr}"
+                    "success": False,
+                    "error": f"Syntax check failed: {result_check.stderr}",
                 }
-                
+
             return {
                 "success": True,
                 "syntax_check": "passed",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
-            
+
         except Exception as e:
             return {"success": False, "error": f"Testing failed: {str(e)}"}
-    
+
     async def migrate_all_scripts(self) -> Dict[str, Any]:
         """Migrate all discovered legacy scripts"""
         logger.info("🚀 Starting mass migration of legacy scripts...")
-        
+
         if not self.legacy_scripts:
             await self.discover_legacy_scripts()
-            
+
         migration_summary = {
             "timestamp": datetime.now().isoformat(),
             "total_scripts": len(self.legacy_scripts),
@@ -616,42 +651,48 @@ if __name__ == "__main__":
             "failed_migrations": 0,
             "by_priority": {"critical": 0, "high": 0, "medium": 0, "low": 0},
             "by_type": {"powershell": 0, "batch": 0},
-            "migration_details": []
+            "migration_details": [],
         }
-        
+
         # Migrate scripts by priority
         priority_order = ["critical", "high", "medium", "low"]
-        
+
         for priority in priority_order:
-            priority_scripts = [s for s in self.legacy_scripts if s.migration_priority == priority]
-            
-            logger.info(f"📋 Migrating {len(priority_scripts)} {priority} priority scripts...")
-            
+            priority_scripts = [
+                s for s in self.legacy_scripts if s.migration_priority == priority
+            ]
+
+            logger.info(
+                f"📋 Migrating {len(priority_scripts)} {priority} priority scripts..."
+            )
+
             for script in priority_scripts:
                 result = await self.migrate_script(script)
-                
+
                 if result.success:
                     migration_summary["successful_migrations"] += 1
                 else:
                     migration_summary["failed_migrations"] += 1
-                    
+
                 migration_summary["by_priority"][priority] += 1
                 migration_summary["by_type"][script.script_type] += 1
                 migration_summary["migration_details"].append(asdict(result))
-        
+
         # Generate migration report
         report_path = self.migration_dir / "migration_report.json"
         with open(report_path, "w") as f:
             json.dump(migration_summary, f, indent=2)
-            
-        logger.info(f"📊 Migration complete: {migration_summary['successful_migrations']}/{migration_summary['total_scripts']} successful")
-        
+
+        logger.info(
+            f"📊 Migration complete: {migration_summary['successful_migrations']}/{migration_summary['total_scripts']} successful"
+        )
+
         return migration_summary
-    
+
     def generate_migration_tickets(self) -> List[Dict[str, Any]]:
         """Generate tickets for manual review of failed migrations"""
         tickets = []
-        
+
         for result in self.migration_results:
             if not result.success or result.errors:
                 ticket = {
@@ -665,40 +706,40 @@ if __name__ == "__main__":
                     "warnings": result.warnings,
                     "created_date": datetime.now().isoformat(),
                     "assigned_to": "development_team",
-                    "status": "open"
+                    "status": "open",
                 }
                 tickets.append(ticket)
-                
+
         # Save tickets to file
         if tickets:
             tickets_path = self.migration_dir / "migration_tickets.json"
             with open(tickets_path, "w") as f:
                 json.dump(tickets, f, indent=2)
             logger.info(f"🎫 Generated {len(tickets)} migration tickets")
-            
+
         return tickets
 
 
 async def main():
     """Main execution function"""
     migrator = LegacyScriptMigrator()
-    
+
     # Discover legacy scripts
     scripts = await migrator.discover_legacy_scripts()
-    
+
     if scripts:
         # Migrate all scripts
         summary = await migrator.migrate_all_scripts()
-        
+
         # Generate tickets for failed migrations
         tickets = migrator.generate_migration_tickets()
-        
+
         print(f"✅ Migration Summary:")
         print(f"   Total scripts: {summary['total_scripts']}")
         print(f"   Successful: {summary['successful_migrations']}")
         print(f"   Failed: {summary['failed_migrations']}")
         print(f"   Tickets generated: {len(tickets)}")
-        
+
         return summary
     else:
         print("✅ No legacy scripts found to migrate")

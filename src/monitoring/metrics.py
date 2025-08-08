@@ -3,8 +3,7 @@ Metrics collection and management for AUDITORIA360 monitoring system
 """
 
 import threading
-import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
@@ -12,6 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 
 class MetricType(Enum):
     """Types of metrics"""
+
     COUNTER = "counter"
     GAUGE = "gauge"
     HISTOGRAM = "histogram"
@@ -21,6 +21,7 @@ class MetricType(Enum):
 @dataclass
 class Metric:
     """Metric data structure"""
+
     name: str
     value: Union[int, float]
     metric_type: MetricType
@@ -67,7 +68,9 @@ class MetricsCollector:
         current = self.get_latest_value(name) or 0
         self.record_metric(name, current + 1, MetricType.COUNTER, labels)
 
-    def set_gauge(self, name: str, value: Union[int, float], labels: Dict[str, str] = None):
+    def set_gauge(
+        self, name: str, value: Union[int, float], labels: Dict[str, str] = None
+    ):
         """Set a gauge metric value"""
         self.record_metric(name, value, MetricType.GAUGE, labels)
 
@@ -106,4 +109,6 @@ class MetricsCollector:
     def _cleanup_old_metrics(self, name: str):
         """Remove metrics older than retention period"""
         cutoff_time = datetime.now() - timedelta(hours=self.retention_hours)
-        self.metrics[name] = [m for m in self.metrics[name] if m.timestamp >= cutoff_time]
+        self.metrics[name] = [
+            m for m in self.metrics[name] if m.timestamp >= cutoff_time
+        ]

@@ -6,14 +6,11 @@ Using Neon PostgreSQL serverless database
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 # Database URL for Neon PostgreSQL
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", "sqlite:///./test.db"
-)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
 
 # Create engine with proper connection pooling for serverless
 engine = create_engine(

@@ -103,7 +103,10 @@ class AdvancedMonitoringSetup:
             "notification_channels": {
                 "email": {
                     "enabled": True,
-                    "recipients": ["admin@auditoria360-exemplo.com", "devops@auditoria360-exemplo.com"],
+                    "recipients": [
+                        "admin@auditoria360-exemplo.com",
+                        "devops@auditoria360-exemplo.com",
+                    ],
                 },
                 "slack": {
                     "enabled": True,
