@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-0c0036cf-9f0d-49e7-ae66-70ca994f5358
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-0c0036cf-9f0d-49e7-ae66-70ca994f5358
-./.git/objects/pack/pack-93d67bb1c355467ba6b5b943adddfe06724698c8.idx
-./.git/objects/pack/pack-93d67bb1c355467ba6b5b943adddfe06724698c8.pack
-./.git/objects/pack/pack-93d67bb1c355467ba6b5b943adddfe06724698c8.rev
+./.git/objects/pack/pack-1d70db54ed87c5b2025a33c3d3226e8f04f81031.idx
+./.git/objects/pack/pack-1d70db54ed87c5b2025a33c3d3226e8f04f81031.pack
+./.git/objects/pack/pack-1d70db54ed87c5b2025a33c3d3226e8f04f81031.rev
 ./.git/refs/heads/copilot/fix-0c0036cf-9f0d-49e7-ae66-70ca994f5358
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-0c0036cf-9f0d-49e7-ae66-70ca994f5358
@@ -195,6 +195,7 @@
 ./migrations/005_evoluir_schema_ia.sql
 ./migrations/006_unified_multi_tenant_security.sql
 ./migrations/007_modulo_cct_sindicatos.sql
+./migrations/008_controle_mensal_templates.sql
 ./migrations/performance_indices.sql
 ./monitoring/alerts/alerts_config.json
 ./monitoring/basic_alerts.json
@@ -413,6 +414,7 @@
 ./src/frontend/src/components/NotificationBell.tsx
 ./src/frontend/src/components/PersonalizedOnboarding.tsx
 ./src/frontend/src/components/Sidebar.tsx
+./src/frontend/src/components/TemplateManager.tsx
 ./src/frontend/src/components/UploadComponent.tsx
 ./src/frontend/src/components/ValidacaoIARow.tsx
 ./src/frontend/src/components/Widgets/ActivityFeedWidget.tsx
