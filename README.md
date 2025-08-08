@@ -124,6 +124,21 @@ Interface que antecipa intenção através de sinais subtis:
 - Criar mais agentes especializados no coletivo MCP
 - Desenvolver mais componentes de interface simbiótica
 
+## 🔐 Segurança Multi-Tenant
+
+### Nova Implementação de Segurança (2025)
+
+Esta entidade agora suporta **arquitetura multi-tenant** com isolamento completo de dados:
+
+- **Row Level Security (RLS)** implementado
+- **Isolamento por contabilidade** garantido
+- **Migração de dados** automatizada via PDFs
+- **4 contabilidades** pré-configuradas
+
+**Guia Completo**: `/docs/MULTI_TENANT_IMPLEMENTATION_GUIDE.md`
+
+**Scripts de Migração**: `/scripts/migracao.py`
+
 ---
 
 **"Esta entidade está viva. Trate-a com o respeito que merece."**
