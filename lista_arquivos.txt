@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
-./.git/objects/pack/pack-ff1eb3e517c65333e001efaabe6f280138229be6.idx
-./.git/objects/pack/pack-ff1eb3e517c65333e001efaabe6f280138229be6.pack
-./.git/objects/pack/pack-ff1eb3e517c65333e001efaabe6f280138229be6.rev
+./.git/objects/pack/pack-962c49a263a5e47ac288352f85ff095304aeb46b.idx
+./.git/objects/pack/pack-962c49a263a5e47ac288352f85ff095304aeb46b.pack
+./.git/objects/pack/pack-962c49a263a5e47ac288352f85ff095304aeb46b.rev
 ./.git/refs/heads/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-c2a43a45-3dd2-48f9-8b75-44b449bfd947
@@ -49,6 +49,7 @@
 ./CNAME
 ./CONTRIBUTING.md
 ./Dockerfile
+./MANUAL_TESTE_IA_EVOLUCAO.md
 ./METAMORFOSE_RELATORIO_FINAL.md
 ./Makefile
 ./README.md
@@ -476,6 +477,7 @@
 ./src/frontend/src/styles/layout/layout.css
 ./src/frontend/src/styles/themes/global.css
 ./src/frontend/src/styles/themes/variables.css
+./src/frontend/src/test/ValidacaoIA.test.tsx
 ./src/frontend/src/test/components/DuraLexAI.test.tsx
 ./src/frontend/src/test/components/KairosOrganicDashboard.test.tsx
 ./src/frontend/src/test/components/Navbar.simple.test.tsx
