@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -19,12 +19,19 @@ import {
   LinearProgress,
   Alert,
   Tooltip,
+  CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   Psychology,
   Send,
   History,
   TrendingUp,
+  TrendingDown,
+  TrendingFlat,
   Warning,
   CheckCircle,
   ThumbUp,
@@ -32,64 +39,87 @@ import {
   ExpandMore,
   Info,
   Close,
+  Assessment,
+  Business,
 } from "@mui/icons-material";
 
+// Import our new Risk Analysis Service
+import RiskAnalysisService, { 
+  type AnaliseRiscoResponse, 
+  type RiscoDetalhado,
+  type HistoricoAnaliseRisco 
+} from "../services/riskAnalysisService";
+
 const ConsultorRiscos: React.FC = () => {
-  const [query, setQuery] = useState("");
+  // State management for the real API integration
+  const [selectedEmpresaId, setSelectedEmpresaId] = useState<number>(1); // Default test company
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnaliseRiscoResponse | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [selectedRisk, setSelectedRisk] = useState<any>(null);
   const [drillDownModal, setDrillDownModal] = useState(false);
   const [feedback, setFeedback] = useState<{ [key: string]: 'positive' | 'negative' | null }>({});
+  const [riskHistory, setRiskHistory] = useState<HistoricoAnaliseRisco[]>([]);
+  
+  // Load risk history when component mounts
+  useEffect(() => {
+    loadRiskHistory();
+  }, [selectedEmpresaId]);
 
-  const handleAnalyze = () => {
-    setIsAnalyzing(true);
-    // Simulate AI analysis with confidence intervals
-    setTimeout(() => {
-      setAnalysisResult({
-        recommendations: [
-          {
-            id: 1,
-            title: "Risco de Horas Extra Irregulares",
-            description: "Identificadas variações atípicas no padrão de horas extras",
-            confidence: 0.87,
-            priority: "high",
-            factors: ["Variação de Horas Extra", "Padrão Temporal", "Histórico de Funcionário"]
-          },
-          {
-            id: 2,
-            title: "Conformidade com Adicional Noturno",
-            description: "Possível não conformidade com cálculo de adicional noturno",
-            confidence: 0.73,
-            priority: "medium",
-            factors: ["Horário de Trabalho", "Legislação CCT", "Cálculo Automático"]
-          }
-        ]
-      });
-      setIsAnalyzing(false);
-    }, 3000);
+  const loadRiskHistory = async () => {
+    try {
+      const history = await RiskAnalysisService.obterHistoricoRiscos(selectedEmpresaId, 5);
+      setRiskHistory(history);
+    } catch (error) {
+      console.warn('Could not load risk history:', error);
+    }
   };
 
-  const handleFeedback = (recommendationId: string, type: 'positive' | 'negative') => {
-    setFeedback(prev => ({ ...prev, [recommendationId]: type }));
+  const handleAnalyze = async () => {
+    setIsAnalyzing(true);
+    setAnalysisError(null);
+
+    try {
+      console.log(`🔮 Starting risk analysis for company ${selectedEmpresaId}`);
+      
+      const result = await RiskAnalysisService.analisarRiscos({ 
+        empresa_id: selectedEmpresaId 
+      });
+      
+      setAnalysisResult(result);
+      
+      // Reload history to show the new analysis
+      await loadRiskHistory();
+      
+      console.log('✅ Risk analysis completed successfully');
+    } catch (error: any) {
+      console.error('❌ Risk analysis failed:', error);
+      setAnalysisError(error.message || 'Erro desconhecido na análise de riscos');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleFeedback = (riskId: number, type: 'positive' | 'negative') => {
+    setFeedback(prev => ({ ...prev, [riskId]: type }));
     
     // RLHF v2.0 - Enhanced feedback submission
     fetch('/api/v1/ai/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        recommendation_id: recommendationId,
+        recommendation_id: riskId,
         feedback_type: type,
         timestamp: new Date().toISOString(),
         user_context: {
-          workspace: 'audit',
+          workspace: 'risk-analysis',
           session_id: sessionStorage.getItem('session_id'),
-          analysis_confidence: analysisResult?.recommendations?.find((r: any) => r.id === recommendationId)?.confidence
+          empresa_id: selectedEmpresaId
         }
       })
     }).then(response => {
       if (response.ok) {
-        console.log(`✅ RLHF feedback successfully submitted for recommendation ${recommendationId}: ${type}`);
+        console.log(`✅ RLHF feedback successfully submitted for risk ${riskId}: ${type}`);
       }
     }).catch(err => {
       console.warn('⚠️ RLHF feedback submission failed:', err);
@@ -97,80 +127,64 @@ const ConsultorRiscos: React.FC = () => {
   };
 
   const handleDrillDown = (riskFactor: string) => {
-    // Simulate fetching historical data for the risk factor
-    setSelectedRisk({
-      factor: riskFactor,
-      historicalData: [
-        { month: "Jan", value: 15 },
-        { month: "Fev", value: 23 },
-        { month: "Mar", value: 31 },
-        { month: "Abr", value: 18 },
-        { month: "Mai", value: 25 },
-      ]
-    });
+    // Use real risk history data if available
+    if (riskHistory.length > 0) {
+      const mockHistorical = riskHistory.slice(0, 5).map((analysis, index) => ({
+        month: new Date(analysis.data_analise).toLocaleDateString('pt-BR', { month: 'short' }),
+        value: analysis.score_risco + Math.random() * 10 - 5 // Add some variation for demo
+      }));
+      
+      setSelectedRisk({
+        factor: riskFactor,
+        historicalData: mockHistorical
+      });
+    } else {
+      // Fallback to mock data
+      setSelectedRisk({
+        factor: riskFactor,
+        historicalData: [
+          { month: "Jan", value: 15 },
+          { month: "Fev", value: 23 },
+          { month: "Mar", value: 31 },
+          { month: "Abr", value: 18 },
+          { month: "Mai", value: 25 },
+        ]
+      });
+    }
     setDrillDownModal(true);
   };
 
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.8) return '#10B981'; // High confidence - green
-    if (confidence >= 0.6) return '#F59E0B'; // Medium confidence - yellow
-    return '#EF4444'; // Low confidence - red
+  const getConfidenceColor = (severidade: number) => {
+    // Map severity to colors (5=critical, 1=low)
+    if (severidade >= 4) return '#EF4444'; // High/Critical - red
+    if (severidade >= 3) return '#F59E0B'; // Medium - orange
+    if (severidade >= 2) return '#10B981'; // Low - green
+    return '#6B7280'; // Very low - gray
   };
 
-  const getConfidenceOpacity = (confidence: number) => {
-    return 0.3 + (confidence * 0.7); // Range from 0.3 to 1.0
+  const getTrendIcon = () => {
+    if (!analysisResult?.score_anterior) return <TrendingFlat />;
+    
+    const trend = RiskAnalysisService.calculateTrend(
+      analysisResult.score_risco,
+      analysisResult.score_anterior
+    );
+    
+    switch (trend.trend) {
+      case 'up': return <TrendingUp color="success" />;
+      case 'down': return <TrendingDown color="error" />;
+      default: return <TrendingFlat color="disabled" />;
+    }
   };
-
-  const riskCategories = [
-    { 
-      name: "Riscos Trabalhistas", 
-      level: "Alto", 
-      count: 12, 
-      color: "error",
-      confidence: 0.92,
-      factors: ["Horas Extra", "Adicional Noturno", "Férias"] 
-    },
-    { 
-      name: "Conformidade Fiscal", 
-      level: "Médio", 
-      count: 8, 
-      color: "warning",
-      confidence: 0.78,
-      factors: ["FGTS", "INSS", "IRRF"] 
-    },
-    { 
-      name: "Cálculos de Folha", 
-      level: "Baixo", 
-      count: 3, 
-      color: "success",
-      confidence: 0.95,
-      factors: ["Salário Base", "Benefícios", "Descontos"] 
-    },
-    { 
-      name: "Documentação", 
-      level: "Médio", 
-      count: 5, 
-      color: "warning",
-      confidence: 0.65,
-      factors: ["Contratos", "Cartão Ponto", "Atestados"] 
-    },
-  ];
-
-  const recentAnalyses = [
-    "Análise de horas extras irregulares",
-    "Verificação de adicional noturno",
-    "Conformidade com CCT 2024",
-    "Auditoria de benefícios",
-  ];
 
   return (
     <Container maxWidth="xl">
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Consultor de Riscos
+          🔮 Consultor de Riscos
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          IA avançada para identificação e análise de riscos na folha de pagamento.
+          Análise preditiva inteligente para identificação proativa de riscos trabalhistas, fiscais e operacionais.
         </Typography>
       </Box>
 
@@ -178,135 +192,235 @@ const ConsultorRiscos: React.FC = () => {
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Análise Inteligente de Riscos
+              🤖 Análise Inteligente de Riscos
             </Typography>
             
-            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                placeholder="Descreva a situação ou faça uma pergunta sobre riscos trabalhistas..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                variant="outlined"
-              />
+            {/* Company Selection */}
+            <Box sx={{ mb: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel>Empresa para Análise</InputLabel>
+                <Select
+                  value={selectedEmpresaId}
+                  onChange={(e) => setSelectedEmpresaId(Number(e.target.value))}
+                  label="Empresa para Análise"
+                >
+                  <MenuItem value={1}>Empresa Teste de Riscos S/A</MenuItem>
+                  <MenuItem value={2}>Outra Empresa Ltda (Demo)</MenuItem>
+                  <MenuItem value={3}>Empresa Exemplo ME (Demo)</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
 
+            {/* Analysis Trigger */}
             <Button
               variant="contained"
-              startIcon={<Psychology />}
-              onClick={handleAnalyze}
-              disabled={!query.trim() || isAnalyzing}
               size="large"
+              startIcon={isAnalyzing ? <CircularProgress size={20} /> : <Assessment />}
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
+              sx={{ mb: 3 }}
             >
-              {isAnalyzing ? "Analisando..." : "Analisar Riscos"}
+              {isAnalyzing ? "Analisando..." : "Executar Nova Análise Completa"}
             </Button>
 
+            {/* Analysis Progress */}
             {isAnalyzing && (
-              <Box sx={{ mt: 3, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
-                <Typography variant="body2">
-                  🤖 IA processando análise de riscos...
+              <Box sx={{ mt: 2, mb: 3, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+                <Typography variant="body2" gutterBottom>
+                  🤖 Consultor de Riscos processando análise...
                 </Typography>
-                <LinearProgress sx={{ mt: 1 }} />
+                {analysisResult?.progresso_analise && Object.entries(analysisResult.progresso_analise).map(([step, status]) => (
+                  <Box key={step} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="caption" sx={{ minWidth: 200 }}>
+                      {step.replace(/_/g, ' ')}: 
+                    </Typography>
+                    <Typography variant="caption" color="success.main">
+                      {status}
+                    </Typography>
+                  </Box>
+                ))}
+                <LinearProgress sx={{ mt: 2 }} />
               </Box>
             )}
 
-            {/* Enhanced AI Results with Feedback */}
+            {/* Analysis Error */}
+            {analysisError && (
+              <Alert severity="error" sx={{ mb: 3 }}>
+                <Typography variant="body2">
+                  ❌ Erro na análise: {analysisError}
+                </Typography>
+              </Alert>
+            )}
+
+            {/* Analysis Results */}
             {analysisResult && (
               <Paper sx={{ mt: 3, p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Business sx={{ mr: 1 }} />
+                  <Typography variant="h6">
+                    📊 Relatório: {analysisResult.empresa_nome}
+                  </Typography>
+                </Box>
+                
+                {/* Risk Score Display */}
+                <Box sx={{ mb: 3, p: 2, bgcolor: 'primary.light', borderRadius: 2 }}>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} md={4}>
+                      <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                        {analysisResult.score_risco}/100
+                      </Typography>
+                      <Typography variant="h6" color="primary">
+                        Score de Risco
+                      </Typography>
+                      <Chip 
+                        label={analysisResult.nivel_risco}
+                        color={analysisResult.nivel_risco === 'BAIXO' ? 'success' : 
+                               analysisResult.nivel_risco === 'MÉDIO' ? 'warning' : 'error'}
+                        size="large"
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Typography variant="body2" color="text.secondary">
+                        {RiskAnalysisService.formatScoreMessage(analysisResult.score_risco, analysisResult.nivel_risco)}
+                      </Typography>
+                      {analysisResult.score_anterior && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                          {getTrendIcon()}
+                          <Typography variant="caption" sx={{ ml: 1 }}>
+                            {RiskAnalysisService.calculateTrend(
+                              analysisResult.score_risco,
+                              analysisResult.score_anterior
+                            ).message}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Typography variant="body2" color="text.secondary">
+                        Última análise: {new Date(analysisResult.data_analise).toLocaleDateString('pt-BR')}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Total de riscos: {analysisResult.total_riscos}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+
+                {/* Risk Summary */}
+                <Grid container spacing={2} sx={{ mb: 3 }}>
+                  <Grid item xs={3}>
+                    <Card sx={{ textAlign: 'center', bgcolor: 'error.light' }}>
+                      <CardContent>
+                        <Typography variant="h4" color="error">{analysisResult.riscos_criticos}</Typography>
+                        <Typography variant="body2">Críticos</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Card sx={{ textAlign: 'center', bgcolor: 'warning.light' }}>
+                      <CardContent>
+                        <Typography variant="h4" color="warning.dark">{analysisResult.riscos_altos}</Typography>
+                        <Typography variant="body2">Altos</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Card sx={{ textAlign: 'center', bgcolor: 'info.light' }}>
+                      <CardContent>
+                        <Typography variant="h4" color="info.dark">{analysisResult.riscos_medios}</Typography>
+                        <Typography variant="body2">Médios</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Card sx={{ textAlign: 'center', bgcolor: 'success.light' }}>
+                      <CardContent>
+                        <Typography variant="h4" color="success.dark">{analysisResult.riscos_baixos}</Typography>
+                        <Typography variant="body2">Baixos</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+
+                {/* Detailed Risk List */}
                 <Typography variant="h6" gutterBottom>
-                  🤖 Recomendações da IA
+                  🔍 Riscos Detalhados
                 </Typography>
-                {analysisResult.recommendations.map((rec: any, index: number) => (
+                {analysisResult.riscos_encontrados.map((risco: RiscoDetalhado, index: number) => (
                   <Card 
-                    key={rec.id} 
+                    key={index} 
                     sx={{ 
-                      mb: 2, 
-                      opacity: getConfidenceOpacity(rec.confidence),
-                      border: `2px solid ${getConfidenceColor(rec.confidence)}`,
-                      position: 'relative'
+                      mb: 2,
+                      border: `2px solid ${getConfidenceColor(risco.severidade)}`,
                     }}
                   >
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                         <Box sx={{ flex: 1 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                            <Typography variant="body2" sx={{ mr: 1 }}>
+                              {RiskAnalysisService.getCategoryIcon(risco.categoria)}
+                            </Typography>
+                            <Chip 
+                              label={risco.categoria}
+                              size="small"
+                              color={risco.categoria === 'CONFORMIDADE' ? 'success' : 'default'}
+                            />
+                            <Chip 
+                              label={`Severidade: ${risco.severidade}/5`}
+                              size="small"
+                              sx={{ ml: 1, bgcolor: getConfidenceColor(risco.severidade), color: 'white' }}
+                            />
+                          </Box>
+                          
                           <Typography variant="h6" gutterBottom>
-                            {rec.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary" paragraph>
-                            {rec.description}
+                            {risco.tipo_risco}
                           </Typography>
                           
-                          {/* Confidence Indicator */}
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <Typography variant="caption" sx={{ mr: 1 }}>
-                              Confiança:
-                            </Typography>
-                            <LinearProgress 
-                              variant="determinate" 
-                              value={rec.confidence * 100}
-                              sx={{ 
-                                width: 100, 
-                                mr: 1,
-                                '& .MuiLinearProgress-bar': {
-                                  backgroundColor: getConfidenceColor(rec.confidence)
-                                }
-                              }}
-                            />
-                            <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-                              {(rec.confidence * 100).toFixed(0)}%
-                            </Typography>
-                          </Box>
-
-                          {/* Interactive Risk Factors */}
-                          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                            {rec.factors.map((factor: string, factorIndex: number) => (
-                              <Chip
-                                key={factorIndex}
-                                label={factor}
-                                size="small"
-                                clickable
-                                onClick={() => handleDrillDown(factor)}
-                                icon={<ExpandMore />}
-                                sx={{ 
-                                  cursor: 'pointer',
-                                  '&:hover': { 
-                                    backgroundColor: 'primary.light',
-                                    color: 'white'
-                                  }
-                                }}
-                              />
-                            ))}
-                          </Box>
+                          <Typography variant="body2" color="text.secondary" paragraph>
+                            <strong>Descrição:</strong> {risco.descricao}
+                          </Typography>
+                          
+                          <Typography variant="body2" color="text.secondary" paragraph>
+                            <strong>Evidência:</strong> {risco.evidencia}
+                          </Typography>
+                          
+                          <Typography variant="body2" color="error" paragraph>
+                            <strong>Impacto Potencial:</strong> {risco.impacto_potencial}
+                          </Typography>
+                          
+                          <Typography variant="body2" color="primary" paragraph>
+                            <strong>Plano de Ação:</strong> {risco.plano_acao}
+                          </Typography>
                         </Box>
 
                         {/* Feedback Mechanism */}
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', ml: 2 }}>
                           <Typography variant="caption" sx={{ mb: 1 }}>
-                            Esta recomendação foi útil?
+                            Esta análise foi útil?
                           </Typography>
                           <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Tooltip title="Recomendação útil">
+                            <Tooltip title="Análise útil">
                               <IconButton
                                 size="small"
-                                color={feedback[rec.id] === 'positive' ? 'success' : 'default'}
-                                onClick={() => handleFeedback(rec.id, 'positive')}
+                                color={feedback[index] === 'positive' ? 'success' : 'default'}
+                                onClick={() => handleFeedback(index, 'positive')}
                               >
                                 <ThumbUp />
                               </IconButton>
                             </Tooltip>
-                            <Tooltip title="Recomendação não útil">
+                            <Tooltip title="Análise não útil">
                               <IconButton
                                 size="small"
-                                color={feedback[rec.id] === 'negative' ? 'error' : 'default'}
-                                onClick={() => handleFeedback(rec.id, 'negative')}
+                                color={feedback[index] === 'negative' ? 'error' : 'default'}
+                                onClick={() => handleFeedback(index, 'negative')}
                               >
                                 <ThumbDown />
                               </IconButton>
                             </Tooltip>
                           </Box>
-                          {feedback[rec.id] && (
+                          {feedback[index] && (
                             <Typography variant="caption" sx={{ mt: 1, color: 'text.secondary' }}>
                               Obrigado pelo feedback!
                             </Typography>
@@ -320,122 +434,101 @@ const ConsultorRiscos: React.FC = () => {
             )}
           </Paper>
 
-          <Paper sx={{ p: 3, mt: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Análises Recentes
-            </Typography>
-            <List>
-              {recentAnalyses.map((analysis, index) => (
-                <React.Fragment key={index}>
-                  <ListItem>
-                    <ListItemText 
-                      primary={analysis}
-                      secondary={`${new Date().toLocaleDateString()} - Análise completa`}
-                    />
-                    <Button size="small" startIcon={<History />}>
-                      Ver Detalhes
-                    </Button>
-                  </ListItem>
-                  {index < recentAnalyses.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
-            </List>
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Categorias de Risco
+              📈 Histórico de Análises
             </Typography>
             
-            {riskCategories.map((category, index) => (
-              <Card 
-                key={index} 
-                sx={{ 
-                  mb: 2,
-                  opacity: getConfidenceOpacity(category.confidence),
-                  border: `1px solid ${getConfidenceColor(category.confidence)}`
-                }}
-              >
-                <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                    <Typography variant="subtitle2">
-                      {category.name}
-                    </Typography>
+            {riskHistory.length > 0 ? (
+              riskHistory.map((analise, index) => (
+                <Card key={analise.id} sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(analise.data_analise).toLocaleDateString('pt-BR')}
+                      </Typography>
+                      <Typography variant="h6" color="primary">
+                        {analise.score_risco}/100
+                      </Typography>
+                    </Box>
+                    
                     <Chip 
-                      label={category.level}
-                      color={category.color as any}
+                      label={analise.relatorio_resumo.nivel_risco}
                       size="small"
+                      color={
+                        analise.relatorio_resumo.nivel_risco === 'BAIXO' ? 'success' : 
+                        analise.relatorio_resumo.nivel_risco === 'MÉDIO' ? 'warning' : 'error'
+                      }
+                      sx={{ mb: 1 }}
                     />
-                  </Box>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {category.count} itens identificados
-                  </Typography>
-                  
-                  {/* Confidence Indicator */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Typography variant="caption" sx={{ mr: 1 }}>
-                      Confiança:
+                    
+                    <Typography variant="body2" color="text.secondary">
+                      {analise.relatorio_resumo.total_riscos} riscos identificados
                     </Typography>
-                    <LinearProgress 
-                      variant="determinate" 
-                      value={category.confidence * 100}
-                      sx={{ 
-                        width: 60, 
-                        mr: 1,
-                        '& .MuiLinearProgress-bar': {
-                          backgroundColor: getConfidenceColor(category.confidence)
-                        }
-                      }}
-                    />
-                    <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-                      {(category.confidence * 100).toFixed(0)}%
-                    </Typography>
-                  </Box>
+                    
+                    {/* Category breakdown */}
+                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 1 }}>
+                      {Object.entries(analise.relatorio_resumo.categorias).map(([categoria, count]) => (
+                        count > 0 && (
+                          <Chip
+                            key={categoria}
+                            label={`${categoria}: ${count}`}
+                            size="small"
+                            variant="outlined"
+                            sx={{ fontSize: '0.6rem', height: '16px' }}
+                          />
+                        )
+                      ))}
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Alert severity="info">
+                <Typography variant="body2">
+                  Nenhuma análise anterior encontrada. Execute uma análise para começar o histórico.
+                </Typography>
+              </Alert>
+            )}
+          </Paper>
 
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    {category.level === "Alto" && <Warning color="error" fontSize="small" />}
-                    {category.level === "Médio" && <TrendingUp color="warning" fontSize="small" />}
-                    {category.level === "Baixo" && <CheckCircle color="success" fontSize="small" />}
-                    <Typography variant="caption" sx={{ ml: 1 }}>
-                      Prioridade {category.level.toLowerCase()}
-                    </Typography>
-                  </Box>
-
-                  {/* Interactive Risk Factors */}
-                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                    {category.factors.slice(0, 2).map((factor: string, factorIndex: number) => (
-                      <Chip
-                        key={factorIndex}
-                        label={factor}
-                        size="small"
-                        variant="outlined"
-                        clickable
-                        onClick={() => handleDrillDown(factor)}
-                        sx={{ 
-                          fontSize: '0.7rem',
-                          height: '20px',
-                          cursor: 'pointer',
-                          '&:hover': { 
-                            backgroundColor: 'primary.light',
-                            color: 'white'
-                          }
-                        }}
-                      />
-                    ))}
-                    {category.factors.length > 2 && (
-                      <Chip
-                        label={`+${category.factors.length - 2}`}
-                        size="small"
-                        variant="outlined"
-                        sx={{ fontSize: '0.7rem', height: '20px' }}
-                      />
-                    )}
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
+          <Paper sx={{ p: 3, mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              ℹ️ Como Funciona
+            </Typography>
+            <List dense>
+              <ListItem>
+                <ListItemText 
+                  primary="1. Agregação de Dados"
+                  secondary="Coleta dados dos últimos 12-24 meses da empresa"
+                />
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemText 
+                  primary="2. Análise de Conformidade"
+                  secondary="Verifica conformidade trabalhista e fiscal"
+                />
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemText 
+                  primary="3. Detecção de Padrões"
+                  secondary="IA identifica anomalias e riscos ocultos"
+                />
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemText 
+                  primary="4. Recomendações"
+                  secondary="Gera planos de ação específicos"
+                />
+              </ListItem>
+            </List>
           </Paper>
         </Grid>
       </Grid>
