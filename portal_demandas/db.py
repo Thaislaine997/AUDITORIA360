@@ -182,7 +182,7 @@ class LegislacaoDocumentoDB(Base):
     orgao_emissor = Column(String(200), nullable=True)  # Ex: "Ministério do Trabalho"
     arquivo_pdf = Column(String(500), nullable=True)  # Path to uploaded PDF
     dados_extraidos = Column(JSON, nullable=True)  # AI-extracted structured data
-    status_processamento = Column(String(50), default="PENDENTE", nullable=False)  # PENDENTE, PROCESSANDO, CONCLUIDO, ERRO
+    status_processamento = Column(String(50), default="pendente", nullable=False)  # pendente, processando, concluido, erro
     criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
     processado_em = Column(DateTime, nullable=True)
 

@@ -1275,7 +1275,8 @@ def criar_documento_legislacao(documento: LegislacaoDocumentoCreate, db: Session
             tipo_documento=documento.tipo_documento.value,
             numero_documento=documento.numero_documento,
             data_publicacao=documento.data_publicacao,
-            orgao_emissor=documento.orgao_emissor
+            orgao_emissor=documento.orgao_emissor,
+            status_processamento="pendente"
         )
         
         db.add(db_documento)
