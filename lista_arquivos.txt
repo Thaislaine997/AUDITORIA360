@@ -24,13 +24,13 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
+./.git/logs/refs/heads/Principal
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
-./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.idx
-./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.pack
-./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.rev
-./.git/refs/heads/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
+./.git/objects/pack/pack-7c1f3bda6c0f0fefeadf46493ef8635a22c7ce2c.idx
+./.git/objects/pack/pack-7c1f3bda6c0f0fefeadf46493ef8635a22c7ce2c.pack
+./.git/objects/pack/pack-7c1f3bda6c0f0fefeadf46493ef8635a22c7ce2c.rev
+./.git/refs/heads/Principal
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
 ./.github/dependabot.yml
@@ -62,6 +62,7 @@
 ./api/deprecation/tickets/MIG-20250806-12345678.json
 ./api/deprecation_middleware.py
 ./api/index.py
+./api_test.html
 ./artifacts/ach/ach_complete_analysis_20250806_200102.json
 ./artifacts/ach/ach_complete_analysis_20250806_205653.json
 ./artifacts/ach/ach_complete_analysis_20250807_132810.json
@@ -90,6 +91,7 @@
 ./automation/schedule_reports.py
 ./cloudflare/backup-worker.js
 ./cloudflare/wrangler.toml
+./complete_demo.html
 ./conf/.htaccess
 ./conf/nginx.conf.example
 ./config/__init__.py
