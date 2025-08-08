@@ -22,11 +22,11 @@ export interface ControleMensalDetalhado {
 }
 
 export const getControlesDoMes = async (ano: number, mes: number): Promise<ControleMensalDetalhado[]> => {
-  const response = await api.get(`/controles-mensais/${ano}/${mes}`);
-  return response.data;
+  const response = await api.get(`/v1/controles/${ano}/${mes}`);
+  return response.data.controles; // Extract controles array from the response
 };
 
 export const atualizarStatusTarefa = async (tarefaId: number, concluido: boolean): Promise<Tarefa> => {
-  const response = await api.patch(`/controles-mensais/tarefas/${tarefaId}/status?concluido=${concluido}`);
+  const response = await api.patch(`/v1/controles-mensais/tarefas/${tarefaId}/status?concluido=${concluido}`);
   return response.data;
 };

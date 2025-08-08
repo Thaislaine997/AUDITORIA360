@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDITORIA360 - Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #1f2937; margin-bottom: 30px; }
+        .section { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; }
+        .section h2 { color: #374151; margin-top: 0; }
+        button { background: #3b82f6; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px; margin-bottom: 8px; }
+        button:hover { background: #2563eb; }
+        button.green { background: #059669; }
+        button.green:hover { background: #047857; }
+        button.purple { background: #7c3aed; }
+        button.purple:hover { background: #6d28d9; }
+        button.red { background: #dc2626; }
+        button.red:hover { background: #b91c1c; }
+        .success { color: #059669; }
+        .error { color: #dc2626; }
+        .warning { color: #d97706; }
+        .info { color: #3b82f6; }
+        select, input { padding: 8px; margin: 4px; border: 1px solid #d1d5db; border-radius: 4px; }
+        .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; margin: 12px 0; background: #f9fafb; }
+        .progress { background: #e5e7eb; border-radius: 4px; height: 8px; margin: 8px 0; }
+        .progress-bar { background: #059669; height: 100%; border-radius: 4px; transition: width 0.3s; }
+        pre { background: #f3f4f6; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .task-list { margin-top: 8px; }
+        .task-item { padding: 4px 0; font-size: 14px; }
+        .completed { color: #059669; }
+        .pending { color: #d97706; }
+        .small-btn { padding: 4px 8px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 AUDITORIA360 - API Test Interface</h1>
+        
+        <!-- API Status -->
+        <div class="section">
+            <h2>🔗 API Status</h2>
+            <div id="api-status">
+                <div class="info">Checking API connection...</div>
+            </div>
+            <button onclick="checkAPIStatus()">Check API Status</button>
+        </div>
+
+        <!-- Templates Section -->
+        <div class="section">
+            <h2>📋 Templates</h2>
+            <div id="templates-list">
+                <div class="info">Loading templates...</div>
+            </div>
+            <button class="green" onclick="loadTemplates()">Load Templates</button>
+            <button class="purple" onclick="applyTemplate(1)">Apply Template #1</button>
+        </div>
+
+        <!-- Monthly Controls Section -->
+        <div class="section">
+            <h2>📅 Monthly Controls</h2>
+            <div style="margin-bottom: 16px;">
+                <select id="year-select">
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                </select>
+                <select id="month-select">
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+                <button onclick="loadMonthlyControls()">Load Controls</button>
+            </div>
+            <div id="controls-list">
+                <div class="info">Select year and month to load controls...</div>
+            </div>
+        </div>
+
+        <!-- Risk Analysis Section -->
+        <div class="section">
+            <h2>⚠️ Risk Analysis</h2>
+            <div style="margin-bottom: 16px;">
+                <input type="number" id="empresa-id" value="1" min="1" max="10" placeholder="Company ID">
+                <button class="red" onclick="analyzeRisk()">Analyze Risk</button>
+            </div>
+            <div id="risk-analysis">
+                <div class="info">Click "Analyze Risk" to perform analysis...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple HTTP client to replace axios
+        const http = {
+            async get(url) {
+                const response = await fetch('http://localhost:8001' + url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                return { data: await response.json() };
+            },
+            async post(url, data) {
+                const response = await fetch('http://localhost:8001' + url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+                    const error = new Error(`HTTP ${response.status}`);
+                    error.response = { data: errorData };
+                    throw error;
+                }
+                return { data: await response.json() };
+            },
+            async patch(url) {
+                const response = await fetch('http://localhost:8001' + url, { method: 'PATCH' });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+                    const error = new Error(`HTTP ${response.status}`);
+                    error.response = { data: errorData };
+                    throw error;
+                }
+                return { data: await response.json() };
+            }
+        };
+
+        async function checkAPIStatus() {
+            const statusDiv = document.getElementById('api-status');
+            try {
+                statusDiv.innerHTML = '<div class="info">🔄 Checking API...</div>';
+                
+                const response = await http.get('/health');
+                statusDiv.innerHTML = `
+                    <div class="success">✅ API is healthy!</div>
+                    <pre>${JSON.stringify(response.data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="error">❌ API connection failed</div>
+                    <div>Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function loadTemplates() {
+            const templatesDiv = document.getElementById('templates-list');
+            try {
+                templatesDiv.innerHTML = '<div class="info">🔄 Loading templates...</div>';
+                
+                const response = await http.get('/v1/templates');
+                const templates = response.data;
+                
+                if (templates.length === 0) {
+                    templatesDiv.innerHTML = '<div>No templates found.</div>';
+                    return;
+                }
+
+                let html = '';
+                templates.forEach(template => {
+                    html += `
+                        <div class="card">
+                            <h3>${template.nome_template}</h3>
+                            <p style="color: #6b7280;">${template.descricao || 'No description'}</p>
+                            <div style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
+                                <strong>Tasks:</strong> ${template.tarefas.join(', ')}
+                            </div>
+                            <button class="green small-btn" onclick="applyTemplate(${template.id})">
+                                Apply Template
+                            </button>
+                        </div>
+                    `;
+                });
+                templatesDiv.innerHTML = html;
+                
+            } catch (error) {
+                templatesDiv.innerHTML = `
+                    <div class="error">❌ Failed to load templates</div>
+                    <div>Error: ${error.response?.data?.detail || error.message}</div>
+                `;
+            }
+        }
+
+        async function applyTemplate(templateId) {
+            try {
+                const currentDate = new Date();
+                const response = await http.post('/v1/controles/aplicar-template', {
+                    template_id: templateId,
+                    mes: currentDate.getMonth() + 1,
+                    ano: currentDate.getFullYear(),
+                    empresas_ids: null
+                });
+                
+                alert(`✅ ${response.data.message}`);
+                loadMonthlyControls();
+                
+            } catch (error) {
+                alert(`❌ Error applying template: ${error.response?.data?.detail || error.message}`);
+            }
+        }
+
+        async function loadMonthlyControls() {
+            const controlsDiv = document.getElementById('controls-list');
+            const year = document.getElementById('year-select').value;
+            const month = document.getElementById('month-select').value;
+            
+            try {
+                controlsDiv.innerHTML = '<div class="info">🔄 Loading controls...</div>';
+                
+                const response = await http.get(`/v1/controles/${year}/${month}`);
+                const data = response.data;
+                
+                let html = `
+                    <div class="card" style="background: #dbeafe;">
+                        <h3>Summary</h3>
+                        <div style="color: #6b7280;">
+                            <p>Total companies: ${data.sumario.total_empresas}</p>
+                            <p>Controls started: ${data.sumario.controles_iniciados}</p>
+                            <p>Controls completed: ${data.sumario.controles_concluidos}</p>
+                            <p>Completion rate: ${data.sumario.percentual_conclusao}</p>
+                        </div>
+                    </div>
+                `;
+                
+                if (data.controles.length === 0) {
+                    html += '<div>No controls found for this period.</div>';
+                } else {
+                    data.controles.forEach(control => {
+                        const completedTasks = control.tarefas.filter(t => t.concluido).length;
+                        const totalTasks = control.tarefas.length;
+                        const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                        
+                        html += `
+                            <div class="card">
+                                <h4>${control.nome_empresa}</h4>
+                                <div style="color: #6b7280; margin-bottom: 8px;">
+                                    Status: ${control.status_dados} | Progress: ${progress}% (${completedTasks}/${totalTasks} tasks)
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: ${progress}%"></div>
+                                </div>
+                                <div class="task-list">
+                                    <strong>Tasks:</strong>
+                        `;
+                        
+                        control.tarefas.forEach(task => {
+                            const statusIcon = task.concluido ? '✅' : '⏳';
+                            const statusClass = task.concluido ? 'completed' : 'pending';
+                            html += `
+                                <div class="task-item ${statusClass}">
+                                    ${statusIcon} ${task.nome_tarefa}
+                                    <button class="small-btn" onclick="toggleTask(${task.id}, ${!task.concluido})" 
+                                            style="margin-left: 8px;">
+                                        ${task.concluido ? 'Mark Incomplete' : 'Mark Complete'}
+                                    </button>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                controlsDiv.innerHTML = html;
+                
+            } catch (error) {
+                controlsDiv.innerHTML = `
+                    <div class="error">❌ Failed to load controls</div>
+                    <div>Error: ${error.response?.data?.detail || error.message}</div>
+                `;
+            }
+        }
+
+        async function toggleTask(taskId, completed) {
+            try {
+                await http.patch(`/v1/controles-mensais/tarefas/${taskId}/status?concluido=${completed}`);
+                loadMonthlyControls();
+            } catch (error) {
+                alert(`❌ Error updating task: ${error.response?.data?.detail || error.message}`);
+            }
+        }
+
+        async function analyzeRisk() {
+            const riskDiv = document.getElementById('risk-analysis');
+            const empresaId = document.getElementById('empresa-id').value;
+            
+            try {
+                riskDiv.innerHTML = '<div class="info">🔄 Analyzing risk...</div>';
+                
+                const response = await http.post('/v1/riscos/analisar', {
+                    empresa_id: parseInt(empresaId)
+                });
+                
+                const analysis = response.data;
+                const riskColors = {
+                    'BAIXO': 'success',
+                    'MÉDIO': 'warning', 
+                    'ALTO': 'warning',
+                    'CRÍTICO': 'error'
+                };
+                const riskClass = riskColors[analysis.nivel_risco] || '';
+                
+                let html = `
+                    <div class="card">
+                        <h3>Risk Analysis for ${analysis.empresa_nome}</h3>
+                        <div style="margin-top: 16px;">
+                            <div style="font-size: 20px; font-weight: bold;" class="${riskClass}">
+                                Risk Score: ${analysis.score_risco}/100 (${analysis.nivel_risco})
+                            </div>
+                            <div style="color: #6b7280; margin-top: 8px;">
+                                <p>Total Risks: ${analysis.total_riscos}</p>
+                                <p>Critical: ${analysis.riscos_criticos} | High: ${analysis.riscos_altos} | 
+                                   Medium: ${analysis.riscos_medios} | Low: ${analysis.riscos_baixos}</p>
+                            </div>
+                        </div>
+                `;
+                
+                if (analysis.riscos_encontrados && analysis.riscos_encontrados.length > 0) {
+                    html += '<div style="margin-top: 16px;"><h4>Risk Details:</h4>';
+                    analysis.riscos_encontrados.slice(0, 3).forEach(risk => {
+                        const severityClass = risk.severidade >= 4 ? 'error' : 
+                                             risk.severidade >= 3 ? 'warning' : 'info';
+                        html += `
+                            <div style="border-left: 4px solid #e5e7eb; padding-left: 12px; margin: 8px 0; font-size: 14px;">
+                                <div class="${severityClass}" style="font-weight: bold;">${risk.categoria}: ${risk.tipo_risco}</div>
+                                <div style="color: #6b7280;">${risk.descricao}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    if (analysis.riscos_encontrados.length > 3) {
+                        html += `<div style="color: #9ca3af; font-size: 12px;">... and ${analysis.riscos_encontrados.length - 3} more risks</div>`;
+                    }
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+                riskDiv.innerHTML = html;
+                
+            } catch (error) {
+                riskDiv.innerHTML = `
+                    <div class="error">❌ Failed to analyze risk</div>
+                    <div>Error: ${error.response?.data?.detail || error.message}</div>
+                `;
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAPIStatus();
+            loadTemplates();
+            loadMonthlyControls();
+        });
+    </script>
+</body>
+</html>
