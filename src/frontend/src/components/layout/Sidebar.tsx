@@ -25,6 +25,7 @@ import {
   AccountCircle as AccountCircleIcon,
   Description as DescriptionIcon,
   Gavel as GavelIcon,
+  SmartToy as SmartToyIcon,
   ExpandLess,
   ExpandMore,
 } from '@mui/icons-material';
@@ -67,6 +68,11 @@ const navigationItems: MenuItem[] = [
         label: 'Gestão de Legislação',
         path: '/gestao-legislacao',
         icon: <GavelIcon />,
+      },
+      {
+        label: 'Validação de IA',
+        path: '/validacao-ia',
+        icon: <SmartToyIcon />,
       },
     ],
   },

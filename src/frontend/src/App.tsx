@@ -28,6 +28,7 @@ const RelatoriosAvancados = React.lazy(() => import("./pages/RelatoriosAvancados
 const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
 const Templates = React.lazy(() => import("./pages/Templates"));
 const NeuroSymbolicDemo = React.lazy(() => import("./pages/NeuroSymbolicDemo"));
+const ValidacaoIAPage = React.lazy(() => import("./pages/ValidacaoIAPage").then(module => ({ default: module.ValidacaoIAPage })));
 
 // Monthly Control module
 const ControleMensalPage = React.lazy(() => import("./pages/ControleMensalPage").then(module => ({ default: module.ControleMensalPage })));
@@ -120,6 +121,9 @@ function App() {
               
               {/* GESTÃO DE LEGISLAÇÃO module */}
               <Route path="/gestao-legislacao" element={<GestaoLegislacaoPage />} />
+              
+              {/* VALIDAÇÃO DE IA - New route for AI validation */}
+              <Route path="/validacao-ia" element={<ValidacaoIAPage />} />
               
               {/* GESTÃO submenu */}
               <Route path="/gestao/contabilidades" element={<GestaoContabilidades />} />
