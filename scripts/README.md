@@ -13,6 +13,12 @@ Diretório contendo scripts de automação para diversas tarefas do sistema AUDI
 - **master_execution_checklist.py**: Validação de checklist principal
 - **quick_checklist.py**: Checklist rápido de validação
 
+### 🆕 Scripts Multi-Tenant (Novos)
+
+- **migracao.py**: Script para migração de dados de PDFs para Supabase
+- **validate_multi_tenant_implementation.py**: Validação da implementação multi-tenant
+- **requirements-migration.txt**: Dependências para scripts de migração
+
 ## Instruções de Uso
 
 ### Scripts Python
@@ -46,6 +52,19 @@ chmod +x scripts/shell/nome_script.sh
 ```
 
 ## Exemplos
+
+### Scripts Multi-Tenant (Novos)
+
+```bash
+# Validar implementação multi-tenant
+python scripts/validate_multi_tenant_implementation.py
+
+# Migrar dados de PDFs (configure .env primeiro)
+python scripts/migracao.py
+
+# Instalar dependências para migração
+pip install -r scripts/requirements-migration.txt
+```
 
 ### Checklist Principal
 
