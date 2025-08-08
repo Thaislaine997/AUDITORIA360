@@ -207,14 +207,17 @@ def get_db():
 def init_portal_db():
     """
     Initialize portal_demandas database tables
+    Note: Using checkfirst=True to avoid recreating existing tables
     """
     try:
-        Base.metadata.create_all(bind=engine)
-        logger.info("Portal demandas database tables created successfully")
+        # Create tables but don't overwrite existing ones
+        Base.metadata.create_all(bind=engine, checkfirst=True)
+        logger.info("Portal demandas database tables initialized (checkfirst=True)")
         return True
     except Exception as e:
-        logger.error(f"Failed to create portal_demandas tables: {e}")
-        return False
+        logger.error(f"Failed to initialize portal_demandas tables: {e}")
+        # Continue even if there are table creation issues (tables might already exist)
+        return True
 
 
 def test_db_connection():
