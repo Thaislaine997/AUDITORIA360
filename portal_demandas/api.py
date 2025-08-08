@@ -16,6 +16,12 @@ from sqlalchemy.orm import Session
 from portal_demandas.db import TicketComment as TicketCommentDB
 from portal_demandas.db import (
     TicketDB,
+    ContabilidadeDB,
+    EmpresaDB, 
+    ControleMensalDB,
+    TarefaControleDB,
+    TemplateControleDB,
+    TemplateControleTarefaDB,
     get_db,
     init_portal_db,
 )
@@ -29,6 +35,14 @@ from portal_demandas.models import (
     TicketStats,
     TicketStatus,
     TicketUpdate,
+    # Controle Mensal models
+    ControleMensalDetalhado,
+    ControleMensalResponse,
+    ControleMensalSumario,
+    Tarefa,
+    TemplateControle,
+    TemplateControleCreate,
+    TemplateAplicacao,
 )
 
 # Setup logging
@@ -62,6 +76,8 @@ app = FastAPI(
         {"name": "tickets", "description": "Operações com tickets"},
         {"name": "comments", "description": "Comentários dos tickets"},
         {"name": "stats", "description": "Estatísticas e relatórios"},
+        {"name": "controle-mensal", "description": "Controles mensais das empresas"},
+        {"name": "templates", "description": "Templates para controles recorrentes"},
     ],
 )
 
@@ -518,6 +534,326 @@ def atualizar_status_bulk(
         logger.error(f"Failed bulk status update: {e}")
         raise HTTPException(
             status_code=500, detail=f"Erro na atualização em lote: {str(e)}"
+        )
+
+
+# ===== CONTROLE MENSAL ENDPOINTS =====
+
+@app.get("/v1/controles/{ano}/{mes}", response_model=ControleMensalResponse, tags=["controle-mensal"])
+def obter_controles_do_mes(
+    ano: int, mes: int, db: Session = Depends(get_db)
+):
+    """
+    Obter todos os controles mensais do ano/mês especificado
+    Endpoint principal que substitui as chamadas diretas ao Supabase
+    """
+    try:
+        # Get user's accounting firm ID (this would come from auth in production)
+        # For now, we'll assume contabilidade_id = 1 for testing
+        contabilidade_id = 1  # TODO: Get from authentication context
+        
+        # Query controls with companies and tasks
+        controles_query = (
+            db.query(ControleMensalDB, EmpresaDB.nome.label('nome_empresa'))
+            .join(EmpresaDB, ControleMensalDB.empresa_id == EmpresaDB.id)
+            .filter(EmpresaDB.contabilidade_id == contabilidade_id)
+            .filter(ControleMensalDB.ano == ano)
+            .filter(ControleMensalDB.mes == mes)
+        )
+        
+        controles_raw = controles_query.all()
+        
+        # Build detailed control objects
+        controles = []
+        for controle_db, nome_empresa in controles_raw:
+            # Get tasks for this control
+            tarefas_raw = (
+                db.query(TarefaControleDB)
+                .filter(TarefaControleDB.controle_mensal_id == controle_db.id)
+                .all()
+            )
+            
+            tarefas = [
+                Tarefa(
+                    id=tarefa.id,
+                    nome_tarefa=tarefa.descricao_tarefa,
+                    concluido=tarefa.concluida,
+                    data_conclusao=tarefa.data_conclusao
+                ) for tarefa in tarefas_raw
+            ]
+            
+            controles.append(
+                ControleMensalDetalhado(
+                    id_controle=controle_db.id,
+                    mes=controle_db.mes,
+                    ano=controle_db.ano,
+                    status_dados=controle_db.status,
+                    id_empresa=controle_db.empresa_id,
+                    nome_empresa=nome_empresa,
+                    tarefas=tarefas
+                )
+            )
+        
+        # Calculate summary statistics
+        total_empresas = (
+            db.query(EmpresaDB)
+            .filter(EmpresaDB.contabilidade_id == contabilidade_id)
+            .count()
+        )
+        
+        controles_iniciados = len(controles)
+        controles_concluidos = sum(1 for c in controles if c.status_dados == "CONCLUÍDO")
+        percentual_conclusao = (
+            f"{(controles_concluidos / controles_iniciados * 100):.2f}%" 
+            if controles_iniciados > 0 else "0.00%"
+        )
+        
+        sumario = ControleMensalSumario(
+            total_empresas=total_empresas,
+            controles_iniciados=controles_iniciados,
+            controles_concluidos=controles_concluidos,
+            percentual_conclusao=percentual_conclusao
+        )
+        
+        response = ControleMensalResponse(
+            sumario=sumario,
+            controles=controles
+        )
+        
+        logger.info(f"Retrieved {len(controles)} controles for {ano}/{mes}")
+        return response
+
+    except Exception as e:
+        logger.error(f"Failed to get controles for {ano}/{mes}: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro ao buscar controles: {str(e)}"
+        )
+
+
+@app.patch("/v1/controles-mensais/tarefas/{tarefa_id}/status", response_model=Tarefa, tags=["controle-mensal"])
+def atualizar_status_tarefa(
+    tarefa_id: int, concluido: bool, db: Session = Depends(get_db)
+):
+    """
+    Atualizar o status de conclusão de uma tarefa
+    """
+    tarefa = db.query(TarefaControleDB).filter(TarefaControleDB.id == tarefa_id).first()
+    
+    if not tarefa:
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+    
+    try:
+        tarefa.concluida = concluido
+        tarefa.data_conclusao = datetime.now(timezone.utc) if concluido else None
+        
+        db.commit()
+        db.refresh(tarefa)
+        
+        logger.info(f"Task {tarefa_id} updated: concluido={concluido}")
+        
+        return Tarefa(
+            id=tarefa.id,
+            nome_tarefa=tarefa.descricao_tarefa, 
+            concluido=tarefa.concluida,
+            data_conclusao=tarefa.data_conclusao
+        )
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to update task {tarefa_id}: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro ao atualizar tarefa: {str(e)}"
+        )
+
+
+# ===== TEMPLATE ENDPOINTS =====
+
+@app.get("/v1/templates", response_model=List[TemplateControle], tags=["templates"])
+def listar_templates(db: Session = Depends(get_db)):
+    """
+    Listar todos os templates da contabilidade do usuário
+    """
+    try:
+        # TODO: Get contabilidade_id from auth context
+        contabilidade_id = 1
+        
+        templates_raw = (
+            db.query(TemplateControleDB)
+            .filter(TemplateControleDB.contabilidade_id == contabilidade_id)
+            .all()
+        )
+        
+        templates = []
+        for template_db in templates_raw:
+            # Get tasks for this template
+            tarefas_raw = (
+                db.query(TemplateControleTarefaDB.descricao_tarefa)
+                .filter(TemplateControleTarefaDB.template_id == template_db.id)
+                .all()
+            )
+            
+            tarefas = [t[0] for t in tarefas_raw]
+            
+            templates.append(
+                TemplateControle(
+                    id=template_db.id,
+                    contabilidade_id=template_db.contabilidade_id,
+                    nome_template=template_db.nome_template,
+                    descricao=template_db.descricao,
+                    criado_em=template_db.criado_em,
+                    tarefas=tarefas
+                )
+            )
+        
+        return templates
+
+    except Exception as e:
+        logger.error(f"Failed to list templates: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro ao listar templates: {str(e)}"
+        )
+
+
+@app.post("/v1/templates", response_model=TemplateControle, tags=["templates"])
+def criar_template(template: TemplateControleCreate, db: Session = Depends(get_db)):
+    """
+    Criar um novo template de controle
+    """
+    try:
+        # TODO: Get contabilidade_id from auth context
+        contabilidade_id = 1
+        
+        # Create template
+        template_db = TemplateControleDB(
+            contabilidade_id=contabilidade_id,
+            nome_template=template.nome_template,
+            descricao=template.descricao,
+            criado_em=datetime.now(timezone.utc)
+        )
+        
+        db.add(template_db)
+        db.flush()  # Get the ID without committing
+        
+        # Create template tasks
+        for descricao in template.tarefas:
+            tarefa_db = TemplateControleTarefaDB(
+                template_id=template_db.id,
+                descricao_tarefa=descricao
+            )
+            db.add(tarefa_db)
+        
+        db.commit()
+        db.refresh(template_db)
+        
+        logger.info(f"Created template: {template_db.id} - {template_db.nome_template}")
+        
+        return TemplateControle(
+            id=template_db.id,
+            contabilidade_id=template_db.contabilidade_id,
+            nome_template=template_db.nome_template,
+            descricao=template_db.descricao,
+            criado_em=template_db.criado_em,
+            tarefas=template.tarefas
+        )
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to create template: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro ao criar template: {str(e)}"
+        )
+
+
+@app.post("/v1/controles/aplicar-template", tags=["templates"])
+def aplicar_template(aplicacao: TemplateAplicacao, db: Session = Depends(get_db)):
+    """
+    Aplicar um template a empresas para criar controles mensais
+    """
+    try:
+        # TODO: Get contabilidade_id from auth context  
+        contabilidade_id = 1
+        
+        # Verify template exists and belongs to the accounting firm
+        template = (
+            db.query(TemplateControleDB)
+            .filter(TemplateControleDB.id == aplicacao.template_id)
+            .filter(TemplateControleDB.contabilidade_id == contabilidade_id)
+            .first()
+        )
+        
+        if not template:
+            raise HTTPException(status_code=404, detail="Template não encontrado")
+        
+        # Get template tasks
+        template_tarefas = (
+            db.query(TemplateControleTarefaDB)
+            .filter(TemplateControleTarefaDB.template_id == template.id)
+            .all()
+        )
+        
+        # Get companies to apply to
+        empresas_query = db.query(EmpresaDB).filter(EmpresaDB.contabilidade_id == contabilidade_id)
+        
+        if aplicacao.empresas_ids:
+            empresas_query = empresas_query.filter(EmpresaDB.id.in_(aplicacao.empresas_ids))
+        
+        empresas = empresas_query.all()
+        
+        controles_criados = 0
+        tarefas_criadas = 0
+        
+        for empresa in empresas:
+            # Check if control already exists for this month/year
+            controle_existente = (
+                db.query(ControleMensalDB)
+                .filter(ControleMensalDB.empresa_id == empresa.id)
+                .filter(ControleMensalDB.mes == aplicacao.mes)
+                .filter(ControleMensalDB.ano == aplicacao.ano)
+                .first()
+            )
+            
+            if controle_existente:
+                continue  # Skip if already exists
+            
+            # Create monthly control
+            controle = ControleMensalDB(
+                empresa_id=empresa.id,
+                mes=aplicacao.mes,
+                ano=aplicacao.ano,
+                status="AGUARD. DADOS",
+                criado_em=datetime.now(timezone.utc)
+            )
+            
+            db.add(controle)
+            db.flush()  # Get ID
+            controles_criados += 1
+            
+            # Create tasks from template
+            for template_tarefa in template_tarefas:
+                tarefa = TarefaControleDB(
+                    controle_mensal_id=controle.id,
+                    descricao_tarefa=template_tarefa.descricao_tarefa,
+                    concluida=False,
+                    criado_em=datetime.now(timezone.utc)
+                )
+                db.add(tarefa)
+                tarefas_criadas += 1
+        
+        db.commit()
+        
+        logger.info(f"Applied template {aplicacao.template_id}: {controles_criados} controles, {tarefas_criadas} tarefas created")
+        
+        return {
+            "message": f"Template aplicado com sucesso: {controles_criados} controles criados com {tarefas_criadas} tarefas",
+            "controles_criados": controles_criados,
+            "tarefas_criadas": tarefas_criadas
+        }
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to apply template {aplicacao.template_id}: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro ao aplicar template: {str(e)}"
         )
 
 
