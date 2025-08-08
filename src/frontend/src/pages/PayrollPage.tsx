@@ -1,17 +1,17 @@
 /**
- * 🔮 PayrollPage - Enhanced with Telepathic Interface
- * Formulário que antecipa campos necessários e detecta hesitação do utilizador
+ * 🚀 PayrollPage - AI-Powered Payroll Auditing System
+ * Motor de Auditoria Inteligente da Folha de Pagamento
  */
 
-import React, { useState, useEffect, useRef } from "react";
-import { 
-  Container, 
-  Typography, 
-  Paper, 
-  Box, 
-  Grid, 
-  Card, 
-  CardContent, 
+import React, { useState, useCallback } from "react";
+import {
+  Container,
+  Typography,
+  Paper,
+  Box,
+  Grid,
+  Card,
+  CardContent,
   Button,
   Chip,
   CircularProgress,
@@ -22,362 +22,524 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
+  LinearProgress,
   Collapse,
   IconButton,
-  Tooltip
+  Tooltip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import { 
-  TrendingUp, 
-  People, 
-  AttachMoney, 
+import {
+  CloudUpload,
+  CheckCircle,
   Warning,
+  Info,
+  Error,
+  Visibility,
+  Download,
   Refresh,
-  PlayArrow,
-  Psychology,
-  AutoAwesome,
-  Lightbulb,
-  CheckCircle 
 } from "@mui/icons-material";
+import { useDropzone } from "react-dropzone";
 
-// 🧠 Telepathic Interface State
-interface TelepathicState {
-  cursorPauseDetected: boolean;
-  pausedFieldId: string | null;
-  pauseDuration: number;
-  suggestionConfidence: number;
-  lastInteractionTime: number;
+interface FuncionarioDivergencia {
+  nome_funcionario: string;
+  tipo_divergencia: "ALERTA" | "AVISO" | "INFO";
+  descricao_divergencia: string;
+  valor_encontrado?: string;
+  valor_esperado?: string;
+  campo_afetado: string;
 }
 
-interface FieldSuggestion {
-  field: string;
-  suggestions: string[];
-  confidence: number;
-  reasoning: string;
+interface ProcessamentoFolhaResponse {
+  id: number;
+  empresa_id: number;
+  mes: number;
+  ano: number;
+  arquivo_pdf: string;
+  total_funcionarios: number;
+  total_divergencias: number;
+  status_processamento: string;
+  criado_em: string;
+  concluido_em?: string;
+  divergencias: FuncionarioDivergencia[];
 }
 
-interface BusinessFlow {
-  client: {
-    id: number;
-    name: string;
-    employee_count: number;
-    status: string;
-  };
-  payroll: {
-    latest_competency: {
-      id: number;
-      year: number;
-      month: number;
-      status: string;
-      total_employees: number;
-      total_gross_amount: number;
-      divergences_count: number;
-    } | null;
-    total_competencies: number;
-    active_employees: number;
-  };
-  system_health: {
-    auth_validated: boolean;
-    cache_active: boolean;
-    context_id: string;
-    timestamp: string;
-  };
-  available_actions: string[];
+interface AuditStep {
+  id: string;
+  label: string;
+  completed: boolean;
+  inProgress: boolean;
 }
 
 const PayrollPage: React.FC = () => {
-  const [businessFlow, setBusinessFlow] = useState<BusinessFlow | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [selectedCompany, setSelectedCompany] = useState<number>(1);
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [processing, setProcessing] = useState<boolean>(false);
+  const [auditResult, setAuditResult] = useState<ProcessamentoFolhaResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [auditProgress, setAuditProgress] = useState<number>(0);
+  const [auditSteps, setAuditSteps] = useState<AuditStep[]>([
+    { id: "upload", label: "PDF(s) recebidos com sucesso", completed: false, inProgress: false },
+    { id: "extract", label: "Lendo e extraindo dados do ficheiro", completed: false, inProgress: false },
+    { id: "identify", label: "Identificando verbas e funcionários", completed: false, inProgress: false },
+    { id: "audit", label: "Cruzando dados com as regras da CCT", completed: false, inProgress: false },
+    { id: "report", label: "Compilando o relatório de divergências", completed: false, inProgress: false },
+  ]);
 
-  // Mock client ID - in real implementation this would come from route params or context
-  const clientId = 1;
-
-  useEffect(() => {
-    loadBusinessFlow();
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file && file.type === "application/pdf") {
+      setUploadedFile(file);
+      setError(null);
+      setAuditResult(null);
+    } else {
+      setError("Por favor, arraste apenas arquivos PDF.");
+    }
   }, []);
 
-  const loadBusinessFlow = async () => {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "application/pdf": [".pdf"],
+    },
+    multiple: false,
+  });
+
+  const simulateAuditSteps = async () => {
+    const steps = [...auditSteps];
+    
+    // Step 1: Upload completed
+    steps[0].completed = true;
+    setAuditSteps([...steps]);
+    setAuditProgress(20);
+
+    // Step 2: Extracting
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    steps[1].inProgress = true;
+    setAuditSteps([...steps]);
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    steps[1].completed = true;
+    steps[1].inProgress = false;
+    setAuditSteps([...steps]);
+    setAuditProgress(40);
+
+    // Step 3: Identifying
+    await new Promise(resolve => setTimeout(resolve, 800));
+    steps[2].inProgress = true;
+    setAuditSteps([...steps]);
+    
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    steps[2].completed = true;
+    steps[2].inProgress = false;
+    setAuditSteps([...steps]);
+    setAuditProgress(65);
+
+    // Step 4: Auditing
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    steps[3].inProgress = true;
+    setAuditSteps([...steps]);
+    
+    await new Promise(resolve => setTimeout(resolve, 1800));
+    steps[3].completed = true;
+    steps[3].inProgress = false;
+    setAuditSteps([...steps]);
+    setAuditProgress(85);
+
+    // Step 5: Report generation
+    await new Promise(resolve => setTimeout(resolve, 500));
+    steps[4].inProgress = true;
+    setAuditSteps([...steps]);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    steps[4].completed = true;
+    steps[4].inProgress = false;
+    setAuditSteps([...steps]);
+    setAuditProgress(100);
+  };
+
+  const handleAuditSubmit = async () => {
+    if (!uploadedFile) {
+      setError("Por favor, selecione um arquivo PDF.");
+      return;
+    }
+
+    setProcessing(true);
+    setError(null);
+    setAuditProgress(0);
+
     try {
-      setLoading(true);
-      setError(null);
-      
-      // In a real implementation, this would use proper authentication
-      const response = await fetch(`http://localhost:8001/api/core/business-flow/${clientId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${userToken}` - would be added with real auth
-        },
-      });
+      // Reset audit steps
+      const resetSteps = auditSteps.map(step => ({ ...step, completed: false, inProgress: false }));
+      setAuditSteps(resetSteps);
+
+      // Start progress simulation
+      await simulateAuditSteps();
+
+      // Create form data
+      const formData = new FormData();
+      formData.append("arquivo_pdf", uploadedFile);
+
+      // Make API request
+      const response = await fetch(
+        `http://localhost:8001/v1/folha/auditar?empresa_id=${selectedCompany}&mes=${selectedMonth}&ano=${selectedYear}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Erro no processamento da auditoria");
       }
 
-      const data = await response.json();
-      if (data.success) {
-        setBusinessFlow(data.data);
-      } else {
-        throw new Error(data.message || 'Failed to load business flow');
-      }
+      const result: ProcessamentoFolhaResponse = await response.json();
+      setAuditResult(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
-      console.error('Error loading business flow:', err);
+      setError(err instanceof Error ? err.message : "Erro desconhecido");
     } finally {
-      setLoading(false);
+      setProcessing(false);
     }
   };
 
-  const executeAction = async (actionType: string, params: any = {}) => {
-    try {
-      setActionLoading(actionType);
-      
-      const response = await fetch(`http://localhost:8001/api/core/business-flow/${clientId}/execute-action`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: actionType,
-          params: params
-        })
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        // In a real implementation, you might want to refresh the business flow
-        // or show a success message
-        alert(`Action "${actionType}" executed successfully!`);
-      } else {
-        throw new Error(data.message || 'Action failed');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Action failed');
-    } finally {
-      setActionLoading(null);
+  const getDivergenceIcon = (tipo: string) => {
+    switch (tipo) {
+      case "ALERTA":
+        return <Error color="error" />;
+      case "AVISO":
+        return <Warning color="warning" />;
+      case "INFO":
+        return <Info color="info" />;
+      default:
+        return <Info />;
     }
   };
 
-  if (loading) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress size={60} />
-      </Container>
-    );
-  }
+  const getDivergenceColor = (tipo: string) => {
+    switch (tipo) {
+      case "ALERTA":
+        return "error";
+      case "AVISO":
+        return "warning";
+      case "INFO":
+        return "info";
+      default:
+        return "default";
+    }
+  };
 
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Alert 
-          severity="error" 
-          action={
-            <Button color="inherit" size="small" onClick={loadBusinessFlow}>
-              Retry
-            </Button>
-          }
-        >
-          {error}
-        </Alert>
-      </Container>
-    );
-  }
-
-  if (!businessFlow) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Alert severity="warning">No business flow data available</Alert>
-      </Container>
-    );
-  }
+  const resetForm = () => {
+    setUploadedFile(null);
+    setAuditResult(null);
+    setError(null);
+    setProcessing(false);
+    setAuditProgress(0);
+    const resetSteps = auditSteps.map(step => ({ ...step, completed: false, inProgress: false }));
+    setAuditSteps(resetSteps);
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <Typography variant="h4" gutterBottom>
-          Folha de Pagamento - {businessFlow.client.name}
+          Motor de Auditoria Inteligente - Folha de Pagamento
         </Typography>
-        <Button
-          startIcon={<Refresh />}
-          onClick={loadBusinessFlow}
-          variant="outlined"
-        >
-          Atualizar
+        <Button startIcon={<Refresh />} onClick={resetForm} variant="outlined">
+          Nova Auditoria
         </Button>
       </Box>
 
-      {/* System Health Status */}
-      <Box sx={{ mb: 3 }}>
-        <Chip 
-          label={`Sistema: ${businessFlow.system_health.auth_validated ? 'Conectado' : 'Offline'}`}
-          color={businessFlow.system_health.auth_validated ? 'success' : 'error'}
-          size="small"
-          sx={{ mr: 1 }}
-        />
-        <Chip 
-          label={`Cache: ${businessFlow.system_health.cache_active ? 'Ativo' : 'Fallback'}`}
-          color={businessFlow.system_health.cache_active ? 'success' : 'warning'}
-          size="small"
-          sx={{ mr: 1 }}
-        />
-        <Chip 
-          label={`Sessão: ${businessFlow.system_health.context_id.substring(0, 8)}...`}
-          color="info"
-          size="small"
-        />
-      </Box>
-
-      <Grid container spacing={3}>
-        {/* Client Overview */}
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <People sx={{ mr: 1 }} />
-                <Typography variant="h6">Cliente</Typography>
-              </Box>
-              <Typography variant="body2" color="text.secondary">
-                Funcionários Ativos: {businessFlow.payroll.active_employees}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Status: <Chip label={businessFlow.client.status} size="small" color="success" />
-              </Typography>
-            </CardContent>
-          </Card>
+      {/* Context Panel */}
+      <Paper sx={{ p: 3, mb: 3, backgroundColor: "#f8f9fa" }}>
+        <Typography variant="h6" gutterBottom>
+          Contexto da Auditoria
+        </Typography>
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth>
+              <InputLabel>Empresa</InputLabel>
+              <Select
+                value={selectedCompany}
+                onChange={(e) => setSelectedCompany(e.target.value as number)}
+                disabled={processing}
+              >
+                <MenuItem value={1}>Empresa Modelo Ltda</MenuItem>
+                <MenuItem value={2}>Comércio ABC S/A</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <FormControl fullWidth>
+              <InputLabel>Mês</InputLabel>
+              <Select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value as number)}
+                disabled={processing}
+              >
+                {Array.from({ length: 12 }, (_, i) => (
+                  <MenuItem key={i + 1} value={i + 1}>
+                    {String(i + 1).padStart(2, "0")}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <FormControl fullWidth>
+              <InputLabel>Ano</InputLabel>
+              <Select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value as number)}
+                disabled={processing}
+              >
+                {Array.from({ length: 5 }, (_, i) => (
+                  <MenuItem key={2020 + i} value={2020 + i}>
+                    {2020 + i}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
+        <Typography variant="body2" color="text.secondary">
+          A auditoria será feita com base na CCT do Sindicato dos Comerciários, vigente de 01/01/2025 a 31/12/2025.
+        </Typography>
+      </Paper>
 
-        {/* Latest Payroll */}
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <AttachMoney sx={{ mr: 1 }} />
-                <Typography variant="h6">Última Competência</Typography>
-              </Box>
-              {businessFlow.payroll.latest_competency ? (
-                <>
-                  <Typography variant="body2" color="text.secondary">
-                    {businessFlow.payroll.latest_competency.month}/{businessFlow.payroll.latest_competency.year}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Funcionários: {businessFlow.payroll.latest_competency.total_employees}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Valor Bruto: R$ {businessFlow.payroll.latest_competency.total_gross_amount?.toLocaleString('pt-BR') || '0,00'}
-                  </Typography>
-                  <Chip 
-                    label={businessFlow.payroll.latest_competency.status} 
-                    size="small" 
-                    color="primary" 
-                  />
-                </>
+      {!processing && !auditResult && (
+        <>
+          {/* Upload Area */}
+          <Paper
+            {...getRootProps()}
+            sx={{
+              p: 4,
+              mb: 3,
+              border: "2px dashed",
+              borderColor: isDragActive ? "primary.main" : "grey.300",
+              backgroundColor: isDragActive ? "action.hover" : "background.paper",
+              cursor: "pointer",
+              textAlign: "center",
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                borderColor: "primary.main",
+                backgroundColor: "action.hover",
+              },
+            }}
+          >
+            <input {...getInputProps()} />
+            <CloudUpload sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
+            <Typography variant="h6" gutterBottom>
+              {uploadedFile
+                ? `Arquivo selecionado: ${uploadedFile.name}`
+                : "Arraste para aqui os extratos da folha de pagamento em PDF"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {uploadedFile
+                ? "Clique em 'Iniciar Auditoria' para processar"
+                : "ou clique para selecionar arquivo"}
+            </Typography>
+          </Paper>
+
+          {uploadedFile && (
+            <Box sx={{ textAlign: "center", mb: 3 }}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleAuditSubmit}
+                startIcon={<CheckCircle />}
+                sx={{ minWidth: 200 }}
+              >
+                Iniciar Auditoria
+              </Button>
+            </Box>
+          )}
+        </>
+      )}
+
+      {/* Processing Status */}
+      {processing && (
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Processamento em Andamento
+          </Typography>
+          <LinearProgress variant="determinate" value={auditProgress} sx={{ mb: 2 }} />
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {auditProgress}% concluído
+          </Typography>
+
+          {auditSteps.map((step, index) => (
+            <Box key={step.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              {step.completed ? (
+                <CheckCircle color="success" sx={{ mr: 1 }} />
+              ) : step.inProgress ? (
+                <CircularProgress size={20} sx={{ mr: 1 }} />
               ) : (
-                <Typography variant="body2" color="text.secondary">
-                  Nenhuma competência encontrada
-                </Typography>
+                <Box sx={{ width: 20, height: 20, mr: 1 }} />
               )}
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Issues & Warnings */}
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Warning sx={{ mr: 1 }} />
-                <Typography variant="h6">Divergências</Typography>
-              </Box>
-              <Typography variant="body2" color="text.secondary">
-                Divergências Ativas: {businessFlow.payroll.latest_competency?.divergences_count || 0}
+              <Typography
+                variant="body2"
+                color={step.completed ? "success.main" : step.inProgress ? "primary.main" : "text.secondary"}
+              >
+                {step.label}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Total de Competências: {businessFlow.payroll.total_competencies}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+            </Box>
+          ))}
+        </Paper>
+      )}
 
-        {/* Available Actions */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
+      {/* Error Display */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+
+      {/* Audit Results */}
+      {auditResult && (
+        <>
+          {/* Summary */}
+          <Paper sx={{ p: 3, mb: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Ações Disponíveis
+              Sumário da Auditoria
             </Typography>
-            <Grid container spacing={2}>
-              {businessFlow.available_actions.map((action) => (
-                <Grid item key={action}>
-                  <Button
-                    variant="contained"
-                    startIcon={<PlayArrow />}
-                    onClick={() => executeAction(action)}
-                    disabled={actionLoading === action}
-                    sx={{ minWidth: 180 }}
-                  >
-                    {actionLoading === action ? (
-                      <CircularProgress size={20} />
-                    ) : (
-                      getActionLabel(action)
-                    )}
-                  </Button>
-                </Grid>
-              ))}
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h4" color="primary">
+                      {auditResult.total_funcionarios}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Funcionários Auditados
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h4" color={auditResult.total_divergencias > 0 ? "error" : "success"}>
+                      {auditResult.total_divergencias}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Divergências Encontradas
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
             </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Business Flow Data (for development) */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Dados do Fluxo de Negócio (Debug)
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Auditoria Concluída: {auditResult.total_divergencias} divergências encontradas em{" "}
+              {auditResult.total_funcionarios} funcionários.
             </Typography>
-            <TableContainer>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Propriedade</TableCell>
-                    <TableCell>Valor</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Client ID</TableCell>
-                    <TableCell>{businessFlow.client.id}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Context ID</TableCell>
-                    <TableCell>{businessFlow.system_health.context_id}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Last Update</TableCell>
-                    <TableCell>{new Date(businessFlow.system_health.timestamp).toLocaleString('pt-BR')}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Auth Validated</TableCell>
-                    <TableCell>{businessFlow.system_health.auth_validated ? 'Sim' : 'Não'}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Chip
+              label={`Status: ${auditResult.status_processamento}`}
+              color="success"
+              size="small"
+              sx={{ mt: 1 }}
+            />
           </Paper>
-        </Grid>
-      </Grid>
+
+          {/* Divergences List */}
+          {auditResult.divergencias.length > 0 && (
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Lista de Divergências (Ação Necessária)
+              </Typography>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Tipo</TableCell>
+                      <TableCell>Funcionário</TableCell>
+                      <TableCell>Descrição</TableCell>
+                      <TableCell>Valor Encontrado</TableCell>
+                      <TableCell>Valor Esperado</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {auditResult.divergencias.map((divergencia, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            {getDivergenceIcon(divergencia.tipo_divergencia)}
+                            <Chip
+                              label={divergencia.tipo_divergencia}
+                              color={getDivergenceColor(divergencia.tipo_divergencia) as any}
+                              size="small"
+                              sx={{ ml: 1 }}
+                            />
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="medium">
+                            {divergencia.nome_funcionario}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">{divergencia.descricao_divergencia}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">
+                            {divergencia.valor_encontrado || "N/A"}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">
+                            {divergencia.valor_esperado || "N/A"}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
+          {/* PDF Preview Placeholder */}
+          <Paper sx={{ p: 3, textAlign: "center" }}>
+            <Typography variant="h6" gutterBottom>
+              Visualizador de Extratos
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Pré-visualização do PDF original com as áreas de divergências destacadas
+            </Typography>
+            <Box
+              sx={{
+                border: "1px dashed grey.300",
+                p: 4,
+                backgroundColor: "grey.50",
+                minHeight: 200,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="body1" color="text.secondary">
+                📄 PDF: {auditResult.arquivo_pdf}
+                <br />
+                (Visualizador será implementado em versão futura)
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Button startIcon={<Visibility />} variant="outlined" sx={{ mr: 1 }}>
+                Visualizar PDF
+              </Button>
+              <Button startIcon={<Download />} variant="outlined">
+                Baixar Relatório
+              </Button>
+            </Box>
+          </Paper>
+        </>
+      )}
     </Container>
   );
 };
-
-function getActionLabel(action: string): string {
-  const labels: Record<string, string> = {
-    'process_payroll': 'Processar Folha',
-    'generate_reports': 'Gerar Relatórios',
-    'run_automation': 'Executar Automação',
-    'analyze_risks': 'Analisar Riscos',
-    'audit_compliance': 'Auditar Conformidade'
-  };
-  return labels[action] || action;
-}
 
 export default PayrollPage;

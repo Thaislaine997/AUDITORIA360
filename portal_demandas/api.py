@@ -4,11 +4,12 @@ Comprehensive API for managing demands/tickets with SQLAlchemy + Neon PostgreSQL
 """
 
 import logging
+import json
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import asc, desc, or_
 from sqlalchemy.orm import Session
@@ -22,6 +23,7 @@ from portal_demandas.db import (
     TarefaControleDB,
     TemplateControleDB,
     TemplateControleTarefaDB,
+    ProcessamentosFolhaDB,
     get_db,
     init_portal_db,
 )
@@ -43,6 +45,10 @@ from portal_demandas.models import (
     TemplateControle,
     TemplateControleCreate,
     TemplateAplicacao,
+    # Payroll Audit models
+    FuncionarioDivergencia,
+    ProcessamentoFolhaResponse,
+    AuditoriaFolhaRequest,
 )
 
 # Setup logging
@@ -78,6 +84,7 @@ app = FastAPI(
         {"name": "stats", "description": "Estatísticas e relatórios"},
         {"name": "controle-mensal", "description": "Controles mensais das empresas"},
         {"name": "templates", "description": "Templates para controles recorrentes"},
+        {"name": "folha-pagamento", "description": "Auditoria inteligente da folha de pagamento com IA"},
     ],
 )
 
@@ -855,6 +862,291 @@ def aplicar_template(aplicacao: TemplateAplicacao, db: Session = Depends(get_db)
         raise HTTPException(
             status_code=500, detail=f"Erro ao aplicar template: {str(e)}"
         )
+
+
+# ===== PAYROLL AUDIT ENDPOINTS =====
+
+@app.post("/v1/folha/auditar", response_model=ProcessamentoFolhaResponse, tags=["folha-pagamento"])
+async def auditar_folha_pagamento(
+    empresa_id: int,
+    mes: int,
+    ano: int,
+    arquivo_pdf: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    """
+    Motor de Auditoria Inteligente da Folha de Pagamento
+    
+    Processa PDFs da folha de pagamento usando IA para extrair dados,
+    audita contra CCTs e gera relatório de conformidade e divergências.
+    """
+    try:
+        # Validate request parameters
+        if mes < 1 or mes > 12:
+            raise HTTPException(status_code=400, detail="Mês deve estar entre 1 e 12")
+        if ano < 2020 or ano > 2030:
+            raise HTTPException(status_code=400, detail="Ano deve estar entre 2020 e 2030")
+        
+        # Validate file
+        if not arquivo_pdf.filename.lower().endswith('.pdf'):
+            raise HTTPException(status_code=400, detail="Apenas arquivos PDF são aceitos")
+        
+        # Verify company exists
+        empresa = db.query(EmpresaDB).filter(EmpresaDB.id == empresa_id).first()
+        if not empresa:
+            raise HTTPException(status_code=404, detail="Empresa não encontrada")
+        
+        # Check if processing already exists for this month/year
+        processamento_existente = (
+            db.query(ProcessamentosFolhaDB)
+            .filter(ProcessamentosFolhaDB.empresa_id == empresa_id)
+            .filter(ProcessamentosFolhaDB.mes == mes)
+            .filter(ProcessamentosFolhaDB.ano == ano)
+            .first()
+        )
+        
+        if processamento_existente:
+            raise HTTPException(
+                status_code=409, 
+                detail=f"Já existe processamento para {empresa.nome} em {mes:02d}/{ano}"
+            )
+        
+        # Read PDF content
+        pdf_content = await arquivo_pdf.read()
+        
+        # Create processing record
+        processamento = ProcessamentosFolhaDB(
+            empresa_id=empresa_id,
+            mes=mes,
+            ano=ano,
+            arquivo_pdf=arquivo_pdf.filename,
+            status_processamento="PROCESSANDO",
+            criado_em=datetime.now(timezone.utc)
+        )
+        
+        db.add(processamento)
+        db.flush()  # Get the ID
+        
+        # TODO: Implement AI processing (for now, simulate with mock data)
+        dados_extraidos, divergencias = await processar_pdf_com_ia(
+            pdf_content, empresa, mes, ano, db
+        )
+        
+        # Update processing record with results
+        processamento.dados_extraidos = json.dumps(dados_extraidos, ensure_ascii=False)
+        processamento.relatorio_divergencias = json.dumps(divergencias, ensure_ascii=False)
+        processamento.total_funcionarios = len(dados_extraidos.get("funcionarios", []))
+        processamento.total_divergencias = len(divergencias)
+        processamento.status_processamento = "CONCLUIDO"
+        processamento.concluido_em = datetime.now(timezone.utc)
+        
+        db.commit()
+        db.refresh(processamento)
+        
+        logger.info(
+            f"Payroll audit completed: empresa_id={empresa_id}, "
+            f"funcionarios={processamento.total_funcionarios}, "
+            f"divergencias={processamento.total_divergencias}"
+        )
+        
+        # Convert divergencias to Pydantic models
+        divergencias_models = [
+            FuncionarioDivergencia(
+                nome_funcionario=div["nome_funcionario"],
+                tipo_divergencia=div["tipo_divergencia"],
+                descricao_divergencia=div["descricao_divergencia"],
+                valor_encontrado=div.get("valor_encontrado"),
+                valor_esperado=div.get("valor_esperado"),
+                campo_afetado=div["campo_afetado"]
+            ) for div in divergencias
+        ]
+        
+        return ProcessamentoFolhaResponse(
+            id=processamento.id,
+            empresa_id=processamento.empresa_id,
+            mes=processamento.mes,
+            ano=processamento.ano,
+            arquivo_pdf=processamento.arquivo_pdf,
+            total_funcionarios=processamento.total_funcionarios,
+            total_divergencias=processamento.total_divergencias,
+            status_processamento=processamento.status_processamento,
+            criado_em=processamento.criado_em,
+            concluido_em=processamento.concluido_em,
+            divergencias=divergencias_models
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to process payroll audit: {e}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Erro no processamento da auditoria: {str(e)}"
+        )
+
+
+@app.get("/v1/folha/processamentos/{empresa_id}", response_model=List[ProcessamentoFolhaResponse], tags=["folha-pagamento"])
+def listar_processamentos_folha(
+    empresa_id: int, 
+    db: Session = Depends(get_db)
+):
+    """
+    Listar histórico de processamentos de folha de pagamento de uma empresa
+    """
+    try:
+        # Verify company exists
+        empresa = db.query(EmpresaDB).filter(EmpresaDB.id == empresa_id).first()
+        if not empresa:
+            raise HTTPException(status_code=404, detail="Empresa não encontrada")
+        
+        processamentos = (
+            db.query(ProcessamentosFolhaDB)
+            .filter(ProcessamentosFolhaDB.empresa_id == empresa_id)
+            .order_by(desc(ProcessamentosFolhaDB.criado_em))
+            .all()
+        )
+        
+        result = []
+        for proc in processamentos:
+            # Parse divergencias from JSON
+            divergencias_json = json.loads(proc.relatorio_divergencias or "[]")
+            divergencias_models = [
+                FuncionarioDivergencia(
+                    nome_funcionario=div["nome_funcionario"],
+                    tipo_divergencia=div["tipo_divergencia"],
+                    descricao_divergencia=div["descricao_divergencia"],
+                    valor_encontrado=div.get("valor_encontrado"),
+                    valor_esperado=div.get("valor_esperado"),
+                    campo_afetado=div["campo_afetado"]
+                ) for div in divergencias_json
+            ]
+            
+            result.append(ProcessamentoFolhaResponse(
+                id=proc.id,
+                empresa_id=proc.empresa_id,
+                mes=proc.mes,
+                ano=proc.ano,
+                arquivo_pdf=proc.arquivo_pdf,
+                total_funcionarios=proc.total_funcionarios,
+                total_divergencias=proc.total_divergencias,
+                status_processamento=proc.status_processamento,
+                criado_em=proc.criado_em,
+                concluido_em=proc.concluido_em,
+                divergencias=divergencias_models
+            ))
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to list payroll processings: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao listar processamentos: {str(e)}"
+        )
+
+
+async def processar_pdf_com_ia(pdf_content: bytes, empresa: EmpresaDB, mes: int, ano: int, db: Session):
+    """
+    AI-powered PDF processing and auditing logic
+    
+    This is where the real magic happens:
+    1. Extract data from PDF using OCR/Document AI
+    2. Structure the data (employees, earnings, deductions)
+    3. Load applicable CCT rules for the company
+    4. Audit each employee's data against the rules
+    5. Generate divergence reports
+    
+    For now, this returns mock data to demonstrate the functionality.
+    """
+    import asyncio
+    
+    # Simulate AI processing time
+    await asyncio.sleep(0.5)
+    
+    # Mock extracted data (in production this would come from AI/OCR)
+    dados_extraidos = {
+        "arquivo_processado": f"folha_{mes:02d}_{ano}.pdf",
+        "data_processamento": datetime.now(timezone.utc).isoformat(),
+        "funcionarios": [
+            {
+                "nome": "João Silva",
+                "cargo": "Vendedor",
+                "salario_base": 1800.00,
+                "horas_extras": {"50%": 120.00, "100%": 0.00},
+                "descontos": {"INSS": 198.00, "IRRF": 0.00},
+                "liquido": 1722.00
+            },
+            {
+                "nome": "Maria Oliveira", 
+                "cargo": "Gerente",
+                "salario_base": 3500.00,
+                "horas_extras": {"50%": 250.00, "100%": 100.00},
+                "descontos": {"INSS": 445.50, "IRRF": 180.25},
+                "liquido": 3224.25
+            },
+            {
+                "nome": "Carlos Santos",
+                "cargo": "Vendedor",
+                "salario_base": 1850.00,
+                "horas_extras": {"50%": 0.00, "100%": 0.00},
+                "descontos": {"INSS": 203.50, "IRRF": 0.00},
+                "liquido": 1646.50
+            }
+        ]
+    }
+    
+    # Mock CCT rules (in production this would come from database)
+    regras_cct = {
+        "piso_salarial": 1850.00,
+        "percentual_he_50": 60.0,  # 60% instead of 50%
+        "percentual_he_100": 100.0,
+        "auxilio_creche": 150.00,
+        "vale_transporte": 6.0  # 6% do salário base
+    }
+    
+    # Mock audit logic - compare extracted data against CCT rules
+    divergencias = []
+    
+    for funcionario in dados_extraidos["funcionarios"]:
+        nome = funcionario["nome"]
+        
+        # Check minimum wage
+        if funcionario["salario_base"] < regras_cct["piso_salarial"]:
+            divergencias.append({
+                "nome_funcionario": nome,
+                "tipo_divergencia": "ALERTA",
+                "descricao_divergencia": f"Salário base (R$ {funcionario['salario_base']:,.2f}) está abaixo do piso da CCT",
+                "valor_encontrado": f"R$ {funcionario['salario_base']:,.2f}",
+                "valor_esperado": f"R$ {regras_cct['piso_salarial']:,.2f}",
+                "campo_afetado": "salario_base"
+            })
+        
+        # Check overtime calculation (mock - just for João Silva)
+        if nome == "João Silva" and funcionario["horas_extras"]["50%"] > 0:
+            divergencias.append({
+                "nome_funcionario": nome,
+                "tipo_divergencia": "AVISO",
+                "descricao_divergencia": "Valor da hora extra (50%) pode não corresponder ao valor da CCT (60%)",
+                "valor_encontrado": f"R$ {funcionario['horas_extras']['50%']:,.2f}",
+                "valor_esperado": "Verificar cálculo com 60%",
+                "campo_afetado": "horas_extras_50"
+            })
+        
+        # Check missing benefits (mock - for all employees)
+        if nome != "Carlos Santos":  # Simulate Carlos has it, others don't
+            divergencias.append({
+                "nome_funcionario": nome,
+                "tipo_divergencia": "INFO",
+                "descricao_divergencia": f"Benefício 'Auxílio Creche' previsto na CCT não foi encontrado na folha",
+                "valor_encontrado": None,
+                "valor_esperado": f"R$ {regras_cct['auxilio_creche']:,.2f}",
+                "campo_afetado": "auxilio_creche"
+            })
+    
+    return dados_extraidos, divergencias
 
 
 if __name__ == "__main__":

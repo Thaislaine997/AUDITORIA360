@@ -311,3 +311,44 @@ class TemplateAplicacao(BaseModel):
     mes: int = Field(..., ge=1, le=12)
     ano: int = Field(..., ge=2020, le=2030)
     empresas_ids: Optional[List[int]] = None  # If None, applies to all companies
+
+
+# ===== PAYROLL AUDIT MODELS =====
+
+class FuncionarioDivergencia(BaseModel):
+    """Model for employee divergence in payroll audit"""
+    
+    nome_funcionario: str
+    tipo_divergencia: str  # ALERTA, AVISO, INFO
+    descricao_divergencia: str
+    valor_encontrado: Optional[str] = None
+    valor_esperado: Optional[str] = None
+    campo_afetado: str
+
+
+class ProcessamentoFolhaResponse(BaseModel):
+    """Response model for payroll processing"""
+    
+    id: int
+    empresa_id: int
+    mes: int
+    ano: int
+    arquivo_pdf: str
+    total_funcionarios: int
+    total_divergencias: int
+    status_processamento: str
+    criado_em: datetime
+    concluido_em: Optional[datetime] = None
+    divergencias: List[FuncionarioDivergencia] = []
+    
+    class Config:
+        from_attributes = True
+
+
+class AuditoriaFolhaRequest(BaseModel):
+    """Request model for payroll audit"""
+    
+    empresa_id: int
+    mes: int = Field(..., ge=1, le=12)
+    ano: int = Field(..., ge=2020, le=2030)
+    # Note: PDF file will be handled through multipart/form-data upload
