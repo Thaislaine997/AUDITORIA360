@@ -24,15 +24,13 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-c1ea5737-798b-4f4a-8873-0e4a4f4c5b8d
+./.git/logs/refs/heads/Principal
 ./.git/logs/refs/remotes/origin/Principal
-./.git/logs/refs/remotes/origin/copilot/fix-c1ea5737-798b-4f4a-8873-0e4a4f4c5b8d
-./.git/objects/pack/pack-2a48df1564f1a554ada120e802bbcf38654aa62b.idx
-./.git/objects/pack/pack-2a48df1564f1a554ada120e802bbcf38654aa62b.pack
-./.git/objects/pack/pack-2a48df1564f1a554ada120e802bbcf38654aa62b.rev
-./.git/refs/heads/copilot/fix-c1ea5737-798b-4f4a-8873-0e4a4f4c5b8d
+./.git/objects/pack/pack-e87a95c5e92a4a8f92a03d6d3d3ddfdb87d9e64a.idx
+./.git/objects/pack/pack-e87a95c5e92a4a8f92a03d6d3d3ddfdb87d9e64a.pack
+./.git/objects/pack/pack-e87a95c5e92a4a8f92a03d6d3d3ddfdb87d9e64a.rev
+./.git/refs/heads/Principal
 ./.git/refs/remotes/origin/Principal
-./.git/refs/remotes/origin/copilot/fix-c1ea5737-798b-4f4a-8873-0e4a4f4c5b8d
 ./.github/dependabot.yml
 ./.github/workflows/atualiza-lista-arquivos.yml
 ./.github/workflows/automation.yml
@@ -133,6 +131,7 @@
 ./deploy/kubernetes/api-deployment.yaml
 ./deploy/kubernetes/redis-deployment.yaml
 ./docker-compose.monitoring.yml
+./docs/AI_TEXT_ANALYSIS_IMPLEMENTATION.md
 ./docs/PERFORMANCE_OPTIMIZATION_STRATEGY.md
 ./docs/QUANTUM_VALIDATION.md
 ./docs/README.md
@@ -183,6 +182,8 @@
 ./metamorphosis_final_validation_report.json
 ./migrations/001_enhanced_auth_migration.py
 ./migrations/002_simplify_employee_model.sql
+./migrations/003_criar_tabela_parametros_legais.sql
+./migrations/004_criar_tabela_documentos.sql
 ./migrations/performance_indices.sql
 ./monitoring/alerts/alerts_config.json
 ./monitoring/basic_alerts.json
@@ -219,6 +220,7 @@
 ./scripts/clean_test_runner.py
 ./scripts/demo_openai_integration.py
 ./scripts/deploy-autoscaling.sh
+./scripts/deploy-functions.sh
 ./scripts/final_metamorphosis_validation.py
 ./scripts/final_summary.py
 ./scripts/genesis_docs_generator.py
@@ -571,6 +573,10 @@
 ./src/utils/monitoring.py
 ./src/utils/performance.py
 ./src/validation/metamorphosis_validator.py
+./supabase/README.md
+./supabase/config.toml
+./supabase/functions/analisar-texto-com-ia/index.ts
+./supabase/functions/processar-pdf/index.ts
 ./tests/README.md
 ./tests/__init__.py
 ./tests/auth/login.yaml
@@ -629,6 +635,7 @@
 ./tests/performance/test_performance.py
 ./tests/pytest.ini
 ./tests/security/test_security_compliance.py
+./tests/test-ai-analysis.js
 ./tests/test_api_features.py
 ./tests/test_api_server.py
 ./tests/test_collective_mind_ethics.py
