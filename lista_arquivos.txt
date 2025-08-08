@@ -24,15 +24,6 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-4faff6f9-8662-4921-beca-8053e0ffd07a
-./.git/logs/refs/remotes/origin/Principal
-./.git/logs/refs/remotes/origin/copilot/fix-4faff6f9-8662-4921-beca-8053e0ffd07a
-./.git/objects/pack/pack-7a42fc41427e1e906fb132c77a66ea6094236668.idx
-./.git/objects/pack/pack-7a42fc41427e1e906fb132c77a66ea6094236668.pack
-./.git/objects/pack/pack-7a42fc41427e1e906fb132c77a66ea6094236668.rev
-./.git/refs/heads/copilot/fix-4faff6f9-8662-4921-beca-8053e0ffd07a
-./.git/refs/remotes/origin/Principal
-./.git/refs/remotes/origin/copilot/fix-4faff6f9-8662-4921-beca-8053e0ffd07a
 ./.github/dependabot.yml
 ./.github/workflows/atualiza-lista-arquivos.yml
 ./.github/workflows/automation.yml
@@ -385,6 +376,7 @@
 ./src/frontend/src/components/NotificationBell.tsx
 ./src/frontend/src/components/PersonalizedOnboarding.tsx
 ./src/frontend/src/components/Sidebar.tsx
+./src/frontend/src/components/UploadComponent.tsx
 ./src/frontend/src/components/Widgets/ActivityFeedWidget.tsx
 ./src/frontend/src/components/Widgets/HealthMapWidget.tsx
 ./src/frontend/src/components/Widgets/KPIWidget.tsx
@@ -435,6 +427,7 @@
 ./src/frontend/src/pages/GerenciamentoUsuarios.tsx
 ./src/frontend/src/pages/GestaoClientes.tsx
 ./src/frontend/src/pages/GestaoContabilidades.tsx
+./src/frontend/src/pages/GestaoLegislacaoPage.tsx
 ./src/frontend/src/pages/LoginPage.tsx
 ./src/frontend/src/pages/MasteryPaths.tsx
 ./src/frontend/src/pages/MinhaConta.tsx

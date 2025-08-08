@@ -32,6 +32,9 @@ const NeuroSymbolicDemo = React.lazy(() => import("./pages/NeuroSymbolicDemo"));
 // Monthly Control module
 const ControleMensalPage = React.lazy(() => import("./pages/ControleMensalPage").then(module => ({ default: module.ControleMensalPage })));
 
+// Gestão de Legislação module
+const GestaoLegislacaoPage = React.lazy(() => import("./pages/GestaoLegislacaoPage").then(module => ({ default: module.GestaoLegislacaoPage })));
+
 // Grande Síntese - New pages (Initiative II, III, IV)
 const MasteryPaths = React.lazy(() => import("./pages/MasteryPaths"));
 const DeveloperPortal = React.lazy(() => import("./pages/DeveloperPortal"));
@@ -114,6 +117,9 @@ function App() {
               
               {/* CONTROLE MENSAL module */}
               <Route path="/controle-mensal" element={<ControleMensalPage />} />
+              
+              {/* GESTÃO DE LEGISLAÇÃO module */}
+              <Route path="/gestao-legislacao" element={<GestaoLegislacaoPage />} />
               
               {/* GESTÃO submenu */}
               <Route path="/gestao/contabilidades" element={<GestaoContabilidades />} />

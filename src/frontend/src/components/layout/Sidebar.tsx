@@ -24,6 +24,7 @@ import {
   Settings as SettingsIcon,
   AccountCircle as AccountCircleIcon,
   Description as DescriptionIcon,
+  Gavel as GavelIcon,
   ExpandLess,
   ExpandMore,
 } from '@mui/icons-material';
@@ -61,6 +62,11 @@ const navigationItems: MenuItem[] = [
         label: 'Consultor de Riscos',
         path: '/consultor-riscos',
         icon: <PsychologyIcon />,
+      },
+      {
+        label: 'Gestão de Legislação',
+        path: '/gestao-legislacao',
+        icon: <GavelIcon />,
       },
     ],
   },
