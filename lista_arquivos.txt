@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
-./.git/objects/pack/pack-59bf057abb144230d139bd910606aabecbb9d4d3.idx
-./.git/objects/pack/pack-59bf057abb144230d139bd910606aabecbb9d4d3.pack
-./.git/objects/pack/pack-59bf057abb144230d139bd910606aabecbb9d4d3.rev
+./.git/objects/pack/pack-eaa213146975addc269e068eda31b5aa0e004c4a.idx
+./.git/objects/pack/pack-eaa213146975addc269e068eda31b5aa0e004c4a.pack
+./.git/objects/pack/pack-eaa213146975addc269e068eda31b5aa0e004c4a.rev
 ./.git/refs/heads/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-38adeb33-b6f8-4ae7-ac57-a1ebd08e3692
@@ -168,6 +168,7 @@
 ./docs/generated/storybook.html
 ./docs/generated/storybook_config.json
 ./docs/historico/implementation_summary_output.txt
+./docs/modulo_cct_documentacao.md
 ./docs/onboarding_guide.md
 ./examples/README.md
 ./examples/ai_chatbot_example.py
@@ -307,6 +308,7 @@
 ./scripts/validate_openai_integration.py
 ./scripts/validate_production_deploy.py
 ./scripts/validate_swarm_intelligence.py
+./scripts/verificacao_manual_cct.py
 ./services/README.md
 ./services/__init__.py
 ./services/api/explainability_routes.py
