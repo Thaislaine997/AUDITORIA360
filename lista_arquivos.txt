@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
-./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.idx
-./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.pack
-./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.rev
+./.git/objects/pack/pack-1c71a6068419871f6162eb28e09890ce692e4f43.idx
+./.git/objects/pack/pack-1c71a6068419871f6162eb28e09890ce692e4f43.pack
+./.git/objects/pack/pack-1c71a6068419871f6162eb28e09890ce692e4f43.rev
 ./.git/refs/heads/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
@@ -62,6 +62,7 @@
 ./api/deprecation/tickets/MIG-20250806-12345678.json
 ./api/deprecation_middleware.py
 ./api/index.py
+./api_test.html
 ./artifacts/ach/ach_complete_analysis_20250806_200102.json
 ./artifacts/ach/ach_complete_analysis_20250806_205653.json
 ./artifacts/ach/ach_complete_analysis_20250807_132810.json
@@ -90,6 +91,7 @@
 ./automation/schedule_reports.py
 ./cloudflare/backup-worker.js
 ./cloudflare/wrangler.toml
+./complete_demo.html
 ./conf/.htaccess
 ./conf/nginx.conf.example
 ./config/__init__.py
