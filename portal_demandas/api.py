@@ -53,6 +53,23 @@ from portal_demandas.models import (
     FuncionarioDivergencia,
     ProcessamentoFolhaResponse,
     AuditoriaFolhaRequest,
+    # CCT models
+    Sindicato,
+    SindicatoCreate,
+    ConvencaoColetivaCCT,
+    ConvencaoColetivaCCTCreate,
+    CCTListResponse,
+    TipoDocumento,
+    StatusProcessamento,
+    # Legislation models
+    LegislacaoDocumento,
+    LegislacaoDocumentoCreate,
+    ExtrairPDFResponse,
+    # Risk Analysis models
+    RiscoDetalhado,
+    AnaliseRiscoRequest,
+    AnaliseRiscoResponse,
+    HistoricoAnaliseRisco,
 )
 
 # Setup logging
