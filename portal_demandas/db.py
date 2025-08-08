@@ -11,6 +11,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import declarative_base, relationship
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -263,6 +264,26 @@ class ProcessamentosFolhaDB(Base):
     concluido_em = Column(DateTime, nullable=True)
 
 
+class HistoricoAnalisesRiscoDB(Base):
+    """
+    Risk analysis history - stores the complete risk analysis results for companies
+    Allows tracking evolution of risk scores and provides business intelligence
+    """
+    
+    __tablename__ = "HistoricoAnalisesRisco"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=False)
+    score_risco = Column(Integer, nullable=False)  # Risk score from 0 to 100
+    relatorio_completo = Column(Text, nullable=True)  # JSON stored as text for SQLite compatibility
+    analisado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    analisado_por_user_id = Column(String(50), nullable=True)  # User who triggered the analysis
+    
+    def __repr__(self):
+        return f"<HistoricoAnalisesRisco(id={self.id}, empresa_id={self.empresa_id}, score_risco={self.score_risco})>"
+
+
 def get_db():
     """
     Database dependency for portal_demandas
@@ -328,6 +349,7 @@ __all__ = [
     "TemplateControleDB",
     "TemplateControleTarefaDB",
     "ProcessamentosFolhaDB",
+    "HistoricoAnalisesRiscoDB",
     "get_db",
     "init_portal_db",
     "test_db_connection",
