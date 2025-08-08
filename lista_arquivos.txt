@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
-./.git/objects/pack/pack-822d798886ca407da64df12c211e2e50b4e8f3c1.idx
-./.git/objects/pack/pack-822d798886ca407da64df12c211e2e50b4e8f3c1.pack
-./.git/objects/pack/pack-822d798886ca407da64df12c211e2e50b4e8f3c1.rev
+./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.idx
+./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.pack
+./.git/objects/pack/pack-8665f601046dd1ed6ec643080c1a24d8a762813b.rev
 ./.git/refs/heads/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
@@ -359,6 +359,7 @@
 ./services/reporting/__init__.py
 ./services/reporting/unified_reports.py
 ./services/storage_utils.py
+./setup_database.py
 ./src/README.md
 ./src/ai_agent.py
 ./src/api/common/__init__.py
