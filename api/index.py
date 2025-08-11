@@ -113,6 +113,7 @@ try:
     from src.api.routers.automation import router as automation_router
     from src.api.routers.compliance import router as compliance_router
     from src.api.routers.transcendent_audit import router as transcendent_router
+    from src.api.routers.dev_assistant import router as dev_assistant_router
 
     ROUTERS_AVAILABLE = True
 except ImportError as e:
@@ -124,6 +125,15 @@ except ImportError as e:
     except ImportError:
         transcendent_router = None
         TRANSCENDENT_AVAILABLE = False
+    
+    # Import dev assistant router separately
+    try:
+        from src.api.routers.dev_assistant import router as dev_assistant_router
+        DEV_ASSISTANT_AVAILABLE = True
+    except ImportError:
+        dev_assistant_router = APIRouter()
+        DEV_ASSISTANT_AVAILABLE = False
+        
     # Create minimal working routers for now
     from fastapi import APIRouter
 
@@ -139,6 +149,7 @@ except ImportError as e:
     transcendent_router = APIRouter()
     reports_router = APIRouter()
     performance_router = APIRouter()
+    # dev_assistant_router already handled above
     TRANSCENDENT_AVAILABLE = False
 
     # Add basic endpoints for existing API compatibility
@@ -523,6 +534,7 @@ router_configs = [
     (automation_router, "/api/v1/automation", ["Serverless Automation"]),
     (reports_router, "/api/v1/reports", ["Report Templates"]),
     (performance_router, "/api/v1/performance", ["Performance Monitoring"]),
+    (dev_assistant_router, "/api/v1/dev-assistant", ["🧠 AI Development Assistant"]),
 ]
 
 # Add transcendent audit router - THE SINGULARITY ENDPOINT

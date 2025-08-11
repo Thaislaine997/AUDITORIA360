@@ -24,15 +24,15 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/Principal
+./.git/logs/refs/heads/copilot/fix-aa9dafd5-334a-41e4-af7f-67627d5bc3f9
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
 ./.git/logs/refs/remotes/origin/copilot/fix-aa9dafd5-334a-41e4-af7f-67627d5bc3f9
 ./.git/logs/refs/remotes/origin/copilot/fix-c3e85d2b-dfab-49e4-affc-d098012e7fe6
-./.git/objects/pack/pack-07ac1af022f028b5363760ded40d512726b98276.idx
-./.git/objects/pack/pack-07ac1af022f028b5363760ded40d512726b98276.pack
-./.git/objects/pack/pack-07ac1af022f028b5363760ded40d512726b98276.rev
-./.git/refs/heads/Principal
+./.git/objects/pack/pack-aecf3288e6c6b2d7bc77373b608846121c0deb27.idx
+./.git/objects/pack/pack-aecf3288e6c6b2d7bc77373b608846121c0deb27.pack
+./.git/objects/pack/pack-aecf3288e6c6b2d7bc77373b608846121c0deb27.rev
+./.git/refs/heads/copilot/fix-aa9dafd5-334a-41e4-af7f-67627d5bc3f9
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
 ./.git/refs/remotes/origin/copilot/fix-aa9dafd5-334a-41e4-af7f-67627d5bc3f9
@@ -137,6 +137,7 @@
 ./data_base/schemas/predicoes_risco_folha.sql
 ./demo_ai_integration.py
 ./demo_api.py
+./demo_dev_assistant.py
 ./demo_implementation.py
 ./demo_transcendence.py
 ./demos/README.md
@@ -151,6 +152,7 @@
 ./deploy/cloudbuild.yaml
 ./deploy/kubernetes/api-deployment.yaml
 ./deploy/kubernetes/redis-deployment.yaml
+./dev_assistant_demo.html
 ./docker-compose.monitoring.yml
 ./docs/AI_TEXT_ANALYSIS_IMPLEMENTATION.md
 ./docs/MULTI_TENANT_IMPLEMENTATION_GUIDE.md
@@ -198,6 +200,9 @@
 ./frontend/src/utils/navigationLogger.js
 ./grand_tomo_demo.html
 ./grand_tomo_demo.py
+./ia_desenvolvimento/README.md
+./ia_desenvolvimento/__init__.py
+./ia_desenvolvimento/cerebro.py
 ./index.html
 ./infra/.htaccess
 ./infra/nginx.conf
@@ -400,6 +405,7 @@
 ./src/api/routers/compliance.py
 ./src/api/routers/controle_mensal_router.py
 ./src/api/routers/core_business.py
+./src/api/routers/dev_assistant.py
 ./src/api/routers/documents.py
 ./src/api/routers/gamification.py
 ./src/api/routers/intentions.py
@@ -489,6 +495,7 @@
 ./src/frontend/src/pages/ConsultorRiscos.tsx
 ./src/frontend/src/pages/ControleMensalPage.tsx
 ./src/frontend/src/pages/Dashboard.tsx
+./src/frontend/src/pages/DevAssistantPage.tsx
 ./src/frontend/src/pages/DeveloperPortal.tsx
 ./src/frontend/src/pages/DocumentsPage.tsx
 ./src/frontend/src/pages/GerenciamentoUsuarios.tsx
