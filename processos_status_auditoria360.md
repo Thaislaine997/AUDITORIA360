@@ -1,6 +1,6 @@
 # Status Operacional Automatizado – AUDITORIA360
 
-**Última atualização**: 2025-08-11 20:42:19 UTC
+**Última atualização**: 2025-08-11 21:01:55 UTC
 
 ## Resumo Executivo
 
@@ -18,21 +18,21 @@
 
 | Módulo | Status | Tempo Resposta | Detalhes | Última Verificação |
 |--------|--------|----------------|----------|--------------------|
-| Dashboard Estratégico | ✅ FUNCIONANDO | 0.071s | Gráficos de IA funcionando normalmente | 20:42:17 |
-| Controle Mensal | ✅ FUNCIONANDO | 0.065s | Sistema operacional | 20:42:17 |
-| Disparo de Auditoria | ✅ FUNCIONANDO | 0.070s | Integração IA: 100% | 20:42:18 |
-| Análise Forense | 🧪 EM TESTE | 0.065s | Trilha cognitiva em fase de testes | 20:42:18 |
-| Gestão de Regras | ✅ FUNCIONANDO | 0.066s | Ingestão automática em desenvolvimento, funcionalidades principais operacionais | 20:42:18 |
-| Simulador de Impactos | 🚧 EM DESENVOLVIMENTO | 0.071s | IA em integração - módulo em desenvolvimento ativo | 20:42:18 |
-| Geração de Relatórios | ✅ FUNCIONANDO | 0.071s | Sistema de relatórios funcionando | 20:42:18 |
-| Integração com IA | ✅ FUNCIONANDO | 0.067s | Simulador em expansão, demais funcionalidades operacionais | 20:42:18 |
-| Login/Admin | ✅ FUNCIONANDO | 0.061s | Sistema de autenticação operacional | 20:42:18 |
-| LOGOPERACOES/Auditoria de Sistema | ✅ FUNCIONANDO | 0.083s | Sistema de logs e auditoria funcionando | 20:42:18 |
-| Personificação/Suporte Supremo | ✅ FUNCIONANDO | 0.080s | Sistema de personificação operacional | 20:42:18 |
-| Login/Onboarding | ✅ FUNCIONANDO | 0.066s | Onboarding de clientes funcionando | 20:42:18 |
-| Logs e Auditoria | ✅ FUNCIONANDO | 0.066s | Sistema de auditoria totalmente funcional | 20:42:19 |
-| Onboarding Escritório | ✅ FUNCIONANDO | 0.071s | Fluxos de onboarding operacionais | 20:42:19 |
-| Gerenciamento de Usuários | ✅ FUNCIONANDO | 0.075s | Sistema de gestão de usuários funcionando | 20:42:19 |
+| Dashboard Estratégico | ✅ FUNCIONANDO | 0.071s | Gráficos de IA funcionando normalmente | 21:01:54 |
+| Controle Mensal | ✅ FUNCIONANDO | 0.065s | Sistema operacional | 21:01:54 |
+| Disparo de Auditoria | ✅ FUNCIONANDO | 0.070s | Integração IA: 100% | 21:01:54 |
+| Análise Forense | 🧪 EM TESTE | 0.065s | Trilha cognitiva em fase de testes | 21:01:54 |
+| Gestão de Regras | ✅ FUNCIONANDO | 0.066s | Ingestão automática em desenvolvimento, funcionalidades principais operacionais | 21:01:54 |
+| Simulador de Impactos | 🚧 EM DESENVOLVIMENTO | 0.071s | IA em integração - módulo em desenvolvimento ativo | 21:01:54 |
+| Geração de Relatórios | ✅ FUNCIONANDO | 0.071s | Sistema de relatórios funcionando | 21:01:55 |
+| Integração com IA | ✅ FUNCIONANDO | 0.067s | Simulador em expansão, demais funcionalidades operacionais | 21:01:55 |
+| Login/Admin | ✅ FUNCIONANDO | 0.061s | Sistema de autenticação operacional | 21:01:55 |
+| LOGOPERACOES/Auditoria de Sistema | ✅ FUNCIONANDO | 0.083s | Sistema de logs e auditoria funcionando | 21:01:55 |
+| Personificação/Suporte Supremo | ✅ FUNCIONANDO | 0.080s | Sistema de personificação operacional | 21:01:55 |
+| Login/Onboarding | ✅ FUNCIONANDO | 0.066s | Onboarding de clientes funcionando | 21:01:55 |
+| Logs e Auditoria | ✅ FUNCIONANDO | 0.066s | Sistema de auditoria totalmente funcional | 21:01:55 |
+| Onboarding Escritório | ✅ FUNCIONANDO | 0.071s | Fluxos de onboarding operacionais | 21:01:55 |
+| Gerenciamento de Usuários | ✅ FUNCIONANDO | 0.075s | Sistema de gestão de usuários funcionando | 21:01:55 |
 
 ## Métricas de Performance
 
@@ -56,7 +56,7 @@
 
 ## Próximas Verificações
 
-- **Próxima Verificação Automática**: 2025-08-11 20:42:19 UTC
+- **Próxima Verificação Automática**: 2025-08-11 21:01:55 UTC
 - **Histórico Completo**: Disponível em `/api/health/history`
 
 ---

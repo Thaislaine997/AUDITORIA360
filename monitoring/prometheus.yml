@@ -3,25 +3,31 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
 
 scrape_configs:
-  # AUDITORIA360 API metrics
-  - job_name: 'auditoria360-api'
-    static_configs:
-      - targets: ['host.docker.internal:8000']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-    scrape_timeout: 10s
-
-  # Prometheus itself
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
-  # Node exporter for system metrics (optional)
-  - job_name: 'node'
+  - job_name: 'node-exporter'
     static_configs:
       - targets: ['node-exporter:9100']
+
+  - job_name: 'auditoria360-system'
+    static_configs:
+      - targets: ['auditoria360-exporter:8000']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  - job_name: 'auditoria360-health'
+    static_configs:
+      - targets: ['host.docker.internal:8001']  # Assuming API runs on host
+    metrics_path: /api/health/public
     scrape_interval: 30s
