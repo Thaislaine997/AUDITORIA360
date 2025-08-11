@@ -1,0 +1,156 @@
+{
+  "timestamp": "2025-08-11T19:58:47.871926",
+  "summary": {
+    "total_modules": 15,
+    "functioning": 13,
+    "functioning_percentage": 86.66666666666667,
+    "with_issues": 2,
+    "status_distribution": {
+      "FUNCIONANDO": 13,
+      "EM TESTE": 1,
+      "EM DESENVOLVIMENTO": 1
+    },
+    "average_response_time": 0.0029286666666666667
+  },
+  "modules": [
+    {
+      "name": "Dashboard Estratégico",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.003139,
+      "details": "All dependencies healthy",
+      "last_check": "2025-08-11T19:58:46.316313",
+      "url": "http://localhost:8001/dashboard"
+    },
+    {
+      "name": "Controle Mensal",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002894,
+      "details": "All dependencies healthy",
+      "last_check": "2025-08-11T19:58:46.420242",
+      "url": "http://localhost:8001/controle_mensal"
+    },
+    {
+      "name": "Disparo de Auditoria",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002882,
+      "details": "All dependencies healthy - Integração IA: 100%",
+      "last_check": "2025-08-11T19:58:46.524166",
+      "url": "http://localhost:8001/disparo_auditoria"
+    },
+    {
+      "name": "Análise Forense",
+      "status": "EM TESTE",
+      "status_code": 200,
+      "response_time": 0.002826,
+      "details": "Trilha cognitiva em fase de testes",
+      "last_check": "2025-08-11T19:58:46.628056",
+      "url": "http://localhost:8001/forense"
+    },
+    {
+      "name": "Gestão de Regras",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002561,
+      "details": "Ingestão automática em desenvolvimento, funcionalidades principais operacionais",
+      "last_check": "2025-08-11T19:58:46.731600",
+      "url": "http://localhost:8001/regras"
+    },
+    {
+      "name": "Simulador de Impactos",
+      "status": "EM DESENVOLVIMENTO",
+      "status_code": 200,
+      "response_time": 0.00317,
+      "details": "IA em integração - módulo em desenvolvimento ativo",
+      "last_check": "2025-08-11T19:58:46.835833",
+      "url": "http://localhost:8001/simulador"
+    },
+    {
+      "name": "Geração de Relatórios",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.003123,
+      "details": "All dependencies healthy",
+      "last_check": "2025-08-11T19:58:46.940010",
+      "url": "http://localhost:8001/relatorios"
+    },
+    {
+      "name": "Integração com IA",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002643,
+      "details": "Simulador em expansão, demais funcionalidades operacionais",
+      "last_check": "2025-08-11T19:58:47.043613",
+      "url": "http://localhost:8001/ia"
+    },
+    {
+      "name": "Login/Admin",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002827,
+      "details": "Login system operational with secure authentication",
+      "last_check": "2025-08-11T19:58:47.147369",
+      "url": "http://localhost:8001/login_admin"
+    },
+    {
+      "name": "LOGOPERACOES/Auditoria de Sistema",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002826,
+      "details": "Logging and audit system fully operational",
+      "last_check": "2025-08-11T19:58:47.251213",
+      "url": "http://localhost:8001/logoperacoes"
+    },
+    {
+      "name": "Personificação/Suporte Supremo",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002677,
+      "details": "Impersonation system operational for support activities",
+      "last_check": "2025-08-11T19:58:47.354940",
+      "url": "http://localhost:8001/personificacao"
+    },
+    {
+      "name": "Login/Onboarding",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002978,
+      "details": "Onboarding and client authentication operational",
+      "last_check": "2025-08-11T19:58:47.458937",
+      "url": "http://localhost:8001/login_onboarding"
+    },
+    {
+      "name": "Logs e Auditoria",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002809,
+      "details": "Audit logging system fully functional",
+      "last_check": "2025-08-11T19:58:47.562815",
+      "url": "http://localhost:8001/logs_auditoria"
+    },
+    {
+      "name": "Onboarding Escritório",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.002772,
+      "details": "Office onboarding workflows operational",
+      "last_check": "2025-08-11T19:58:47.666604",
+      "url": "http://localhost:8001/onboarding_escritorio"
+    },
+    {
+      "name": "Gerenciamento de Usuários",
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.003803,
+      "details": "User management system fully operational",
+      "last_check": "2025-08-11T19:58:47.771459",
+      "url": "http://localhost:8001/gerenciamento_usuarios"
+    }
+  ],
+  "system_health": {
+    "status": "degraded",
+    "score": 86.66666666666667
+  }
+}
