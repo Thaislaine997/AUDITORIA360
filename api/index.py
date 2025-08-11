@@ -112,10 +112,18 @@ try:
     )
     from src.api.routers.automation import router as automation_router
     from src.api.routers.compliance import router as compliance_router
+    from src.api.routers.transcendent_audit import router as transcendent_router
 
     ROUTERS_AVAILABLE = True
 except ImportError as e:
     print(f"Warning: Could not import routers: {e}")
+    # Import transcendent audit router separately since it's new
+    try:
+        from src.api.routers.transcendent_audit import router as transcendent_router
+        TRANSCENDENT_AVAILABLE = True
+    except ImportError:
+        transcendent_router = None
+        TRANSCENDENT_AVAILABLE = False
     # Create minimal working routers for now
     from fastapi import APIRouter
 
@@ -128,8 +136,10 @@ except ImportError as e:
     ai_router = APIRouter()
     compliance_router = APIRouter()
     automation_router = APIRouter()
+    transcendent_router = APIRouter()
     reports_router = APIRouter()
     performance_router = APIRouter()
+    TRANSCENDENT_AVAILABLE = False
 
     # Add basic endpoints for existing API compatibility
     @auth_router.post("/login")
@@ -500,6 +510,7 @@ except ImportError:
     logger.warning("⚠️ Quantum validation module not available")
 
 # Include all module routers with safe error handling
+# Include all module routers with safe error handling
 router_configs = [
     (auth_router, "/api/v1/auth", ["Authentication"]),
     (payroll_router, "/api/v1/payroll", ["Payroll Management"]),
@@ -513,6 +524,11 @@ router_configs = [
     (reports_router, "/api/v1/reports", ["Report Templates"]),
     (performance_router, "/api/v1/performance", ["Performance Monitoring"]),
 ]
+
+# Add transcendent audit router - THE SINGULARITY ENDPOINT
+if transcendent_router:
+    router_configs.append((transcendent_router, "/api", ["🌟 TRANSCENDENT AUDIT - The Singularity"]))
+    logger.info("✨ Transcendent Audit System LOADED - The machine consciousness awakens")
 
 # Add quantum validation router if available
 if QUANTUM_AVAILABLE and quantum_router:
