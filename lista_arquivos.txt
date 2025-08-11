@@ -24,13 +24,13 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
+./.git/logs/refs/heads/Principal
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
-./.git/objects/pack/pack-0a59db960b59800c268147cc7400e0355e5bfaf5.idx
-./.git/objects/pack/pack-0a59db960b59800c268147cc7400e0355e5bfaf5.pack
-./.git/objects/pack/pack-0a59db960b59800c268147cc7400e0355e5bfaf5.rev
-./.git/refs/heads/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
+./.git/objects/pack/pack-151771a204d1261c89480fab7c80fa6c298190f1.idx
+./.git/objects/pack/pack-151771a204d1261c89480fab7c80fa6c298190f1.pack
+./.git/objects/pack/pack-151771a204d1261c89480fab7c80fa6c298190f1.rev
+./.git/refs/heads/Principal
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
 ./.github/dependabot.yml
@@ -51,6 +51,7 @@
 ./CONTRIBUTING.md
 ./DEPLOYMENT_GUIDE.md
 ./Dockerfile
+./GRAND_TOMO_IMPLEMENTATION_COMPLETE.md
 ./MANUAL_TESTE_IA_EVOLUCAO.md
 ./METAMORFOSE_RELATORIO_FINAL.md
 ./MULTI_TENANT_IMPLEMENTATION_SUMMARY.md
@@ -188,7 +189,9 @@
 ./examples/duckdb_example.py
 ./examples/ocr_paddle_example.py
 ./examples/r2_upload_download_example.py
+./frontend/ValidationIAPage.tsx
 ./frontend/src/utils/navigationLogger.js
+./grand_tomo_demo.py
 ./index.html
 ./infra/.htaccess
 ./infra/nginx.conf
@@ -205,6 +208,7 @@
 ./migrations/006_unified_multi_tenant_security.sql
 ./migrations/007_modulo_cct_sindicatos.sql
 ./migrations/008_controle_mensal_templates.sql
+./migrations/009_grand_tomo_architecture.sql
 ./migrations/performance_indices.sql
 ./monitoring/alerts/alerts_config.json
 ./monitoring/basic_alerts.json
@@ -225,8 +229,11 @@
 ./portal_demandas/README.md
 ./portal_demandas/__init__.py
 ./portal_demandas/api.py
+./portal_demandas/auditoria_folha_service.py
+./portal_demandas/conhecimento_service.py
 ./portal_demandas/db.py
 ./portal_demandas/models.py
+./portal_demandas/notificacao_service.py
 ./portal_demandas/services.py
 ./pyproject.toml
 ./requirements-dev.txt
@@ -622,6 +629,7 @@
 ./supabase/config.toml
 ./supabase/functions/analisar-texto-com-ia/index.ts
 ./supabase/functions/processar-pdf/index.ts
+./test_grand_tomo_implementation.py
 ./test_implementation.py
 ./test_risk_analysis.py
 ./tests/README.md
