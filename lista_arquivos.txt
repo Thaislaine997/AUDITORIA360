@@ -28,9 +28,9 @@
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
 ./.git/logs/refs/remotes/origin/copilot/fix-c3e85d2b-dfab-49e4-affc-d098012e7fe6
-./.git/objects/pack/pack-b17267c4f77b8ae675a9a7dc04a887112c23f4b5.idx
-./.git/objects/pack/pack-b17267c4f77b8ae675a9a7dc04a887112c23f4b5.pack
-./.git/objects/pack/pack-b17267c4f77b8ae675a9a7dc04a887112c23f4b5.rev
+./.git/objects/pack/pack-8da62f2ced2644cd8ed7f1187643226547aeff35.idx
+./.git/objects/pack/pack-8da62f2ced2644cd8ed7f1187643226547aeff35.pack
+./.git/objects/pack/pack-8da62f2ced2644cd8ed7f1187643226547aeff35.rev
 ./.git/refs/heads/copilot/fix-c3e85d2b-dfab-49e4-affc-d098012e7fe6
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-0a838633-a119-4f55-87b0-981717cf8481
@@ -136,6 +136,7 @@
 ./demo_ai_integration.py
 ./demo_api.py
 ./demo_implementation.py
+./demo_transcendence.py
 ./demos/README.md
 ./demos/demo_first_stage.py
 ./demos/demo_modular_backend.py
@@ -405,6 +406,7 @@
 ./src/api/routers/performance.py
 ./src/api/routers/reports.py
 ./src/api/routers/supabase_test_router.py
+./src/api/routers/transcendent_audit.py
 ./src/auth/__init__.py
 ./src/auth/middleware.py
 ./src/auth/unified_auth.py
@@ -418,6 +420,7 @@
 ./src/core/config.py
 ./src/core/constants.py
 ./src/core/exceptions.py
+./src/core/knowledge_graph.py
 ./src/core/secrets.py
 ./src/core/security.py
 ./src/core/system_manager.py
@@ -564,6 +567,7 @@
 ./src/migration/legacy_script_migration.py
 ./src/migration/migration_report.json
 ./src/migration/python_equivalents/setup_dev_env.py
+./src/models.py
 ./src/models/README.md
 ./src/models/__init__.py
 ./src/models/ai_models.py
@@ -608,9 +612,11 @@
 ./src/serverless/quantum_orchestrator.py
 ./src/services/README.md
 ./src/services/__init__.py
+./src/services/ar_interface.py
 ./src/services/auth_service.py
 ./src/services/cache_service.py
 ./src/services/cct_service.py
+./src/services/collective_intelligence.py
 ./src/services/communication_gateway/__init__.py
 ./src/services/communication_gateway/gateway.py
 ./src/services/communication_gateway/github_integration.py
@@ -638,6 +644,7 @@
 ./test_grand_tomo_implementation.py
 ./test_implementation.py
 ./test_risk_analysis.py
+./test_transcendence.py
 ./tests/README.md
 ./tests/__init__.py
 ./tests/auth/login.yaml
