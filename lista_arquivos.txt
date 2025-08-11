@@ -24,14 +24,14 @@
 ./.git/index
 ./.git/info/exclude
 ./.git/logs/HEAD
-./.git/logs/refs/heads/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
+./.git/logs/refs/heads/Principal
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
 ./.git/logs/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
-./.git/objects/pack/pack-5e1129005614860b2390381cf55866c2fdaa8638.idx
-./.git/objects/pack/pack-5e1129005614860b2390381cf55866c2fdaa8638.pack
-./.git/objects/pack/pack-5e1129005614860b2390381cf55866c2fdaa8638.rev
-./.git/refs/heads/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
+./.git/objects/pack/pack-570666bc632a02b1aeafcfc43084fb6871655168.idx
+./.git/objects/pack/pack-570666bc632a02b1aeafcfc43084fb6871655168.pack
+./.git/objects/pack/pack-570666bc632a02b1aeafcfc43084fb6871655168.rev
+./.git/refs/heads/Principal
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
 ./.git/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
@@ -51,6 +51,7 @@
 ./BLUEPRINT_IMPLEMENTATION.md
 ./CNAME
 ./CONTRIBUTING.md
+./DEPLOYMENT_GUIDE.md
 ./Dockerfile
 ./MANUAL_TESTE_IA_EVOLUCAO.md
 ./METAMORFOSE_RELATORIO_FINAL.md
@@ -132,6 +133,7 @@
 ./data_base/schemas/features_engineering.sql
 ./data_base/schemas/predicoes_risco_folha.sql
 ./demo_ai_integration.py
+./demo_api.py
 ./demo_implementation.py
 ./demos/README.md
 ./demos/demo_first_stage.py
