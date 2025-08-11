@@ -28,9 +28,9 @@
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
 ./.git/logs/refs/remotes/origin/copilot/fix-72a3ca55-a313-45b6-8ead-482478e589a2
-./.git/objects/pack/pack-6e4e855fa79d6e2eab7493f008e63ab09659f56f.idx
-./.git/objects/pack/pack-6e4e855fa79d6e2eab7493f008e63ab09659f56f.pack
-./.git/objects/pack/pack-6e4e855fa79d6e2eab7493f008e63ab09659f56f.rev
+./.git/objects/pack/pack-5e1129005614860b2390381cf55866c2fdaa8638.idx
+./.git/objects/pack/pack-5e1129005614860b2390381cf55866c2fdaa8638.pack
+./.git/objects/pack/pack-5e1129005614860b2390381cf55866c2fdaa8638.rev
 ./.git/refs/heads/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-2ee293d8-90f7-4aa3-a73f-db5b97d86826
@@ -126,6 +126,7 @@
 ./data/quarantine/quarantine_exfiltration_stage2_extraction_20250806_191435.json
 ./data/quarantine/quarantine_exfiltration_stage3_exfiltration_20250806_191435.json
 ./data/raw
+./data_base/migrations/001_create_v1_0_tables.sql
 ./data_base/migrations/merge_folhas.sql
 ./data_base/schemas/dataset_treinamento_riscos_folha.sql
 ./data_base/schemas/features_engineering.sql
@@ -226,6 +227,7 @@
 ./portal_demandas/api.py
 ./portal_demandas/db.py
 ./portal_demandas/models.py
+./portal_demandas/services.py
 ./pyproject.toml
 ./requirements-dev.txt
 ./requirements-ml.txt
@@ -620,6 +622,7 @@
 ./supabase/config.toml
 ./supabase/functions/analisar-texto-com-ia/index.ts
 ./supabase/functions/processar-pdf/index.ts
+./test_implementation.py
 ./test_risk_analysis.py
 ./tests/README.md
 ./tests/__init__.py
