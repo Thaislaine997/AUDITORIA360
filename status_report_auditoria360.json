@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-11T20:34:23.964978",
+  "timestamp": "2025-08-11T20:42:19.309183",
   "summary": {
     "total_modules": 15,
     "functioning": 13,
@@ -23,7 +23,7 @@
       "status_code": 200,
       "response_time": 0.07100000000000001,
       "details": "Gráficos de IA funcionando normalmente",
-      "last_check": "2025-08-11T20:34:22.460872",
+      "last_check": "2025-08-11T20:42:17.806197",
       "url": "http://localhost:8001/api/health/dashboard"
     },
     {
@@ -32,7 +32,7 @@
       "status_code": 200,
       "response_time": 0.065,
       "details": "Sistema operacional",
-      "last_check": "2025-08-11T20:34:22.561091",
+      "last_check": "2025-08-11T20:42:17.906339",
       "url": "http://localhost:8001/api/health/controle_mensal"
     },
     {
@@ -41,7 +41,7 @@
       "status_code": 200,
       "response_time": 0.07,
       "details": "Integração IA: 100%",
-      "last_check": "2025-08-11T20:34:22.661404",
+      "last_check": "2025-08-11T20:42:18.006483",
       "url": "http://localhost:8001/api/health/disparo_auditoria"
     },
     {
@@ -50,7 +50,7 @@
       "status_code": 200,
       "response_time": 0.065,
       "details": "Trilha cognitiva em fase de testes",
-      "last_check": "2025-08-11T20:34:22.761685",
+      "last_check": "2025-08-11T20:42:18.106670",
       "url": "http://localhost:8001/api/health/forense"
     },
     {
@@ -59,7 +59,7 @@
       "status_code": 200,
       "response_time": 0.066,
       "details": "Ingestão automática em desenvolvimento, funcionalidades principais operacionais",
-      "last_check": "2025-08-11T20:34:22.861980",
+      "last_check": "2025-08-11T20:42:18.206838",
       "url": "http://localhost:8001/api/health/regras"
     },
     {
@@ -68,7 +68,7 @@
       "status_code": 200,
       "response_time": 0.07100000000000001,
       "details": "IA em integração - módulo em desenvolvimento ativo",
-      "last_check": "2025-08-11T20:34:22.962260",
+      "last_check": "2025-08-11T20:42:18.307025",
       "url": "http://localhost:8001/api/health/simulador"
     },
     {
@@ -77,7 +77,7 @@
       "status_code": 200,
       "response_time": 0.07100000000000001,
       "details": "Sistema de relatórios funcionando",
-      "last_check": "2025-08-11T20:34:23.062508",
+      "last_check": "2025-08-11T20:42:18.407195",
       "url": "http://localhost:8001/api/health/relatorios"
     },
     {
@@ -86,7 +86,7 @@
       "status_code": 200,
       "response_time": 0.067,
       "details": "Simulador em expansão, demais funcionalidades operacionais",
-      "last_check": "2025-08-11T20:34:23.162783",
+      "last_check": "2025-08-11T20:42:18.507412",
       "url": "http://localhost:8001/api/health/ia"
     },
     {
@@ -95,7 +95,7 @@
       "status_code": 200,
       "response_time": 0.061,
       "details": "Sistema de autenticação operacional",
-      "last_check": "2025-08-11T20:34:23.263058",
+      "last_check": "2025-08-11T20:42:18.607598",
       "url": "http://localhost:8001/api/health/login_admin"
     },
     {
@@ -104,7 +104,7 @@
       "status_code": 200,
       "response_time": 0.083,
       "details": "Sistema de logs e auditoria funcionando",
-      "last_check": "2025-08-11T20:34:23.363331",
+      "last_check": "2025-08-11T20:42:18.707755",
       "url": "http://localhost:8001/api/health/logoperacoes"
     },
     {
@@ -113,7 +113,7 @@
       "status_code": 200,
       "response_time": 0.08,
       "details": "Sistema de personificação operacional",
-      "last_check": "2025-08-11T20:34:23.463535",
+      "last_check": "2025-08-11T20:42:18.808000",
       "url": "http://localhost:8001/api/health/personificacao"
     },
     {
@@ -122,7 +122,7 @@
       "status_code": 200,
       "response_time": 0.066,
       "details": "Onboarding de clientes funcionando",
-      "last_check": "2025-08-11T20:34:23.563788",
+      "last_check": "2025-08-11T20:42:18.908247",
       "url": "http://localhost:8001/api/health/login_onboarding"
     },
     {
@@ -131,7 +131,7 @@
       "status_code": 200,
       "response_time": 0.066,
       "details": "Sistema de auditoria totalmente funcional",
-      "last_check": "2025-08-11T20:34:23.664052",
+      "last_check": "2025-08-11T20:42:19.008489",
       "url": "http://localhost:8001/api/health/logs_auditoria"
     },
     {
@@ -140,7 +140,7 @@
       "status_code": 200,
       "response_time": 0.07100000000000001,
       "details": "Fluxos de onboarding operacionais",
-      "last_check": "2025-08-11T20:34:23.764325",
+      "last_check": "2025-08-11T20:42:19.108700",
       "url": "http://localhost:8001/api/health/onboarding_escritorio"
     },
     {
@@ -149,7 +149,7 @@
       "status_code": 200,
       "response_time": 0.07500000000000001,
       "details": "Sistema de gestão de usuários funcionando",
-      "last_check": "2025-08-11T20:34:23.864590",
+      "last_check": "2025-08-11T20:42:19.208874",
       "url": "http://localhost:8001/api/health/gerenciamento_usuarios"
     }
   ],
