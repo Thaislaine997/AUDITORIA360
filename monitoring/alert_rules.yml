@@ -1,0 +1,56 @@
+groups:
+- name: auditoria360_alerts
+  rules:
+  - alert: SystemHealthCritical
+    expr: auditoria360_system_health_score < 70
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "AUDITORIA360 system health is critical"
+      description: "System health score is {{ $value }}% which is below critical threshold of 70%"
+
+  - alert: SystemHealthDegraded
+    expr: auditoria360_system_health_score < 90
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "AUDITORIA360 system health is degraded"
+      description: "System health score is {{ $value }}% which is below warning threshold of 90%"
+
+  - alert: ModuleDown
+    expr: auditoria360_module_status == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "AUDITORIA360 module {{ $labels.module_name }} is down"
+      description: "Module {{ $labels.module_name }} has been down for more than 2 minutes"
+
+  - alert: ModuleSlowResponse
+    expr: auditoria360_module_response_time_seconds > 5
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "AUDITORIA360 module {{ $labels.module_name }} is responding slowly"
+      description: "Module {{ $labels.module_name }} response time is {{ $value }}s which exceeds 5s threshold"
+
+  - alert: HealthCheckErrors
+    expr: increase(auditoria360_health_check_errors_total[5m]) > 3
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High number of health check errors"
+      description: "{{ $value }} health check errors in the last 5 minutes"
+
+  - alert: MetricsExporterDown
+    expr: up{job="auditoria360-system"} == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "AUDITORIA360 metrics exporter is down"
+      description: "The metrics exporter has been down for more than 2 minutes"

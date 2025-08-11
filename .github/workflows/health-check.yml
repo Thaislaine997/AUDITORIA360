@@ -1,4 +1,4 @@
-name: System Health Check and Monitoring
+name: Enhanced System Health Check and Monitoring
 
 on:
   push:
@@ -10,10 +10,21 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+  ALERT_RECIPIENTS: ${{ secrets.ALERT_RECIPIENTS }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   health-check:
     name: Health Check System Modules
     runs-on: ubuntu-latest
+    
+    outputs:
+      health_status: ${{ steps.health_check.outputs.health_status }}
+      incident_count: ${{ steps.incident_check.outputs.incident_count }}
     
     steps:
     - name: Checkout Repository
@@ -36,14 +47,33 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest requests
+        pip install pytest requests prometheus_client schedule psycopg2-binary
     
     - name: Run Health Check Script
       id: health_check
       run: |
         python automation/update_status.py
-        echo "health_check_exit_code=$?" >> $GITHUB_OUTPUT
+        health_exit_code=$?
+        echo "health_exit_code=$health_exit_code" >> $GITHUB_OUTPUT
+        if [ $health_exit_code -eq 0 ]; then
+          echo "health_status=healthy" >> $GITHUB_OUTPUT
+        else
+          echo "health_status=degraded" >> $GITHUB_OUTPUT
+        fi
       continue-on-error: true
+    
+    - name: Run Incident Detection
+      id: incident_check
+      run: |
+        python automation/incident_alerting.py
+        incident_exit_code=$?
+        echo "incident_exit_code=$incident_exit_code" >> $GITHUB_OUTPUT
+        # Count incident files created
+        incident_count=$(find . -name "incident_report_*.md" | wc -l)
+        echo "incident_count=$incident_count" >> $GITHUB_OUTPUT
+      continue-on-error: true
+      env:
+        GITHUB_REPOSITORY: ${{ github.repository }}
     
     - name: Upload Status Reports
       uses: actions/upload-artifact@v3
@@ -52,22 +82,46 @@ jobs:
         path: |
           processos_status_auditoria360.md
           status_report_auditoria360.json
+          incident_report_*.md
         retention-days: 7
     
-    - name: Create Status Badge
+    - name: Create Enhanced Status Badge
       run: |
-        if [ "${{ steps.health_check.outputs.health_check_exit_code }}" = "0" ]; then
+        health_status="${{ steps.health_check.outputs.health_status }}"
+        incident_count="${{ steps.incident_check.outputs.incident_count }}"
+        
+        if [ "$health_status" = "healthy" ] && [ "$incident_count" -eq "0" ]; then
           echo '{"schemaVersion":1,"label":"system","message":"healthy","color":"green"}' > status-badge.json
-        else
+          echo '{"schemaVersion":1,"label":"incidents","message":"none","color":"green"}' > incidents-badge.json
+        elif [ "$health_status" = "healthy" ] && [ "$incident_count" -gt "0" ]; then
           echo '{"schemaVersion":1,"label":"system","message":"degraded","color":"orange"}' > status-badge.json
+          echo "{\"schemaVersion\":1,\"label\":\"incidents\",\"message\":\"$incident_count\",\"color\":\"orange\"}" > incidents-badge.json
+        else
+          echo '{"schemaVersion":1,"label":"system","message":"critical","color":"red"}' > status-badge.json
+          echo "{\"schemaVersion\":1,\"label\":\"incidents\",\"message\":\"$incident_count\",\"color\":\"red\"}" > incidents-badge.json
         fi
+        
+        # Generate timestamp badge
+        timestamp=$(date '+%Y-%m-%d %H:%M')
+        echo "{\"schemaVersion\":1,\"label\":\"last check\",\"message\":\"$timestamp\",\"color\":\"lightblue\"}" > timestamp-badge.json
+    
+    - name: Update Status Dashboard
+      run: |
+        # The dashboard now loads data dynamically, so we just need to ensure the JSON is up to date
+        echo "Status dashboard will auto-update with latest JSON data"
     
     - name: Commit Status Updates
       if: github.ref == 'refs/heads/main'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add processos_status_auditoria360.md status_report_auditoria360.json status-badge.json
+        
+        # Add all generated status files
+        git add processos_status_auditoria360.md 
+        git add status_report_auditoria360.json 
+        git add *-badge.json
+        git add incident_report_*.md || true
+        
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
@@ -75,47 +129,191 @@ jobs:
           git push
         fi
 
-  deploy-check:
-    name: Deploy Health Check
+  monitoring-deployment:
+    name: Deploy Monitoring Infrastructure
     needs: health-check
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-    - name: Check Deployment Health
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Deploy Monitoring Stack
       run: |
-        echo "🚀 Running deployment health checks..."
+        echo "🚀 Deploying monitoring infrastructure..."
+        cd monitoring
         
-        # Simulate health checks that would block deployment
-        if [ "${{ needs.health-check.outputs.health_check_exit_code }}" != "0" ]; then
-          echo "❌ Health check failed - blocking deployment"
+        # Validate monitoring configuration
+        if [ -f "docker-compose.monitoring.yml" ]; then
+          echo "✅ Monitoring configuration found"
+          
+          # In production, this would deploy to actual infrastructure
+          # For now, we validate the configuration
+          docker-compose -f docker-compose.monitoring.yml config > /dev/null
+          echo "✅ Monitoring configuration is valid"
+          
+          echo "📊 Monitoring stack would be deployed with:"
+          echo "- Prometheus for metrics collection"
+          echo "- Grafana for dashboards"
+          echo "- Custom AUDITORIA360 metrics exporter"
+          echo "- Alert rules for incident detection"
+        else
+          echo "❌ Monitoring configuration not found"
           exit 1
         fi
-        
-        echo "✅ Health check passed - deployment can proceed"
 
-  notification:
-    name: Send Notifications
-    needs: [health-check]
+  backup-validation:
+    name: Validate Backup System
+    needs: health-check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install psycopg2-binary schedule
+    
+    - name: Run Backup Validation Test
+      run: |
+        echo "🔄 Testing backup validation system..."
+        
+        # In production, this would run actual backup validation
+        # For CI, we test the script can run without errors
+        python -c "
+from automation.backup_validation import BackupValidationSystem
+import os
+
+# Mock environment for testing
+os.environ['DATABASE_URL'] = 'postgresql://test:test@localhost:5432/test'
+os.environ['BACKUP_DIR'] = '/tmp/test_backups'
+
+backup_system = BackupValidationSystem()
+print('✅ Backup validation system initialized successfully')
+print('📋 Configuration:')
+print(f'   - Backup directory: {backup_system.backup_dir}')
+print(f'   - Retention days: {backup_system.retention_days}')
+"
+        
+        echo "✅ Backup validation system test completed"
+
+  performance-analysis:
+    name: Performance and SLA Analysis
+    needs: health-check
     runs-on: ubuntu-latest
     if: always()
     
     steps:
-    - name: Notify on Failure
-      if: needs.health-check.result == 'failure'
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Analyze System Performance
       run: |
-        echo "🚨 ALERT: System health check failed!"
+        echo "📊 Analyzing system performance and SLA metrics..."
+        
+        if [ -f "status_report_auditoria360.json" ]; then
+          # Extract key metrics from status report
+          python -c "
+import json
+import os
+
+if os.path.exists('status_report_auditoria360.json'):
+    with open('status_report_auditoria360.json', 'r') as f:
+        data = json.load(f)
+    
+    summary = data.get('summary', {})
+    system_health = data.get('system_health', {})
+    
+    print('📈 SLA Metrics Analysis:')
+    print(f'   System Health Score: {system_health.get(\"score\", 0):.1f}%')
+    print(f'   Modules Operational: {summary.get(\"functioning\", 0)}/{summary.get(\"total_modules\", 0)}')
+    print(f'   Average Response Time: {summary.get(\"average_response_time\", 0)*1000:.0f}ms')
+    
+    # SLA Targets
+    health_sla = 99.5  # 99.5% uptime target
+    response_sla = 100  # 100ms response time target
+    
+    health_score = system_health.get('score', 0)
+    avg_response = summary.get('average_response_time', 0) * 1000
+    
+    print('\\n🎯 SLA Target Analysis:')
+    print(f'   Health Target (99.5%): {\"✅ PASS\" if health_score >= health_sla else \"❌ FAIL\"} ({health_score:.1f}%)')
+    print(f'   Response Target (100ms): {\"✅ PASS\" if avg_response <= response_sla else \"❌ FAIL\"} ({avg_response:.0f}ms)')
+    
+    if health_score >= health_sla and avg_response <= response_sla:
+        print('\\n🎉 All SLA targets are being met!')
+    else:
+        print('\\n⚠️  Some SLA targets require attention')
+else:
+    print('❌ Status report not found - unable to analyze performance')
+"
+        fi
+
+  notification:
+    name: Send Notifications
+    needs: [health-check, monitoring-deployment, backup-validation, performance-analysis]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Notify on Critical Issues
+      if: needs.health-check.outputs.health_status == 'critical' || needs.health-check.outputs.incident_count > '0'
+      run: |
+        echo "🚨 CRITICAL ALERT: System issues detected!"
+        echo "Health Status: ${{ needs.health-check.outputs.health_status }}"
+        echo "Incidents: ${{ needs.health-check.outputs.incident_count }}"
         echo "Time: $(date)"
         echo "Repository: ${{ github.repository }}"
         echo "Commit: ${{ github.sha }}"
         
-        # In production, this would send notifications to Slack/Teams/Email
-        # Example webhook call:
-        # curl -X POST -H 'Content-type: application/json' \
-        #   --data '{"text":"🚨 AUDITORIA360: Health check failed at $(date)"}' \
-        #   $SLACK_WEBHOOK_URL
+        # In production, this would send actual notifications
+        echo "📧 Notifications would be sent to:"
+        echo "   - Slack channels"
+        echo "   - Email alerts"
+        echo "   - GitHub issues (for critical incidents)"
     
     - name: Notify on Success
-      if: needs.health-check.result == 'success'
+      if: needs.health-check.outputs.health_status == 'healthy' && needs.health-check.outputs.incident_count == '0'
       run: |
         echo "✅ System health check completed successfully"
+        echo "All modules operational, no incidents detected"
+
+  deploy-check:
+    name: Deployment Health Gate
+    needs: [health-check, performance-analysis]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Evaluate Deployment Readiness
+      run: |
+        health_status="${{ needs.health-check.outputs.health_status }}"
+        incident_count="${{ needs.health-check.outputs.incident_count }}"
+        
+        echo "🚀 Evaluating deployment readiness..."
+        echo "Health Status: $health_status"
+        echo "Active Incidents: $incident_count"
+        
+        if [ "$health_status" = "healthy" ] && [ "$incident_count" -eq "0" ]; then
+          echo "✅ DEPLOYMENT APPROVED: All systems healthy"
+          echo "deployment_approved=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ DEPLOYMENT BLOCKED: System issues detected"
+          echo "deployment_approved=false" >> $GITHUB_OUTPUT
+          echo "Deployment blocked due to system health issues."
+          echo "Please resolve all incidents before deploying."
+          exit 1
+        fi
+      id: deployment_gate
