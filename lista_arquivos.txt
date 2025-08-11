@@ -28,9 +28,9 @@
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-93110f44-2555-4e96-b4d5-fffc37e55b71
 ./.git/logs/refs/remotes/origin/copilot/fix-c783cfda-3dd2-49c2-8cad-ac59771b632b
-./.git/objects/pack/pack-4234c0ededb5227bb58541e6512d016e49462eb1.idx
-./.git/objects/pack/pack-4234c0ededb5227bb58541e6512d016e49462eb1.pack
-./.git/objects/pack/pack-4234c0ededb5227bb58541e6512d016e49462eb1.rev
+./.git/objects/pack/pack-76a3d9f97195c2f46087a60d66adff9600e3bab4.idx
+./.git/objects/pack/pack-76a3d9f97195c2f46087a60d66adff9600e3bab4.pack
+./.git/objects/pack/pack-76a3d9f97195c2f46087a60d66adff9600e3bab4.rev
 ./.git/refs/heads/copilot/fix-c783cfda-3dd2-49c2-8cad-ac59771b632b
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-93110f44-2555-4e96-b4d5-fffc37e55b71
@@ -40,6 +40,7 @@
 ./.github/workflows/automation.yml
 ./.github/workflows/ci-cd.yml
 ./.github/workflows/genome-guardian.yml
+./.github/workflows/health-monitoring.yml
 ./.github/workflows/iai-c-health-monitor.yml
 ./.github/workflows/jekyll-gh-pages.yml
 ./.github/workflows/master-checklist-validation.yml
@@ -93,6 +94,7 @@
 ./automation/robot_esocial.py
 ./automation/rpa_folha.py
 ./automation/schedule_reports.py
+./automation/update_status.py
 ./cloudflare/backup-worker.js
 ./cloudflare/wrangler.toml
 ./complete_demo.html
@@ -155,6 +157,7 @@
 ./docs/AI_TEXT_ANALYSIS_IMPLEMENTATION.md
 ./docs/API_REFERENCE.md
 ./docs/COMPLIANCE_SECURITY_GUIDE.md
+./docs/FLUXOGRAMAS_DETALHADOS_STATUS_OPERACIONAL.md
 ./docs/GOVERNANCE.md
 ./docs/MULTI_TENANT_IMPLEMENTATION_GUIDE.md
 ./docs/PERFORMANCE_OPTIMIZATION_STRATEGY.md
@@ -251,6 +254,7 @@
 ./portal_demandas/models.py
 ./portal_demandas/notificacao_service.py
 ./portal_demandas/services.py
+./processos_status_auditoria360.md
 ./pyproject.toml
 ./requirements-dev.txt
 ./requirements-ml.txt
@@ -413,6 +417,7 @@
 ./src/api/routers/dev_assistant.py
 ./src/api/routers/documents.py
 ./src/api/routers/gamification.py
+./src/api/routers/health.py
 ./src/api/routers/intentions.py
 ./src/api/routers/notifications.py
 ./src/api/routers/payroll.py
@@ -452,6 +457,7 @@
 ./src/frontend/src/components/NotificationBell.tsx
 ./src/frontend/src/components/PersonalizedOnboarding.tsx
 ./src/frontend/src/components/Sidebar.tsx
+./src/frontend/src/components/StatusDashboard.tsx
 ./src/frontend/src/components/TemplateManager.tsx
 ./src/frontend/src/components/UploadComponent.tsx
 ./src/frontend/src/components/ValidacaoIARow.tsx
@@ -651,6 +657,7 @@
 ./src/utils/monitoring.py
 ./src/utils/performance.py
 ./src/validation/metamorphosis_validator.py
+./status_report_auditoria360.json
 ./supabase/README.md
 ./supabase/config.toml
 ./supabase/functions/analisar-texto-com-ia/index.ts
