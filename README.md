@@ -1,4 +1,18 @@
 # AUDITORIA360 - Sistema de Auditoria Departamento Pessoal
+<!-- STATUS BADGES START -->
+## 📊 Status do Sistema
+
+![System Status](https://img.shields.io/badge/system-healthy-brightgreen) ![Health](https://img.shields.io/badge/health-100%25-brightgreen) ![Modules](https://img.shields.io/badge/modules-15%2F15-blue) ![Response Time](https://img.shields.io/badge/response%20time-69ms-brightgreen) ![Last Check](https://img.shields.io/badge/last%20check-2025--08--11-lightblue)
+
+- **Sistema:** Status geral da plataforma
+- **Saúde:** Percentual de módulos operacionais
+- **Módulos:** Quantidade de módulos funcionando
+- **Resposta:** Tempo médio de resposta das APIs
+- **Verificação:** Última verificação de saúde
+
+> 📈 [Dashboard de Status em Tempo Real](./status-dashboard.html) | 📋 [Relatório Detalhado](./processos_status_auditoria360.md)
+
+<!-- STATUS BADGES END -->
 
 **Ecossistema completo de auditoria DP com dois universos: Estratégico (admin) e Operacional (contabilidade)**
 
