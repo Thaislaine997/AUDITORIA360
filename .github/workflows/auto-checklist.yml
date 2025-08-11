@@ -1,0 +1,140 @@
+# .github/workflows/auto-checklist.yml
+name: Auditoria Automática dos Workflows
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+jobs:
+  checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: List Workflows
+        run: ls -lh .github/workflows/
+        
+      - name: Verificar Execução dos Workflows
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Verificando últimas execuções dos workflows..."
+          gh run list --limit 20 --json name,status,conclusion,createdAt || echo "Não foi possível acessar as execuções via API"
+          
+      - name: Validar Estrutura de Workflows
+        run: |
+          echo "📋 Checklist de Validação dos Workflows:"
+          echo "=========================================="
+          
+          # Verificar se todos os workflows esperados estão presentes
+          workflows=(
+            "atualiza-lista-arquivos.yml"
+            "automation.yml"
+            "ci-cd.yml"
+            "genome-guardian.yml"
+            "health-check.yml"
+            "iai-c-health-monitor.yml"
+            "jekyll-gh-pages.yml"
+            "master-checklist-validation.yml"
+            "sync-wiki.yml"
+          )
+          
+          missing_workflows=()
+          for workflow in "${workflows[@]}"; do
+            if [ -f ".github/workflows/$workflow" ]; then
+              echo "✅ $workflow - Presente"
+            else
+              echo "❌ $workflow - AUSENTE"
+              missing_workflows+=("$workflow")
+            fi
+          done
+          
+          # Verificar arquivos de documentação críticos
+          critical_docs=(
+            "README.md"
+            "CHANGELOG.md"
+            "MANUAL_SUPREMO.md"
+            "VALIDATION_CHECKLIST.md"
+          )
+          
+          echo ""
+          echo "📚 Documentação Crítica:"
+          echo "========================"
+          for doc in "${critical_docs[@]}"; do
+            if [ -f "$doc" ]; then
+              echo "✅ $doc - Presente"
+            else
+              echo "❌ $doc - AUSENTE"
+            fi
+          done
+          
+          # Verificar estrutura de diretórios essenciais
+          echo ""
+          echo "🏗️ Estrutura de Diretórios:"
+          echo "============================"
+          essential_dirs=(
+            "src"
+            "tests"
+            "scripts"
+            "api"
+            "docs"
+          )
+          
+          for dir in "${essential_dirs[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "✅ $dir/ - Presente"
+            else
+              echo "❌ $dir/ - AUSENTE"
+            fi
+          done
+          
+          # Verificar configurações de segurança
+          echo ""
+          echo "🔒 Segurança e Compliance:"
+          echo "=========================="
+          security_files=(
+            ".github/dependabot.yml"
+            ".pre-commit-config.yaml"
+            ".gitignore"
+          )
+          
+          for file in "${security_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ $file - Presente"
+            else
+              echo "❌ $file - AUSENTE"
+            fi
+          done
+          
+          # Relatório final
+          echo ""
+          echo "📊 RESUMO DA AUDITORIA:"
+          echo "======================="
+          if [ ${#missing_workflows[@]} -eq 0 ]; then
+            echo "✅ Todos os workflows críticos estão presentes"
+          else
+            echo "⚠️ Workflows ausentes: ${missing_workflows[*]}"
+          fi
+          
+      - name: Gerar Relatório de Status
+        run: |
+          echo "# Relatório de Auditoria dos Workflows - $(date)" > workflow_audit_report.md
+          echo "" >> workflow_audit_report.md
+          echo "## Status Geral" >> workflow_audit_report.md
+          echo "- Data da verificação: $(date)" >> workflow_audit_report.md
+          echo "- Total de workflows: $(ls .github/workflows/*.yml | wc -l)" >> workflow_audit_report.md
+          echo "- Repositório: ${{ github.repository }}" >> workflow_audit_report.md
+          echo "" >> workflow_audit_report.md
+          echo "## Próximos Passos" >> workflow_audit_report.md
+          echo "- [ ] Verificar workflows com falhas recorrentes" >> workflow_audit_report.md
+          echo "- [ ] Atualizar documentação se necessário" >> workflow_audit_report.md
+          echo "- [ ] Revisar configurações de segurança" >> workflow_audit_report.md
+          
+      - name: Upload Relatório
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-audit-report-${{ github.run_number }}
+          path: workflow_audit_report.md
+          retention-days: 30

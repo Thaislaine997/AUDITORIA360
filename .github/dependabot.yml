@@ -4,18 +4,55 @@ updates:
     directory: "/"
     requirements-file: "requirements.txt"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Thaislaine997"
+    labels:
+      - "dependencies"
+      - "python"
+      - "security"
   - package-ecosystem: "pip"
     directory: "/"
     requirements-file: "requirements-dev.txt"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Thaislaine997"
+    labels:
+      - "dependencies"
+      - "python"
+      - "dev-dependencies"
   - package-ecosystem: "pip"
     directory: "/"
     requirements-file: "requirements-ml.txt"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Thaislaine997"
+    labels:
+      - "dependencies"
+      - "python"
+      - "ml"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Thaislaine997"
+    labels:
+      - "dependencies"
+      - "javascript"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Thaislaine997"
+    labels:
+      - "dependencies"
+      - "github-actions"

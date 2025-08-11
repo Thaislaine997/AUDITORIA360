@@ -1,0 +1,161 @@
+# .github/workflows/changelog.yml
+name: Atualizar Changelog
+
+on:
+  pull_request:
+    types: [closed]
+  release:
+    types: [published]
+
+jobs:
+  changelog:
+    if: github.event.pull_request.merged == true || github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Update CHANGELOG.md for PR
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Atualizando CHANGELOG.md para PR #${{ github.event.pull_request.number }}"
+          
+          # Create CHANGELOG.md if it doesn't exist
+          if [ ! -f "CHANGELOG.md" ]; then
+            cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          Todas as mudanças importantes do projeto AUDITORIA360 serão documentadas neste arquivo.
+
+          O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
+          e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
+
+          ## [Não lançado]
+
+          EOF
+          fi
+          
+          # Prepare the new entry
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          DATE=$(date '+%Y-%m-%d')
+          
+          # Determine change type based on PR title/labels
+          CHANGE_TYPE="Changed"
+          if echo "$PR_TITLE" | grep -iE "^(feat|feature)"; then
+            CHANGE_TYPE="Added"
+          elif echo "$PR_TITLE" | grep -iE "^(fix|bug)"; then
+            CHANGE_TYPE="Fixed"
+          elif echo "$PR_TITLE" | grep -iE "^(break|breaking)"; then
+            CHANGE_TYPE="Changed"
+          elif echo "$PR_TITLE" | grep -iE "^(remove|delete)"; then
+            CHANGE_TYPE="Removed"
+          elif echo "$PR_TITLE" | grep -iE "^(sec|security)"; then
+            CHANGE_TYPE="Security"
+          fi
+          
+          # Create a temporary file with the new entry
+          cat > temp_changelog.md << EOF
+          # Changelog
+
+          Todas as mudanças importantes do projeto AUDITORIA360 serão documentadas neste arquivo.
+
+          O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
+          e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
+
+          ## [Não lançado]
+
+          ### $CHANGE_TYPE
+          - $PR_TITLE ([#$PR_NUMBER]($PR_URL)) - por @$PR_AUTHOR em $DATE
+
+          EOF
+          
+          # Append the rest of the changelog (excluding the header and unreleased section)
+          if [ -f "CHANGELOG.md" ]; then
+            sed -n '/^## \[/,$ p' CHANGELOG.md | tail -n +2 >> temp_changelog.md
+          fi
+          
+          # Replace the original changelog
+          mv temp_changelog.md CHANGELOG.md
+          
+      - name: Update CHANGELOG.md for Release
+        if: github.event_name == 'release'
+        run: |
+          echo "Atualizando CHANGELOG.md para release ${{ github.event.release.tag_name }}"
+          
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "CHANGELOG.md não encontrado, criando..."
+            exit 1
+          fi
+          
+          RELEASE_TAG="${{ github.event.release.tag_name }}"
+          RELEASE_NAME="${{ github.event.release.name }}"
+          RELEASE_DATE=$(date '+%Y-%m-%d')
+          RELEASE_URL="${{ github.event.release.html_url }}"
+          
+          # Replace [Não lançado] with the release version
+          sed -i "s/## \[Não lançado\]/## [$RELEASE_TAG] - $RELEASE_DATE\n\n### Release Notes\n- [$RELEASE_NAME]($RELEASE_URL)\n\n## [Não lançado]/" CHANGELOG.md
+          
+      - name: Commit and push changes
+        run: |
+          if git diff --quiet CHANGELOG.md; then
+            echo "Nenhuma alteração no CHANGELOG.md"
+            exit 0
+          fi
+          
+          git add CHANGELOG.md
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git commit -m "docs: atualiza CHANGELOG.md com PR #${{ github.event.pull_request.number }}
+
+            Co-authored-by: ${{ github.event.pull_request.user.login }} <${{ github.event.pull_request.user.login }}@users.noreply.github.com>"
+          else
+            git commit -m "docs: atualiza CHANGELOG.md para release ${{ github.event.release.tag_name }}"
+          fi
+          
+          git push
+          
+      - name: Generate Changelog Report
+        if: always()
+        run: |
+          echo "# Relatório de Atualização do Changelog - $(date)" > changelog-report.md
+          echo "" >> changelog-report.md
+          echo "## Detalhes da Atualização" >> changelog-report.md
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "- Tipo: Pull Request" >> changelog-report.md
+            echo "- PR: #${{ github.event.pull_request.number }}" >> changelog-report.md
+            echo "- Título: ${{ github.event.pull_request.title }}" >> changelog-report.md
+            echo "- Autor: @${{ github.event.pull_request.user.login }}" >> changelog-report.md
+          else
+            echo "- Tipo: Release" >> changelog-report.md
+            echo "- Tag: ${{ github.event.release.tag_name }}" >> changelog-report.md
+            echo "- Nome: ${{ github.event.release.name }}" >> changelog-report.md
+          fi
+          echo "- Repository: ${{ github.repository }}" >> changelog-report.md
+          echo "" >> changelog-report.md
+          echo "## Status do Arquivo" >> changelog-report.md
+          echo "- CHANGELOG.md: $(test -f CHANGELOG.md && echo '✅ Atualizado' || echo '❌ Erro')" >> changelog-report.md
+          echo "- Linhas totais: $(wc -l < CHANGELOG.md 2>/dev/null || echo 'N/A')" >> changelog-report.md
+          echo "" >> changelog-report.md
+          echo "## Próximos Passos" >> changelog-report.md
+          echo "- [ ] Verificar se a entrada foi adicionada corretamente" >> changelog-report.md
+          echo "- [ ] Revisar formatação e categorização" >> changelog-report.md
+          echo "- [ ] Preparar próxima release se aplicável" >> changelog-report.md
+          
+      - name: Upload Changelog Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changelog-report-${{ github.run_number }}
+          path: changelog-report.md
+          retention-days: 30
