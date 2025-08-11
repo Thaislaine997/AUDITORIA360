@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDITORIA360 - Alerta do Sistema</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .alert-critical { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); }
+        .alert-warning { background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%); }
+        .alert-info { background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%); }
+        .alert-success { background: linear-gradient(135deg, #1dd1a1 0%, #55a3ff 100%); }
+        
+        .content {
+            padding: 30px;
+        }
+        .alert-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .alert-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .alert-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 5px 0 0 0;
+        }
+        .alert-details {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .detail-value {
+            color: #6c757d;
+        }
+        .action-required {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .action-title {
+            font-weight: bold;
+            color: #856404;
+            margin: 0 0 10px 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #5a67d8;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 5px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header {{alert_class}}">
+            <div class="alert-icon">{{alert_emoji}}</div>
+            <h1 class="alert-title">{{alert_type}}</h1>
+            <p class="alert-subtitle">Sistema AUDITORIA360</p>
+        </div>
+        
+        <div class="content">
+            <div class="alert-details">
+                <div class="detail-item">
+                    <span class="detail-label">Módulo Afetado:</span>
+                    <span class="detail-value">{{module_name}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status Atual:</span>
+                    <span class="detail-value">{{status}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Severidade:</span>
+                    <span class="detail-value">{{severity}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Timestamp:</span>
+                    <span class="detail-value">{{timestamp}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Detalhes:</span>
+                    <span class="detail-value">{{details}}</span>
+                </div>
+            </div>
+            
+            {{#action_required}}
+            <div class="action-required">
+                <div class="action-title">🎯 Ação Requerida:</div>
+                <p>{{action_required}}</p>
+            </div>
+            {{/action_required}}
+            
+            <div style="text-align: center;">
+                <a href="{{dashboard_url}}" class="btn">
+                    📊 Verificar Dashboard
+                </a>
+            </div>
+            
+            {{#recommendations}}
+            <div style="margin-top: 20px;">
+                <h3>💡 Recomendações:</h3>
+                <ul>
+                    {{#items}}
+                    <li>{{.}}</li>
+                    {{/items}}
+                </ul>
+            </div>
+            {{/recommendations}}
+        </div>
+        
+        <div class="footer">
+            <p>Este é um alerta automático do Sistema de Monitoramento AUDITORIA360</p>
+            <p>Para mais informações, acesse o <a href="{{dashboard_url}}">Dashboard de Status</a></p>
+            <p>Gerado em {{generation_time}}</p>
+        </div>
+    </div>
+</body>
+</html>
