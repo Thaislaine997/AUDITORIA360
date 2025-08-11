@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Desenvolvimento IA - AUDITORIA360</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .status-chip {
+            background: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .status-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .status-icon.success {
+            background: #4caf50;
+        }
+        
+        .status-icon.warning {
+            background: #ff9800;
+        }
+        
+        .retrain-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .retrain-btn:hover {
+            background: #1565c0;
+        }
+        
+        .tips h4 {
+            color: #1976d2;
+            margin-bottom: 12px;
+        }
+        
+        .tip {
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: 500;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .message.assistant {
+            align-self: flex-start;
+        }
+        
+        .message.system {
+            align-self: flex-start;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .avatar.user {
+            background: #1976d2;
+        }
+        
+        .avatar.assistant {
+            background: #9c27b0;
+        }
+        
+        .avatar.system {
+            background: #ff9800;
+        }
+        
+        .message-content {
+            background: #f5f5f5;
+            padding: 12px 16px;
+            border-radius: 16px;
+            max-width: 100%;
+        }
+        
+        .message.user .message-content {
+            background: #1976d2;
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .sources {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .sources-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .source-tag {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #666;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+        
+        .chat-input {
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            outline: none;
+        }
+        
+        .chat-input input:focus {
+            border-color: #1976d2;
+        }
+        
+        .send-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .send-btn:hover {
+            background: #1565c0;
+        }
+        
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .info-alert {
+            background: #e3f2fd;
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .info-alert .icon {
+            color: #1976d2;
+            font-size: 20px;
+        }
+        
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .loading-dots {
+            display: inline-flex;
+            gap: 2px;
+        }
+        
+        .loading-dots span {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #666;
+            animation: loading 1.4s infinite ease-in-out;
+        }
+        
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧠 Assistente de Desenvolvimento</h1>
+            <div class="subtitle">IA interna treinada no código do AUDITORIA360</div>
+            <div class="status-chip">
+                🤖 Cérebro Ativo
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Status Card -->
+                <div class="card">
+                    <h3>📊 Status do Sistema</h3>
+                    <div class="status-item">
+                        <div class="status-icon success"></div>
+                        ✅ Assistente ativo com 127 arquivos processados
+                    </div>
+                    <div class="status-item">
+                        📁 Arquivos processados: 127
+                    </div>
+                    <div class="status-item">
+                        🗄️ Base de dados: Existe
+                    </div>
+                    <div class="status-item">
+                        🔍 Sistema de busca: Pronto
+                    </div>
+                    <div class="status-item">
+                        🕐 Último treino: Hoje, 15:30
+                    </div>
+                    <button class="retrain-btn">
+                        🔄 Retreinar IA
+                    </button>
+                </div>
+                
+                <!-- Tips Card -->
+                <div class="card tips">
+                    <h3>💡 Dicas de Uso</h3>
+                    <div class="tip">
+                        <strong>Específico:</strong> "Como funciona a autenticação em auth.py?"
+                    </div>
+                    <div class="tip">
+                        <strong>Exploratório:</strong> "Que APIs existem para relatórios?"
+                    </div>
+                    <div class="tip">
+                        <strong>Arquitetura:</strong> "Como está organizada a estrutura de routers?"
+                    </div>
+                    <div class="tip">
+                        <strong>Debug:</strong> "Como resolver erros de CORS no frontend?"
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Interface -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    💬 Conversa com o Assistente
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- System Message -->
+                    <div class="message system">
+                        <div class="avatar system">ℹ️</div>
+                        <div class="message-content">
+                            Olá! Sou o seu assistente de desenvolvimento interno do AUDITORIA360. 🧠<br><br>
+                            
+                            Posso ajudar com:<br>
+                            • Explicações sobre o código existente<br>
+                            • Sugestões de implementação<br>
+                            • Dúvidas sobre a arquitetura<br>
+                            • Exemplos de uso das APIs<br>
+                            • Boas práticas do projeto<br><br>
+                            
+                            Pergunta sobre qualquer parte do código!
+                            <div class="message-time">15:30</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Demo Messages -->
+                    <div class="message user">
+                        <div class="avatar user">👤</div>
+                        <div class="message-content">
+                            Como funciona a estrutura de routers da API?
+                            <div class="message-time">15:31</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message assistant">
+                        <div class="avatar assistant">🧠</div>
+                        <div class="message-content">
+                            Com base na análise do código do AUDITORIA360:<br><br>
+                            
+                            A API usa FastAPI com routers modulares organizados em `src/api/routers/`. Cada funcionalidade tem seu próprio router:<br><br>
+                            
+                            • `auth_router` - Autenticação e JWT<br>
+                            • `payroll_router` - Gestão de folha<br>
+                            • `document_router` - Gestão de documentos<br>
+                            • `audit_router` - Auditoria e compliance<br>
+                            • `dev_assistant_router` - Este assistente!<br><br>
+                            
+                            Todos são incluídos no `api/index.py` com prefixos específicos como `/api/v1/auth`, `/api/v1/payroll`, etc.
+                            
+                            <div class="sources">
+                                <div class="sources-label">📚 Fontes consultadas:</div>
+                                <span class="source-tag">api/index.py</span>
+                                <span class="source-tag">src/api/routers/</span>
+                            </div>
+                            <div class="message-time">15:31</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message user">
+                        <div class="avatar user">👤</div>
+                        <div class="message-content">
+                            Explique o sistema de autenticação
+                            <div class="message-time">15:32</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message assistant">
+                        <div class="avatar assistant">🧠</div>
+                        <div class="message-content">
+                            O sistema de autenticação do AUDITORIA360 usa JWT (JSON Web Tokens) implementado em `src/api/routers/auth.py`:<br><br>
+                            
+                            **Componentes principais:**<br>
+                            • Login endpoint que valida credenciais<br>
+                            • Geração de tokens JWT com expiração<br>
+                            • Middleware para validação de tokens<br>
+                            • Sistema de refresh tokens<br>
+                            • Integração com diferentes tipos de usuário<br><br>
+                            
+                            **Fluxo típico:**<br>
+                            1. Cliente envia credenciais para `/api/v1/auth/login`<br>
+                            2. Sistema valida e retorna JWT<br>
+                            3. Cliente inclui token no header `Authorization: Bearer <token>`<br>
+                            4. Middleware valida token em cada requisição protegida
+                            
+                            <div class="sources">
+                                <div class="sources-label">📚 Fontes consultadas:</div>
+                                <span class="source-tag">src/api/routers/auth.py</span>
+                                <span class="source-tag">src/core/security.py</span>
+                            </div>
+                            <div class="message-time">15:32</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" placeholder="Faça sua pergunta sobre o código do AUDITORIA360..." id="messageInput">
+                    <button class="send-btn" id="sendBtn">
+                        📤 Enviar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info Alert -->
+        <div class="info-alert">
+            <div class="icon">🧠</div>
+            <div>
+                <strong>Assistente de Desenvolvimento Interno:</strong> Esta IA foi treinada especificamente 
+                no código-fonte do AUDITORIA360. Ela entende a arquitetura, padrões de código, APIs disponíveis 
+                e pode ajudar a acelerar seu desenvolvimento mantendo a consistência do projeto.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple demo functionality
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        
+        function addMessage(content, type = 'user') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `avatar ${type}`;
+            avatar.textContent = type === 'user' ? '👤' : type === 'assistant' ? '🧠' : 'ℹ️';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.innerHTML = content + '<div class="message-time">' + new Date().toLocaleTimeString() + '</div>';
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showThinking() {
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message assistant';
+            thinkingDiv.id = 'thinking';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar assistant';
+            avatar.textContent = '🧠';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content thinking';
+            messageContent.innerHTML = `
+                🧠 Analisando código...
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            
+            thinkingDiv.appendChild(avatar);
+            thinkingDiv.appendChild(messageContent);
+            chatMessages.appendChild(thinkingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            return thinkingDiv;
+        }
+        
+        function removeThinking() {
+            const thinking = document.getElementById('thinking');
+            if (thinking) {
+                thinking.remove();
+            }
+        }
+        
+        function simulateResponse(question) {
+            const thinking = showThinking();
+            
+            setTimeout(() => {
+                removeThinking();
+                
+                let response = `Com base na análise do código do AUDITORIA360:<br><br>`;
+                let sources = [];
+                
+                if (question.toLowerCase().includes('frontend') || question.toLowerCase().includes('react')) {
+                    response += `O frontend usa React + TypeScript com Material-UI:<br><br>
+                    • Componentes em \`src/frontend/src/pages/\`<br>
+                    • Estado gerenciado com React hooks<br>
+                    • Integração com APIs via fetch/axios<br>
+                    • Design system baseado em Material-UI<br>
+                    • Roteamento com React Router`;
+                    sources = ['src/frontend/src/pages/', 'package.json'];
+                } else if (question.toLowerCase().includes('database') || question.toLowerCase().includes('banco')) {
+                    response += `Sistema de banco de dados robusto:<br><br>
+                    • ORM: SQLAlchemy para abstração<br>
+                    • Suporte: PostgreSQL (produção) e SQLite (desenvolvimento)<br>
+                    • Migrations: Alembic para versionamento<br>
+                    • Models: Definidos em \`src/models/\`<br>
+                    • Conexão: Configurada em \`src/core/database.py\``;
+                    sources = ['src/models/', 'src/core/database.py'];
+                } else {
+                    response += `Esta é uma pergunta interessante sobre "${question}".<br><br>
+                    O projeto AUDITORIA360 é um sistema completo de auditoria e compliance com:<br><br>
+                    🏗️ **Arquitetura modular**<br>
+                    🔐 **Sistema de autenticação JWT**<br>
+                    📊 **APIs RESTful com FastAPI**<br>
+                    🎨 **Frontend React + TypeScript**<br>
+                    🤖 **IA integrada para automação**<br><br>
+                    Para respostas mais específicas, pergunte sobre: auth, routers, frontend, database, ou estrutura.`;
+                    sources = ['README.md', 'api/index.py'];
+                }
+                
+                const sourcesHtml = sources.length > 0 ? `
+                    <div class="sources">
+                        <div class="sources-label">📚 Fontes consultadas:</div>
+                        ${sources.map(s => `<span class="source-tag">${s}</span>`).join('')}
+                    </div>
+                ` : '';
+                
+                addMessage(response + sourcesHtml, 'assistant');
+            }, 1500);
+        }
+        
+        function handleSend() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            messageInput.value = '';
+            
+            // Simulate AI response
+            simulateResponse(message);
+        }
+        
+        sendBtn.addEventListener('click', handleSend);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSend();
+            }
+        });
+        
+        // Demo functionality for buttons
+        document.querySelector('.retrain-btn').addEventListener('click', () => {
+            addMessage('🔄 Retreinamento iniciado... Processando arquivos atualizados...', 'system');
+            setTimeout(() => {
+                addMessage('✅ Retreinamento concluído! Base de conhecimento atualizada com 127 arquivos.', 'system');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
