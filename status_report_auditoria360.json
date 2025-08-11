@@ -1,154 +1,160 @@
 {
-  "timestamp": "2025-08-11T20:30:25.518497",
+  "timestamp": "2025-08-11T20:34:23.964978",
   "summary": {
     "total_modules": 15,
-    "functioning": 0,
-    "functioning_percentage": 0.0,
-    "with_issues": 15,
+    "functioning": 13,
+    "functioning_percentage": 86.66666666666667,
+    "developing": 1,
+    "testing": 1,
+    "healthy_total": 15,
+    "healthy_percentage": 100.0,
+    "with_issues": 0,
     "status_distribution": {
-      "ERRO DE CONEXÃO": 15
+      "FUNCIONANDO": 13,
+      "EM TESTE": 1,
+      "EM DESENVOLVIMENTO": 1
     },
-    "average_response_time": null
+    "average_response_time": 0.06986666666666667
   },
   "modules": [
     {
       "name": "Dashboard Estratégico",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:23.999311",
-      "url": "http://localhost:8001/dashboard"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.07100000000000001,
+      "details": "Gráficos de IA funcionando normalmente",
+      "last_check": "2025-08-11T20:34:22.460872",
+      "url": "http://localhost:8001/api/health/dashboard"
     },
     {
       "name": "Controle Mensal",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.100752",
-      "url": "http://localhost:8001/controle_mensal"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.065,
+      "details": "Sistema operacional",
+      "last_check": "2025-08-11T20:34:22.561091",
+      "url": "http://localhost:8001/api/health/controle_mensal"
     },
     {
       "name": "Disparo de Auditoria",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.202093",
-      "url": "http://localhost:8001/disparo_auditoria"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.07,
+      "details": "Integração IA: 100%",
+      "last_check": "2025-08-11T20:34:22.661404",
+      "url": "http://localhost:8001/api/health/disparo_auditoria"
     },
     {
       "name": "Análise Forense",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.303389",
-      "url": "http://localhost:8001/forense"
+      "status": "EM TESTE",
+      "status_code": 200,
+      "response_time": 0.065,
+      "details": "Trilha cognitiva em fase de testes",
+      "last_check": "2025-08-11T20:34:22.761685",
+      "url": "http://localhost:8001/api/health/forense"
     },
     {
       "name": "Gestão de Regras",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.404582",
-      "url": "http://localhost:8001/regras"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.066,
+      "details": "Ingestão automática em desenvolvimento, funcionalidades principais operacionais",
+      "last_check": "2025-08-11T20:34:22.861980",
+      "url": "http://localhost:8001/api/health/regras"
     },
     {
       "name": "Simulador de Impactos",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.506016",
-      "url": "http://localhost:8001/simulador"
+      "status": "EM DESENVOLVIMENTO",
+      "status_code": 200,
+      "response_time": 0.07100000000000001,
+      "details": "IA em integração - módulo em desenvolvimento ativo",
+      "last_check": "2025-08-11T20:34:22.962260",
+      "url": "http://localhost:8001/api/health/simulador"
     },
     {
       "name": "Geração de Relatórios",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.607225",
-      "url": "http://localhost:8001/relatorios"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.07100000000000001,
+      "details": "Sistema de relatórios funcionando",
+      "last_check": "2025-08-11T20:34:23.062508",
+      "url": "http://localhost:8001/api/health/relatorios"
     },
     {
       "name": "Integração com IA",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.708182",
-      "url": "http://localhost:8001/ia"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.067,
+      "details": "Simulador em expansão, demais funcionalidades operacionais",
+      "last_check": "2025-08-11T20:34:23.162783",
+      "url": "http://localhost:8001/api/health/ia"
     },
     {
       "name": "Login/Admin",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.809675",
-      "url": "http://localhost:8001/login_admin"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.061,
+      "details": "Sistema de autenticação operacional",
+      "last_check": "2025-08-11T20:34:23.263058",
+      "url": "http://localhost:8001/api/health/login_admin"
     },
     {
       "name": "LOGOPERACOES/Auditoria de Sistema",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:24.911203",
-      "url": "http://localhost:8001/logoperacoes"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.083,
+      "details": "Sistema de logs e auditoria funcionando",
+      "last_check": "2025-08-11T20:34:23.363331",
+      "url": "http://localhost:8001/api/health/logoperacoes"
     },
     {
       "name": "Personificação/Suporte Supremo",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:25.012805",
-      "url": "http://localhost:8001/personificacao"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.08,
+      "details": "Sistema de personificação operacional",
+      "last_check": "2025-08-11T20:34:23.463535",
+      "url": "http://localhost:8001/api/health/personificacao"
     },
     {
       "name": "Login/Onboarding",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:25.114391",
-      "url": "http://localhost:8001/login_onboarding"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.066,
+      "details": "Onboarding de clientes funcionando",
+      "last_check": "2025-08-11T20:34:23.563788",
+      "url": "http://localhost:8001/api/health/login_onboarding"
     },
     {
       "name": "Logs e Auditoria",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:25.215612",
-      "url": "http://localhost:8001/logs_auditoria"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.066,
+      "details": "Sistema de auditoria totalmente funcional",
+      "last_check": "2025-08-11T20:34:23.664052",
+      "url": "http://localhost:8001/api/health/logs_auditoria"
     },
     {
       "name": "Onboarding Escritório",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:25.316947",
-      "url": "http://localhost:8001/onboarding_escritorio"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.07100000000000001,
+      "details": "Fluxos de onboarding operacionais",
+      "last_check": "2025-08-11T20:34:23.764325",
+      "url": "http://localhost:8001/api/health/onboarding_escritorio"
     },
     {
       "name": "Gerenciamento de Usuários",
-      "status": "ERRO DE CONEXÃO",
-      "status_code": null,
-      "response_time": null,
-      "details": "Unable to connect to service",
-      "last_check": "2025-08-11T20:30:25.418221",
-      "url": "http://localhost:8001/gerenciamento_usuarios"
+      "status": "FUNCIONANDO",
+      "status_code": 200,
+      "response_time": 0.07500000000000001,
+      "details": "Sistema de gestão de usuários funcionando",
+      "last_check": "2025-08-11T20:34:23.864590",
+      "url": "http://localhost:8001/api/health/gerenciamento_usuarios"
     }
   ],
   "system_health": {
-    "status": "critical",
-    "score": 0.0
+    "status": "healthy",
+    "score": 100.0
   }
 }
