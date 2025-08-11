@@ -9,7 +9,8 @@ import os
 import sys
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey, Date, JSON
+from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey, Date, JSON, DECIMAL, ARRAY
+from sqlalchemy.dialects.postgresql import UUID, INET, JSONB
 from sqlalchemy.orm import declarative_base, relationship
 import json
 
@@ -284,6 +285,201 @@ class HistoricoAnalisesRiscoDB(Base):
         return f"<HistoricoAnalisesRisco(id={self.id}, empresa_id={self.empresa_id}, score_risco={self.score_risco})>"
 
 
+# =====================================================================
+# GRAND TOMO ARCHITECTURE - NEW DATABASE MODELS
+# =====================================================================
+
+class LogOperacoesDB(Base):
+    """
+    Audit Trail System - The "immutable memory" of the system
+    Every write operation in the system is logged here
+    """
+    
+    __tablename__ = "LOGOPERACOES"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(UUID, nullable=True)  # References auth.users(id)
+    contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=True)
+    operacao = Column(String(50), nullable=False)  # CREATE, UPDATE, DELETE, etc.
+    tabela_afetada = Column(String(100), nullable=False)  # Which table was affected
+    registro_id = Column(String(100), nullable=True)  # ID of the affected record
+    detalhes_operacao = Column(JSONB, nullable=False)  # Complete details of the operation
+    timestamp_operacao = Column(DateTime, default=datetime.utcnow, nullable=False)
+    ip_origem = Column(INET, nullable=True)  # IP address of the operation origin
+    user_agent = Column(Text, nullable=True)  # Browser/client information
+    session_id = Column(String(255), nullable=True)  # Session identifier
+    resultado = Column(String(20), default='SUCCESS', nullable=False)  # SUCCESS, ERROR, WARNING
+
+
+class DeclaracoesFiscaisDB(Base):
+    """
+    Tax Declarations Integration - For cross-referencing payroll calculations
+    with official declarations (DCTFWeb, DIRF, GFIP, eSocial, etc.)
+    """
+    
+    __tablename__ = "DeclaracoesFiscais"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    tipo_declaracao = Column(String(50), nullable=False)  # DCTFWeb, DIRF, GFIP, eSocial
+    periodo_competencia = Column(Date, nullable=False)  # Competency period
+    numero_recibo = Column(String(100), nullable=True)  # Receipt number from tax authority
+    data_transmissao = Column(DateTime, nullable=True)  # When it was transmitted
+    status_declaracao = Column(String(20), default='PENDENTE', nullable=False)  # PENDENTE, TRANSMITIDA, HOMOLOGADA, REJEITADA
+    valores_declarados = Column(JSONB, nullable=False)  # All declared values in structured format
+    arquivo_original = Column(String(500), nullable=True)  # Path to original file
+    hash_arquivo = Column(String(255), nullable=True)  # File hash for integrity verification
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class PlanosContasDB(Base):
+    """
+    Chart of Accounts - For automatic accounting entry drafts
+    """
+    
+    __tablename__ = "PlanosContas"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    codigo_conta = Column(String(50), nullable=False)  # Account code (e.g., "1.1.1.01.001")
+    nome_conta = Column(String(200), nullable=False)  # Account name
+    tipo_conta = Column(String(30), nullable=False)  # ATIVO, PASSIVO, PATRIMONIO_LIQUIDO, RECEITA, DESPESA
+    conta_pai_id = Column(Integer, ForeignKey("PlanosContas.id"), nullable=True)  # Parent account
+    nivel = Column(Integer, default=1, nullable=False)  # Hierarchy level
+    aceita_lancamento = Column(Boolean, default=True, nullable=False)  # Whether this account accepts entries
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class LancamentosContabeisDB(Base):
+    """
+    Accounting Entries - Automatically generated drafts from audit processes
+    """
+    
+    __tablename__ = "LancamentosContabeis"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    numero_lancamento = Column(String(50), nullable=False)  # Entry number
+    data_lancamento = Column(Date, nullable=False)
+    historico = Column(Text, nullable=False)  # Entry description
+    valor_total = Column(DECIMAL(15,2), nullable=False)
+    origem_lancamento = Column(String(50), nullable=False)  # FOLHA_PAGAMENTO, AUDITORIA_IA, MANUAL
+    referencia_origem_id = Column(Integer, nullable=True)  # ID of the source record
+    status_lancamento = Column(String(20), default='RASCUNHO', nullable=False)  # RASCUNHO, APROVADO, CONTABILIZADO, CANCELADO
+    aprovado_por = Column(UUID, nullable=True)  # References auth.users(id)
+    aprovado_em = Column(DateTime, nullable=True)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class LancamentosContabeisItensDB(Base):
+    """
+    Individual debit/credit items for each accounting entry
+    """
+    
+    __tablename__ = "LancamentosContabeisItens"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    lancamento_id = Column(Integer, ForeignKey("LancamentosContabeis.id"), nullable=False)
+    conta_id = Column(Integer, ForeignKey("PlanosContas.id"), nullable=False)
+    tipo_movimentacao = Column(String(10), nullable=False)  # DEBITO or CREDITO
+    valor = Column(DECIMAL(15,2), nullable=False)
+    historico_item = Column(Text, nullable=True)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class NotificacoesDB(Base):
+    """
+    Notification System - Proactive communication with users
+    """
+    
+    __tablename__ = "Notificacoes"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    usuario_id = Column(UUID, nullable=True)  # References auth.users(id)
+    contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=True)
+    tipo_notificacao = Column(String(20), nullable=False)  # INFO, ALERTA, ERRO, SUCESSO
+    titulo = Column(String(200), nullable=False)
+    mensagem = Column(Text, nullable=False)
+    link_acao = Column(String(500), nullable=True)  # URL to take action
+    prioridade = Column(String(20), default='MEDIA', nullable=False)  # BAIXA, MEDIA, ALTA, CRITICA
+    lida = Column(Boolean, default=False, nullable=False)
+    data_leitura = Column(DateTime, nullable=True)
+    origem_notificacao = Column(String(50), nullable=True)  # Which system generated this
+    dados_contexto = Column(JSONB, nullable=True)  # Additional context data
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    expira_em = Column(DateTime, nullable=True)  # Expiration date
+
+
+class AlertasPrazosDB(Base):
+    """
+    Deadline Alerts - Automated monitoring of important dates
+    """
+    
+    __tablename__ = "AlertasPrazos"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
+    tipo_prazo = Column(String(50), nullable=False)  # CCT_VENCIMENTO, DECLARACAO_FISCAL, AUDITORIA_MENSAL
+    descricao = Column(Text, nullable=False)
+    data_vencimento = Column(Date, nullable=False)
+    dias_antecedencia = Column(Integer, default=7, nullable=False)  # Days before deadline
+    status_alerta = Column(String(20), default='ATIVO', nullable=False)  # ATIVO, DISPARADO, CONCLUIDO, CANCELADO
+    ultimo_disparo = Column(DateTime, nullable=True)
+    configuracao_disparo = Column(JSONB, nullable=True)  # Alert configuration
+    referencia_id = Column(Integer, nullable=True)  # Reference to related record
+    tipo_referencia = Column(String(50), nullable=True)  # Type of referenced record
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class AtendimentosSuporteDB(Base):
+    """
+    Integrated Support Ticket System
+    """
+    
+    __tablename__ = "AtendimentosSuporte"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    contabilidade_id = Column(Integer, ForeignKey("Contabilidades.id"), nullable=False)
+    usuario_solicitante = Column(UUID, nullable=True)  # References auth.users(id)
+    numero_ticket = Column(String(20), nullable=False, unique=True)  # Formatted ticket number
+    assunto = Column(String(200), nullable=False)
+    descricao = Column(Text, nullable=False)
+    categoria = Column(String(30), nullable=False)  # TECNICO, FUNCIONAL, DUVIDA, BUG, MELHORIA
+    prioridade = Column(String(20), default='MEDIA', nullable=False)  # BAIXA, MEDIA, ALTA, CRITICA
+    status = Column(String(30), default='ABERTO', nullable=False)  # ABERTO, EM_ANDAMENTO, AGUARDANDO_CLIENTE, RESOLVIDO, FECHADO
+    atribuido_para = Column(UUID, nullable=True)  # References auth.users(id)
+    data_resolucao = Column(DateTime, nullable=True)
+    tempo_primeira_resposta = Column(Integer, nullable=True)  # Minutes until first response
+    tempo_resolucao = Column(Integer, nullable=True)  # Minutes until resolution
+    satisfacao_cliente = Column(Integer, nullable=True)  # 1-5 scale
+    tags = Column(ARRAY(String), nullable=True)  # Array of tags
+    dados_contexto = Column(JSONB, nullable=True)  # Additional context
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class AtendimentosSuporteInteracoesDB(Base):
+    """
+    All interactions/history for support tickets
+    """
+    
+    __tablename__ = "AtendimentosSuporteInteracoes"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    atendimento_id = Column(Integer, ForeignKey("AtendimentosSuporte.id"), nullable=False)
+    usuario_id = Column(UUID, nullable=True)  # References auth.users(id)
+    tipo_interacao = Column(String(30), nullable=False)  # COMENTARIO, STATUS_CHANGE, ASSIGNMENT, ATTACHMENT
+    conteudo = Column(Text, nullable=True)
+    arquivo_anexo = Column(String(500), nullable=True)  # Path to attached file
+    visivel_cliente = Column(Boolean, default=True, nullable=False)
+    dados_adiciais = Column(JSONB, nullable=True)  # Additional structured data
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
 def get_db():
     """
     Database dependency for portal_demandas
@@ -350,6 +546,17 @@ __all__ = [
     "TemplateControleTarefaDB",
     "ProcessamentosFolhaDB",
     "HistoricoAnalisesRiscoDB",
+    # Grand Tomo Architecture Models
+    "LogOperacoesDB",
+    "DeclaracoesFiscaisDB", 
+    "PlanosContasDB",
+    "LancamentosContabeisDB",
+    "LancamentosContabeisItensDB",
+    "NotificacoesDB",
+    "AlertasPrazosDB",
+    "AtendimentosSuporteDB",
+    "AtendimentosSuporteInteracoesDB",
+    # Functions
     "get_db",
     "init_portal_db",
     "test_db_connection",
