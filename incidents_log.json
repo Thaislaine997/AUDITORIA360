@@ -1,0 +1,34 @@
+[
+  {
+    "id": "c020395d",
+    "title": "Falha em Integração com IA",
+    "description": "Timeout ao conectar com OpenAI API - possível problema de rede",
+    "module": "Integração com IA",
+    "severity": "critical",
+    "status": "open",
+    "created_at": "2025-08-11T20:23:24.261826",
+    "updated_at": "2025-08-11T20:23:24.261832",
+    "responsible_team": {
+      "responsible": "Data Eng",
+      "approver": "CTO",
+      "consulted": "DevOps",
+      "informed": "Clientes"
+    },
+    "assigned_to": "Data Eng",
+    "approver": "CTO",
+    "stakeholders": [
+      "DevOps",
+      "Clientes"
+    ],
+    "priority": "P0",
+    "estimated_resolution": "2 horas",
+    "actions_taken": [],
+    "resolution": null,
+    "resolved_at": null,
+    "tags": [
+      "automated",
+      "system-failure",
+      "integração-com-ia"
+    ]
+  }
+]

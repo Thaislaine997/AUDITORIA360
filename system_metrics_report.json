@@ -1,0 +1,91 @@
+{
+  "timestamp": "2025-08-11T20:23:16.420754",
+  "collection_duration": 0.0,
+  "uptime": {
+    "percentage": 98.96
+  },
+  "performance": {
+    "avg_response_time": 203.5,
+    "p50_response_time": 195.0,
+    "p95_response_time": 322.5,
+    "p99_response_time": 300,
+    "min_response_time": 150,
+    "max_response_time": 300
+  },
+  "errors": {
+    "total_requests": 10000,
+    "error_requests": 45,
+    "error_rate_percentage": 0.45,
+    "success_rate_percentage": 99.55
+  },
+  "ai_services": {
+    "services": {
+      "openai_api": {
+        "status": "healthy",
+        "response_time": 450
+      },
+      "document_processing": {
+        "status": "healthy",
+        "response_time": 1200
+      },
+      "risk_analysis": {
+        "status": "healthy",
+        "response_time": 800
+      },
+      "report_generation": {
+        "status": "degraded",
+        "response_time": 3500
+      }
+    },
+    "availability_percentage": 75.0,
+    "healthy_services": 3,
+    "total_services": 4
+  },
+  "user_activity": {
+    "active_users_24h": 156,
+    "new_registrations_24h": 8,
+    "audit_executions_24h": 45,
+    "report_generations_24h": 23,
+    "login_sessions_24h": 189,
+    "concurrent_users": 23
+  },
+  "audit_logs": {
+    "total_audit_logs_24h": 2847,
+    "security_events_24h": 12,
+    "admin_actions_24h": 34,
+    "failed_logins_24h": 8,
+    "data_access_logs_24h": 1423
+  },
+  "sla_compliance": {
+    "uptime": {
+      "target": 99.5,
+      "actual": 98.96,
+      "compliant": false,
+      "deviation": -0.54
+    },
+    "response_time": {
+      "target": 2000,
+      "actual": 322.5,
+      "compliant": true,
+      "deviation": -1677.5
+    },
+    "ai_availability": {
+      "target": 98.0,
+      "actual": 75.0,
+      "compliant": false,
+      "deviation": -23.0
+    },
+    "error_rate": {
+      "target": 1.0,
+      "actual": 0.45,
+      "compliant": true,
+      "deviation": -0.55
+    },
+    "overall": {
+      "compliant_slas": 2,
+      "total_slas": 4,
+      "compliance_percentage": 50.0,
+      "status": "breach"
+    }
+  }
+}

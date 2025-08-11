@@ -1,0 +1,121 @@
+name: System Health Check and Monitoring
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: Health Check System Modules
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest requests
+    
+    - name: Run Health Check Script
+      id: health_check
+      run: |
+        python automation/update_status.py
+        echo "health_check_exit_code=$?" >> $GITHUB_OUTPUT
+      continue-on-error: true
+    
+    - name: Upload Status Reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: status-reports
+        path: |
+          processos_status_auditoria360.md
+          status_report_auditoria360.json
+        retention-days: 7
+    
+    - name: Create Status Badge
+      run: |
+        if [ "${{ steps.health_check.outputs.health_check_exit_code }}" = "0" ]; then
+          echo '{"schemaVersion":1,"label":"system","message":"healthy","color":"green"}' > status-badge.json
+        else
+          echo '{"schemaVersion":1,"label":"system","message":"degraded","color":"orange"}' > status-badge.json
+        fi
+    
+    - name: Commit Status Updates
+      if: github.ref == 'refs/heads/main'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add processos_status_auditoria360.md status_report_auditoria360.json status-badge.json
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "🤖 Automated status update - $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
+        fi
+
+  deploy-check:
+    name: Deploy Health Check
+    needs: health-check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Check Deployment Health
+      run: |
+        echo "🚀 Running deployment health checks..."
+        
+        # Simulate health checks that would block deployment
+        if [ "${{ needs.health-check.outputs.health_check_exit_code }}" != "0" ]; then
+          echo "❌ Health check failed - blocking deployment"
+          exit 1
+        fi
+        
+        echo "✅ Health check passed - deployment can proceed"
+
+  notification:
+    name: Send Notifications
+    needs: [health-check]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Notify on Failure
+      if: needs.health-check.result == 'failure'
+      run: |
+        echo "🚨 ALERT: System health check failed!"
+        echo "Time: $(date)"
+        echo "Repository: ${{ github.repository }}"
+        echo "Commit: ${{ github.sha }}"
+        
+        # In production, this would send notifications to Slack/Teams/Email
+        # Example webhook call:
+        # curl -X POST -H 'Content-type: application/json' \
+        #   --data '{"text":"🚨 AUDITORIA360: Health check failed at $(date)"}' \
+        #   $SLACK_WEBHOOK_URL
+    
+    - name: Notify on Success
+      if: needs.health-check.result == 'success'
+      run: |
+        echo "✅ System health check completed successfully"
