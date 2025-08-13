@@ -18,11 +18,11 @@
 - **Workflows:** Status dos pipelines de CI/CD e automação
 - **Qualidade:** Métricas de código e documentação
 
-> 📈 [Dashboard de Status em Tempo Real](./status-dashboard.html) | 📋 [Relatório Detalhado](./processos_status_auditoria360.md) | 🔧 [Setup Local](./setup_local.sh)
+> 📈 [Dashboard de Status em Tempo Real](./status-dashboard.html)
 
 <!-- STATUS BADGES END -->
 
-**Ecossistema completo de auditoria DP com dois universos: Estratégico (admin) e Operacional (contabilidade)**
+**Toda a documentação, validação, guias e blueprints do AUDITORIA360 já foram implementados, migrados e centralizados. Arquivos antigos, relatórios de validação, checklists e históricos foram removidos para manter o repositório limpo e atualizado. Consulte este README e os READMEs das pastas para informações atualizadas.**
 
 ---
 

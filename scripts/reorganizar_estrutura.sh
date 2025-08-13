@@ -94,6 +94,37 @@ echo -e "\n9. Verificando estrutura final..."
 echo "Estrutura de diretórios criada:"
 ls -la | grep ^d
 
+# 10. Sugerir reorganização de arquivos soltos na raiz
+echo -e "\n10. Sugerindo reorganização de arquivos soltos na raiz..."
+
+# Lista de extensões e destinos sugeridos
+declare -A EXT_DIR_MAP=(
+    ["py"]="scripts/"
+    ["sh"]="scripts/"
+    ["sql"]="migrations/"
+    ["md"]="docs/"
+    ["json"]="conf/"
+    ["html"]="web/"
+    ["txt"]="docs/"
+)
+
+# Identifica arquivos soltos na raiz (exceto README.md, Makefile, arquivos ocultos)
+for file in $(find . -maxdepth 1 -type f ! -name "README.md" ! -name "Makefile" ! -name ".*" ! -name "*.lock" ! -name "*.toml" ! -name "*.yml" ! -name "*.yaml"); do
+    ext="${file##*.}"
+    dest="${EXT_DIR_MAP[$ext]}"
+    if [ -n "$dest" ] && [ ! -d "$dest" ]; then
+        mkdir -p "$dest"
+    fi
+    if [ -n "$dest" ] && [ "$file" != "./${dest}"* ]; then
+        echo "Movendo $file para $dest"
+        mv "$file" "$dest"
+    fi
+done
+
+# 11. Listar arquivos órfãos (não organizados)
+echo -e "\n11. Arquivos órfãos (não organizados):"
+find . -maxdepth 1 -type f ! -name "README.md" ! -name "Makefile" ! -name ".*" ! -name "*.lock" ! -name "*.toml" ! -name "*.yml" ! -name "*.yaml"
+
 echo -e "\n=== Reorganização concluída! ==="
 echo "Próximos passos:"
 echo "1. Verifique se todos os arquivos foram movidos corretamente"
