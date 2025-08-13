@@ -7,6 +7,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Não lançado]
 
+### Changed
+- Implement RLS security infrastructure and observability foundation for AUDITORIA360 ([#175](https://github.com/Thaislaine997/AUDITORIA360/pull/175)) - por @Copilot em 2025-08-13
+
+
 ### Added
 - feat: Implement AUDITORIA360 Supreme Guide - Complete Automation, Security & Observability Suite ([#174](https://github.com/Thaislaine997/AUDITORIA360/pull/174)) - por @Copilot em 2025-08-13
 
