@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-0bb1de41-2d14-4073-b387-2b4e5d5ee285
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-0bb1de41-2d14-4073-b387-2b4e5d5ee285
-./.git/objects/pack/pack-416e686d85a5919f1499acd825702888fbdeff77.idx
-./.git/objects/pack/pack-416e686d85a5919f1499acd825702888fbdeff77.pack
-./.git/objects/pack/pack-416e686d85a5919f1499acd825702888fbdeff77.rev
+./.git/objects/pack/pack-6deec6a70d7137b315eaaac430e1f2d718f40b12.idx
+./.git/objects/pack/pack-6deec6a70d7137b315eaaac430e1f2d718f40b12.pack
+./.git/objects/pack/pack-6deec6a70d7137b315eaaac430e1f2d718f40b12.rev
 ./.git/refs/heads/copilot/fix-0bb1de41-2d14-4073-b387-2b4e5d5ee285
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-0bb1de41-2d14-4073-b387-2b4e5d5ee285
@@ -50,8 +50,10 @@
 ./.github/workflows/jekyll-gh-pages.yml
 ./.github/workflows/master-checklist-validation.yml
 ./.github/workflows/notify-slack.yml
+./.github/workflows/rls-tests.yml
 ./.github/workflows/sync-wiki.yml
 ./.gitignore
+./.gitleaks.toml
 ./.pre-commit-config.yaml
 ./.prettierignore
 ./.prettierrc
@@ -61,6 +63,7 @@
 ./CONTRIBUTING.md
 ./DEPLOYMENT_GUIDE.md
 ./Dockerfile
+./Dockerfile.frontend
 ./GRAND_TOMO_IMPLEMENTATION_COMPLETE.md
 ./MANUAL_SUPREMO.md
 ./MANUAL_TESTE_IA_EVOLUCAO.md
@@ -170,6 +173,7 @@
 ./deploy/kubernetes/api-deployment.yaml
 ./deploy/kubernetes/redis-deployment.yaml
 ./dev_assistant_demo.html
+./docker-compose.dev.yml
 ./docker-compose.monitoring.yml
 ./docs/AI_TEXT_ANALYSIS_IMPLEMENTATION.md
 ./docs/API_OBSERVABILITY.md
@@ -190,6 +194,7 @@
 ./docs/README.md
 ./docs/REPOSITORY_IMPROVEMENTS_SUMMARY.md
 ./docs/ROADMAP.md
+./docs/SECURITY_RLS_SETUP.md
 ./docs/SWARM_INTELLIGENCE.md
 ./docs/TECHNOLOGY_STACK_ANALYSIS.md
 ./docs/TESTING_STRATEGY.md
@@ -695,6 +700,7 @@
 ./src/utils/api_integration.py
 ./src/utils/monitoring.py
 ./src/utils/performance.py
+./src/utils/structured_logging.py
 ./src/validation/metamorphosis_validator.py
 ./status-dashboard.html
 ./status_badges.json
@@ -703,6 +709,7 @@
 ./supabase/config.toml
 ./supabase/functions/analisar-texto-com-ia/index.ts
 ./supabase/functions/processar-pdf/index.ts
+./supabase/policies/tenants_rls.sql
 ./system_metrics_report.json
 ./system_metrics_report.md
 ./templates/alert_template.html
@@ -762,6 +769,7 @@
 ./tests/integration/test_param_legais_salario_familia.py
 ./tests/integration/test_param_legais_salario_minimo.py
 ./tests/integration/test_refactored_endpoints.py
+./tests/integration/test_rls.py
 ./tests/integration/test_robot_esocial.py
 ./tests/integration/test_serverless_automation.py
 ./tests/oracle_singularity_validation.py
