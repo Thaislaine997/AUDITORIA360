@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-f259dd30-3a51-4a8d-a111-8c588af3c32d
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-f259dd30-3a51-4a8d-a111-8c588af3c32d
-./.git/objects/pack/pack-a3b1329efe9c8734ac43b7513a98d251bf6396d8.idx
-./.git/objects/pack/pack-a3b1329efe9c8734ac43b7513a98d251bf6396d8.pack
-./.git/objects/pack/pack-a3b1329efe9c8734ac43b7513a98d251bf6396d8.rev
+./.git/objects/pack/pack-6ed2784bb06591675990babcad0b291440ec8083.idx
+./.git/objects/pack/pack-6ed2784bb06591675990babcad0b291440ec8083.pack
+./.git/objects/pack/pack-6ed2784bb06591675990babcad0b291440ec8083.rev
 ./.git/refs/heads/copilot/fix-f259dd30-3a51-4a8d-a111-8c588af3c32d
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-f259dd30-3a51-4a8d-a111-8c588af3c32d
@@ -88,6 +88,7 @@
 ./Dockerfile
 ./Dockerfile.frontend
 ./GRAND_TOMO_IMPLEMENTATION_COMPLETE.md
+./IMPLEMENTATION_SUMMARY.md
 ./MANUAL_SUPREMO.md
 ./MANUAL_TESTE_IA_EVOLUCAO.md
 ./METAMORFOSE_RELATORIO_FINAL.md
