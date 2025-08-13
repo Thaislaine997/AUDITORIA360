@@ -8,6 +8,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+- Add MCP Server Integration Checklist to Pull Request Template ([#179](https://github.com/Thaislaine997/AUDITORIA360/pull/179)) - por @Copilot em 2025-08-13
+
+
+### Changed
 - Implement AUDITORIA360 Improvement Plan: Enhanced Security, Modern Frontend, and Comprehensive Testing ([#178](https://github.com/Thaislaine997/AUDITORIA360/pull/178)) - por @Copilot em 2025-08-13
 
 
