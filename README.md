@@ -22,7 +22,59 @@
 
 <!-- STATUS BADGES END -->
 
+
 **Toda a documentação, validação, guias e blueprints do AUDITORIA360 já foram implementados, migrados e centralizados. Arquivos antigos, relatórios de validação, checklists e históricos foram removidos para manter o repositório limpo e atualizado. Consulte este README e os READMEs das pastas para informações atualizadas.**
+
+> Para detalhes de cada módulo, consulte o `README.md` presente em cada subpasta principal.
+
+---
+
+## 🚀 Deploy Centralizado (GitHub → cPanel)
+
+O deploy do AUDITORIA360 agora é 100% centralizado e automatizado:
+
+- **Push no GitHub:** Ao enviar código para a branch principal, o cPanel detecta a atualização via Git™ Version Control.
+- **Deploy automático:** O arquivo `.cpanel.yml` na raiz do projeto define todos os comandos de build, instalação de dependências e pós-deploy.
+- **Sem scripts manuais, FTP ou Vercel:** Todo o fluxo é feito via Git e cPanel, garantindo rastreabilidade e segurança.
+
+### Como funciona?
+1. Faça push normalmente para o GitHub.
+2. No cPanel, use o botão "Atualizar do remoto" para puxar as mudanças (ou configure webhook para automação total).
+3. O cPanel executa o `.cpanel.yml` e atualiza o ambiente automaticamente.
+
+### Arquivos e fluxos antigos removidos
+- `vercel.json` e scripts de deploy antigos foram removidos.
+- Não há mais deploy via FTP, SFTP ou scripts manuais.
+- Toda automação de build/teste/deploy está em `.github/workflows/` (CI/CD) e `.cpanel.yml` (deploy).
+
+---
+
+---
+
+## 🚀 Exemplo Rápido de Uso da API
+
+```bash
+# Exemplo: rodar localmente
+uvicorn src.api.main:app --reload
+
+# Testar endpoint de health
+curl http://localhost:8000/health
+```
+
+---
+
+## 🤝 Como Contribuir
+
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature ou correção
+3. Envie um Pull Request seguindo as boas práticas do projeto
+4. Consulte os READMEs das pastas para padrões de código e exemplos
+
+---
+
+## 📫 Contato e Suporte
+
+Dúvidas, sugestões ou problemas? Abra uma issue ou envie um e-mail para: contato@auditoria360.com
 
 ---
 
