@@ -50,7 +50,7 @@ describe("useAuth Hook", () => {
       id: "1",
       name: "Test User",
       email: "test@example.com",
-      role: "admin" as const,
+  role: "super_admin" as const,
       permissions: ["read", "write"],
     };
 

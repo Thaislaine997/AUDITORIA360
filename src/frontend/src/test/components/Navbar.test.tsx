@@ -24,7 +24,7 @@ describe("Navbar Component", () => {
         id: "1",
         name: "Test User",
         email: "test@example.com",
-        role: "admin",
+    role: "super_admin",
         permissions: [],
       },
       isAuthenticated: true,

@@ -15,7 +15,6 @@ import {
 import { 
   Menu as MenuIcon, 
   AccountCircle as AccountIcon,
-  Star,
   Settings,
   Person,
   ExitToApp,
@@ -26,18 +25,15 @@ import NotificationCenter from '../ui/NotificationCenter';
 import CommandPalette from '../ui/CommandPalette';
 import { useUIStore } from '../../stores/uiStore';
 import { useAuthStore } from '../../stores/authStore';
-import { useGamificationStore } from '../../stores/gamificationStore';
 import { useNotificationsStore } from '../../stores/notificationsStore';
 
 
 import { Dialog, DialogTitle, DialogContent, InputBase, Paper, List, ListItem, ListItemText, IconButton as MuiIconButton } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { useGlobalSearch } from '../../lib/hooks/useGlobalSearch';
 
 const Navbar: React.FC = () => {
   const { toggleSidebar } = useUIStore();
   const { user, logout } = useAuthStore();
-  const { userProgress } = useGamificationStore();
   const { unreadCount, setCenterOpen, centerOpen } = useNotificationsStore();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [commandPaletteOpen, setCommandPaletteOpen] = React.useState(false);
@@ -221,17 +217,7 @@ const Navbar: React.FC = () => {
             </IconButton>
           </Tooltip>
           
-          {/* User Level Badge */}
-          <Chip
-            icon={<Star />}
-            label={`Nível ${userProgress.level}`}
-            size="small"
-            sx={{
-              bgcolor: 'warning.main',
-              color: 'warning.contrastText',
-              fontWeight: 'bold',
-            }}
-          />
+          {/* Chip de gamificação removido */}
           
           {/* User Menu */}
           <IconButton
@@ -243,17 +229,9 @@ const Navbar: React.FC = () => {
             color="inherit"
             title="Menu do usuário"
           >
-            {user?.avatar ? (
-              <Avatar 
-                src={user.avatar} 
-                alt={user.name || 'User'}
-                sx={{ width: 32, height: 32 }}
-              />
-            ) : (
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
-                {user?.name ? getUserInitials(user.name) : <AccountIcon />}
-              </Avatar>
-            )}
+            <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
+              {user?.name ? getUserInitials(user.name) : <AccountIcon />}
+            </Avatar>
           </IconButton>
           
           <Menu
@@ -296,21 +274,7 @@ const Navbar: React.FC = () => {
             
             <Divider />
             
-            {/* XP and Level Info */}
-            <MenuItem disabled>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Star color="primary" />
-                <Box>
-                  <Typography variant="body2">
-                    Nível {userProgress.level} • {userProgress.currentXP} XP
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {userProgress.currentXP}/{userProgress.xpToNextLevel} para próximo nível
-                  </Typography>
-                </Box>
-              </Box>
-            </MenuItem>
-            <Divider />
+            {/* Info de XP/Nível removida */}
             
             {/* Menu Items */}
             <MenuItem onClick={handleProfile}>

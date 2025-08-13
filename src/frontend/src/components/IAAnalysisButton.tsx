@@ -40,7 +40,7 @@ async function criarRelatorio(descricao: string) {
   if (!resp.ok) throw new Error('Erro ao criar relatório');
   return await resp.json();
 }
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success'|'error' }>({ open: false, message: '', severity: 'success' });
+// ...existing code...
 import { SmartToy, History as HistoryIcon } from '@mui/icons-material';
 import { useIAHistory } from '../lib/hooks/useIAHistory';
 
@@ -55,6 +55,7 @@ export const IAAnalysisButton: React.FC<IAAnalysisButtonProps> = ({ context, lab
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
   const { history, addInteraction } = useIAHistory();
 
   // Chamada real para endpoint de IA/MCP

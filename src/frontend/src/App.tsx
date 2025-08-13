@@ -7,7 +7,7 @@ import KeyboardNavigation from "./components/ui/KeyboardNavigation";
 import { useAuthStore } from "./stores/authStore";
 import { useUIStore } from "./stores/uiStore";
 
-// Lazy loaded pages
+// Lazy loaded pages (apenas existentes)
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const PayrollPage = React.lazy(() => import("./pages/PayrollPage"));
 const DocumentsPage = React.lazy(() => import("./pages/DocumentsPage"));
@@ -16,8 +16,6 @@ const AuditPage = React.lazy(() => import("./pages/AuditPage"));
 const ChatbotPage = React.lazy(() => import("./pages/ChatbotPage"));
 const ReportTemplatesPage = React.lazy(() => import("./pages/ReportTemplatesPage"));
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
-
-// New pages for the unified navigation
 const PortalDemandas = React.lazy(() => import("./pages/PortalDemandas"));
 const PortalDemandasDashboard = React.lazy(() => import("./pages/PortalDemandasDashboard"));
 const EmpresaDetailPage = React.lazy(() => import("./pages/EmpresaDetailPage"));
@@ -35,13 +33,9 @@ const GerenciamentoUsuarios = React.lazy(() => import("./pages/GerenciamentoUsua
 const RelatoriosAvancados = React.lazy(() => import("./pages/RelatoriosAvancados"));
 const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
 const Templates = React.lazy(() => import("./pages/Templates"));
-const ValidacaoIAPage = React.lazy(() => import("./pages/ValidacaoIAPage").then(module => ({ default: module.ValidacaoIAPage })));
-
-// Monthly Control module
-const ControleMensalPage = React.lazy(() => import("./pages/ControleMensalPage").then(module => ({ default: module.ControleMensalPage })));
-
-// Gestão de Legislação module
-const GestaoLegislacaoPage = React.lazy(() => import("./pages/GestaoLegislacaoPage").then(module => ({ default: module.GestaoLegislacaoPage })));
+const ValidacaoIAPage = React.lazy(() => import("./pages/ValidacaoIAPage"));
+const ControleMensalPage = React.lazy(() => import("./pages/ControleMensalPage"));
+const GestaoLegislacaoPage = React.lazy(() => import("./pages/GestaoLegislacaoPage"));
 
 // Loading component
 const LoadingSpinner: React.FC = () => (
