@@ -2,7 +2,7 @@ name: CI - Integration (RLS)
 
 on:
   push:
-    branches: [ Principal, main, master ]
+    branches: [ Principal, main, master, develop ]
   pull_request:
     paths:
       - 'api/**'
