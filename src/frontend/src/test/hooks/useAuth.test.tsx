@@ -1,25 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, jest } from "@jest/globals";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useAuth } from "../../hooks/useAuth";
 import { useAuthStore } from "../../stores/authStore";
 
 // Mock authService
-vi.mock("../../modules/auth/authService", () => ({
+jest.mock("../../modules/auth/authService", () => ({
   authService: {
-    isAuthenticated: vi.fn(),
-    getCurrentUser: vi.fn(),
-    login: vi.fn(),
-    logout: vi.fn(),
+    isAuthenticated: jest.fn(),
+    getCurrentUser: jest.fn(),
+    login: jest.fn(),
+    logout: jest.fn(),
   },
 }));
 
 import { authService } from "../../modules/auth/authService";
 
-const mockAuthService = authService as vi.Mocked<typeof authService>;
+const mockAuthService = authService as jest.Mocked<typeof authService>;
 
 describe("useAuth Hook", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     // Reset store state
     useAuthStore.setState({
       user: null,
@@ -84,7 +84,7 @@ describe("useAuth Hook", () => {
       throw new Error("Auth check failed");
     });
 
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     const { result } = renderHook(() => useAuth());
 

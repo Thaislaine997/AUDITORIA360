@@ -1,3 +1,13 @@
+# Pasta auth
+
+Esta pasta contém exemplos de configuração e documentação para autenticação e gestão de contas do sistema.
+
+- **gestor_contas.example.json**: Exemplo de configuração para o gestor de contas.
+- **login.example.yaml**: Exemplo de configuração para o fluxo de login.
+- **README.md**: Este arquivo.
+
+> Não armazene credenciais reais nesta pasta. Use apenas arquivos de exemplo e documentação.
+
 # 🔐 Configurações de Autenticação - AUDITORIA360
 
 Este diretório contém as configurações de autenticação para o sistema AUDITORIA360.

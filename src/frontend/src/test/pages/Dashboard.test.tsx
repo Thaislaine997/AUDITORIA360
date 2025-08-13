@@ -15,7 +15,7 @@ vi.mock('../../modules/dashboard/dashboardService', () => ({
 
 import { dashboardService } from '../../modules/dashboard/dashboardService'
 
-const mockDashboardService = dashboardService as vi.Mocked<typeof dashboardService>
+const mockDashboardService = dashboardService as jest.Mocked<typeof dashboardService>
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(

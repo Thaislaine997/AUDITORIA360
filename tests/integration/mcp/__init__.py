@@ -1,3 +1,0 @@
-"""
-MCP Integration Tests
-"""

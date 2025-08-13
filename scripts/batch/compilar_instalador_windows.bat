@@ -1,1 +1,0 @@
-echo Instalador RH 360

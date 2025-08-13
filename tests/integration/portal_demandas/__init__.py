@@ -1,3 +1,0 @@
-"""
-Portal Demandas Integration Tests
-"""

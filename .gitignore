@@ -1,3 +1,4 @@
+node_modules/
 # Arquivos de ambiente - SECURITY CRITICAL
 .env
 .env.*

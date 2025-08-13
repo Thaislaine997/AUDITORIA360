@@ -54,10 +54,7 @@ class Settings(BaseSettings):
                     k, v = line.split("=", 1)
                     os.environ[k.strip()] = v.strip()
         # Variáveis de ambiente
-        self.config["google_application_credentials"] = os.getenv(
-            "GOOGLE_APPLICATION_CREDENTIALS",
-            self.config.get("google_application_credentials"),
-        )
+    # Variáveis do Google Cloud removidas
         self.config["environment"] = os.getenv(
             "ENVIRONMENT", self.config.get("environment")
         )

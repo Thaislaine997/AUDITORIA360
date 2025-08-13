@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   AppBar, 
   Toolbar, 
@@ -29,6 +29,11 @@ import { useAuthStore } from '../../stores/authStore';
 import { useGamificationStore } from '../../stores/gamificationStore';
 import { useNotificationsStore } from '../../stores/notificationsStore';
 
+
+import { Dialog, DialogTitle, DialogContent, InputBase, Paper, List, ListItem, ListItemText, IconButton as MuiIconButton } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { useGlobalSearch } from '../../lib/hooks/useGlobalSearch';
+
 const Navbar: React.FC = () => {
   const { toggleSidebar } = useUIStore();
   const { user, logout } = useAuthStore();
@@ -36,6 +41,21 @@ const Navbar: React.FC = () => {
   const { unreadCount, setCenterOpen, centerOpen } = useNotificationsStore();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [commandPaletteOpen, setCommandPaletteOpen] = React.useState(false);
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState('');
+  // Busca global real
+  const globalResults = useGlobalSearch(globalSearch);
+  // Atalho Ctrl+Shift+F para abrir busca global
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
+        event.preventDefault();
+        setGlobalSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Handle keyboard shortcut for command palette
   React.useEffect(() => {
@@ -121,6 +141,39 @@ const Navbar: React.FC = () => {
         </Typography>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {/* Pesquisa Global */}
+          <Tooltip title="Busca global (Ctrl+Shift+F)">
+            <MuiIconButton color="inherit" onClick={() => setGlobalSearchOpen(true)}>
+              <SearchIcon />
+            </MuiIconButton>
+          </Tooltip>
+      {/* Modal de Pesquisa Global */}
+      <Dialog open={globalSearchOpen} onClose={() => setGlobalSearchOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Pesquisa Global</DialogTitle>
+        <DialogContent>
+          <Paper sx={{ p: 1, mb: 2, display: 'flex', alignItems: 'center' }}>
+            <SearchIcon sx={{ mr: 1 }} />
+            <InputBase
+              autoFocus
+              placeholder="Digite para buscar em tickets, auditorias, relatórios..."
+              value={globalSearch}
+              onChange={e => setGlobalSearch(e.target.value)}
+              fullWidth
+              sx={{ fontSize: 18 }}
+            />
+          </Paper>
+          <List>
+            {globalResults.length === 0 && globalSearch && (
+              <ListItem><ListItemText primary="Nenhum resultado encontrado." /></ListItem>
+            )}
+            {globalResults.map(r => (
+              <ListItem button component="a" href={r.path} key={r.path} onClick={() => setGlobalSearchOpen(false)}>
+                <ListItemText primary={r.label} />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+      </Dialog>
           {/* Command Palette Trigger */}
           <Tooltip title="Paleta de Comando (Ctrl+K)">
             <IconButton

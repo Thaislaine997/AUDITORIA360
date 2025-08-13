@@ -6,21 +6,21 @@ import { ValidacaoIARow } from '../components/ValidacaoIARow';
 import { ValidacaoIAPage } from '../pages/ValidacaoIAPage';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { vi, describe, it, expect } from 'vitest';
+import { describe, it, expect, jest } from '@jest/globals';
 
 // Mock Supabase
-vi.mock('../lib/supabaseClient', () => ({
+jest.mock('../lib/supabaseClient', () => ({
   supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        order: vi.fn(() => Promise.resolve({
+  from: jest.fn(() => ({
+  select: jest.fn(() => ({
+  order: jest.fn(() => Promise.resolve({
           data: [],
           error: null
         }))
       })),
-      insert: vi.fn(() => Promise.resolve({ error: null })),
-      update: vi.fn(() => ({ 
-        eq: vi.fn(() => Promise.resolve({ error: null }))
+  insert: jest.fn(() => Promise.resolve({ error: null })),
+      update: jest.fn(() => ({ 
+        eq: jest.fn(() => Promise.resolve({ error: null }))
       }))
     }))
   }
@@ -51,8 +51,8 @@ describe('ValidacaoIARow Component', () => {
   };
 
   it('renders AI extraction data correctly', () => {
-    const mockOnApprove = vi.fn();
-    const mockOnEdit = vi.fn();
+  const mockOnApprove = jest.fn();
+  const mockOnEdit = jest.fn();
 
     render(
       <TestWrapper>
@@ -81,8 +81,8 @@ describe('ValidacaoIARow Component', () => {
       <TestWrapper>
         <ValidacaoIARow 
           extracao={highConfidenceExtracao} 
-          onApprove={vi.fn()} 
-          onEdit={vi.fn()} 
+          onApprove={jest.fn()} 
+          onEdit={jest.fn()} 
         />
       </TestWrapper>
     );
@@ -94,8 +94,8 @@ describe('ValidacaoIARow Component', () => {
       <TestWrapper>
         <ValidacaoIARow 
           extracao={lowConfidenceExtracao} 
-          onApprove={vi.fn()} 
-          onEdit={vi.fn()} 
+          onApprove={jest.fn()} 
+          onEdit={jest.fn()} 
         />
       </TestWrapper>
     );

@@ -32,6 +32,8 @@ import {
 import { useUIStore } from '../../stores/uiStore';
 import { useNavigationStore } from '../../stores/navigationStore';
 import { useAuthStore } from '../../stores/authStore';
+import { useNotificationsStore } from '../../stores/notificationsStore';
+import { Badge } from '@mui/material';
 
 const drawerWidth = 240;
 const collapsedWidth = 60;
@@ -135,6 +137,7 @@ const Sidebar: React.FC = () => {
   const { sidebarOpen } = useUIStore();
   const { sidebarCollapsed } = useNavigationStore();
   const { user } = useAuthStore();
+  const unreadCount = useNotificationsStore(state => state.unreadCount);
   
   const [expandedItems, setExpandedItems] = useState<string[]>(['OPERAÇÃO']); // Default expand operation
 
@@ -191,7 +194,7 @@ const Sidebar: React.FC = () => {
   const renderMenuItem = (item: MenuItem, depth = 0) => {
     const isExpanded = expandedItems.includes(item.label);
     const hasChildren = item.children && item.children.length > 0;
-    const isParentActive = hasChildren && item.children.some(child => 
+    const isParentActive = hasChildren && Array.isArray(item.children) && item.children.some(child => 
       child.path && isActiveRoute(child.path)
     );
 
@@ -203,6 +206,9 @@ const Sidebar: React.FC = () => {
       if (!hasPermission(item)) {
         return null; // Hide if no permission
       }
+
+      // Adiciona badge de notificações não lidas ao item Notificações
+      const isNotificacoes = item.label.toLowerCase().includes('notific');
 
       return (
         <ListItem key={item.label} disablePadding sx={{ pl: depth * 2 }}>
@@ -228,7 +234,13 @@ const Sidebar: React.FC = () => {
                 color: isActiveRoute(item.path, true) ? 'white' : 'text.secondary',
               }}
             >
-              {item.icon}
+              {isNotificacoes && unreadCount > 0 ? (
+                <Badge badgeContent={unreadCount > 99 ? '99+' : unreadCount} color="error">
+                  {item.icon}
+                </Badge>
+              ) : (
+                item.icon
+              )}
             </ListItemIcon>
             {!sidebarCollapsed && (
               <ListItemText 
