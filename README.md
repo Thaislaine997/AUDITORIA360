@@ -4,13 +4,21 @@
 
 ![System Status](https://img.shields.io/badge/system-healthy-brightgreen) ![Health](https://img.shields.io/badge/health-100%25-brightgreen) ![Modules](https://img.shields.io/badge/modules-15%2F15-blue) ![Response Time](https://img.shields.io/badge/response%20time-69ms-brightgreen) ![Last Check](https://img.shields.io/badge/last%20check-2025--08--11-lightblue)
 
+### 🔄 Workflow Status
+![CI/CD](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/ci-cd.yml/badge.svg) ![Health Monitor](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/iai-c-health-monitor.yml/badge.svg) ![CodeQL](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/codeql-analysis.yml/badge.svg) ![E2E Tests](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/e2e.yml/badge.svg) ![Auto Checklist](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/auto-checklist.yml/badge.svg)
+
+### 📈 Metrics & Quality
+![Dependabot](https://img.shields.io/badge/dependabot-active-brightgreen) ![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-blue) ![Documentation](https://img.shields.io/badge/docs-up--to--date-green) ![License](https://img.shields.io/badge/license-MIT-blue)
+
 - **Sistema:** Status geral da plataforma
 - **Saúde:** Percentual de módulos operacionais
 - **Módulos:** Quantidade de módulos funcionando
 - **Resposta:** Tempo médio de resposta das APIs
 - **Verificação:** Última verificação de saúde
+- **Workflows:** Status dos pipelines de CI/CD e automação
+- **Qualidade:** Métricas de código e documentação
 
-> 📈 [Dashboard de Status em Tempo Real](./status-dashboard.html) | 📋 [Relatório Detalhado](./processos_status_auditoria360.md)
+> 📈 [Dashboard de Status em Tempo Real](./status-dashboard.html) | 📋 [Relatório Detalhado](./processos_status_auditoria360.md) | 🔧 [Setup Local](./setup_local.sh)
 
 <!-- STATUS BADGES END -->
 

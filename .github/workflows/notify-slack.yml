@@ -1,0 +1,235 @@
+# .github/workflows/notify-slack.yml
+name: Slack Notification
+
+on:
+  workflow_run:
+    workflows: 
+      - "CI/CD Pipeline"
+      - "CodeQL"
+      - "E2E Tests"
+      - "Auditoria Automática dos Workflows"
+    types:
+      - completed
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, closed]
+  release:
+    types: [published]
+  issues:
+    types: [opened]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Determine notification type and message
+        id: notification
+        run: |
+          echo "Determining notification details..."
+          
+          # Set defaults
+          COLOR="#36a64f"  # green
+          TITLE="GitHub Notification"
+          MESSAGE="Activity detected in repository"
+          PRIORITY="normal"
+          
+          case "${{ github.event_name }}" in
+            workflow_run)
+              WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+              WORKFLOW_STATUS="${{ github.event.workflow_run.conclusion }}"
+              
+              if [ "$WORKFLOW_STATUS" = "success" ]; then
+                COLOR="#36a64f"
+                TITLE="✅ Workflow Success: $WORKFLOW_NAME"
+                MESSAGE="Workflow '$WORKFLOW_NAME' completed successfully"
+                PRIORITY="low"
+              elif [ "$WORKFLOW_STATUS" = "failure" ]; then
+                COLOR="#ff0000"
+                TITLE="❌ Workflow Failed: $WORKFLOW_NAME"
+                MESSAGE="Workflow '$WORKFLOW_NAME' failed - immediate attention required"
+                PRIORITY="high"
+              else
+                COLOR="#ffaa00"
+                TITLE="⚠️ Workflow $WORKFLOW_STATUS: $WORKFLOW_NAME"
+                MESSAGE="Workflow '$WORKFLOW_NAME' finished with status: $WORKFLOW_STATUS"
+                PRIORITY="normal"
+              fi
+              ;;
+              
+            push)
+              if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+                COLOR="#36a64f"
+                TITLE="🚀 Push to Main Branch"
+                MESSAGE="New commits pushed to main branch by ${{ github.actor }}"
+                PRIORITY="normal"
+              fi
+              ;;
+              
+            pull_request)
+              if [ "${{ github.event.action }}" = "opened" ]; then
+                COLOR="#0099cc"
+                TITLE="🔄 New Pull Request"
+                MESSAGE="PR #${{ github.event.pull_request.number }}: '${{ github.event.pull_request.title }}' opened by @${{ github.event.pull_request.user.login }}"
+                PRIORITY="normal"
+              elif [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+                COLOR="#36a64f"
+                TITLE="🎉 Pull Request Merged"
+                MESSAGE="PR #${{ github.event.pull_request.number }}: '${{ github.event.pull_request.title }}' was merged by @${{ github.event.pull_request.user.login }}"
+                PRIORITY="normal"
+              elif [ "${{ github.event.action }}" = "closed" ]; then
+                COLOR="#cccccc"
+                TITLE="❌ Pull Request Closed"
+                MESSAGE="PR #${{ github.event.pull_request.number }}: '${{ github.event.pull_request.title }}' was closed without merging"
+                PRIORITY="low"
+              fi
+              ;;
+              
+            release)
+              COLOR="#9900cc"
+              TITLE="🎁 New Release Published"
+              MESSAGE="Release ${{ github.event.release.tag_name }}: '${{ github.event.release.name }}' has been published"
+              PRIORITY="high"
+              ;;
+              
+            issues)
+              if [ "${{ github.event.action }}" = "opened" ]; then
+                COLOR="#ff6600"
+                TITLE="🐛 New Issue Opened"
+                MESSAGE="Issue #${{ github.event.issue.number }}: '${{ github.event.issue.title }}' opened by @${{ github.event.issue.user.login }}"
+                PRIORITY="normal"
+              fi
+              ;;
+          esac
+          
+          echo "color=$COLOR" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "priority=$PRIORITY" >> $GITHUB_OUTPUT
+
+      - name: Create Slack message payload
+        id: slack-payload
+        run: |
+          # Get repository info
+          REPO_NAME="${{ github.repository }}"
+          BRANCH="${{ github.ref_name }}"
+          COMMIT_SHA="${{ github.sha }}"
+          SHORT_SHA=${COMMIT_SHA:0:7}
+          ACTOR="${{ github.actor }}"
+          
+          # Create timestamp
+          TIMESTAMP=$(date -u +%s)
+          
+          # Build the payload
+          cat > slack-payload.json << EOF
+          {
+            "username": "AUDITORIA360 Bot",
+            "icon_emoji": ":robot_face:",
+            "attachments": [
+              {
+                "color": "${{ steps.notification.outputs.color }}",
+                "title": "${{ steps.notification.outputs.title }}",
+                "title_link": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "text": "${{ steps.notification.outputs.message }}",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "<https://github.com/${{ github.repository }}|$REPO_NAME>",
+                    "short": true
+                  },
+                  {
+                    "title": "Actor",
+                    "value": "<https://github.com/$ACTOR|@$ACTOR>",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "$BRANCH",
+                    "short": true
+                  },
+                  {
+                    "title": "Commit",
+                    "value": "<https://github.com/${{ github.repository }}/commit/$COMMIT_SHA|$SHORT_SHA>",
+                    "short": true
+                  }
+                ],
+                "footer": "AUDITORIA360",
+                "footer_icon": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+                "ts": $TIMESTAMP
+              }
+            ]
+          }
+          EOF
+          
+          echo "Slack payload created:"
+          cat slack-payload.json
+
+      - name: Send to Slack (Mock)
+        run: |
+          echo "🔔 Sending notification to Slack..."
+          echo "Priority: ${{ steps.notification.outputs.priority }}"
+          echo "Title: ${{ steps.notification.outputs.title }}"
+          echo "Message: ${{ steps.notification.outputs.message }}"
+          echo ""
+          echo "📝 Slack payload:"
+          cat slack-payload.json
+          echo ""
+          echo "ℹ️ To enable actual Slack notifications:"
+          echo "1. Create a Slack webhook URL"
+          echo "2. Add it as SLACK_WEBHOOK_URL secret in repository settings"
+          echo "3. Uncomment the curl command below"
+          echo ""
+          echo "# Uncomment this line to send actual notifications:"
+          echo "# curl -X POST -H 'Content-type: application/json' --data @slack-payload.json \${{ secrets.SLACK_WEBHOOK_URL }}"
+          
+          # Actual Slack notification (commented out until webhook is configured)
+          # if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+          #   curl -X POST \
+          #        -H 'Content-type: application/json' \
+          #        --data @slack-payload.json \
+          #        "${{ secrets.SLACK_WEBHOOK_URL }}"
+          #   echo "✅ Notification sent to Slack"
+          # else
+          #   echo "⚠️ SLACK_WEBHOOK_URL secret not configured - notification not sent"
+          # fi
+
+      - name: Generate Notification Report
+        if: always()
+        run: |
+          echo "# Relatório de Notificação - $(date)" > notification-report.md
+          echo "" >> notification-report.md
+          echo "## Detalhes da Notificação" >> notification-report.md
+          echo "- Evento: ${{ github.event_name }}" >> notification-report.md
+          echo "- Repositório: ${{ github.repository }}" >> notification-report.md
+          echo "- Ator: @${{ github.actor }}" >> notification-report.md
+          echo "- Prioridade: ${{ steps.notification.outputs.priority }}" >> notification-report.md
+          echo "- Cor: ${{ steps.notification.outputs.color }}" >> notification-report.md
+          echo "" >> notification-report.md
+          echo "## Conteúdo da Mensagem" >> notification-report.md
+          echo "**Título:** ${{ steps.notification.outputs.title }}" >> notification-report.md
+          echo "" >> notification-report.md
+          echo "**Mensagem:** ${{ steps.notification.outputs.message }}" >> notification-report.md
+          echo "" >> notification-report.md
+          echo "## Configuração" >> notification-report.md
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            echo "- Status do Webhook: ✅ Configurado" >> notification-report.md
+          else
+            echo "- Status do Webhook: ❌ Não configurado" >> notification-report.md
+          fi
+          echo "- Payload JSON: ✅ Gerado" >> notification-report.md
+          echo "" >> notification-report.md
+          echo "## Próximos Passos" >> notification-report.md
+          echo "- [ ] Configurar SLACK_WEBHOOK_URL se necessário" >> notification-report.md
+          echo "- [ ] Testar notificações em ambiente de desenvolvimento" >> notification-report.md
+          echo "- [ ] Ajustar frequência de notificações se necessário" >> notification-report.md
+          echo "- [ ] Configurar filtros por prioridade" >> notification-report.md
+
+      - name: Upload Notification Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notification-report-${{ github.run_number }}
+          path: notification-report.md
+          retention-days: 7

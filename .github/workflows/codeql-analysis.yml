@@ -1,0 +1,107 @@
+# .github/workflows/codeql-analysis.yml
+name: CodeQL
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1'  # Run every Monday at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript', 'python']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        queries: security-extended,security-and-quality
+
+    - name: Setup Python
+      if: matrix.language == 'python'
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install Python dependencies
+      if: matrix.language == 'python'
+      run: |
+        python -m pip install --upgrade pip
+        # Install only essential dependencies for analysis
+        pip install fastapi uvicorn pydantic sqlalchemy
+      continue-on-error: true
+
+    - name: Setup Node.js
+      if: matrix.language == 'javascript'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Install JavaScript dependencies
+      if: matrix.language == 'javascript'
+      run: |
+        if [ -f "package.json" ]; then
+          npm ci || npm install
+        fi
+      continue-on-error: true
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+
+    - name: Generate Security Report
+      if: always()
+      run: |
+        echo "# CodeQL Security Analysis Report - $(date)" > codeql-report.md
+        echo "" >> codeql-report.md
+        echo "## Analysis Summary" >> codeql-report.md
+        echo "- Language: ${{ matrix.language }}" >> codeql-report.md
+        echo "- Repository: ${{ github.repository }}" >> codeql-report.md
+        echo "- Branch: ${{ github.ref_name }}" >> codeql-report.md
+        echo "- Commit: ${{ github.sha }}" >> codeql-report.md
+        echo "- Query Suite: security-extended, security-and-quality" >> codeql-report.md
+        echo "" >> codeql-report.md
+        echo "## Files Analyzed" >> codeql-report.md
+        if [ "${{ matrix.language }}" == "python" ]; then
+          echo "- Python files: $(find . -name '*.py' -not -path './.git/*' | wc -l)" >> codeql-report.md
+          echo "- Key modules analyzed:" >> codeql-report.md
+          find . -name '*.py' -not -path './.git/*' -not -path './venv/*' | head -10 | sed 's/^/  - /' >> codeql-report.md
+        elif [ "${{ matrix.language }}" == "javascript" ]; then
+          echo "- JavaScript files: $(find . -name '*.js' -not -path './.git/*' -not -path './node_modules/*' | wc -l)" >> codeql-report.md
+          echo "- TypeScript files: $(find . -name '*.ts' -not -path './.git/*' -not -path './node_modules/*' | wc -l)" >> codeql-report.md
+        fi
+        echo "" >> codeql-report.md
+        echo "## Security Recommendations" >> codeql-report.md
+        echo "- [ ] Review any identified security vulnerabilities" >> codeql-report.md
+        echo "- [ ] Update dependencies with known security issues" >> codeql-report.md
+        echo "- [ ] Implement additional input validation" >> codeql-report.md
+        echo "- [ ] Review authentication and authorization mechanisms" >> codeql-report.md
+        
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: codeql-report-${{ matrix.language }}-${{ github.run_number }}
+        path: codeql-report.md
+        retention-days: 30

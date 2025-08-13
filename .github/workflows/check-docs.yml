@@ -1,0 +1,227 @@
+# .github/workflows/check-docs.yml
+name: Check Docs on PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # Get list of changed files
+          git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.sha }} > changed_files.txt
+          echo "Changed files:"
+          cat changed_files.txt
+          
+          # Check if any code files were changed
+          CODE_CHANGED=false
+          DOC_CHANGED=false
+          
+          while IFS= read -r file; do
+            case "$file" in
+              *.py|*.js|*.ts|*.jsx|*.tsx|*.java|*.go|*.rs|*.cpp|*.c|*.h|*.hpp)
+                echo "Code file changed: $file"
+                CODE_CHANGED=true
+                ;;
+              *.md|*.rst|*.txt|docs/*)
+                echo "Documentation file changed: $file"
+                DOC_CHANGED=true
+                ;;
+              src/*|api/*|services/*)
+                echo "Source file changed: $file"
+                CODE_CHANGED=true
+                ;;
+            esac
+          done < changed_files.txt
+          
+          echo "code_changed=$CODE_CHANGED" >> $GITHUB_OUTPUT
+          echo "doc_changed=$DOC_CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Check if documentation needs updating
+        id: doc-check
+        run: |
+          CODE_CHANGED="${{ steps.changed-files.outputs.code_changed }}"
+          DOC_CHANGED="${{ steps.changed-files.outputs.doc_changed }}"
+          
+          echo "Code changed: $CODE_CHANGED"
+          echo "Documentation changed: $DOC_CHANGED"
+          
+          # If code was changed but no documentation, warn
+          if [ "$CODE_CHANGED" = "true" ] && [ "$DOC_CHANGED" = "false" ]; then
+            echo "⚠️ Code changes detected without documentation updates"
+            echo "doc_warning=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Documentation check passed"
+            echo "doc_warning=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Verify critical documentation exists
+        run: |
+          echo "📚 Verificando documentação crítica..."
+          
+          MISSING_DOCS=()
+          CRITICAL_DOCS=(
+            "README.md"
+            "CHANGELOG.md"
+            "CONTRIBUTING.md"
+            "MANUAL_SUPREMO.md"
+          )
+          
+          for doc in "${CRITICAL_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ $doc - AUSENTE"
+              MISSING_DOCS+=("$doc")
+            else
+              echo "✅ $doc - OK"
+              # Check if file is substantial (more than 10 lines)
+              lines=$(wc -l < "$doc")
+              if [ "$lines" -lt 10 ]; then
+                echo "⚠️ $doc parece muito pequeno ($lines linhas)"
+              fi
+            fi
+          done
+          
+          if [ ${#MISSING_DOCS[@]} -gt 0 ]; then
+            echo "::error::Documentação crítica ausente: ${MISSING_DOCS[*]}"
+            exit 1
+          fi
+
+      - name: Check PR description quality
+        run: |
+          PR_BODY="${{ github.event.pull_request.body }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          
+          echo "🔍 Verificando qualidade da descrição do PR..."
+          
+          # Check if PR has a meaningful title
+          if [ ${#PR_TITLE} -lt 10 ]; then
+            echo "::warning::Título do PR muito curto. Considere ser mais descritivo."
+          fi
+          
+          # Check if PR has a description
+          if [ -z "$PR_BODY" ] || [ ${#PR_BODY} -lt 20 ]; then
+            echo "::warning::Descrição do PR está vazia ou muito curta. Considere adicionar mais detalhes sobre as mudanças."
+          fi
+          
+          # Check for common keywords that indicate good practices
+          if echo "$PR_BODY" | grep -qi -E "(teste|test|doc|changelog|breaking)"; then
+            echo "✅ PR menciona aspectos importantes (testes, documentação, etc.)"
+          else
+            echo "::notice::Considere mencionar se foram adicionados testes ou atualizações na documentação."
+          fi
+
+      - name: Validate documentation format
+        run: |
+          echo "📝 Validando formato da documentação..."
+          
+          # Check README structure
+          if [ -f "README.md" ]; then
+            if ! grep -q "^#" README.md; then
+              echo "::warning::README.md não tem cabeçalhos principais"
+            fi
+            
+            if ! grep -q -i "installation\|setup\|getting started" README.md; then
+              echo "::notice::Considere adicionar seção de instalação/setup no README.md"
+            fi
+            
+            if ! grep -q -i "usage\|exemplo\|example" README.md; then
+              echo "::notice::Considere adicionar exemplos de uso no README.md"
+            fi
+          fi
+          
+          # Check for common documentation files
+          DOC_FILES=(
+            "docs/api.md"
+            "docs/installation.md"
+            "docs/deployment.md"
+            "API.md"
+            "DEPLOYMENT.md"
+          )
+          
+          echo "📂 Verificando documentação adicional:"
+          for doc in "${DOC_FILES[@]}"; do
+            if [ -f "$doc" ]; then
+              echo "✅ $doc encontrado"
+            else
+              echo "📝 $doc não encontrado (opcional)"
+            fi
+          done
+
+      - name: Generate Documentation Report
+        if: always()
+        run: |
+          echo "# Relatório de Verificação de Documentação - $(date)" > docs-check-report.md
+          echo "" >> docs-check-report.md
+          echo "## PR Information" >> docs-check-report.md
+          echo "- PR: #${{ github.event.pull_request.number }}" >> docs-check-report.md
+          echo "- Título: ${{ github.event.pull_request.title }}" >> docs-check-report.md
+          echo "- Autor: @${{ github.event.pull_request.user.login }}" >> docs-check-report.md
+          echo "- Branch: ${{ github.event.pull_request.head.ref }}" >> docs-check-report.md
+          echo "" >> docs-check-report.md
+          echo "## Arquivos Alterados" >> docs-check-report.md
+          echo "\`\`\`" >> docs-check-report.md
+          cat changed_files.txt >> docs-check-report.md
+          echo "\`\`\`" >> docs-check-report.md
+          echo "" >> docs-check-report.md
+          echo "## Status da Verificação" >> docs-check-report.md
+          echo "- Código alterado: ${{ steps.changed-files.outputs.code_changed }}" >> docs-check-report.md
+          echo "- Documentação alterada: ${{ steps.changed-files.outputs.doc_changed }}" >> docs-check-report.md
+          echo "- Aviso de documentação: ${{ steps.doc-check.outputs.doc_warning }}" >> docs-check-report.md
+          echo "" >> docs-check-report.md
+          echo "## Arquivos de Documentação" >> docs-check-report.md
+          for doc in README.md CHANGELOG.md CONTRIBUTING.md MANUAL_SUPREMO.md; do
+            if [ -f "$doc" ]; then
+              lines=$(wc -l < "$doc")
+              echo "- ✅ $doc ($lines linhas)" >> docs-check-report.md
+            else
+              echo "- ❌ $doc (ausente)" >> docs-check-report.md
+            fi
+          done
+          echo "" >> docs-check-report.md
+          echo "## Recomendações" >> docs-check-report.md
+          if [ "${{ steps.doc-check.outputs.doc_warning }}" = "true" ]; then
+            echo "- ⚠️ Considere atualizar a documentação junto com as mudanças no código" >> docs-check-report.md
+          fi
+          echo "- [ ] Verifique se o CHANGELOG.md será atualizado automaticamente" >> docs-check-report.md
+          echo "- [ ] Considere adicionar exemplos de uso se aplicável" >> docs-check-report.md
+          echo "- [ ] Verifique se a documentação da API está atualizada" >> docs-check-report.md
+
+      - name: Comment on PR (if documentation warning)
+        if: steps.doc-check.outputs.doc_warning == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '## 📝 Verificação de Documentação\n\n' +
+                    '⚠️ **Atenção**: Mudanças no código foram detectadas, mas não foram encontradas atualizações na documentação.\n\n' +
+                    '### Recomendações:\n' +
+                    '- Considere atualizar o README.md se necessário\n' +
+                    '- Verifique se o MANUAL_SUPREMO.md precisa de atualizações\n' +
+                    '- Adicione exemplos de uso se introduziu novas funcionalidades\n' +
+                    '- O CHANGELOG.md será atualizado automaticamente após o merge\n\n' +
+                    '### Arquivos de documentação importantes:\n' +
+                    '- `README.md` - Visão geral do projeto\n' +
+                    '- `MANUAL_SUPREMO.md` - Documentação completa\n' +
+                    '- `CONTRIBUTING.md` - Guia de contribuição\n' +
+                    '- `docs/` - Documentação detalhada\n\n' +
+                    '*Esta verificação é automática e faz parte das boas práticas do projeto.*'
+            })
+
+      - name: Upload Documentation Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docs-check-report-${{ github.run_number }}
+          path: docs-check-report.md
+          retention-days: 30
