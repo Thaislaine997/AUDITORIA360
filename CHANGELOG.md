@@ -8,6 +8,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+- Implement complete audit automation system with GitHub Models, Supabase, and PDF generation ([#180](https://github.com/Thaislaine997/AUDITORIA360/pull/180)) - por @Copilot em 2025-08-13
+
+
+### Changed
 - Add MCP Server Integration Checklist to Pull Request Template ([#179](https://github.com/Thaislaine997/AUDITORIA360/pull/179)) - por @Copilot em 2025-08-13
 
 
