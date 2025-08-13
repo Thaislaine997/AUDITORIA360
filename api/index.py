@@ -128,6 +128,9 @@ except ImportError as e:
         TRANSCENDENT_AVAILABLE = False
     
     # Import dev assistant router separately
+    # Import APIRouter first for fallback routers
+    from fastapi import APIRouter
+    
     try:
         from src.api.routers.dev_assistant import router as dev_assistant_router
         DEV_ASSISTANT_AVAILABLE = True
@@ -136,7 +139,6 @@ except ImportError as e:
         DEV_ASSISTANT_AVAILABLE = False
         
     # Create minimal working routers for now
-    from fastapi import APIRouter
 
     auth_router = APIRouter()
     payroll_router = APIRouter()
@@ -151,7 +153,7 @@ except ImportError as e:
     reports_router = APIRouter()
     performance_router = APIRouter()
     health_router = APIRouter()
-    # dev_assistant_router already handled above
+    dev_assistant_router = APIRouter()  # Fixed: define dev_assistant_router
     TRANSCENDENT_AVAILABLE = False
 
     # Add basic endpoints for existing API compatibility
