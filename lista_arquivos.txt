@@ -28,9 +28,9 @@
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-39b1338a-c817-4d8a-83f0-1c51ceb5a942
 ./.git/logs/refs/remotes/origin/copilot/fix-c24d1ccf-8d88-48a5-85be-2517c11cc094
-./.git/objects/pack/pack-8b43beb070b70b961af03cfc5e5db449e0ccf53d.idx
-./.git/objects/pack/pack-8b43beb070b70b961af03cfc5e5db449e0ccf53d.pack
-./.git/objects/pack/pack-8b43beb070b70b961af03cfc5e5db449e0ccf53d.rev
+./.git/objects/pack/pack-bf7e49d8e3f632edc4f082c3ef3a6276069230cb.idx
+./.git/objects/pack/pack-bf7e49d8e3f632edc4f082c3ef3a6276069230cb.pack
+./.git/objects/pack/pack-bf7e49d8e3f632edc4f082c3ef3a6276069230cb.rev
 ./.git/refs/heads/copilot/fix-c24d1ccf-8d88-48a5-85be-2517c11cc094
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-39b1338a-c817-4d8a-83f0-1c51ceb5a942
@@ -59,6 +59,8 @@
 ./.pre-commit-config.yaml
 ./.prettierignore
 ./.prettierrc
+./=0.21.0
+./=8.0.0
 ./AUDITORIA360_patches_v2/README_DOWNLOAD.txt
 ./AUDITORIA360_patches_v2/analysis/previous_analysis_full.md
 ./AUDITORIA360_patches_v2/docs/ONBOARDING_DEV.md
