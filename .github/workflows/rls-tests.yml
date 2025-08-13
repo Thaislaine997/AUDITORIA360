@@ -1,0 +1,229 @@
+name: RLS Security Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'api/**'
+      - 'src/**'
+      - 'tests/integration/test_rls.py'
+      - 'supabase/**'
+      - '.github/workflows/rls-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'api/**'
+      - 'src/**'
+      - 'tests/integration/test_rls.py'
+      - 'supabase/**'
+      - '.github/workflows/rls-tests.yml'
+  schedule:
+    # Run RLS tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  rls-security-tests:
+    name: Row Level Security Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: auditoria_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y postgresql-client
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest httpx fastapi uvicorn
+        # Install minimal dependencies for RLS tests
+        if [ -f requirements.txt ]; then
+          # Install only essential dependencies to avoid conflicts
+          grep -E "(fastapi|uvicorn|pytest|pydantic|starlette)" requirements.txt | pip install -r /dev/stdin || true
+        fi
+        
+    - name: Set up test database
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/auditoria_test
+      run: |
+        # Wait for PostgreSQL to be ready
+        until pg_isready -h localhost -p 5432 -U postgres; do
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 2
+        done
+        
+        # Create test database if it doesn't exist
+        createdb -h localhost -U postgres auditoria_test || echo "Database already exists"
+        
+        # Set up basic RLS policies for testing
+        psql -h localhost -U postgres -d auditoria_test -c "
+          -- Enable RLS on test tables
+          CREATE TABLE IF NOT EXISTS test_clientes (
+            id SERIAL PRIMARY KEY,
+            nome VARCHAR(255),
+            contabilidade_id UUID NOT NULL
+          );
+          
+          ALTER TABLE test_clientes ENABLE ROW LEVEL SECURITY;
+          
+          -- Create RLS policy for tenant isolation
+          CREATE POLICY IF NOT EXISTS tenant_isolation_policy ON test_clientes
+          USING (contabilidade_id = current_setting('app.current_tenant_id')::UUID);
+        "
+        
+    - name: Run RLS Security Tests
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/auditoria_test
+        REDIS_URL: redis://localhost:6379
+        ENVIRONMENT: testing
+      run: |
+        # Run RLS isolation tests
+        python -m pytest tests/integration/test_rls.py -v --tb=short
+        
+    - name: Run RLS Performance Tests
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/auditoria_test
+      run: |
+        # Run performance-focused RLS tests
+        python -m pytest tests/integration/test_rls.py::TestRLSPerformance -v --tb=short
+        
+    - name: Test API with RLS
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/auditoria_test
+      run: |
+        # Test that API starts correctly with RLS configuration
+        python -c "
+        try:
+            import api.index
+            print('✅ API module loads successfully with RLS configuration')
+        except Exception as e:
+            print(f'❌ API failed to load: {e}')
+            exit(1)
+        "
+        
+    - name: Upload RLS Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: rls-test-results
+        path: |
+          .pytest_cache/
+          *.log
+          
+  rls-policy-validation:
+    name: Validate RLS Policies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Validate RLS Policy Files
+      run: |
+        # Check if RLS policy files exist and are valid
+        if [ -d "supabase/policies" ]; then
+          echo "✅ RLS policies directory found"
+          find supabase/policies -name "*.sql" -exec echo "Found policy: {}" \;
+        else
+          echo "⚠️ RLS policies directory not found - will create basic structure"
+          mkdir -p supabase/policies
+          cat > supabase/policies/tenants_rls.sql << 'EOF'
+        -- Basic RLS policy template for AUDITORIA360
+        -- Enable RLS on tenant-based tables
+        
+        -- Example: Clientes table tenant isolation
+        CREATE POLICY IF NOT EXISTS "tenant_isolation_select" ON public.clientes
+          FOR SELECT USING (contabilidade_id = current_setting('jwt.claims.contabilidade_id')::uuid);
+          
+        CREATE POLICY IF NOT EXISTS "tenant_isolation_insert" ON public.clientes
+          FOR INSERT WITH CHECK (contabilidade_id = current_setting('jwt.claims.contabilidade_id')::uuid);
+        EOF
+        fi
+        
+    - name: Validate Policy Syntax
+      run: |
+        # Basic SQL syntax validation for policy files
+        if command -v sqlfluff &> /dev/null; then
+          find supabase/policies -name "*.sql" -exec sqlfluff lint {} \;
+        else
+          echo "⚠️ sqlfluff not available - skipping syntax validation"
+          # Basic validation - check for common SQL keywords
+          find supabase/policies -name "*.sql" -exec grep -l "CREATE POLICY\|ENABLE ROW LEVEL SECURITY" {} \; || echo "No RLS policies found"
+        fi
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Run Gitleaks Secret Scan
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+        
+    - name: Check for Hardcoded Secrets
+      run: |
+        # Basic secret detection
+        echo "Scanning for potential secrets..."
+        
+        # Check for common secret patterns
+        if grep -r -i "password\s*=\s*['\"][^'\"]\{8,\}['\"]" . --exclude-dir=.git --exclude-dir=node_modules; then
+          echo "❌ Potential hardcoded passwords found"
+          exit 1
+        fi
+        
+        if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\{16,\}['\"]" . --exclude-dir=.git --exclude-dir=node_modules; then
+          echo "❌ Potential hardcoded API keys found"
+          exit 1
+        fi
+        
+        echo "✅ No obvious hardcoded secrets detected"

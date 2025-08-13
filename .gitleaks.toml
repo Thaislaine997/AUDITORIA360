@@ -1,0 +1,84 @@
+title = "gitleaks config for AUDITORIA360"
+
+[[rules]]
+  id = "aws-access-key"
+  description = "AWS Access Key"
+  regex = '''AKIA[0-9A-Z]{16}'''
+  tags = ["key", "aws"]
+
+[[rules]]
+  id = "aws-secret-key"
+  description = "AWS Secret Key"
+  regex = '''[0-9a-zA-Z/+]{40}'''
+  tags = ["key", "aws"]
+
+[[rules]]
+  id = "github-token"
+  description = "GitHub Personal Access Token"
+  regex = '''ghp_[0-9a-zA-Z]{36}'''
+  tags = ["key", "github"]
+
+[[rules]]
+  id = "openai-api-key"
+  description = "OpenAI API Key"
+  regex = '''sk-[0-9a-zA-Z]{48}'''
+  tags = ["key", "openai"]
+
+[[rules]]
+  id = "supabase-key"
+  description = "Supabase Key"
+  regex = '''eyJ[0-9a-zA-Z]{100,}'''
+  tags = ["key", "supabase"]
+
+[[rules]]
+  id = "database-url"
+  description = "Database URL with credentials"
+  regex = '''postgresql://[^:]+:[^@]+@'''
+  tags = ["database", "credentials"]
+
+[[rules]]
+  id = "jwt-secret"
+  description = "JWT Secret"
+  regex = '''jwt[_-]secret["\s]*[:=]["\s]*[0-9a-zA-Z+/=]{16,}'''
+  tags = ["jwt", "secret"]
+
+[[rules]]
+  id = "generic-api-key"
+  description = "Generic API Key"
+  regex = '''api[_-]?key["\s]*[:=]["\s]*[0-9a-zA-Z]{16,}'''
+  tags = ["key", "api"]
+
+# Allowlist for common false positives
+[[allowlist]]
+  description = "Test files and examples"
+  files = [
+    '''tests/.*''',
+    '''examples/.*''',
+    '''.*/test_.*\.py''',
+  ]
+
+[[allowlist]]
+  description = "Configuration templates"
+  files = [
+    '''\.env\.example''',
+    '''\.env\.template''',
+    '''config/.*\.example''',
+  ]
+
+[[allowlist]]
+  description = "Documentation files"
+  files = [
+    '''.*\.md''',
+    '''docs/.*''',
+  ]
+
+# Paths to ignore completely
+[allowlist.paths]
+  paths = [
+    '.git/',
+    'node_modules/',
+    '.pytest_cache/',
+    '__pycache__/',
+    '.venv/',
+    'venv/',
+  ]
