@@ -1,34 +1,51 @@
-## Descrição
+## ✅ Checklist para Pull Request: Integração do Servidor MCP Local
 
-Descreva brevemente as alterações realizadas.
+### 🧪 Testes Locais
 
-## Tipo de Mudança
+- [ ] O servidor MCP local foi iniciado com sucesso utilizando o comando configurado (ex: `npm start`)?
+- [ ] O servidor responde corretamente em `http://localhost:3000` (ou outra porta configurada)?
 
-- [ ] Bug fix (mudança não disruptiva que resolve um problema)
-- [ ] Nova funcionalidade (mudança não disruptiva que adiciona uma funcionalidade)
-- [ ] Mudança disruptiva (fix ou funcionalidade que quebra funcionalidades existentes)
-- [ ] Documentação (atualização ou adição de documentação)
+### 🔧 Configuração do Servidor MCP no GitHub
 
-## Como foi testado?
+- [ ] A configuração do servidor MCP foi adicionada corretamente no repositório GitHub?
+  - **Settings → Code & automation → Copilot → Coding agent → MCP configuration**
+  - Formato JSON válido
+  - Exemplo:
 
-- [ ] Testes unitários
-- [ ] Testes de integração RLS
-- [ ] Testes E2E
-- [ ] Testes manuais
+    ```json
+    {
+      "mcpServers": {
+        "localMCP": {
+          "type": "local",
+          "command": "npm",
+          "args": ["start"],
+          "tools": ["*"]
+        }
+      }
+    }
+    ```
 
-## Checklist de Segurança
+### 🧪 Testes de Integração com o Copilot
 
-- [ ] RLS (Row Level Security) foi testado para isolamento multi-tenant
-- [ ] Não há vazamento de secrets nos logs ou código
-- [ ] Autenticação e autorização foram validadas
-- [ ] Input sanitization foi implementado onde aplicável
+- [ ] Uma nova issue foi criada e atribuída ao Copilot?
+- [ ] O Copilot iniciou automaticamente o servidor MCP local?
+- [ ] O Copilot utilizou as ferramentas definidas no servidor MCP para interagir com o repositório?
 
-## Checklist Geral
+### 📄 Documentação e Comunicação
+
+- [ ] A descrição do PR inclui informações claras sobre a configuração do servidor MCP e sua integração com o Copilot?
+- [ ] Foram adicionados comentários no código explicando a configuração do servidor MCP e sua finalidade?
+
+### 🔐 Segurança e Boas Práticas
+
+- [ ] A configuração do servidor MCP expõe apenas ferramentas seguras e necessárias?
+- [ ] Não há informações sensíveis (como senhas ou tokens) expostas na configuração do servidor MCP?
+
+### 📋 Checklist Adicional AUDITORIA360
 
 - [ ] Meu código segue as convenções do projeto
 - [ ] Realizei self-review do código
-- [ ] Comentei código em áreas complexas
-- [ ] Minhas mudanças não geram novos warnings
-- [ ] Adicionei testes que provam que minha correção/funcionalidade funciona
 - [ ] Testes unitários e integração passam localmente
+- [ ] RLS (Row Level Security) foi considerado para isolamento multi-tenant
+- [ ] Não há vazamento de secrets nos logs ou código
 - [ ] Atualizei a documentação (se aplicável)
