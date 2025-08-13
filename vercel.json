@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "src/frontend/package.json",
+      "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist",
@@ -36,9 +36,9 @@
   },
   "regions": ["iad1", "sfo1", "lhr1"],
   "framework": null,
-  "outputDirectory": "src/frontend/dist",
-  "installCommand": "cd src/frontend && npm install",
-  "buildCommand": "cd src/frontend && npm run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "cd frontend && npm install",
+  "buildCommand": "cd frontend && npm run build",
   "crons": [
     {
       "path": "/api/v1/automation/reports/daily",
