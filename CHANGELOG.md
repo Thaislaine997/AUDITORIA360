@@ -7,6 +7,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Não lançado]
 
+### Added
+- feat: implement consolidated patches PR with complete CI/CD infrastructure and frontend modernization ([#176](https://github.com/Thaislaine997/AUDITORIA360/pull/176)) - por @Copilot em 2025-08-13
+
+
 ### Changed
 - Implement RLS security infrastructure and observability foundation for AUDITORIA360 ([#175](https://github.com/Thaislaine997/AUDITORIA360/pull/175)) - por @Copilot em 2025-08-13
 
