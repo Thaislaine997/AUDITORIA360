@@ -11,8 +11,14 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
+    "puppeteer": "^22.10.0"
+  },
   "devDependencies": {
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.12"
   },
   "engines": {
     "node": ">=18.0.0"

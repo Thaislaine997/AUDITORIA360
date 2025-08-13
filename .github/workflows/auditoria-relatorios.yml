@@ -1,0 +1,48 @@
+name: Auditoria - Gerar Relatórios (Models + Supabase + PDF)
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_id:
+        description: "ID do Modelo (ex: openai/gpt-4o)"
+        required: false
+        default: "openai/gpt-4.1"
+  schedule:
+    - cron: "15 2 * * *"
+
+permissions:
+  contents: read
+  models: read
+
+jobs:
+  gerar-relatorios:
+    runs-on: ubuntu-latest
+    env:
+      AUDITORIA_MODEL: ${{ github.event.inputs.model_id }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Gerar relatórios (Supabase -> Models -> PDF)
+        run: npx ts-node scripts/gerar_relatorio_auditoria.ts
+
+      - name: Publicar PDF como Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-auditoria-pdf
+          path: artifacts/relatorios/*.pdf
+          if-no-files-found: warn
+          retention-days: 7
