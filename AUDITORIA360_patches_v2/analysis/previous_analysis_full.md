@@ -1,0 +1,38 @@
+# Análise anterior (completa) — Diagnóstico e recomendações
+
+(Este arquivo contém a análise detalhada que eu já gerei anteriormente — consolidando pontos positivos, riscos, melhorias priorizadas, verificações por caminho, roadmap e checklists.)
+
+## Resumo executivo
+O repositório está muito bem documentado e já tem uma fundação madura (FastAPI, React+TS, Supabase com RLS, CI, scripts de automação, monitoramento). Contudo há pontos de conflito/duplicidade (vários paths front-end), áreas sem provas automatizadas (testes de RLS), artefatos legacy e oportunidades de reduzir risco (secrets, política de deploy, pipeline otimizado).
+
+## Principais achados por área
+- Estrutura/Monorepo: paths duplicados (src/frontend, frontend, web) — unificar.
+- Infra/DevOps: workflows existem (.github) mas precisam de otimização com paths e gates.
+- Segurança/Segredos: .env templates existem; rodar secret scanning e garantir nenhum segredo no histórico.
+- DB/Multi-tenant: RLS mencionado — criar testes automatizados que provem isolamento.
+- Testes/Qualidade: falta coverage gate e E2E robusto.
+- Observabilidade: dashboards e relatórios existem; padronizar logs e tracing.
+
+## Melhorias priorizadas (resumo)
+1. Quick wins: unificar frontend, pre-commit & linters, coverage gate, secret scanning.
+2. Backend: modularização FastAPI, middleware tenant binding, contract tests.
+3. Frontend: TypeScript strict, design system, React Query, E2E.
+4. Dados/OCR: pipelines reprodutíveis, ground-truth, rules engine.
+5. Supabase: migrations e policy-as-code testados em CI.
+6. Observability: logs JSON, OpenTelemetry, metrics & alerts.
+
+## Roadmap sugerido
+1. Fundação: unificar frontend, padronizar layout, CI minimal.
+2. Segurança & Dados: RLS testável, RBAC.
+3. Confiabilidade: tracing, metrics.
+4. DX & Docs: onboarding 15-min, ADRs.
+5. Escala: filas de jobs, caching, quotas por tenant.
+
+## Checklist de execução (resumo)
+- CI/CD: ci-backend.yml, ci-frontend.yml, security.yml, release.yml.
+- Segurança: revisar .env.*, policies RLS, upload validations.
+- Observability: request_id, OpenTelemetry.
+- Frontend: TS strict, React Query, E2E Playwright.
+- Backend: estrutura modular, jobs assíncronos.
+
+(Para ver o relatório completo e os arquivos de PRs, consulte os demais arquivos gerados neste pacote.)

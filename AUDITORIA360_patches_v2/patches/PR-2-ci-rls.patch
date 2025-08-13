@@ -1,0 +1,90 @@
+--- /dev/null
++++ b/.github/workflows/ci-rls.yml
+@@ -0,0 +1,86 @@
++name: CI - Integration (RLS)
++
++on:
++  push:
++    branches: [ main, master ]
++  pull_request:
++    paths:
++      - 'api/**'
++      - 'supabase/**'
++      - 'tests/**'
++
++jobs:
++  integration-rls:
++    runs-on: ubuntu-latest
++    services:
++      postgres:
++        image: postgres:15
++        env:
++          POSTGRES_USER: postgres
++          POSTGRES_PASSWORD: postgres
++          POSTGRES_DB: auditoria_test
++        ports:
++          - 5432:5432
++        options: >-
++          --health-cmd "pg_isready -U postgres"
++          --health-interval 10s
++          --health-timeout 5s
++          --health-retries 5
++      redis:
++        image: redis:7
++        ports:
++          - 6379:6379
++
++    steps:
++      - uses: actions/checkout@v4
++        with:
++          submodules: true
++
++      - name: Set up Python
++        uses: actions/setup-python@v4
++        with:
++          python-version: '3.11'
++
++      - name: Cache pip
++        uses: actions/cache@v4
++        with:
++          path: ~/.cache/pip
++          key: ${{ '{{' }} runner.os {{ '}}' }}-pip-${{{{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}}}
++          restore-keys: |
++            ${{ '{{' }} runner.os {{ '}}' }}-pip-
++
++      - name: Install dependencies
++        run: |
++          python -m pip install --upgrade pip
++          pip install -r requirements-test.txt
++
++      - name: Wait for Postgres
++        run: |
++          for i in {1..30}; do
++            pg_isready -h localhost -p 5432 && exit 0 || sleep 1
++          done
++          echo "Postgres did not become available"
++
++      - name: Run DB setup (migrations/seeds)
++        env:
++          DATABASE_URL: postgres://postgres:postgres@localhost:5432/auditoria_test
++        run: |
++          # se seu repo tem script para criar schema, execute-o aqui
++          python setup_database.py --db-url "$DATABASE_URL"
++
++      - name: Run backend (in background)
++        run: |
++          # roda a API localmente para os testes integrarem via HTTP
++          uvicorn api.index:app --host 0.0.0.0 --port 8000 &
++          sleep 6
++
++      - name: Run integration tests (RLS)
++        env:
++          TEST_API_URL: http://127.0.0.1:8000
++        run: |
++          pytest -q tests/integration/test_rls.py
++
++      - name: Secret-scan (gitleaks)
++        uses: zricethezav/gitleaks-action@v2
++        with:
++          args: --redact --leak-severity medium
+

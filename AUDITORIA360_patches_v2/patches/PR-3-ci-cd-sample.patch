@@ -1,0 +1,30 @@
+--- /dev/null
++++ b/.github/workflows/ci-cd-sample.yml
+@@ -0,0 +1,26 @@
++name: CI - Frontend example job
++
++on:
++  pull_request:
++    paths:
++      - 'frontend/**'
++      - 'src/frontend/**'
++
++jobs:
++  frontend-tests:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++      - name: Setup Node
++        uses: actions/setup-node@v4
++        with:
++          node-version: '20'
++      - name: Install deps
++        run: |
++          cd frontend
++          npm ci
++      - name: Run lint and typecheck
++        run: |
++          cd frontend
++          npm run lint
++          npm run typecheck
+
