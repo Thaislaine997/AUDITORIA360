@@ -1,0 +1,17 @@
+name: Sumário de Auditoria (Operacional)
+description: Resume achados por cliente/competência com recomendações acionáveis.
+model: openai/gpt-4.1
+modelParameters:
+  temperature: 0.2
+  max_tokens: 4096
+messages:
+  - role: system
+    content: |
+      Você é um auditor sênior. Responda em português.
+      Seja objetivo, cite riscos e ações corretivas.
+  - role: user
+    content: |
+      Gere um sumário executivo da auditoria abaixo.
+      Inclua: Principais inconsistências, Risco (baixo/médio/alto),
+      e Ações sugeridas. Dados:
+      {{input}}

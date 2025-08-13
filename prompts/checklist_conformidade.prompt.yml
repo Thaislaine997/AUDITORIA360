@@ -1,0 +1,12 @@
+name: Checklist Conformidade DP
+description: Gera checklist de conformidade para folha/encargos.
+model: openai/gpt-4o
+modelParameters:
+  temperature: 0.1
+messages:
+  - role: system
+    content: Você valida conformidade trabalhista no Brasil. Seja preciso e cite base legal quando possível.
+  - role: user
+    content: |
+      Com base nos dados a seguir, gere um checklist de conformidade:
+      {{input}}
