@@ -119,4 +119,39 @@ genesis_documentation:
 	python scripts/genesis_docs_generator.py --generate-holistic-index
 	@echo "🌟 The Genesis Documentation is complete. The entity is self-aware."
 
-.PHONY: install install-dev run test checklist checklist-verbose checklist-full checklist-html checklist-json checklist-all format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all genesis_documentation
+.PHONY: install install-dev run test checklist checklist-verbose checklist-full checklist-html checklist-json checklist-all format lint check quality backup-db clean setup-hooks docs-build docs-clean docs-rebuild docs-full docs-serve docs-deploy docs-all genesis_documentation validate validate-staging validate-health validate-rls validate-frontend validate-e2e validate-quick validate-report
+
+# AUDITORIA360 Validation System
+# Complete operational checklist validation
+validate:
+	@echo "🚀 Running AUDITORIA360 Master Validation..."
+	python scripts/validation/master_validation.py
+
+validate-staging:
+	@echo "🚀 Running AUDITORIA360 Validation against Staging..."
+	python scripts/validation/master_validation.py --staging
+
+validate-health:
+	@echo "🏥 Running Backend Health Check Validation..."
+	python scripts/validation/health_checks.py
+
+validate-rls:
+	@echo "🔒 Running RLS Security Validation (Critical for LGPD)..."
+	python scripts/validation/rls_security.py
+
+validate-frontend:
+	@echo "🎨 Running Frontend Visual QA (PRIORITY MAXIMUM)..."
+	python scripts/validation/frontend_visual_qa.py --local
+
+validate-e2e:
+	@echo "🎭 Running E2E Testing Validation..."
+	python scripts/validation/e2e_validation.py
+
+validate-quick:
+	@echo "⚡ Running Quick Validation (critical sections only)..."
+	python scripts/validation/master_validation.py --skip 6,7,9,10
+
+validate-report:
+	@echo "📊 Running Full Validation with Detailed Report..."
+	python scripts/validation/master_validation.py --output validation_report.json
+	@echo "Report saved to validation_report.json"
