@@ -1,8 +1,6 @@
-# Workflow para Deploy Automático do Frontend no GitHub Pages
-# Este workflow publica o conteúdo da pasta 'dist' (build do frontend) para o GitHub Pages
-# usando a action 'peaceiris/actions-gh-pages'.
 
-name: Deploy Frontend to GitHub Pages
+# Workflow oficial para Deploy Automático do Frontend no GitHub Pages
+name: Deploy Frontend to GitHub Pages (Oficial)
 
 on:
   push:
@@ -15,8 +13,13 @@ on:
       - 'yarn.lock'
       - '.github/workflows/deploy-pages.yml'
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout código
@@ -37,11 +40,21 @@ jobs:
           cd src/frontend
           npm run build
 
-      - name: Deploy para o GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: src/frontend/dist
-          publish_branch: gh-pages
-          cname: CNAME
-          force_orphan: true
+          path: src/frontend/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
