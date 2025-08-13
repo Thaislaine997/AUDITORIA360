@@ -27,9 +27,9 @@
 ./.git/logs/refs/heads/copilot/fix-39b1338a-c817-4d8a-83f0-1c51ceb5a942
 ./.git/logs/refs/remotes/origin/Principal
 ./.git/logs/refs/remotes/origin/copilot/fix-39b1338a-c817-4d8a-83f0-1c51ceb5a942
-./.git/objects/pack/pack-f04936df7c8df5e7a46f2e62f7fb4fe79a94e587.idx
-./.git/objects/pack/pack-f04936df7c8df5e7a46f2e62f7fb4fe79a94e587.pack
-./.git/objects/pack/pack-f04936df7c8df5e7a46f2e62f7fb4fe79a94e587.rev
+./.git/objects/pack/pack-301706da5d3cec7643fa51763207449df960ee78.idx
+./.git/objects/pack/pack-301706da5d3cec7643fa51763207449df960ee78.pack
+./.git/objects/pack/pack-301706da5d3cec7643fa51763207449df960ee78.rev
 ./.git/refs/heads/copilot/fix-39b1338a-c817-4d8a-83f0-1c51ceb5a942
 ./.git/refs/remotes/origin/Principal
 ./.git/refs/remotes/origin/copilot/fix-39b1338a-c817-4d8a-83f0-1c51ceb5a942
@@ -412,6 +412,12 @@
 ./scripts/validate_openai_integration.py
 ./scripts/validate_production_deploy.py
 ./scripts/validate_swarm_intelligence.py
+./scripts/validation/README.md
+./scripts/validation/e2e_validation.py
+./scripts/validation/frontend_visual_qa.py
+./scripts/validation/health_checks.py
+./scripts/validation/master_validation.py
+./scripts/validation/rls_security.py
 ./scripts/verificacao_manual_cct.py
 ./security_audit_report.json
 ./security_audit_report.md
