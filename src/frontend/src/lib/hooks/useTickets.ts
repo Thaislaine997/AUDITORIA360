@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Ticket } from './portalDemandasTypes';
-import { portalDemandasService } from './portalDemandasService';
+import { Ticket } from '../portalDemandasTypes';
+import { portalDemandasService } from '../portalDemandasService';
 
 export function useTickets() {
   const [tickets, setTickets] = useState<Ticket[]>([]);

@@ -97,7 +97,7 @@ const statusProcessamento = [
   { value: 'erro', label: 'Erro', color: 'error' as const }
 ];
 
-export const GestaoLegislacaoPage: React.FC = () => {
+const GestaoLegislacaoPage: React.FC = () => {
   const [documentos, setDocumentos] = useState<LegislacaoDocumento[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -716,3 +716,5 @@ export const GestaoLegislacaoPage: React.FC = () => {
     </Container>
   );
 };
+
+export default GestaoLegislacaoPage;

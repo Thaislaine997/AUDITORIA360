@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Notificacao } from './portalDemandasTypes';
-import { portalDemandasService } from './portalDemandasService';
+import type { Notificacao } from '../portalDemandasTypes';
+import { portalDemandasService } from '../portalDemandasService';
 
 export function useNotificacoes() {
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);

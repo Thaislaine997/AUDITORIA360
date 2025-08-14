@@ -54,7 +54,7 @@ function TabPanel({ children, value, index }: TabPanelProps) {
   );
 }
 
-export const ValidacaoIAPage: React.FC = () => {
+const ValidacaoIAPage: React.FC = () => {
   const [extracoes, setExtracoes] = useState<ExtracaoIA[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -127,6 +127,7 @@ export const ValidacaoIAPage: React.FC = () => {
       if (insertError) {
         throw insertError;
       }
+
 
       // 2. Atualizar status da extração original
       const { error: updateError } = await supabase
@@ -358,7 +359,6 @@ export const ValidacaoIAPage: React.FC = () => {
                 {filtrarExtracoesPorStatus(getStatusName(tabIndex)).map((extracao) => (
                   <ValidacaoIARow
                     key={extracao.id}
-                    extracao={extracao}
                     onApprove={aprovarExtracao}
                     onEdit={editarExtracao}
                     isProcessing={processingIds.has(extracao.id)}
@@ -372,3 +372,5 @@ export const ValidacaoIAPage: React.FC = () => {
     </Box>
   );
 };
+
+export default ValidacaoIAPage;

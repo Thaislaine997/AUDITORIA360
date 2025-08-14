@@ -6,7 +6,7 @@ import { getControlesDoMes, ControleMensalDetalhado } from '../services/controle
 import { ControleMensalTable } from '../components/ControleMensalTable';
 import { TemplateManager } from '../components/TemplateManager';
 
-export const ControleMensalPage: React.FC = () => {
+const ControleMensalPage: React.FC = () => {
   const [controles, setControles] = useState<ControleMensalDetalhado[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -114,3 +114,5 @@ export const ControleMensalPage: React.FC = () => {
     </div>
   );
 };
+
+export default ControleMensalPage;
