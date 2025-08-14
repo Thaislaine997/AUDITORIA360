@@ -1,0 +1,9 @@
+{
+    "admin": {
+        "username": "admin",
+        "hashed_password": "admin123",
+        "client_id": "ADMIN001",
+        "disabled": false,
+        "is_admin": true
+    }
+}
