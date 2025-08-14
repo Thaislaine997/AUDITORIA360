@@ -1,47 +1,44 @@
-# Workflow alternativo para Deploy Automático do Frontend no GitHub Pages
-# Publica o conteúdo da pasta 'dist' (build do frontend) para o GitHub Pages
-# usando a action 'peaceiris/actions-gh-pages'.
-
-name: Deploy Frontend to GitHub Pages (Alt)
+# Workflow for automatic deployment of the frontend to GitHub Pages
+name: Deploy Frontend to GitHub Pages
 
 on:
-	push:
-		branches:
-			- Principal
-		paths:
-			- 'src/frontend/**'
-			- 'package.json'
-			- 'package-lock.json'
-			- 'yarn.lock'
-			- '.github/workflows/gh-pages-deploy.yml'
+  push:
+    branches:
+      - Principal
+    paths:
+      - 'src/frontend/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'yarn.lock'
+      - '.github/workflows/gh-pages-deploy.yml'
 
 jobs:
-	build-and-deploy:
-		runs-on: ubuntu-latest
-		steps:
-			- name: Checkout código
-				uses: actions/checkout@v4
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-			- name: Instalar Node.js
-				uses: actions/setup-node@v4
-				with:
-					node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-			- name: Instalar dependências
-				run: |
-					cd src/frontend
-					npm install
+      - name: Install dependencies
+        run: |
+          cd src/frontend
+          npm install
 
-			- name: Build do frontend
-				run: |
-					cd src/frontend
-					npm run build
+      - name: Build frontend
+        run: |
+          cd src/frontend
+          npm run build
 
-			- name: Deploy para o GitHub Pages
-				uses: peaceiris/actions-gh-pages@v4
-				with:
-					github_token: ${{ secrets.GITHUB_TOKEN }}
-					publish_dir: src/frontend/dist
-					publish_branch: gh-pages
-					cname: CNAME
-					force_orphan: true
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: src/frontend/dist
+          publish_branch: gh-pages
+          cname: CNAME
+          force_orphan: true
