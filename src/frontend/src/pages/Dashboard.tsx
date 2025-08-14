@@ -8,7 +8,6 @@ import {
   CircularProgress,
   Alert,
   Chip,
-  Button
 } from "@mui/material";
 import {
   Psychology,
@@ -29,19 +28,7 @@ const Dashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<DashboardMetric[]>([]);  
   const [loading, setLoading] = useState(true);  
   const [speculativePages, setSpeculativePages] = useState<Record<string, boolean>>({});  
-  const iaSugestoes = [
-    "Sugestão IA: Há 2 folhas aguardando análise de auditoria.",
-    "Sugestão IA: 1 nova CCT disponível para importação.",
-    "Sugestão IA: 3 demandas aguardando resposta.",
-    "Sugestão IA: Atualize as tabelas oficiais para o mês vigente."
-  ];
   
-  // Neuro-Symbolic hooks
-  const { predictions, preloadHighProbabilityTargets, isDataPreloaded } = usePredictiveLoading();
-  const { shouldSimplify, adaptationStrategy, loadLevel } = useAdaptiveUI();
-  const { currentIntentions } = useIntentionStore();
-
-
   useEffect(() => {
     const loadMetrics = async () => {
       try {
@@ -58,26 +45,30 @@ const Dashboard: React.FC = () => {
   }, []);
 
   // Speculative rendering: Pre-render pages with 90%+ navigation probability
+  // Neuro-Symbolic hooks
+  const { predictions, preloadHighProbabilityTargets } = usePredictiveLoading();
+  const { shouldSimplify, loadLevel, adaptationStrategy } = useAdaptiveUI();
+  const { currentIntentions } = useIntentionStore();
+
   useEffect(() => {
-    const highProbabilityTargets = Object.entries(predictions)
-      .filter(([_, probability]) => probability > 0.9)
+    const highProbabilityTargets = Object.entries(predictions || {})
+      .filter(([_, probability]) => (typeof probability === 'number' && probability > 0.9))
       .map(([target, _]) => target);
 
     if (highProbabilityTargets.length > 0) {
       console.log("🧠 Neuro-Symbolic: Starting speculative rendering for:", highProbabilityTargets);
-      
       const speculativeState: Record<string, boolean> = {};
       highProbabilityTargets.forEach(target => {
         speculativeState[target] = true;
-        
         // Simulate pre-rendering components in background
         setTimeout(() => {
           console.log(`🚀 Speculative rendering completed for: ${target}`);
         }, 100);
       });
-      
       setSpeculativePages(speculativeState);
-      preloadHighProbabilityTargets();
+      if (typeof preloadHighProbabilityTargets === 'function') {
+        preloadHighProbabilityTargets();
+      }
     }
   }, [predictions, preloadHighProbabilityTargets]);
 
@@ -96,6 +87,9 @@ const Dashboard: React.FC = () => {
     }
   };
 
+
+  // Remove unused imports warning
+  // (all hooks now used above)
 
   if (loading) {
     return (
@@ -132,7 +126,7 @@ const Dashboard: React.FC = () => {
             </Alert>
           )}
           
-          {currentIntentions.length > 0 && (
+          {currentIntentions && currentIntentions.length > 0 && (
             <Alert severity="success" icon={<Visibility />}>
               {currentIntentions.length} intenção(ões) neural detectada(s)
             </Alert>
@@ -141,7 +135,7 @@ const Dashboard: React.FC = () => {
       </Box>
 
       {/* Adaptive UI: Hide advanced features if cognitive load is high */}
-      {adaptationStrategy.hideAdvancedFeatures && (
+  {adaptationStrategy && adaptationStrategy.hideAdvancedFeatures && (
         <Alert severity="info" sx={{ mb: 3 }}>
           🧠 Interface simplificada ativada. Recursos avançados ocultados para reduzir sobrecarga cognitiva.
         </Alert>
@@ -176,19 +170,19 @@ const Dashboard: React.FC = () => {
 
 
       {/* Traditional metrics grid - adapted based on cognitive load */}
-      <Grid container spacing={adaptationStrategy.reduceAnimations ? 1 : 3}>
+      <Grid container spacing={adaptationStrategy && adaptationStrategy.reduceAnimations ? 1 : 3}>
         {metrics
-          .filter((_, index) => !adaptationStrategy.hideAdvancedFeatures || index < 4)
+          .filter((_, index) => !adaptationStrategy || !adaptationStrategy.hideAdvancedFeatures || index < 4)
           .map(metric => (
           <Grid item xs={12} md={6} lg={3} key={metric.id}>
             <Paper 
               sx={{ 
                 p: 2,
-                border: adaptationStrategy.highlightPrimaryActions && metric.type === 'success' 
+                border: adaptationStrategy && adaptationStrategy.highlightPrimaryActions && metric.type === 'success' 
                   ? 2 
                   : 0,
                 borderColor: 'success.main',
-                transition: adaptationStrategy.reduceAnimations ? 'none' : 'all 0.3s ease',
+                transition: adaptationStrategy && adaptationStrategy.reduceAnimations ? 'none' : 'all 0.3s ease',
               }}
             >
               <Typography
@@ -197,14 +191,14 @@ const Dashboard: React.FC = () => {
               >
                 {metric.icon && <span>{metric.icon}</span>}
                 {metric.title}
-                {adaptationStrategy.showHelpHints && (
+                {adaptationStrategy && adaptationStrategy.showHelpHints && (
                   <Chip label="Principal" size="small" color="primary" />
                 )}
               </Typography>
               <Typography variant="h4" color={getMetricColor(metric.type)}>
                 {metric.value}
               </Typography>
-              {metric.trend && !adaptationStrategy.hideAdvancedFeatures && (
+              {metric.trend && (!adaptationStrategy || !adaptationStrategy.hideAdvancedFeatures) && (
                 <Typography variant="body2" color="text.secondary">
                   {dashboardService.getTrendIcon(metric.trend.direction)}{" "}
                   {metric.trend.value}%

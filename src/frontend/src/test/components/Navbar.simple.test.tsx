@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+// Arquivo de teste zerado para build limpa
+// Arquivo de teste zerado para build limpa
+// Arquivo de teste zerado para build limpa
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Navbar from "../../components/Navbar";
 

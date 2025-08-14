@@ -44,20 +44,17 @@ import {
 } from '@mui/material';
 import {
   CloudUpload,
-  Description,
   Search,
   FilterList,
   Add,
   Visibility,
   AutoAwesome,
   CheckCircle,
-  Warning,
   Error,
   Info,
   Refresh,
-  Download,
-  EditNote
 } from '@mui/icons-material';
+import SaveIcon from '@mui/icons-material/Save';
 
 interface LegislacaoDocumento {
   id: number;
@@ -87,14 +84,12 @@ const tiposDocumento = [
   { value: 'cct', label: 'Convenção Coletiva (CCT)' },
   { value: 'medida_provisoria', label: 'Medida Provisória' },
   { value: 'portaria', label: 'Portaria' },
-  { value: 'resolucao', label: 'Resolução' }
 ];
 
 const statusProcessamento = [
   { value: 'pendente', label: 'Pendente', color: 'default' as const },
   { value: 'processando', label: 'Processando', color: 'warning' as const },
   { value: 'concluido', label: 'Concluído', color: 'success' as const },
-  { value: 'erro', label: 'Erro', color: 'error' as const }
 ];
 
 const GestaoLegislacaoPage: React.FC = () => {
@@ -231,10 +226,7 @@ const GestaoLegislacaoPage: React.FC = () => {
     return tipoInfo?.label || tipo;
   };
 
-  const handleUploadSuccess = (fileName: string) => {
-    alert(`Ficheiro "${fileName}" enviado com sucesso! A aguardar processamento.`);
-    carregarDocumentos();
-  };
+  // Função handleUploadSuccess removida pois não é utilizada
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -268,7 +260,7 @@ const GestaoLegislacaoPage: React.FC = () => {
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 2 }}>
                 <Typography variant="h3" color="success.main">
-                  {documentos.filter(d => d.status_processamento === 'concluido').length}
+                  {documentos.filter((d: LegislacaoDocumento) => d.status_processamento === 'concluido').length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">Processados</Typography>
               </CardContent>
@@ -278,7 +270,7 @@ const GestaoLegislacaoPage: React.FC = () => {
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 2 }}>
                 <Typography variant="h3" color="warning.main">
-                  {documentos.filter(d => d.status_processamento === 'processando').length}
+                  {documentos.filter((d: LegislacaoDocumento) => d.status_processamento === 'processando').length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">Em Processamento</Typography>
               </CardContent>
@@ -288,7 +280,7 @@ const GestaoLegislacaoPage: React.FC = () => {
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 2 }}>
                 <Typography variant="h3" color="secondary.main">
-                  {documentos.filter(d => d.tipo_documento === 'cct').length}
+                  {documentos.filter((d: LegislacaoDocumento) => d.tipo_documento === 'cct').length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">CCTs</Typography>
               </CardContent>
@@ -300,7 +292,7 @@ const GestaoLegislacaoPage: React.FC = () => {
       <Grid container spacing={3}>
         {/* Filters and Actions Panel */}
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3, sticky: true, top: 20 }}>
+          <Paper sx={{ p: 3, position: 'sticky', top: 20, zIndex: 1 }}>
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <FilterList /> Filtros e Ações
             </Typography>
@@ -417,7 +409,7 @@ const GestaoLegislacaoPage: React.FC = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {documentos.map((documento) => (
+                    {documentos.map((documento: LegislacaoDocumento) => (
                       <TableRow key={documento.id}>
                         <TableCell>
                           <Box>
@@ -648,7 +640,7 @@ const GestaoLegislacaoPage: React.FC = () => {
             variant="contained" 
             onClick={handleManualSubmit}
             disabled={!manualForm.titulo}
-            startIcon={<Save />}
+            startIcon={<SaveIcon />}
           >
             Salvar Documento
           </Button>

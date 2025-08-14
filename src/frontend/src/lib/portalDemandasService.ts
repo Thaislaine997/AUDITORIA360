@@ -7,16 +7,9 @@ import {
   TicketStatus,
   TicketPrioridade,
   TicketCategoria,
-  TicketComment,
-  Tarefa,
-  ControleMensalDetalhado,
-  Empresa,
-  Sindicato,
-  ConvencaoColetivaCCT,
-  FuncionarioDivergencia,
-  ProcessamentoFolhaResponse,
   Notificacao,
 } from './portalDemandasTypes';
+// Tipos removidos pois não são utilizados neste arquivo
 
 // MOCK DATA (pode ser substituído por fetch/axios futuramente)
 const tickets: Ticket[] = [

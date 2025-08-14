@@ -46,14 +46,8 @@ interface CommandPaletteProps {
 }
 
 const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
-  let navigate: ((path: string) => void) | undefined;
-  
-  try {
-    navigate = useNavigate();
-  } catch (error) {
-    // useNavigate is not available outside of Router context (e.g., in tests)
-    navigate = undefined;
-  }
+  // useNavigate deve ser chamado sempre, nunca condicionalmente
+  const navigate = useNavigate();
   
   const [query, setQuery] = useState('');
   const [filteredCommands, setFilteredCommands] = useState<Command[]>([]);
@@ -159,7 +153,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
       setFilteredCommands(filtered);
     }
     setSelectedIndex(0);
-  }, [query]);
+  }, [query, commands]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -195,7 +189,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, filteredCommands, selectedIndex, onClose]);
+  }, [open, filteredCommands, selectedIndex, onClose, navigate]);
 
   const handleCommandClick = (command: Command) => {
     command.action(navigate);

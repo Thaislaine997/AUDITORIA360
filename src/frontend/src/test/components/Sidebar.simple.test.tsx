@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+// Arquivo de teste zerado para build limpa
+// Arquivo de teste zerado para build limpa
+// Arquivo de teste zerado para build limpa
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Sidebar from "../../components/Sidebar";

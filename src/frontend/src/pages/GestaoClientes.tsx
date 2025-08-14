@@ -37,8 +37,7 @@ import {
   Psychology,
 } from "@mui/icons-material";
 import { useAuthStore } from "../stores/authStore";
-import { useGamificationStore } from "../stores/gamificationStore";
-import { useIntentionTrigger, usePredictiveLoading } from "../hooks/useNeuralSignals";
+// import { usePredictiveLoading } from "../hooks/useNeuralSignals";
 import { useIntentionStore } from "../stores/intentionStore";
 
 interface Cliente {
@@ -55,18 +54,14 @@ interface Cliente {
 
 const GestaoClientes: React.FC = () => {
   const { user } = useAuthStore();
-  const { unlockAchievement, addXP } = useGamificationStore();
-  const { isDataPreloaded, preloadedData } = usePredictiveLoading();
+  // const { isDataPreloaded, preloadedData } = usePredictiveLoading();
   const { currentIntentions } = useIntentionStore();
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [systemStatus, setSystemStatus] = useState<any>(null);
   const [loadingSystemStatus, setLoadingSystemStatus] = useState(false);
-  const [neuralSignalActive, setNeuralSignalActive] = useState(false);
 
   // Create intention trigger refs for payroll buttons
-  const payrollButtonRef1 = useIntentionTrigger("payroll_button_client_1", "data_view");
-  const payrollButtonRef2 = useIntentionTrigger("payroll_button_client_2", "data_view");
 
   // Mock data - in real app this would be filtered by user role/permissions
   const [clientes, setClientes] = useState<Cliente[]>([
@@ -160,38 +155,15 @@ Available actions: ${data.data.available_actions.join(', ')}`);
   };
 
   // Neuro-Symbolic: Handle payroll view with pre-loaded data
-  const handlePayrollView = async (clientId: string) => {
-    const payrollDataKey = `payroll_data`;
-    
-    // Check if data was pre-loaded by intention detection
-    if (isDataPreloaded(payrollDataKey)) {
-      const data = preloadedData[payrollDataKey];
-      setNeuralSignalActive(true);
-      
-      // Simulate near-instantaneous load (<50ms as per requirements)
-      setTimeout(() => {
-        alert(`🧠 Neuro-Symbolic Interface: Folha de pagamento carregada instantaneamente!\n\n` +
-              `Dados pré-carregados detectando sua intenção:\n` +
-              `• ${data.data?.summary?.total_employees || 'N/A'} funcionários\n` +
-              `• Total salários: R$ ${data.data?.summary?.total_salary || 'N/A'}\n` +
-              `• Tempo de carregamento: ${data.metadata?.estimated_load_time || '<50ms'}\n\n` +
-              `A interface leu seus sinais neurais e preparou os dados antes do clique!`);
-        setNeuralSignalActive(false);
-      }, 30); // 30ms - well under the 50ms requirement
-      
-    } else {
-      // Fallback to traditional loading
-      alert("Carregando folha de pagamento... (modo tradicional)");
-    }
+  // Removido: payrollButtonRef1, payrollButtonRef2 e uso de refs nos IconButton
+  const handlePayrollView = async () => {
+    alert("Carregando folha de pagamento... (modo tradicional)");
   };
 
   // Filter clients based on user role
   const filteredClientes = user?.role === "super_admin" 
     ? clientes 
-    : clientes.filter(cliente => 
-        // In real app, this would check if the client belongs to the user's contabilidade
-        true 
-      );
+    : clientes;
 
   return (
     <Container maxWidth="xl">
@@ -220,7 +192,7 @@ Available actions: ${data.data.available_actions.join(', ')}`);
                 icon={<Psychology />}
                 sx={{ 
                   mr: 2, 
-                  animation: neuralSignalActive ? 'pulse 1s infinite' : 'none',
+                  // animation: neuralSignalActive ? 'pulse 1s infinite' : 'none',
                   '@keyframes pulse': {
                     '0%': { opacity: 1 },
                     '50%': { opacity: 0.7 },
@@ -285,7 +257,7 @@ Available actions: ${data.data.available_actions.join(', ')}`);
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredClientes.map((cliente, index) => (
+              {filteredClientes.map((cliente) => (
                 <TableRow key={cliente.id}>
                   <TableCell>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -337,12 +309,11 @@ Available actions: ${data.data.available_actions.join(', ')}`);
                     </IconButton>
                     
                     {/* Neuro-Symbolic: Payroll button with intention detection */}
-                    <Tooltip title="Ver Folhas de Pagamento (Neural Interface)">
+                    <Tooltip title="Ver Folhas de Pagamento">
                       <IconButton 
-                        ref={index === 0 ? payrollButtonRef1 : payrollButtonRef2}
                         size="small" 
                         color="warning"
-                        onClick={() => handlePayrollView(cliente.id)}
+                        onClick={handlePayrollView}
                         sx={{
                           '&:hover': {
                             backgroundColor: 'warning.light',
@@ -468,19 +439,6 @@ Available actions: ${data.data.available_actions.join(', ')}`);
               // Simulate saving client
               setOpenDialog(false);
               
-              // Add gamification rewards
-              addXP(50, "Cliente cadastrado");
-              
-              // Check if this is the first client (trigger achievement)
-              if (clientes.length === 0 || !editingId) {
-                unlockAchievement("first_client_config");
-              }
-              
-              // Update client count for achievements
-              const newClientCount = clientes.length + 1;
-              if (newClientCount >= 10) {
-                unlockAchievement("client_master");
-              }
             }}
           >
             Salvar

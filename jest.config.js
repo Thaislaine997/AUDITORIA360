@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
-      tsconfig: '<rootDir>/src/frontend/tsconfig.json',
+      tsconfig: '<rootDir>/src/frontend/tsconfig.test.json',
     },
   },
   testEnvironment: 'jsdom',
@@ -10,6 +10,6 @@ module.exports = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  setupFilesAfterEnv: ['<rootDir>/src/frontend/src/test/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test/setupTests.ts'],
   testMatch: ['**/*.test.(ts|tsx)'],
 };

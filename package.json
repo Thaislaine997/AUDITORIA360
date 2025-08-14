@@ -13,21 +13,28 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.43.4",
+    "lucide-react": "^0.539.0",
     "puppeteer": "^22.10.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.33.0",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^14.1.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.12.12",
     "@types/testing-library__jest-dom": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "prettier": "^3.6.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "ts-jest": "^29.4.1",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.39.1"
   },
   "engines": {
     "node": ">=18.0.0"

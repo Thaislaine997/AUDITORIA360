@@ -28,6 +28,7 @@ const RelatorioDetailPage = React.lazy(() => import("./pages/RelatorioDetailPage
 const UploadDetailPage = React.lazy(() => import("./pages/UploadDetailPage"));
 const ConsultorRiscos = React.lazy(() => import("./pages/ConsultorRiscos"));
 const GestaoContabilidades = React.lazy(() => import("./pages/GestaoContabilidades"));
+const GestaoClientes = React.lazy(() => import("./pages/GestaoClientes"));
 const GerenciamentoUsuarios = React.lazy(() => import("./pages/GerenciamentoUsuarios"));
 const RelatoriosAvancados = React.lazy(() => import("./pages/RelatoriosAvancados"));
 const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));

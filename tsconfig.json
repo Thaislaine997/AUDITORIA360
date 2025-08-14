@@ -12,7 +12,8 @@
     "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": ".",
-    "typeRoots": ["./node_modules/@types"],
+  "typeRoots": ["./node_modules/@types"],
+  "types": ["jest", "@testing-library/jest-dom"],
     "jsx": "react-jsx"
   },
   "include": ["scripts/**/*", "services/**/*", "src/**/*"],

@@ -314,14 +314,14 @@ class LogOperacoesDB(Base):
 class DeclaracoesFiscaisDB(Base):
     """
     Tax Declarations Integration - For cross-referencing payroll calculations
-    with official declarations (DCTFWeb, DIRF, GFIP, eSocial, etc.)
+    with official declarations (DCTFWeb, DIRF, GFIP, etc.)
     """
     
     __tablename__ = "DeclaracoesFiscais"
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     empresa_id = Column(Integer, ForeignKey("Empresas.id"), nullable=False)
-    tipo_declaracao = Column(String(50), nullable=False)  # DCTFWeb, DIRF, GFIP, eSocial
+    tipo_declaracao = Column(String(50), nullable=False)  # DCTFWeb, DIRF, GFIP
     periodo_competencia = Column(Date, nullable=False)  # Competency period
     numero_recibo = Column(String(100), nullable=True)  # Receipt number from tax authority
     data_transmissao = Column(DateTime, nullable=True)  # When it was transmitted

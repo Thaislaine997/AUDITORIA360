@@ -10,7 +10,7 @@ const EmpresaDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const empresas = useEmpresas();
   const empresa = empresas.find(e => String(e.id) === id);
-  const { suggestions, addSuggestion, clearSuggestions } = useIASuggestionStore();
+  const { suggestions, addSuggestion } = useIASuggestionStore();
   const [showSuggestion, setShowSuggestion] = useState(true);
 
   useEffect(() => {

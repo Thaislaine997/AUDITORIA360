@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useTickets } from '../lib/hooks/useTickets';
 import { Ticket } from '../lib/portalDemandasTypes';
-import { Box, Card, CardContent, Typography, Chip, Grid, Button, Tooltip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Chip, Grid, Button } from '@mui/material';
 import { TicketDetailModal } from './TicketDetailModal';
 import { PriorityHigh, CheckCircle, Label } from '@mui/icons-material';
 

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNotificacoes } from '../lib/hooks/useNotificacoes';
 import { Notificacao } from '../lib/portalDemandasTypes';
-import { Box, Card, CardContent, Typography, Chip, Grid, Button, Tooltip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Chip, Grid, Button } from '@mui/material';
 import { NotificacaoDetailModal } from './NotificacaoDetailModal';
 import { Notifications, PriorityHigh, Done } from '@mui/icons-material';
 

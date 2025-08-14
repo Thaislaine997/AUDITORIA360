@@ -18,7 +18,6 @@ import {
   Psychology, 
   CheckCircle, 
   Pending, 
-  Cancel,
   Refresh 
 } from '@mui/icons-material';
 import { ValidacaoIARow } from '../components/ValidacaoIARow';
@@ -89,9 +88,9 @@ const ValidacaoIAPage: React.FC = () => {
       }
 
       setExtracoes(data || []);
-    } catch (err) {
+  } catch (err: unknown) {
       console.error('Erro ao carregar extrações:', err);
-      setError(`Erro ao carregar extrações: ${err.message}`);
+  setError(`Erro ao carregar extrações: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setLoading(false);
     }
@@ -152,9 +151,9 @@ const ValidacaoIAPage: React.FC = () => {
 
       console.log('Extração aprovada com sucesso');
 
-    } catch (err) {
+  } catch (err: unknown) {
       console.error('Erro ao aprovar extração:', err);
-      setError(`Erro ao aprovar: ${err.message}`);
+  setError(`Erro ao aprovar: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setProcessingIds(prev => {
         const newSet = new Set(prev);
@@ -218,9 +217,9 @@ const ValidacaoIAPage: React.FC = () => {
 
       console.log('Extração editada e aprovada com sucesso');
 
-    } catch (err) {
+  } catch (err: unknown) {
       console.error('Erro ao editar extração:', err);
-      setError(`Erro ao editar: ${err.message}`);
+  setError(`Erro ao editar: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setProcessingIds(prev => {
         const newSet = new Set(prev);
@@ -359,6 +358,7 @@ const ValidacaoIAPage: React.FC = () => {
                 {filtrarExtracoesPorStatus(getStatusName(tabIndex)).map((extracao) => (
                   <ValidacaoIARow
                     key={extracao.id}
+                    extracao={extracao}
                     onApprove={aprovarExtracao}
                     onEdit={editarExtracao}
                     isProcessing={processingIds.has(extracao.id)}
