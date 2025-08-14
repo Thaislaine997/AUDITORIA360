@@ -9,7 +9,7 @@ security = HTTPBasic()
 
 # Usuário admin (pode ser movido para .env/config)
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "SUA_SENHA_FORTE_AQUI"  # Troque por uma senha forte
+ADMIN_PASSWORD = "admin123"  # Senha definida conforme solicitado
 
 class Sugestao(BaseModel):
     titulo: str
