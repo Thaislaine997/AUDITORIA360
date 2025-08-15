@@ -21,6 +21,19 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "src/vite-env.d.ts", "components", "domain", "hooks", "lib", "modules", "services", "stores", "main.tsx", "App.tsx", "test", "pages/AuditoriaDetailPage.tsx", "pages/CCTDetailPage.tsx", "pages/ControleMensalPage.tsx", "pages/Dashboard.tsx", "pages/EmpresaDetailPage.tsx", "pages/PortalDemandasDashboard.tsx", "pages/RelatorioDetailPage.tsx", "pages/SindicatoDetailPage.tsx", "pages/TicketDetailPage.tsx", "pages/TarefaDetailPage.tsx", "pages/UploadDetailPage.tsx"],
+    "include": [
+      "pages",
+      "components",
+      "domain",
+      "hooks",
+      "lib",
+      "modules",
+      "services",
+      "stores",
+      "styles",
+      "test",
+      "public",
+      "templates"
+    ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
