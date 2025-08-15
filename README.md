@@ -1,51 +1,302 @@
-# AUDITORIA360 - Sistema de Auditoria Departamento Pessoal
-<!-- STATUS BADGES START -->
-## 📊 Status do Sistema
+# AUDITORIA360 - Plataforma Moderna de Terceirização de Departamento Pessoal
 
+[![Deploy to GitHub Pages](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/deploy.yml/badge.svg)](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/deploy.yml)
 ![System Status](https://img.shields.io/badge/system-healthy-brightgreen) ![Health](https://img.shields.io/badge/health-100%25-brightgreen) ![Modules](https://img.shields.io/badge/modules-15%2F15-blue) ![Response Time](https://img.shields.io/badge/response%20time-69ms-brightgreen) ![Last Check](https://img.shields.io/badge/last%20check-2025--08--11-lightblue)
 
-### 🔄 Workflow Status
-![CI/CD](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/ci-cd.yml/badge.svg) ![Health Monitor](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/iai-c-health-monitor.yml/badge.svg) ![CodeQL](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/codeql-analysis.yml/badge.svg) ![E2E Tests](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/e2e.yml/badge.svg) ![Auto Checklist](https://github.com/Thaislaine997/AUDITORIA360/actions/workflows/auto-checklist.yml/badge.svg)
+## 🚀 Visão Geral
 
-### 📈 Metrics & Quality
-![Dependabot](https://img.shields.io/badge/dependabot-active-brightgreen) ![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-blue) ![Documentation](https://img.shields.io/badge/docs-up--to--date-green) ![License](https://img.shields.io/badge/license-MIT-blue)
+AUDITORIA360 é uma plataforma moderna e escalável para terceirização de Departamento Pessoal, **completamente refatorada** com **Next.js** (React) e integração **Supabase** para autenticação e banco de dados. A plataforma oferece deploy automático no **GitHub Pages** e área de login protegida para o portal AUDITORIA360.
 
-- **Sistema:** Status geral da plataforma
-- **Saúde:** Percentual de módulos operacionais
-- **Módulos:** Quantidade de módulos funcionando
-- **Resposta:** Tempo médio de resposta das APIs
-- **Verificação:** Última verificação de saúde
-- **Workflows:** Status dos pipelines de CI/CD e automação
-- **Qualidade:** Métricas de código e documentação
+### 🏢 DPEIXER - Assessoria & Terceirização
 
-> 📈 [Dashboard de Status em Tempo Real](./status-dashboard.html)
+A DPEIXER oferece soluções completas em Departamento Pessoal e Recursos Humanos, voltadas para contabilidades e empresas que buscam:
 
-<!-- STATUS BADGES END -->
+- ✅ **Precisão** e segurança jurídica
+- ✅ **Eficiência operacional**  
+- ✅ **Compliance** trabalhista
+- ✅ **Processos 100% digitais**
 
+## 🏗️ Arquitetura Moderna (Nova Estrutura)
 
-**Toda a documentação, validação, guias e blueprints do AUDITORIA360 já foram implementados, migrados e centralizados. Arquivos antigos, relatórios de validação, checklists e históricos foram removidos para manter o repositório limpo e atualizado. Consulte este README e os READMEs das pastas para informações atualizadas.**
+```
+AUDITORIA360/
+├── 📁 pages/                 # Páginas Next.js (SSG/SSR)
+│   ├── index.tsx            # Homepage institucional
+│   ├── login.tsx            # Página de autenticação
+│   ├── dashboard.tsx        # Dashboard protegido
+│   └── _app.tsx             # App wrapper
+├── 📁 components/            # Componentes React reutilizáveis  
+│   ├── ui/                  # Componentes base (Button, Loading)
+│   └── layout/              # Layouts (Header, Footer)
+├── 📁 lib/                   # Integrações (Supabase, APIs)
+├── 📁 styles/                # CSS global e Tailwind
+├── 📁 public/                # Assets estáticos
+├── 📁 .github/               # GitHub Actions e templates
+│   ├── workflows/            # CI/CD workflows
+│   └── ISSUE_TEMPLATE/       # Templates de issues
+├── 📄 next.config.js         # Configuração Next.js
+├── 📄 tailwind.config.js     # Configuração Tailwind CSS
+├── 📄 .env.example           # Variáveis de ambiente
+└── 📁 src/                   # Sistema legado (compatibilidade)
+    ├── frontend/             # React/Vite original
+    └── api/                  # APIs FastAPI existentes
+```
 
-> Para detalhes de cada módulo, consulte o `README.md` presente em cada subpasta principal.
+### 🔧 Stack Tecnológica Modernizada
+
+| Componente | Tecnologia | Função |
+|------------|------------|---------|
+| **Frontend** | Next.js 14 + React 18 + TypeScript | Interface moderna e responsiva |
+| **Styling** | Tailwind CSS | Design system e componentes |
+| **Auth/DB** | Supabase | Autenticação e banco de dados |
+| **Deploy** | GitHub Pages | Hospedagem estática automatizada |
+| **CI/CD** | GitHub Actions | Deploy e integração contínua |
+
+## 🚀 Instalação e Desenvolvimento
+
+### Pré-requisitos
+
+- Node.js >= 18.0.0
+- npm ou yarn
+- Conta Supabase (para auth/DB)
+
+### 1. Clone e Instale
+
+```bash
+git clone https://github.com/Thaislaine997/AUDITORIA360.git
+cd AUDITORIA360
+npm install
+```
+
+### 2. Configure Variáveis de Ambiente
+
+```bash
+cp .env.example .env.local
+```
+
+Edite `.env.local` com suas credenciais Supabase:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 3. Execute em Desenvolvimento
+
+```bash
+npm run dev
+```
+
+Acesse: `http://localhost:3000`
+
+### 4. Build para Produção
+
+```bash
+npm run build
+```
+
+## 🔐 Configuração do Supabase
+
+### 1. Criar Projeto
+
+1. Acesse [supabase.com](https://supabase.com)
+2. Crie um novo projeto
+3. Anote a URL e chave pública (anon key)
+
+### 2. Configurar Autenticação
+
+No painel Supabase:
+- Vá em **Authentication > Settings**
+- Configure **Site URL**: `https://thaislaine997.github.io`
+- Adicione **Redirect URLs**:
+  - `http://localhost:3000` (desenvolvimento)
+  - `https://thaislaine997.github.io/AUDITORIA360` (produção)
+
+## 🌐 Deploy Automatizado (GitHub Pages)
+
+### Deploy Automático via Actions
+
+O deploy é **100% automatizado** via GitHub Actions:
+
+1. **Push para branch `main` ou `Principal`**
+2. **GitHub Actions** executa automaticamente:
+   - Instala dependências
+   - Executa build Next.js com static export
+   - Gera páginas estáticas otimizadas
+   - Deploy automático no GitHub Pages
+
+### Configuração de Secrets
+
+No repositório GitHub, configure em **Settings > Secrets and Variables > Actions**:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## 🎯 Funcionalidades Principais
+
+### 🏠 Site Institucional Moderno
+- **Hero section** com proposta de valor clara
+- **Sobre a empresa** com diferenciais técnicos
+- **Serviços detalhados** e especializados
+- **Planos e preços** transparentes e competitivos
+- **Design responsivo** e otimizado (Tailwind CSS)
+
+### 🔒 Portal AUDITORIA360 (Área Protegida)
+- **Login/Registro seguro** com Supabase Auth
+- **Dashboard inteligente** com métricas e KPIs
+- **Módulos integrados**:
+  - 📊 Controle da Folha Mensal
+  - 🎫 Portal de Demandas
+  - 🔍 Portal de Auditoria
+  - 📋 Tabelas Oficiais (INSS, FGTS, etc.)
+  - 📄 Portal CCT
+  - 📈 Gestão e Relatórios
+
+### 🛡️ Segurança e Performance
+- **Autenticação robusta** via Supabase
+- **Rotas protegidas** com verificação server-side
+- **SSL/TLS automático** via GitHub Pages
+- **Páginas estáticas otimizadas** (SEO friendly)
+- **Carregamento rápido** com Next.js optimizations
+
+## 💰 Planos e Valores DPEIXER
+
+| Plano | Valor/Mês | Inclui |
+|-------|-----------|---------|
+| **Plus** | R$ 39,90 | Folha mensal, eSocial, relatórios básicos, suporte por email |
+| **Premium** | R$ 49,90 | Plus + admissões/rescisões digitais + portal básico + suporte prioritário |
+| **Diamante** | R$ 69,90 | Premium + documentação personalizada + analytics + suporte 24/7 |
+
+### Diferenciais Exclusivos
+- 📍 **Ponto digital** com geolocalização (celular, tablet, físico)
+- 🎫 **Gestão automatizada** de benefícios (VR/VA/VT)
+- ✍️ **Assinatura eletrônica** para admissão/rescisão
+- 🔒 **Processos 100% digitais**, auditáveis e seguros
+- 🤖 **IA integrada** para análise e automações
+
+## 📋 Serviços Técnicos Especializados
+
+### 1. Processamento Mensal da Folha
+- Cálculo detalhado de salários, benefícios, descontos
+- Emissão automática de holerites e guias (INSS, FGTS, IRRF)
+- Integração direta com eSocial, DCTFWeb e FGTS Digital
+- Protocolos de conferência dupla e rastreabilidade completa
+
+### 2. Compliance e Obrigações Acessórias
+- Gestão completa de declarações e devoluções
+- Aplicação automática de convenções coletivas
+- Revisões fiscais e previdenciárias proativas
+- Correção automática de inconsistências
+
+### 3. Consultoria Trabalhista Especializada
+- Diagnóstico técnico de passivos trabalhistas
+- Revisão detalhada de contratos e políticas
+- Recomendações estratégicas para mitigação de riscos
+- Suporte jurídico especializado
+
+### 4. Gestão de Informação e Plataforma
+- Integração segura com sistemas do cliente
+- Backups automáticos e controle de versões
+- Operação via plataforma própria ou acesso remoto
+- Monitoramento 24/7 e alertas inteligentes
+
+### 5. Serviços Sob Demanda Flexíveis
+- Admissão/rescisão 100% digital
+- Recálculos técnicos e homologações online
+- Preço por evento, totalmente flexível
+- Videochamadas para homologações
+
+## 🤝 Contribuição e Desenvolvimento
+
+### Como Contribuir
+
+1. **Leia o guia:** [CONTRIBUTING_NEXTJS.md](CONTRIBUTING_NEXTJS.md)
+2. **Fork o repositório**
+3. **Criar branch:** `git checkout -b feature/nova-funcionalidade`
+4. **Commit:** `git commit -am 'feat: adiciona nova funcionalidade'`
+5. **Push:** `git push origin feature/nova-funcionalidade`
+6. **Abrir Pull Request** usando nosso template
+
+### Padrões de Desenvolvimento
+
+- ✅ **TypeScript obrigatório** para type safety
+- ✅ **Next.js 14** com App Router
+- ✅ **Tailwind CSS** para styling
+- ✅ **Componentes funcionais** com hooks
+- ✅ **Supabase** para backend/auth
+- ✅ **GitHub Actions** para CI/CD
+
+### Templates Disponíveis
+
+- 📝 **Issue Templates** - Bug reports e feature requests
+- 📋 **PR Template** - Pull request padronizado
+- 🔧 **Workflow Templates** - GitHub Actions configurados
+
+## 📖 Documentação Técnica
+
+### Arquitetura de Rotas
+
+- `/` - Homepage institucional (pública)
+- `/login` - Página de autenticação
+- `/dashboard` - Portal principal (protegido)
+- `/dashboard/*` - Módulos do sistema (protegidos)
+
+### Principais Arquivos
+
+```typescript
+// Autenticação e integração
+lib/supabaseClient.ts     # Cliente Supabase configurado
+pages/_app.tsx            # App wrapper com auth state
+
+// Páginas principais  
+pages/index.tsx           # Homepage institucional
+pages/login.tsx           # Sistema de login/registro
+pages/dashboard.tsx       # Dashboard principal
+
+// Componentes reutilizáveis
+components/ui/            # Componentes base
+components/layout/        # Layouts e estrutura
+```
+
+## 🚨 Migração e Compatibilidade
+
+### ✅ Nova Arquitetura (Recomendada)
+- **Next.js 14** - `/pages`, `/components`, `/lib`
+- **Deploy automático** - GitHub Pages via Actions
+- **Autenticação moderna** - Supabase Auth integrado
+- **Performance otimizada** - Static generation + SSR
+
+### 🔄 Sistema Legado (Compatibilidade)
+- **React/Vite** - `src/frontend/` (mantido para compatibilidade)
+- **FastAPI** - `src/api/` (APIs existentes funcionais)
+- **Supabase Functions** - `supabase/` (edge functions)
+- **Portal Demandas** - `portal_demandas/` (sistema de tickets)
+
+### 📋 Roadmap de Migração
+
+- [x] ✅ Estrutura Next.js implementada
+- [x] ✅ Autenticação Supabase integrada  
+- [x] ✅ Deploy automático configurado
+- [x] ✅ Interface institucional moderna
+- [x] ✅ Dashboard protegido funcional
+- [ ] 🔄 Migração completa dos módulos legados
+- [ ] 🔄 Integração total com APIs existentes
+- [ ] 🔄 Testes automatizados completos
+
+## 📞 Suporte e Contato
+
+- 🌐 **Website**: [thaislaine997.github.io/AUDITORIA360](https://thaislaine997.github.io/AUDITORIA360)
+- 📧 **Email**: contato@dpeixer.com.br  
+- 📱 **Portal**: Acesse via `/login` para clientes
+- 🐛 **Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
+- 📚 **Documentação**: [Guia do Desenvolvedor](CONTRIBUTING_NEXTJS.md)
 
 ---
 
-## 🚀 Deploy Centralizado (GitHub → cPanel)
-
-O deploy do AUDITORIA360 agora é 100% centralizado e automatizado:
-
-- **Push no GitHub:** Ao enviar código para a branch principal, o cPanel detecta a atualização via Git™ Version Control.
-- **Deploy automático:** O arquivo `.cpanel.yml` na raiz do projeto define todos os comandos de build, instalação de dependências e pós-deploy.
-- **Sem scripts manuais, FTP ou Vercel:** Todo o fluxo é feito via Git e cPanel, garantindo rastreabilidade e segurança.
-
-### Como funciona?
-1. Faça push normalmente para o GitHub.
-2. No cPanel, use o botão "Atualizar do remoto" para puxar as mudanças (ou configure webhook para automação total).
-3. O cPanel executa o `.cpanel.yml` e atualiza o ambiente automaticamente.
-
-### Arquivos e fluxos antigos removidos
-- `vercel.json` e scripts de deploy antigos foram removidos.
-- Não há mais deploy via FTP, SFTP ou scripts manuais.
-- Toda automação de build/teste/deploy está em `.github/workflows/` (CI/CD) e `.cpanel.yml` (deploy).
+**AUDITORIA360** - Plataforma Moderna de Terceirização de Departamento Pessoal  
+*Desenvolvido com ❤️ usando Next.js + Supabase + GitHub Actions*
 
 ---
 
