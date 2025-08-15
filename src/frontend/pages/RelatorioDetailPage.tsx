@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Breadcrumbs, Typography, Box, Paper, Chip, Button } from '@mui/material';
 import { Description, ArrowBack, Home } from '@mui/icons-material';
 import { useRelatorios } from '../lib/hooks/usePortalDemandasAuditoria';
@@ -7,7 +8,8 @@ import { IAAnalysisButton } from '../components/IAAnalysisButton';
 import { useIASuggestionStore } from '../stores/iaSuggestionStore';
 
 const RelatorioDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const { id } = router.query as { id?: string };
   const relatorios = useRelatorios();
   const relatorio = relatorios.find(r => String(r.id) === id);
   const { suggestions, addSuggestion } = useIASuggestionStore();

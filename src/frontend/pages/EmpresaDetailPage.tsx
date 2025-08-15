@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Breadcrumbs, Typography, Box, Paper, Chip, Button } from '@mui/material';
 import { Home, Business, ArrowBack } from '@mui/icons-material';
 import { useEmpresas } from '../lib/hooks/usePortalDemandasDomain';
@@ -7,7 +8,8 @@ import { IAAnalysisButton } from '../components/IAAnalysisButton';
 import { useIASuggestionStore } from '../stores/iaSuggestionStore';
 
 const EmpresaDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const { id } = router.query as { id?: string };
   const empresas = useEmpresas();
   const empresa = empresas.find(e => String(e.id) === id);
   const { suggestions, addSuggestion } = useIASuggestionStore();
