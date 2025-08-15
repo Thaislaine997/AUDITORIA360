@@ -1,5 +1,5 @@
 // Unificação: Dashboard Next.js (autenticação, layout, SEO) + Dashboard legado (métricas, widgets, IA, UI adaptativa)
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; // Moved to pages/dashboard/index.tsx
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Container, Typography, Paper, Box, Alert, Chip, Grid } from "@mui/material";
@@ -19,7 +19,7 @@ interface User {
 }
 
 export default function Dashboard() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null); // Moved to pages/dashboard/index.tsx
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState<DashboardMetric[]>([]);
   const [speculativePages, setSpeculativePages] = useState<Record<string, boolean>>({});
@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   // Autenticação Next.js/Supabase
   useEffect(() => {
-    const checkUser = async () => {
+  const checkUser = async () => { // Moved to pages/dashboard/index.tsx
       try {
         const currentUser = await authHelpers.getCurrentUser();
         if (!currentUser) {
@@ -44,7 +44,7 @@ export default function Dashboard() {
     checkUser();
   }, [router]);
 
-  // Dashboard legado: métricas, UI adaptativa, IA
+  // Dashboard legado: métricas, UI adaptativa, IA // Moved to pages/dashboard/index.tsx
   useEffect(() => {
     const loadMetrics = async () => {
       try {
@@ -116,7 +116,7 @@ export default function Dashboard() {
   }
 
   return (
-    <>
+  <> // Moved to pages/dashboard/index.tsx
       <Head>
         <title>Dashboard - Portal AUDITORIA360</title>
         <meta name="description" content="Dashboard do Portal AUDITORIA360 - Gestão completa da folha de pagamento e auditoria inteligente." />
@@ -274,7 +274,7 @@ export default function Dashboard() {
 }
 
 function DashboardModule({ title, description, icon, href }: {
-  title: string
+  title: string // Moved to pages/dashboard/index.tsx
   description: string
   icon: string
   href: string
@@ -283,7 +283,7 @@ function DashboardModule({ title, description, icon, href }: {
 }
 
 function ActivityItem({ title, description, time, status }: {
-  title: string
+  title: string // Moved to pages/dashboard/index.tsx
   description: string
   time: string
   status: 'success' | 'info' | 'warning'
