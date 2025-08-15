@@ -23,8 +23,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (credentials) => {
     set({ loading: true });
     try {
-      // This would typically call your auth service
       const user = await authService.login(credentials);
+      // Persistência do usuário no sessionStorage
+  sessionStorage.setItem("user", JSON.stringify(user));
+  // Salva timestamp de login para expiração automática
+  sessionStorage.setItem("loginTime", Date.now().toString());
       set({ 
         user, 
         isAuthenticated: true, 
@@ -39,6 +42,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     authService.logout();
+  sessionStorage.removeItem("user");
+  sessionStorage.removeItem("authTokens");
+  sessionStorage.removeItem("loginTime");
     set({ 
       user: null, 
       isAuthenticated: false, 
@@ -50,17 +56,34 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     set({ loading: true });
     try {
-      // Verifica se há usuário e token válidos no sessionStorage
-      const userJson = sessionStorage.getItem("user");
-      const tokensJson = sessionStorage.getItem("authTokens");
-      if (userJson && tokensJson) {
+  const userJson = sessionStorage.getItem("user");
+  const loginTime = sessionStorage.getItem("loginTime");
+      const EXPIRATION_MINUTES = 30;
+      if (userJson && loginTime) {
         const user = JSON.parse(userJson);
-        set({
-          isAuthenticated: true,
-          user,
-          loading: false,
-          permissions: user.permissions || []
-        });
+        const now = Date.now();
+        const loginTimestamp = parseInt(loginTime, 10);
+        if (now - loginTimestamp > EXPIRATION_MINUTES * 60 * 1000) {
+          // Sessão expirada
+          sessionStorage.removeItem("user");
+          sessionStorage.removeItem("authTokens");
+          sessionStorage.removeItem("loginTime");
+          set({
+            isAuthenticated: false,
+            user: null,
+            loading: false,
+            permissions: []
+          });
+          // Sinaliza expiração para o app
+          window.dispatchEvent(new Event("sessionExpired"));
+        } else {
+          set({
+            isAuthenticated: true,
+            user,
+            loading: false,
+            permissions: user.permissions || []
+          });
+        }
       } else {
         set({
           isAuthenticated: false,

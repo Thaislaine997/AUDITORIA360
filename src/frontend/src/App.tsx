@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, Typography, LinearProgress } from "@mui/material";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import KeyboardNavigation from "./components/ui/KeyboardNavigation";
@@ -48,25 +48,43 @@ const LoadingSpinner: React.FC = () => (
 );
 
 function App() {
-  const { isAuthenticated, loading } = useAuthStore();
+  const { isAuthenticated, loading, logout } = useAuthStore();
   const { layoutMode, setLayoutMode } = useUIStore();
-  
+  const [sessionExpired, setSessionExpired] = React.useState(false);
 
   React.useEffect(() => {
     // Initialize auth state
     useAuthStore.getState().checkAuth();
-    
     // Initialize Fluxo layout mode
     setLayoutMode(layoutMode);
-  }, [layoutMode, setLayoutMode]);
+    // Listener para sessão expirada
+    const onSessionExpired = () => {
+      setSessionExpired(true);
+      logout();
+    };
+    window.addEventListener("sessionExpired", onSessionExpired);
+    return () => {
+      window.removeEventListener("sessionExpired", onSessionExpired);
+    };
+  }, [layoutMode, setLayoutMode, logout]);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <>
+        <LinearProgress color="primary" style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 2000 }} />
+        <LoadingSpinner />
+      </>
+    );
   }
 
   if (!isAuthenticated) {
     return (
       <Suspense fallback={<LoadingSpinner />}>
+        {sessionExpired && (
+          <div style={{ margin: 16 }}>
+            <Typography color="error">Sessão expirada. Faça login novamente.</Typography>
+          </div>
+        )}
         <LoginPage />
       </Suspense>
     );

@@ -41,7 +41,7 @@ export class AuthService {
   async login(credentials: { email: string; password: string }): Promise<User> {
     try {
       // Make real API call to backend
-      const response = await fetch('http://localhost:8001/auth/login', {
+  const response = await fetch('http://localhost:8001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
