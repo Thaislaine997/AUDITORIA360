@@ -1,0 +1,39 @@
+from fastapi import FastAPI, HTTPException, Request
+from pydantic import BaseModel
+import json
+import bcrypt
+import os
+
+app = FastAPI()
+
+CONFIG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "config", "gestor_contas.json"))
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class LoginResponse(BaseModel):
+    username: str
+    is_admin: bool
+    client_id: str
+
+@app.post("/api/login", response_model=LoginResponse)
+def login(request: LoginRequest):
+    # Carrega usuários
+    if not os.path.exists(CONFIG_PATH):
+        raise HTTPException(status_code=500, detail="Arquivo de usuários não encontrado.")
+    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+        users = json.load(f)
+    user = users.get(request.username)
+    if not user or user.get("disabled"):
+        raise HTTPException(status_code=401, detail="Usuário ou senha inválidos.")
+    hashed = user["hashed_password"].encode()
+    if not bcrypt.checkpw(request.password.encode(), hashed):
+        raise HTTPException(status_code=401, detail="Usuário ou senha inválidos.")
+    return {
+        "username": user["username"],
+        "is_admin": user.get("is_admin", False),
+        "client_id": user.get("client_id", "")
+    }
+
+# Para rodar: uvicorn login_api:app --host 0.0.0.0 --port 8001 --reload
