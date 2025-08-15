@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Container, Typography, Paper, Box, Alert } from "@mui/material";
+import { Container, Typography, Paper, Box, Alert, Button } from "@mui/material";
 import { authHelpers } from '../lib/supabaseClient';
 
 interface User {
@@ -69,29 +69,38 @@ export default function Dashboard() {
         <Box sx={{ display: 'grid', gap: 3, gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Métricas
+              Documentos
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Sistema em desenvolvimento...
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Gerencie documentos, certificações e uploads.
             </Typography>
+            <Button variant="outlined" href="/legacy/documents" fullWidth>
+              Acessar Documentos
+            </Button>
+          </Paper>
+          
+          <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Portal de Demandas
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Gerencie tickets, solicitações e demandas dos clientes.
+            </Typography>
+            <Button variant="outlined" href="/legacy/portal-demandas" fullWidth>
+              Acessar Portal
+            </Button>
           </Paper>
           
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               Relatórios
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Sistema em desenvolvimento...
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Acesse relatórios de auditoria e análises detalhadas.
             </Typography>
-          </Paper>
-          
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Configurações
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Sistema em desenvolvimento...
-            </Typography>
+            <Button variant="outlined" href="/legacy/relatorios" fullWidth>
+              Ver Relatórios
+            </Button>
           </Paper>
         </Box>
       </Container>

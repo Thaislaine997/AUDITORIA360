@@ -236,28 +236,61 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## 📖 Documentação Técnica
 
-### Arquitetura de Rotas
+### 📚 Guias Principais
+
+- 📋 **[README_NEXTJS.md](README_NEXTJS.md)** - Detalhes técnicos do frontend Next.js
+- 🤖 **[README_IA_INTEGRATION.md](README_IA_INTEGRATION.md)** - Integração de IA e sistemas legados
+- 🧪 **[TESTES_AUTOMATIZADOS.md](TESTES_AUTOMATIZADOS.md)** - Testes automatizados e QA
+- 🤝 **[CONTRIBUTING_NEXTJS.md](CONTRIBUTING_NEXTJS.md)** - Guia de contribuição
+- 🔧 **[supabase/README.md](supabase/README.md)** - Configuração Supabase e Edge Functions
+
+### 🏗️ Arquitetura de Rotas
 
 - `/` - Homepage institucional (pública)
 - `/login` - Página de autenticação
 - `/dashboard` - Portal principal (protegido)
-- `/dashboard/*` - Módulos do sistema (protegidos)
+- `/legacy/*` - Páginas migradas do sistema legado
 
-### Principais Arquivos
+### 📄 Páginas Disponíveis
 
-```typescript
-// Autenticação e integração
-lib/supabaseClient.ts     # Cliente Supabase configurado
-pages/_app.tsx            # App wrapper com auth state
+**Sistema Moderno (Next.js)**
+- `pages/index.tsx` - Homepage institucional
+- `pages/login.tsx` - Sistema de login/registro
+- `pages/dashboard.tsx` - Dashboard principal
+- `pages/legacy/documents.tsx` - Gestão de documentos
+- `pages/legacy/portal-demandas.tsx` - Portal de demandas
+- `pages/legacy/relatorios.tsx` - Relatórios e análises
 
-// Páginas principais  
-pages/index.tsx           # Homepage institucional
-pages/login.tsx           # Sistema de login/registro
-pages/dashboard.tsx       # Dashboard principal
+**Sistema Legado (Compatibilidade)**
+- `src/frontend/src/pages/` - Páginas React/Vite originais
+- `src/api/` - APIs FastAPI existentes
+- `portal_demandas/` - Sistema de tickets
 
-// Componentes reutilizáveis
-components/ui/            # Componentes base
-components/layout/        # Layouts e estrutura
+### 🔧 Configuração e Deploy
+
+**Variáveis de Ambiente**
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Deploy
+NODE_ENV=production
+```
+
+**Deploy Automático**
+- Push para `main` → GitHub Actions → GitHub Pages
+- Configuração: `.github/workflows/deploy.yml`
+- Secrets necessários: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### 🛠️ Scripts Principais
+
+```bash
+npm run dev          # Desenvolvimento local
+npm run build        # Build para produção
+npm run test         # Executar testes
+npm run lint         # Linting e formatação
+make validate        # Validação completa do sistema
 ```
 
 ## 🚨 Migração e Compatibilidade
