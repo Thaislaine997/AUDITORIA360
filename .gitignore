@@ -83,6 +83,9 @@ configs/*.enc
 # Backup files
 backups/*.zip
 *backup*
+*.backup
+*.bak
+*.old
 
 # Temporary files
 .temp_*
