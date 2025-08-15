@@ -28,14 +28,14 @@ const RelatorioDetailPage = React.lazy(() => import("./pages/RelatorioDetailPage
 const UploadDetailPage = React.lazy(() => import("./pages/UploadDetailPage"));
 const ConsultorRiscos = React.lazy(() => import("./pages/ConsultorRiscos"));
 const GestaoContabilidades = React.lazy(() => import("./pages/GestaoContabilidades"));
-const GestaoClientes = React.lazy(() => import("./pages/GestaoClientes"));
+const GestaoClientes = React.lazy(() => import("./src/pages/GestaoClientes"));
 const GerenciamentoUsuarios = React.lazy(() => import("./pages/GerenciamentoUsuarios"));
 const RelatoriosAvancados = React.lazy(() => import("./pages/RelatoriosAvancados"));
 const MinhaConta = React.lazy(() => import("./pages/MinhaConta"));
 const Templates = React.lazy(() => import("./pages/Templates"));
-const ValidacaoIAPage = React.lazy(() => import("./pages/ValidacaoIAPage"));
+const ValidacaoIAPage = React.lazy(() => import("./src/pages/ValidacaoIAPage"));
 const ControleMensalPage = React.lazy(() => import("./pages/ControleMensalPage"));
-const GestaoLegislacaoPage = React.lazy(() => import("./pages/GestaoLegislacaoPage"));
+const GestaoLegislacaoPage = React.lazy(() => import("./src/pages/GestaoLegislacaoPage"));
 
 // Loading component
 const LoadingSpinner: React.FC = () => (

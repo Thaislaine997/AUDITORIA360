@@ -36,9 +36,9 @@ import {
   AttachMoney,
   Psychology,
 } from "@mui/icons-material";
-import { useAuthStore } from "../stores/authStore";
+import { useAuthStore } from "../../stores/authStore";
 // import { usePredictiveLoading } from "../hooks/useNeuralSignals";
-import { useIntentionStore } from "../stores/intentionStore";
+import { useIntentionStore } from "../../stores/intentionStore";
 
 interface Cliente {
   id: string;
