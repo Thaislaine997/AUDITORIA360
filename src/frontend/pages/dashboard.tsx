@@ -4,11 +4,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Container, Typography, Paper, Box, Alert, Chip, Grid } from "@mui/material";
 import { Psychology, Speed, Visibility } from "@mui/icons-material";
-import { authHelpers } from '../../lib/supabaseClient';
-import { dashboardService, type DashboardMetric } from "../frontend/modules/dashboard/dashboardService";
-import { usePredictiveLoading, useAdaptiveUI } from "../frontend/hooks/useNeuralSignals";
-import { useIntentionStore } from "../frontend/stores/intentionStore";
-import ROICognitivoWidget from "../frontend/components/ui/ROICognitivoWidget";
+import { authHelpers } from '../../../lib/supabaseClient';
+import { dashboardService, type DashboardMetric } from "../modules/dashboard/dashboardService";
+import { usePredictiveLoading, useAdaptiveUI } from "../hooks/useNeuralSignals";
+import { useIntentionStore } from "../stores/intentionStore";
+import ROICognitivoWidget from "../components/ui/ROICognitivoWidget";
 
 interface User {
   id: string;
