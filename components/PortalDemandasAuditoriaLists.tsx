@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuditorias, useRelatorios, useUploads } from '../lib/hooks/usePortalDemandasAuditoria';
-import { Box, Card, CardContent, Typography, Chip, Grid, Button } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Card, CardContent, Typography, Chip, Button } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Link from 'next/link';
 import { IAAnalysisButton } from './IAAnalysisButton';
 import { Assignment, Assessment, CloudUpload } from '@mui/icons-material';
 
@@ -62,7 +63,7 @@ export const AuditoriasList: React.FC = () => {
       </Box>
       <Grid container spacing={2}>
         {auditoriasFiltradas.map(a => (
-          <Grid item xs={12} sm={6} md={4} key={a.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={a.id}>
             <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2, background: a.status === 'concluida' ? '#e8f5e9' : '#fff' }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -81,14 +82,14 @@ export const AuditoriasList: React.FC = () => {
                   {a.status !== 'concluida' && a.status !== 'cancelada' && (
                     <Button size="small" color="success" variant="contained" onClick={marcarComoConcluida}>Concluir</Button>
                   )}
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    component={RouterLink}
-                    to={`/demandas/auditoria/${a.id}`}
-                  >
-                    Detalhes
-                  </Button>
+                  <Link href={`/demandas/auditoria/${a.id}`} passHref>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                    >
+                      Detalhes
+                    </Button>
+                  </Link>
                   <IAAnalysisButton context={`Auditoria: ${a.descricao} (ID: ${a.id})`} />
                 </Box>
               </CardContent>
@@ -145,7 +146,7 @@ export const RelatoriosList: React.FC = () => {
       </Box>
       <Grid container spacing={2}>
         {relatoriosFiltrados.map(r => (
-          <Grid item xs={12} sm={6} md={4} key={r.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={r.id}>
             <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2 }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -157,14 +158,14 @@ export const RelatoriosList: React.FC = () => {
                 <Typography variant="body2" color="text.secondary">Emissão: {r.data_emissao}</Typography>
                 {r.link_documento && <Button href={r.link_documento} target="_blank" rel="noopener noreferrer" size="small" color="primary" sx={{ mt: 1 }}>Ver documento</Button>}
                 <Box mt={2} display="flex" justifyContent="flex-end" gap={1}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    component={RouterLink}
-                    to={`/demandas/relatorio/${r.id}`}
-                  >
-                    Detalhes
-                  </Button>
+                  <Link href={`/demandas/relatorio/${r.id}`} passHref>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                    >
+                      Detalhes
+                    </Button>
+                  </Link>
                   <IAAnalysisButton context={`Relatório: ${r.titulo} (ID: ${r.id})`} />
                 </Box>
               </CardContent>
@@ -204,7 +205,7 @@ export const UploadsList: React.FC = () => {
       </Box>
       <Grid container spacing={2}>
         {uploadsFiltrados.map(u => (
-          <Grid item xs={12} sm={6} md={4} key={u.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={u.id}>
             <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2 }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -217,14 +218,14 @@ export const UploadsList: React.FC = () => {
                 <Typography variant="body2" color="text.secondary">Usuário: {u.usuario_upload}</Typography>
                 <Box mt={2} display="flex" justifyContent="flex-end" gap={1}>
                   {u.url && <Button href={u.url} target="_blank" rel="noopener noreferrer" size="small" color="success">Baixar</Button>}
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    component={RouterLink}
-                    to={`/demandas/upload/${u.id}`}
-                  >
-                    Detalhes
-                  </Button>
+                  <Link href={`/demandas/upload/${u.id}`} passHref>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                    >
+                      Detalhes
+                    </Button>
+                  </Link>
                   <IAAnalysisButton context={`Upload: ${u.nome_arquivo} (ID: ${u.id})`} />
                 </Box>
               </CardContent>

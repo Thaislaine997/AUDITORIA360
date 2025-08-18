@@ -222,7 +222,7 @@ export const HighConsequenceModal: React.FC<HighConsequenceModalProps> = ({
           <Box sx={{ mt: 3, p: 2, backgroundColor: '#FEF2F2', borderRadius: 1 }}>
             <Typography variant="body2" sx={{ mb: 2, color: '#DC2626' }}>
               Para prosseguir com esta ação de risco {dangerousAction.consequence}, 
-              digite <strong>"{expectedConfirmation}"</strong> no campo abaixo:
+              digite <strong>&quot;{expectedConfirmation}&quot;</strong> no campo abaixo:
             </Typography>
             <TextField
               fullWidth

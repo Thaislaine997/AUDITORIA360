@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { useTickets } from '../lib/hooks/useTickets';
 import { Ticket } from '../lib/portalDemandasTypes';
-import { Box, Card, CardContent, Typography, Chip, Grid, Button } from '@mui/material';
+import { Box, Card, CardContent, Typography, Chip, Button } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { TicketDetailModal } from './TicketDetailModal';
 import { PriorityHigh, CheckCircle, Label } from '@mui/icons-material';
 
@@ -65,7 +66,7 @@ export const TicketsList: React.FC = () => {
       <Typography variant="h5" fontWeight={700} mb={2}>Tickets</Typography>
       <Grid container spacing={2}>
         {tickets.map(ticket => (
-          <Grid item xs={12} sm={6} md={4} key={ticket.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={ticket.id}>
             <TicketCard ticket={ticket} onOpen={setModalTicket} />
           </Grid>
         ))}

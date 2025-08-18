@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useNotificacoes } from '../lib/hooks/useNotificacoes';
 import { Notificacao } from '../lib/portalDemandasTypes';
-import { Box, Card, CardContent, Typography, Chip, Grid, Button } from '@mui/material';
+import { Box, Card, CardContent, Typography, Chip, Button } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { NotificacaoDetailModal } from './NotificacaoDetailModal';
 import { Notifications, PriorityHigh, Done } from '@mui/icons-material';
 
@@ -55,7 +56,7 @@ export const NotificacoesList: React.FC = () => {
       <Typography variant="h5" fontWeight={700} mb={2}>Notificações</Typography>
       <Grid container spacing={2}>
         {notificacoes.map(notif => (
-          <Grid item xs={12} sm={6} md={4} key={notif.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={notif.id}>
             <NotificacaoCard notif={notif} marcarComoLida={marcarComoLida} onOpen={setModalNotif} />
           </Grid>
         ))}

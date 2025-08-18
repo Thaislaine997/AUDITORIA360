@@ -14,7 +14,7 @@ export default [
         ecmaFeatures: { jsx: true },
         ecmaVersion: 2020,
         sourceType: "module",
-        project: "./src/frontend/tsconfig.json",
+        project: "./tsconfig.json",
       },
     },
     plugins: {

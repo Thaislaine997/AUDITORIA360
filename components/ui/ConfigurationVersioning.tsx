@@ -772,7 +772,7 @@ const ConfigurationVersioning: React.FC<ConfigurationVersioningProps> = ({
             </Box>
           ) : (
             <Alert severity="success">
-              Simulação concluída com sucesso! Verifique os resultados na seção "Resultados de Simulação".
+              Simulação concluída com sucesso! Verifique os resultados na seção &quot;Resultados de Simulação&quot;.
             </Alert>
           )}
         </DialogContent>

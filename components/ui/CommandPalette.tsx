@@ -277,7 +277,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
         {filteredCommands.length === 0 ? (
           <Box sx={{ p: 4, textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
-              Nenhum comando encontrado para "{query}"
+              Nenhum comando encontrado para &quot;{query}&quot;
             </Typography>
           </Box>
         ) : (

@@ -128,7 +128,7 @@ export const ValidacaoIARow: React.FC<Props> = ({
           </Box>
           
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            <strong>Contexto:</strong> "{extracao.contexto_original}"
+            <strong>Contexto:</strong> &quot;{extracao.contexto_original}&quot;
           </Typography>
           
           <Typography variant="caption" color="text.secondary">
