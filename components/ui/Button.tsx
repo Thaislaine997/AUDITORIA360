@@ -1,48 +1,59 @@
-import { ReactNode } from 'react'
+import React from 'react';
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
+import { trackFluxoInteraction } from '../../services/acr';
 
-interface ButtonProps {
-  children: ReactNode
-  variant?: 'primary' | 'secondary' | 'outline'
-  size?: 'sm' | 'md' | 'lg'
-  disabled?: boolean
-  onClick?: () => void
-  type?: 'button' | 'submit' | 'reset'
-  className?: string
+interface ButtonProps extends MuiButtonProps {
+  loading?: boolean;
 }
 
-export default function Button({
+export const Button: React.FC<ButtonProps> = ({ 
+  loading = false, 
+  disabled,
   children,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
   onClick,
-  type = 'button',
-  className = ''
-}: ButtonProps) {
-  const baseClasses = 'font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
-  
-  const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
-    outline: 'border border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500'
-  }
-  
-  const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
-  }
-
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`
+  ...props 
+}) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // ACR (Kinetic Tracking Agent) - Track button interactions
+    trackFluxoInteraction('button', 'click');
+    
+    // Call original onClick handler
+    if (onClick && !disabled && !loading) {
+      onClick(event);
+    }
+  };
 
   return (
-    <button
-      type={type}
-      disabled={disabled}
-      onClick={onClick}
-      className={classes}
+    <MuiButton
+      disabled={disabled || loading}
+      onClick={handleClick}
+      {...props}
+      sx={{
+        textTransform: 'none',
+        fontWeight: 500,
+        borderRadius: 2,
+        transition: 'all var(--transition-fast)',
+        position: 'relative',
+        // Fluxo "Responsive Click" Physics
+        '&:active': {
+          transform: 'translateY(var(--fluxo-click-displacement))',
+          filter: 'brightness(0.95)',
+        },
+        '&:hover:not(:disabled)': {
+          transform: 'translateY(-1px)',
+          boxShadow: 'var(--fluxo-shadow-floating)',
+        },
+        // Electric Blue focus ring for accessibility
+        '&:focus-visible': {
+          outline: '2px solid var(--fluxo-electric-blue)',
+          outlineOffset: '2px',
+        },
+        ...props.sx,
+      }}
     >
-      {children}
-    </button>
-  )
-}
+      {loading ? 'Carregando...' : children}
+    </MuiButton>
+  );
+};
+
+export default Button;
