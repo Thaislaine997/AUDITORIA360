@@ -1,27 +1,9 @@
-import React from 'react';
-import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
-import { trackFluxoInteraction } from '../../services/acr';
-
-interface ButtonProps extends MuiButtonProps {
-  loading?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({ 
   loading = false, 
   disabled,
   children,
-  onClick,
-  ...props 
-}) => {
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // ACR (Kinetic Tracking Agent) - Track button interactions
-    trackFluxoInteraction('button', 'click');
-    
-    // Call original onClick handler
-    if (onClick && !disabled && !loading) {
-      onClick(event);
-    }
-  };
 
   return (
     <MuiButton
@@ -50,10 +32,3 @@ export const Button: React.FC<ButtonProps> = ({
         },
         ...props.sx,
       }}
-    >
-      {loading ? 'Carregando...' : children}
-    </MuiButton>
-  );
-};
-
-export default Button;

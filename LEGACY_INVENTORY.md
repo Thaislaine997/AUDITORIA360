@@ -1,0 +1,759 @@
+# INVENTÁRIO COMPLETO DO SISTEMA LEGADO - AUDITORIA360
+
+Gerado em: Mon Aug 18 14:54:46 UTC 2025
+
+## FRONTEND LEGADO (src/frontend/)
+
+### Estatísticas Gerais
+
+- Total de arquivos TypeScript/React: 212
+- Total de páginas: 14
+- Total de componentes: 14
+
+### Páginas Legacy Identificadas
+
+- `AuditoriaDetailPage` - ./src/frontend/src/pages/AuditoriaDetailPage.tsx
+- `CCTDetailPage` - ./src/frontend/src/pages/CCTDetailPage.tsx
+- `ControleMensalPage` - ./src/frontend/src/pages/ControleMensalPage.tsx
+- `Dashboard` - ./src/frontend/src/pages/Dashboard.tsx
+- `EmpresaDetailPage` - ./src/frontend/src/pages/EmpresaDetailPage.tsx
+- `GestaoClientes` - ./src/frontend/src/pages/GestaoClientes.tsx
+- `GestaoLegislacaoPage` - ./src/frontend/src/pages/GestaoLegislacaoPage.tsx
+- `PortalDemandasDashboard` - ./src/frontend/src/pages/PortalDemandasDashboard.tsx
+- `RelatorioDetailPage` - ./src/frontend/src/pages/RelatorioDetailPage.tsx
+- `SindicatoDetailPage` - ./src/frontend/src/pages/SindicatoDetailPage.tsx
+- `TarefaDetailPage` - ./src/frontend/src/pages/TarefaDetailPage.tsx
+- `TicketDetailPage` - ./src/frontend/src/pages/TicketDetailPage.tsx
+- `UploadDetailPage` - ./src/frontend/src/pages/UploadDetailPage.tsx
+- `ValidacaoIAPage` - ./src/frontend/src/pages/ValidacaoIAPage.tsx
+
+### Componentes Legacy
+
+- ./src/frontend/src/components/TicketDetailModal.tsx
+- ./src/frontend/src/components/NotificacoesList.tsx
+- ./src/frontend/src/components/IAChatAssistant.tsx
+- ./src/frontend/src/components/StatusDashboard.tsx
+- ./src/frontend/src/components/ui/CommandPalette.tsx
+- ./src/frontend/src/components/TicketsList.tsx
+- ./src/frontend/src/components/PersonalizedOnboarding.tsx
+- ./src/frontend/src/components/PortalDemandasDomainLists.tsx
+- ./src/frontend/src/components/layout/Navbar.tsx
+- ./src/frontend/src/components/layout/Sidebar.tsx
+- ./src/frontend/src/components/NotificacaoDetailModal.tsx
+- ./src/frontend/src/components/IAAnalysisButton.tsx
+- ./src/frontend/src/components/AutomationDashboard.tsx
+- ./src/frontend/src/components/PortalDemandasAuditoriaLists.tsx
+- ... (total: 14 componentes)
+
+## BACKEND LEGADO (src/api/)
+
+### APIs Python
+
+- ./src/api/main.py
+- ... (total: 1 arquivos Python)
+
+## OUTROS SISTEMAS LEGADOS
+
+### Portal de Demandas
+
+- Diretório: ./portal_demandas/
+- Arquivos: 9
+
+### Supabase Functions
+
+- Diretório: ./supabase/
+- Functions: 2
+
+## ARQUIVOS DE CONFIGURAÇÃO
+
+### Configurações Principais
+
+- ✅ package.json
+- ✅ tsconfig.json
+- ✅ next.config.js
+- ✅ tailwind.config.js
+- ✅ .env.example
+
+### Configurações de Desenvolvimento
+
+- ❌ .eslintrc.json (ausente)
+- ✅ .prettierrc
+- ✅ .gitignore
+- ✅ jest.config.js
+
+## ARQUIVOS DUPLICADOS E OBSOLETOS
+
+### Possíveis Duplicações
+
+- README files: 640
+  - ./README_IA_INTEGRATION.md
+  - ./node_modules/js-yaml/README.md
+  - ./node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml/README.md
+  - ./node_modules/@istanbuljs/load-nyc-config/node_modules/argparse/README.md
+  - ./node_modules/@istanbuljs/load-nyc-config/README.md
+  - ./node_modules/@istanbuljs/schema/README.md
+  - ./node_modules/@jridgewell/sourcemap-codec/README.md
+  - ./node_modules/@jridgewell/trace-mapping/README.md
+  - ./node_modules/@jridgewell/gen-mapping/README.md
+  - ./node_modules/@jridgewell/resolve-uri/README.md
+  - ./node_modules/is-regex/README.md
+  - ./node_modules/typescript/README.md
+  - ./node_modules/get-tsconfig/README.md
+  - ./node_modules/is-symbol/README.md
+  - ./node_modules/foreground-child/README.md
+  - ./node_modules/typed-array-byte-offset/README.md
+  - ./node_modules/is-shared-array-buffer/README.md
+  - ./node_modules/flatted/README.md
+  - ./node_modules/unbox-primitive/README.md
+  - ./node_modules/thenify/README.md
+  - ./node_modules/postcss-js/README.md
+  - ./node_modules/file-entry-cache/README.md
+  - ./node_modules/symbol-tree/README.md
+  - ./node_modules/semver/README.md
+  - ./node_modules/tinyglobby/node_modules/picomatch/README.md
+  - ./node_modules/tinyglobby/node_modules/fdir/README.md
+  - ./node_modules/tinyglobby/README.md
+  - ./node_modules/saxes/README.md
+  - ./node_modules/side-channel/README.md
+  - ./node_modules/imurmurhash/README.md
+  - ./node_modules/js-tokens/README.md
+  - ./node_modules/call-bound/README.md
+  - ./node_modules/set-proto/README.md
+  - ./node_modules/globalthis/README.md
+  - ./node_modules/stylis/README.md
+  - ./node_modules/istanbul-lib-coverage/README.md
+  - ./node_modules/@rtsao/scc/README.md
+  - ./node_modules/queue-microtask/README.md
+  - ./node_modules/color-name/README.md
+  - ./node_modules/ts-jest/README.md
+  - ./node_modules/readdirp/README.md
+  - ./node_modules/neo-async/README.md
+  - ./node_modules/is-date-object/README.md
+  - ./node_modules/isarray/README.md
+  - ./node_modules/is-array-buffer/README.md
+  - ./node_modules/busboy/README.md
+  - ./node_modules/set-function-length/README.md
+  - ./node_modules/@nodelib/fs.walk/README.md
+  - ./node_modules/@nodelib/fs.scandir/README.md
+  - ./node_modules/@nodelib/fs.stat/README.md
+  - ./node_modules/which-builtin-type/README.md
+  - ./node_modules/synckit/README.md
+  - ./node_modules/get-package-type/README.md
+  - ./node_modules/jest/README.md
+  - ./node_modules/istanbul-lib-source-maps/README.md
+  - ./node_modules/natural-compare/README.md
+  - ./node_modules/string.prototype.repeat/README.md
+  - ./node_modules/hoist-non-react-statics/node_modules/react-is/README.md
+  - ./node_modules/hoist-non-react-statics/README.md
+  - ./node_modules/istanbul-lib-instrument/README.md
+  - ./node_modules/@csstools/color-helpers/README.md
+  - ./node_modules/@csstools/css-parser-algorithms/README.md
+  - ./node_modules/@csstools/css-calc/README.md
+  - ./node_modules/@csstools/css-tokenizer/README.md
+  - ./node_modules/@csstools/css-color-parser/README.md
+  - ./node_modules/is-weakref/README.md
+  - ./node_modules/async-function/README.md
+  - ./node_modules/fast-levenshtein/README.md
+  - ./node_modules/babel-plugin-jest-hoist/README.md
+  - ./node_modules/braces/README.md
+  - ./node_modules/is-finalizationregistry/README.md
+  - ./node_modules/cosmiconfig/README.md
+  - ./node_modules/safe-array-concat/README.md
+  - ./node_modules/acorn/README.md
+  - ./node_modules/merge-stream/README.md
+  - ./node_modules/eslint-import-resolver-node/node_modules/debug/README.md
+  - ./node_modules/eslint-import-resolver-node/README.md
+  - ./node_modules/find-root/README.md
+  - ./node_modules/html-escaper/README.md
+  - ./node_modules/array.prototype.flat/README.md
+  - ./node_modules/postcss-nested/README.md
+  - ./node_modules/has-property-descriptors/README.md
+  - ./node_modules/array-includes/README.md
+  - ./node_modules/thenify-all/README.md
+  - ./node_modules/is-number-object/README.md
+  - ./node_modules/jest-docblock/README.md
+  - ./node_modules/wrappy/README.md
+  - ./node_modules/own-keys/README.md
+  - ./node_modules/is-string/README.md
+  - ./node_modules/decimal.js/README.md
+  - ./node_modules/fast-glob/node_modules/glob-parent/README.md
+  - ./node_modules/fast-glob/README.md
+  - ./node_modules/didyoumean/README.md
+  - ./node_modules/babel-plugin-macros/README.md
+  - ./node_modules/typed-array-length/README.md
+  - ./node_modules/inflight/README.md
+  - ./node_modules/es-shim-unscopables/README.md
+  - ./node_modules/node-releases/README.md
+  - ./node_modules/jest-changed-files/README.md
+  - ./node_modules/whatwg-url/node_modules/webidl-conversions/README.md
+  - ./node_modules/whatwg-url/README.md
+  - ./node_modules/ci-info/README.md
+  - ./node_modules/anymatch/README.md
+  - ./node_modules/levn/README.md
+  - ./node_modules/object-keys/README.md
+  - ./node_modules/babel-jest/README.md
+  - ./node_modules/which-boxed-primitive/README.md
+  - ./node_modules/picomatch/README.md
+  - ./node_modules/jiti/README.md
+  - ./node_modules/is-map/README.md
+  - ./node_modules/graceful-fs/README.md
+  - ./node_modules/electron-to-chromium/README.md
+  - ./node_modules/execa/node_modules/signal-exit/README.md
+  - ./node_modules/jest-leak-detector/node_modules/react-is/README.md
+  - ./node_modules/jest-leak-detector/node_modules/pretty-format/README.md
+  - ./node_modules/jest-leak-detector/README.md
+  - ./node_modules/scheduler/README.md
+  - ./node_modules/napi-postinstall/README.md
+  - ./node_modules/unrs-resolver/README.md
+  - ./node_modules/istanbul-lib-report/README.md
+  - ./node_modules/array.prototype.findlast/README.md
+  - ./node_modules/react-dom/README.md
+  - ./node_modules/argparse/README.md
+  - ./node_modules/path-scurry/node_modules/lru-cache/README.md
+  - ./node_modules/path-scurry/README.md
+  - ./node_modules/source-map/README.md
+  - ./node_modules/eslint-visitor-keys/README.md
+  - ./node_modules/eastasianwidth/README.md
+  - ./node_modules/typed-array-buffer/README.md
+  - ./node_modules/isexe/README.md
+  - ./node_modules/make-dir/node_modules/semver/README.md
+  - ./node_modules/ajv/README.md
+  - ./node_modules/ajv/lib/dotjs/README.md
+  - ./node_modules/is-arrayish/README.md
+  - ./node_modules/whatwg-encoding/README.md
+  - ./node_modules/is-bun-module/README.md
+  - ./node_modules/esrecurse/README.md
+  - ./node_modules/string.prototype.trimstart/README.md
+  - ./node_modules/is-extglob/README.md
+  - ./node_modules/source-map-js/README.md
+  - ./node_modules/fraction.js/README.md
+  - ./node_modules/prettier/README.md
+  - ./node_modules/jest-config/node_modules/react-is/README.md
+  - ./node_modules/jest-config/node_modules/pretty-format/README.md
+  - ./node_modules/which/README.md
+  - ./node_modules/arg/README.md
+  - ./node_modules/tldts-core/README.md
+  - ./node_modules/postcss-import/README.md
+  - ./node_modules/data-view-buffer/README.md
+  - ./node_modules/fs-extra/README.md
+  - ./node_modules/es-abstract/README.md
+  - ./node_modules/stable-hash/README.md
+  - ./node_modules/string.prototype.trim/README.md
+  - ./node_modules/dlv/README.md
+  - ./node_modules/string.prototype.includes/README.md
+  - ./node_modules/@asamuzakjp/css-color/node_modules/lru-cache/README.md
+  - ./node_modules/@asamuzakjp/css-color/README.md
+  - ./node_modules/y18n/README.md
+  - ./node_modules/arraybuffer.prototype.slice/README.md
+  - ./node_modules/ast-types-flow/README.md
+  - ./node_modules/possible-typed-array-names/README.md
+  - ./node_modules/is-weakmap/README.md
+  - ./node_modules/error-ex/README.md
+  - ./node_modules/merge2/README.md
+  - ./node_modules/is-callable/README.md
+  - ./node_modules/lucide-react/README.md
+  - ./node_modules/available-typed-arrays/README.md
+  - ./node_modules/normalize-path/README.md
+  - ./node_modules/https-proxy-agent/README.md
+  - ./node_modules/has-proto/README.md
+  - ./node_modules/side-channel-weakmap/README.md
+  - ./node_modules/get-symbol-description/README.md
+  - ./node_modules/is-typed-array/README.md
+  - ./node_modules/eslint-scope/README.md
+  - ./node_modules/punycode/README.md
+  - ./node_modules/path-parse/README.md
+  - ./node_modules/dunder-proto/README.md
+  - ./node_modules/fs.realpath/README.md
+  - ./node_modules/@humanwhocodes/config-array/node_modules/minimatch/README.md
+  - ./node_modules/@humanwhocodes/config-array/node_modules/brace-expansion/README.md
+  - ./node_modules/@humanwhocodes/config-array/README.md
+  - ./node_modules/@humanwhocodes/object-schema/README.md
+  - ./node_modules/@humanwhocodes/module-importer/README.md
+  - ./node_modules/@bcoe/v8-coverage/README.md
+  - ./node_modules/@bcoe/v8-coverage/dist/lib/README.md
+  - ./node_modules/async/README.md
+  - ./node_modules/doctrine/README.md
+  - ./node_modules/@typescript-eslint/scope-manager/README.md
+  - ./node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys/README.md
+  - ./node_modules/@typescript-eslint/visitor-keys/README.md
+  - ./node_modules/@typescript-eslint/parser/README.md
+  - ./node_modules/@typescript-eslint/eslint-plugin/README.md
+  - ./node_modules/@typescript-eslint/project-service/README.md
+  - ./node_modules/@typescript-eslint/types/README.md
+  - ./node_modules/@typescript-eslint/type-utils/README.md
+  - ./node_modules/@typescript-eslint/utils/README.md
+  - ./node_modules/@typescript-eslint/typescript-estree/README.md
+  - ./node_modules/@typescript-eslint/tsconfig-utils/README.md
+  - ./node_modules/bser/README.md
+  - ./node_modules/flat-cache/README.md
+  - ./node_modules/dedent/README.md
+  - ./node_modules/glob/README.md
+  - ./node_modules/call-bind-apply-helpers/README.md
+  - ./node_modules/@rushstack/eslint-patch/README.md
+  - ./node_modules/emoji-regex/README.md
+  - ./node_modules/babel-preset-current-node-syntax/README.md
+  - ./node_modules/css.escape/README.md
+  - ./node_modules/typescript-eslint/README.md
+  - ./node_modules/jsdom/node_modules/whatwg-url/README.md
+  - ./node_modules/jsdom/node_modules/tr46/README.md
+  - ./node_modules/jsdom/README.md
+  - ./node_modules/mz/README.md
+  - ./node_modules/reflect.getprototypeof/README.md
+  - ./node_modules/data-view-byte-length/README.md
+  - ./node_modules/xmlchars/README.md
+  - ./node_modules/fast-deep-equal/README.md
+  - ./node_modules/@eslint-community/regexpp/README.md
+  - ./node_modules/@eslint-community/eslint-utils/README.md
+  - ./node_modules/internal-slot/README.md
+  - ./node_modules/eslint-plugin-react-hooks/README.md
+  - ./node_modules/@adobe/css-tools/README.md
+  - ./node_modules/lodash.memoize/README.md
+  - ./node_modules/ts-interface-checker/README.md
+  - ./node_modules/write-file-atomic/README.md
+  - ./node_modules/streamsearch/README.md
+  - ./node_modules/prelude-ls/README.md
+  - ./node_modules/run-parallel/README.md
+  - ./node_modules/whatwg-mimetype/README.md
+  - ./node_modules/es-define-property/README.md
+  - ./node_modules/regexp.prototype.flags/README.md
+  - ./node_modules/side-channel-list/README.md
+  - ./node_modules/object.fromentries/README.md
+  - ./node_modules/esprima/README.md
+  - ./node_modules/is-bigint/README.md
+  - ./node_modules/functions-have-names/README.md
+  - ./node_modules/jest-circus/node_modules/react-is/README.md
+  - ./node_modules/jest-circus/node_modules/pretty-format/README.md
+  - ./node_modules/jest-circus/README.md
+  - ./node_modules/lines-and-columns/README.md
+  - ./node_modules/json-schema-traverse/README.md
+  - ./node_modules/hasown/README.md
+  - ./node_modules/caniuse-lite/README.md
+  - ./node_modules/ignore/README.md
+  - ./node_modules/for-each/README.md
+  - ./node_modules/jest-cli/README.md
+  - ./node_modules/webidl-conversions/README.md
+  - ./node_modules/get-caller-file/README.md
+  - ./node_modules/fill-range/README.md
+  - ./node_modules/is-data-view/README.md
+  - ./node_modules/es-iterator-helpers/README.md
+  - ./node_modules/iterator.prototype/README.md
+  - ./node_modules/istanbul-reports/README.md
+  - ./node_modules/language-tags/README.md
+  - ./node_modules/string.prototype.matchall/README.md
+  - ./node_modules/tslib/README.md
+  - ./node_modules/read-cache/README.md
+  - ./node_modules/dom-accessibility-api/README.md
+  - ./node_modules/globby/node_modules/ignore/README.md
+  - ./node_modules/gensync/README.md
+  - ./node_modules/cssstyle/README.md
+  - ./node_modules/cliui/node_modules/emoji-regex/README.md
+  - ./node_modules/cliui/README.md
+  - ./node_modules/graphemer/README.md
+  - ./node_modules/jackspeak/README.md
+  - ./node_modules/balanced-match/README.md
+  - ./node_modules/postcss-value-parser/README.md
+  - ./node_modules/typed-array-byte-length/README.md
+  - ./node_modules/has-tostringtag/README.md
+  - ./node_modules/convert-source-map/README.md
+  - ./node_modules/is-arguments/README.md
+  - ./node_modules/inherits/README.md
+  - ./node_modules/any-promise/README.md
+  - ./node_modules/which-typed-array/README.md
+  - ./node_modules/camelcase-css/README.md
+  - ./node_modules/update-browserslist-db/README.md
+  - ./node_modules/jsonfile/README.md
+  - ./node_modules/jsesc/README.md
+  - ./node_modules/@babel/helper-module-transforms/README.md
+  - ./node_modules/@babel/plugin-syntax-private-property-in-object/README.md
+  - ./node_modules/@babel/runtime/README.md
+  - ./node_modules/@babel/code-frame/README.md
+  - ./node_modules/@babel/compat-data/README.md
+  - ./node_modules/@babel/helper-validator-option/README.md
+  - ./node_modules/@babel/plugin-syntax-logical-assignment-operators/README.md
+  - ./node_modules/@babel/generator/README.md
+  - ./node_modules/@babel/helper-compilation-targets/node_modules/semver/README.md
+  - ./node_modules/@babel/helper-compilation-targets/README.md
+  - ./node_modules/@babel/core/node_modules/semver/README.md
+  - ./node_modules/@babel/core/node_modules/convert-source-map/README.md
+  - ./node_modules/@babel/core/README.md
+  - ./node_modules/@babel/plugin-syntax-object-rest-spread/README.md
+  - ./node_modules/@babel/plugin-syntax-import-attributes/README.md
+  - ./node_modules/@babel/plugin-syntax-nullish-coalescing-operator/README.md
+  - ./node_modules/@babel/plugin-syntax-async-generators/README.md
+  - ./node_modules/@babel/plugin-syntax-class-static-block/README.md
+  - ./node_modules/@babel/plugin-syntax-numeric-separator/README.md
+  - ./node_modules/@babel/plugin-syntax-optional-catch-binding/README.md
+  - ./node_modules/@babel/parser/README.md
+  - ./node_modules/@babel/helpers/README.md
+  - ./node_modules/@babel/traverse/README.md
+  - ./node_modules/@babel/plugin-syntax-jsx/README.md
+  - ./node_modules/@babel/helper-module-imports/README.md
+  - ./node_modules/@babel/plugin-syntax-import-meta/README.md
+  - ./node_modules/@babel/plugin-syntax-class-properties/README.md
+  - ./node_modules/@babel/plugin-syntax-bigint/README.md
+  - ./node_modules/@babel/types/README.md
+  - ./node_modules/@babel/plugin-syntax-typescript/README.md
+  - ./node_modules/@babel/helper-globals/README.md
+  - ./node_modules/@babel/plugin-syntax-optional-chaining/README.md
+  - ./node_modules/@babel/helper-validator-identifier/README.md
+  - ./node_modules/@babel/plugin-syntax-top-level-await/README.md
+  - ./node_modules/@babel/plugin-syntax-json-strings/README.md
+  - ./node_modules/@babel/helper-plugin-utils/README.md
+  - ./node_modules/@babel/helper-string-parser/README.md
+  - ./node_modules/@babel/template/README.md
+  - ./node_modules/fast-json-stable-stringify/README.md
+  - ./node_modules/tough-cookie/README.md
+  - ./node_modules/which-collection/README.md
+  - ./node_modules/html-encoding-sniffer/README.md
+  - ./node_modules/minimist/README.md
+  - ./node_modules/to-regex-range/README.md
+  - ./node_modules/sucrase/README.md
+  - ./node_modules/safe-regex-test/README.md
+  - ./node_modules/@unrs/resolver-binding-linux-x64-gnu/README.md
+  - ./node_modules/agent-base/README.md
+  - ./node_modules/autoprefixer/README.md
+  - ./node_modules/string-width-cjs/node_modules/emoji-regex/README.md
+  - ./node_modules/universalify/README.md
+  - ./node_modules/estraverse/README.md
+  - ./node_modules/csstype/README.md
+  - ./node_modules/axe-core/README.md
+  - ./node_modules/axe-core/locales/README.md
+  - ./node_modules/eslint/node_modules/ignore/README.md
+  - ./node_modules/eslint/node_modules/@eslint/js/README.md
+  - ./node_modules/eslint/node_modules/minimatch/README.md
+  - ./node_modules/eslint/node_modules/brace-expansion/README.md
+  - ./node_modules/eslint/README.md
+  - ./node_modules/uglify-js/README.md
+  - ./node_modules/cross-spawn/README.md
+  - ./node_modules/handlebars/node_modules/source-map/README.md
+  - ./node_modules/fastq/README.md
+  - ./node_modules/test-exclude/node_modules/glob/README.md
+  - ./node_modules/test-exclude/node_modules/minimatch/README.md
+  - ./node_modules/test-exclude/node_modules/brace-expansion/README.md
+  - ./node_modules/test-exclude/README.md
+  - ./node_modules/type-check/README.md
+  - ./node_modules/jest-each/node_modules/react-is/README.md
+  - ./node_modules/jest-each/node_modules/pretty-format/README.md
+  - ./node_modules/jest-each/README.md
+  - ./node_modules/@pkgjs/parseargs/README.md
+  - ./node_modules/human-signals/README.md
+  - ./node_modules/micromatch/README.md
+  - ./node_modules/collect-v8-coverage/README.md
+  - ./node_modules/jest-validate/node_modules/react-is/README.md
+  - ./node_modules/jest-validate/node_modules/pretty-format/README.md
+  - ./node_modules/jest-validate/README.md
+  - ./node_modules/bs-logger/README.md
+  - ./node_modules/pure-rand/README.md
+  - ./node_modules/@eslint/js/README.md
+  - ./node_modules/@eslint/eslintrc/node_modules/ignore/README.md
+  - ./node_modules/@eslint/eslintrc/node_modules/minimatch/README.md
+  - ./node_modules/@eslint/eslintrc/node_modules/brace-expansion/README.md
+  - ./node_modules/@eslint/eslintrc/README.md
+  - ./node_modules/word-wrap/README.md
+  - ./node_modules/@emotion/sheet/README.md
+  - ./node_modules/@emotion/cache/README.md
+  - ./node_modules/@emotion/styled/README.md
+  - ./node_modules/@emotion/unitless/README.md
+  - ./node_modules/@emotion/is-prop-valid/README.md
+  - ./node_modules/@emotion/weak-memoize/README.md
+  - ./node_modules/@emotion/use-insertion-effect-with-fallbacks/README.md
+  - ./node_modules/@emotion/babel-plugin/README.md
+  - ./node_modules/@emotion/hash/README.md
+  - ./node_modules/@emotion/react/README.md
+  - ./node_modules/babel-plugin-istanbul/README.md
+  - ./node_modules/tsconfig-paths/node_modules/json5/README.md
+  - ./node_modules/tsconfig-paths/README.md
+  - ./node_modules/minipass/README.md
+  - ./node_modules/object.groupby/README.md
+  - ./node_modules/babel-preset-jest/README.md
+  - ./node_modules/resolve-pkg-maps/README.md
+  - ./node_modules/prop-types/node_modules/react-is/README.md
+  - ./node_modules/prop-types/README.md
+  - ./node_modules/react-transition-group/README.md
+  - ./node_modules/parse5/README.md
+  - ./node_modules/@next/eslint-plugin-next/README.md
+  - ./node_modules/@next/env/README.md
+  - ./node_modules/@next/swc-linux-x64-gnu/README.md
+  - ./node_modules/espree/README.md
+  - ./node_modules/es-errors/README.md
+  - ./node_modules/lz-string/README.md
+  - ./node_modules/picocolors/README.md
+  - ./node_modules/tailwindcss/node_modules/postcss-load-config/README.md
+  - ./node_modules/tailwindcss/node_modules/yaml/README.md
+  - ./node_modules/tailwindcss/README.md
+  - ./node_modules/tailwindcss/src/value-parser/README.md
+  - ./node_modules/tailwindcss/src/postcss-plugins/nesting/README.md
+  - ./node_modules/tailwindcss/lib/value-parser/README.md
+  - ./node_modules/tailwindcss/lib/postcss-plugins/nesting/README.md
+  - ./node_modules/wrap-ansi-cjs/node_modules/emoji-regex/README.md
+  - ./node_modules/tldts/README.md
+  - ./node_modules/make-error/README.md
+  - ./node_modules/string.prototype.trimend/README.md
+  - ./node_modules/es-to-primitive/README.md
+  - ./node_modules/ws/README.md
+  - ./node_modules/@ungap/structured-clone/README.md
+  - ./node_modules/signal-exit/README.md
+  - ./node_modules/has-bigints/README.md
+  - ./node_modules/is-generator-function/README.md
+  - ./node_modules/react-is/README.md
+  - ./node_modules/@popperjs/core/README.md
+  - ./node_modules/char-regex/README.md
+  - ./node_modules/fb-watchman/README.md
+  - ./node_modules/xml-name-validator/README.md
+  - ./node_modules/jest-haste-map/README.md
+  - ./node_modules/side-channel-map/README.md
+  - ./node_modules/supports-preserve-symlinks-flag/README.md
+  - ./node_modules/minimatch/README.md
+  - ./node_modules/array.prototype.flatmap/README.md
+  - ./node_modules/debug/README.md
+  - ./node_modules/@sinonjs/fake-timers/README.md
+  - ./node_modules/@sinonjs/commons/README.md
+  - ./node_modules/@sinonjs/commons/lib/prototypes/README.md
+  - ./node_modules/w3c-xmlserializer/README.md
+  - ./node_modules/postcss/README.md
+  - ./node_modules/jest-util/node_modules/picomatch/README.md
+  - ./node_modules/source-map-support/node_modules/source-map/README.md
+  - ./node_modules/source-map-support/README.md
+  - ./node_modules/browserslist/README.md
+  - ./node_modules/gopd/README.md
+  - ./node_modules/optionator/README.md
+  - ./node_modules/array.prototype.tosorted/README.md
+  - ./node_modules/define-data-property/README.md
+  - ./node_modules/http-proxy-agent/README.md
+  - ./node_modules/color-convert/README.md
+  - ./node_modules/chokidar/node_modules/glob-parent/README.md
+  - ./node_modules/chokidar/README.md
+  - ./node_modules/next/node_modules/postcss/README.md
+  - ./node_modules/next/README.md
+  - ./node_modules/next/dist/compiled/react-refresh/README.md
+  - ./node_modules/next/dist/compiled/regenerator-runtime/README.md
+  - ./node_modules/next/dist/compiled/@babel/runtime/README.md
+  - ./node_modules/next/dist/compiled/react-is/README.md
+  - ./node_modules/@isaacs/cliui/README.md
+  - ./node_modules/node-int64/README.md
+  - ./node_modules/@swc/counter/README.md
+  - ./node_modules/once/README.md
+  - ./node_modules/axobject-query/README.md
+  - ./node_modules/is-set/README.md
+  - ./node_modules/yargs/node_modules/emoji-regex/README.md
+  - ./node_modules/yargs/README.md
+  - ./node_modules/lodash.merge/README.md
+  - ./node_modules/is-potential-custom-element-name/README.md
+  - ./node_modules/email-addresses/README.md
+  - ./node_modules/uri-js/README.md
+  - ./node_modules/@ampproject/remapping/README.md
+  - ./node_modules/data-urls/node_modules/whatwg-url/README.md
+  - ./node_modules/data-urls/node_modules/tr46/README.md
+  - ./node_modules/data-urls/README.md
+  - ./node_modules/language-subtag-registry/README.md
+  - ./node_modules/nwsapi/README.md
+  - ./node_modules/esutils/README.md
+  - ./node_modules/object-is/README.md
+  - ./node_modules/sprintf-js/README.md
+  - ./node_modules/json-parse-even-better-errors/README.md
+  - ./node_modules/postcss-selector-parser/README.md
+  - ./node_modules/loose-envify/README.md
+  - ./node_modules/function-bind/README.md
+  - ./node_modules/@mui/system/README.md
+  - ./node_modules/@mui/material/README.md
+  - ./node_modules/@mui/private-theming/README.md
+  - ./node_modules/@mui/core-downloads-tracker/README.md
+  - ./node_modules/@mui/types/README.md
+  - ./node_modules/@mui/utils/README.md
+  - ./node_modules/@mui/styled-engine/README.md
+  - ./node_modules/@mui/icons-material/README.md
+  - ./node_modules/util-deprecate/README.md
+  - ./node_modules/pretty-format/node_modules/react-is/README.md
+  - ./node_modules/pretty-format/README.md
+  - ./node_modules/undici-types/README.md
+  - ./node_modules/cjs-module-lexer/README.md
+  - ./node_modules/json-buffer/README.md
+  - ./node_modules/cssesc/README.md
+  - ./node_modules/jest-worker/README.md
+  - ./node_modules/glob-parent/README.md
+  - ./node_modules/jsx-ast-utils/README.md
+  - ./node_modules/type-detect/README.md
+  - ./node_modules/exit-x/README.md
+  - ./node_modules/eslint-config-next/node_modules/eslint-plugin-react-hooks/README.md
+  - ./node_modules/@types/istanbul-lib-coverage/README.md
+  - ./node_modules/@types/jest/node_modules/react-is/README.md
+  - ./node_modules/@types/jest/node_modules/pretty-format/README.md
+  - ./node_modules/@types/jest/README.md
+  - ./node_modules/@types/babel\_\_traverse/README.md
+  - ./node_modules/@types/istanbul-lib-report/README.md
+  - ./node_modules/@types/react-dom/README.md
+  - ./node_modules/@types/parse-json/README.md
+  - ./node_modules/@types/node/README.md
+  - ./node_modules/@types/jsdom/README.md
+  - ./node_modules/@types/istanbul-reports/README.md
+  - ./node_modules/@types/babel\_\_generator/README.md
+  - ./node_modules/@types/tough-cookie/README.md
+  - ./node_modules/@types/stack-utils/README.md
+  - ./node_modules/@types/prop-types/README.md
+  - ./node_modules/@types/react-transition-group/README.md
+  - ./node_modules/@types/ws/README.md
+  - ./node_modules/@types/next/README.md
+  - ./node_modules/@types/yargs/README.md
+  - ./node_modules/@types/babel\_\_template/README.md
+  - ./node_modules/@types/yargs-parser/README.md
+  - ./node_modules/@types/babel\_\_core/README.md
+  - ./node_modules/@types/react/README.md
+  - ./node_modules/@types/phoenix/README.md
+  - ./node_modules/@types/json5/README.md
+  - ./node_modules/@types/aria-query/README.md
+  - ./node_modules/array-buffer-byte-length/README.md
+  - ./node_modules/dom-helpers/README.md
+  - ./node_modules/call-bind/README.md
+  - ./node_modules/yaml/README.md
+  - ./node_modules/is-boolean-object/README.md
+  - ./node_modules/jest-snapshot/node_modules/react-is/README.md
+  - ./node_modules/jest-snapshot/node_modules/pretty-format/README.md
+  - ./node_modules/esquery/README.md
+  - ./node_modules/reusify/README.md
+  - ./node_modules/rimraf/node_modules/glob/README.md
+  - ./node_modules/rimraf/node_modules/minimatch/README.md
+  - ./node_modules/rimraf/node_modules/brace-expansion/README.md
+  - ./node_modules/rimraf/README.md
+  - ./node_modules/@supabase/postgrest-js/README.md
+  - ./node_modules/@supabase/storage-js/README.md
+  - ./node_modules/@supabase/realtime-js/README.md
+  - ./node_modules/@supabase/supabase-js/README.md
+  - ./node_modules/@supabase/node-fetch/README.md
+  - ./node_modules/@supabase/functions-js/README.md
+  - ./node_modules/@supabase/auth-js/README.md
+  - ./node_modules/stop-iteration-iterator/README.md
+  - ./node_modules/is-negative-zero/README.md
+  - ./node_modules/define-properties/README.md
+  - ./node_modules/v8-to-istanbul/node_modules/convert-source-map/README.md
+  - ./node_modules/v8-to-istanbul/README.md
+  - ./node_modules/set-function-name/README.md
+  - ./node_modules/has-symbols/README.md
+  - ./node_modules/yargs-parser/README.md
+  - ./node_modules/es-object-atoms/README.md
+  - ./node_modules/get-intrinsic/README.md
+  - ./node_modules/safe-push-apply/README.md
+  - ./node_modules/is-async-function/README.md
+  - ./node_modules/jest-message-util/node_modules/react-is/README.md
+  - ./node_modules/jest-message-util/node_modules/pretty-format/README.md
+  - ./node_modules/ts-api-utils/README.md
+  - ./node_modules/@testing-library/jest-dom/README.md
+  - ./node_modules/@testing-library/dom/node_modules/dom-accessibility-api/README.md
+  - ./node_modules/@testing-library/dom/node_modules/aria-query/README.md
+  - ./node_modules/@testing-library/dom/README.md
+  - ./node_modules/@testing-library/react/README.md
+  - ./node_modules/eslint-plugin-import/node_modules/semver/README.md
+  - ./node_modules/eslint-plugin-import/node_modules/doctrine/README.md
+  - ./node_modules/eslint-plugin-import/node_modules/minimatch/README.md
+  - ./node_modules/eslint-plugin-import/node_modules/debug/README.md
+  - ./node_modules/eslint-plugin-import/node_modules/brace-expansion/README.md
+  - ./node_modules/eslint-plugin-import/README.md
+  - ./node_modules/eslint-plugin-import/memo-parser/README.md
+  - ./node_modules/jest-mock/README.md
+  - ./node_modules/keyv/README.md
+  - ./node_modules/object.values/README.md
+  - ./node_modules/yallist/README.md
+  - ./node_modules/expect/README.md
+  - ./node_modules/acorn-jsx/README.md
+  - ./node_modules/jest-pnp-resolver/README.md
+  - ./node_modules/is-number/README.md
+  - ./node_modules/is-glob/README.md
+  - ./node_modules/react/README.md
+  - ./node_modules/lru-cache/README.md
+  - ./node_modules/pirates/README.md
+  - ./node_modules/data-view-byte-offset/README.md
+  - ./node_modules/is-weakset/README.md
+  - ./node_modules/es-get-iterator/README.md
+  - ./node_modules/object.entries/README.md
+  - ./node_modules/iconv-lite/README.md
+  - ./node_modules/es-set-tostringtag/README.md
+  - ./node_modules/eslint-plugin-react/node_modules/semver/README.md
+  - ./node_modules/eslint-plugin-react/node_modules/doctrine/README.md
+  - ./node_modules/eslint-plugin-react/node_modules/minimatch/README.md
+  - ./node_modules/eslint-plugin-react/node_modules/brace-expansion/README.md
+  - ./node_modules/eslint-plugin-react/README.md
+  - ./node_modules/damerau-levenshtein/README.md
+  - ./node_modules/jest-matcher-utils/node_modules/react-is/README.md
+  - ./node_modules/jest-matcher-utils/node_modules/pretty-format/README.md
+  - ./node_modules/jest-matcher-utils/README.md
+  - ./node_modules/eslint-plugin-jsx-a11y/node_modules/minimatch/README.md
+  - ./node_modules/eslint-plugin-jsx-a11y/node_modules/brace-expansion/README.md
+  - ./node_modules/eslint-plugin-jsx-a11y/README.md
+  - ./node_modules/is-core-module/README.md
+  - ./node_modules/function.prototype.name/README.md
+  - ./node_modules/eslint-import-resolver-typescript/README.md
+  - ./node_modules/get-proto/README.md
+  - ./node_modules/json5/README.md
+  - ./node_modules/@jest/pattern/README.md
+  - ./node_modules/@jest/core/node_modules/react-is/README.md
+  - ./node_modules/@jest/core/node_modules/pretty-format/README.md
+  - ./node_modules/@jest/core/README.md
+  - ./node_modules/@jest/schemas/README.md
+  - ./node_modules/@jest/transform/node_modules/convert-source-map/README.md
+  - ./node_modules/@jest/expect-utils/README.md
+  - ./node_modules/@jest/types/README.md
+  - ./node_modules/@jest/expect/README.md
+  - ./node_modules/@jest/diff-sequences/README.md
+  - ./node_modules/nanoid/README.md
+  - ./node_modules/object.assign/README.md
+  - ./node_modules/math-intrinsics/README.md
+  - ./node_modules/aria-query/README.md
+  - ./node_modules/eslint-module-utils/node_modules/debug/README.md
+  - ./node_modules/array.prototype.findlastindex/README.md
+  - ./node_modules/brace-expansion/README.md
+  - ./node_modules/jest-diff/node_modules/react-is/README.md
+  - ./node_modules/jest-diff/node_modules/pretty-format/README.md
+  - ./node_modules/jest-diff/README.md
+  - ./prompts/README.md
+  - ./conf/README.md
+  - ./README.md
+  - ./deploy/README.md
+  - ./deploy/aws/README.md
+  - ./deploy/kubernetes/README.md
+  - ./deploy/.github/README.md
+  - ./config/README.md
+  - ./config/mcp/README.md
+  - ./cloudflare/README.md
+  - ./src/frontend/README.md
+  - ./data_base/README.md
+  - ./data_base/schemas/README.md
+  - ./data_base/migrations/README.md
+  - ./portal_demandas/README.md
+  - ./templates/README.md
+  - ./README_NEXTJS.md
+  - ./.github/README.md
+  - ./.github/workflows/README.md
+  - ./supabase/README.md
+  - ./supabase/policies/README.md
+  - ./supabase/functions/README.md
+  - ./assets/README.md
+
+### Arquivos de Backup/Temporários
+
+- Total de arquivos backup/temporários: 2
+  - ./.next/cache/webpack/client-production/index.pack.old
+  - ./.next/cache/webpack/server-production/index.pack.old
+
+## RECOMENDAÇÕES DE MIGRAÇÃO
+
+### Prioridade Alta (Core Funcionalidades)
+
+- Dashboard principal
+- Sistema de autenticação
+- Gestão de clientes
+- Auditorias
+
+### Prioridade Média (Funcionalidades Específicas)
+
+- Relatórios
+- Upload de documentos
+- Portal de demandas
+
+### Prioridade Baixa (Funcionalidades Auxiliares)
+
+- Páginas de detalhe específicas
+- Componentes de UI avançados
+- Integrações secundárias
+
+---
+
+**Inventário gerado automaticamente pelo script de migração AUDITORIA360**
