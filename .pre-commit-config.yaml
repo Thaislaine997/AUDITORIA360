@@ -56,3 +56,15 @@ repos:
         language: python
         files: ^(requirements.*\.txt|package\.json|pyproject\.toml)$
         additional_dependencies: []
+
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.18.2
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: lint
+        name: Run ESLint
+        entry: npm run lint
+        language: system
+        types: [js, ts, tsx]

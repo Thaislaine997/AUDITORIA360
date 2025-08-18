@@ -29,6 +29,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
+    "@sentry/nextjs": "^10.5.0",
     "@supabase/supabase-js": "^2.43.4",
     "@tanstack/react-table": "^8.21.3",
     "lucide-react": "^0.539.0",

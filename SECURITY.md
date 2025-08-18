@@ -115,6 +115,39 @@ npm audit
 git secrets --scan
 ```
 
+### Pre-commit Hooks Obrigatórios
+
+Para garantir a qualidade e segurança do código, é obrigatório o uso de pre-commit hooks que executem:
+
+- Lint (`npm run lint`)
+- Verificação de secrets (`gitleaks protect --staged`)
+- Testes automatizados (quando aplicável)
+
+Exemplo de configuração com [pre-commit](https://pre-commit.com/):
+
+```yaml
+repos:
+	- repo: https://github.com/pre-commit/pre-commit-hooks
+		rev: v4.4.0
+		hooks:
+			- id: trailing-whitespace
+			- id: end-of-file-fixer
+	- repo: https://github.com/zricethezav/gitleaks
+		rev: v8.18.2
+		hooks:
+			- id: gitleaks
+	- repo: local
+		hooks:
+			- id: lint
+				name: Run ESLint
+				entry: npm run lint
+				language: system
+				types: [js, ts, tsx]
+```
+
+Todos os PRs devem passar por essas validações antes de serem enviados.
+```
+
 ### Monitoramento Contínuo
 
 - **GitHub Security Alerts**: Ativo
