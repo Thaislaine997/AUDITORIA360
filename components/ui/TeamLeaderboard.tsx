@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
   Box,
   Typography,
@@ -442,7 +443,7 @@ const TeamLeaderboard: React.FC<TeamLeaderboardProps> = ({ departmentFilter }) =
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar sx={{ mr: 2, bgcolor: 'secondary.main' }}>
                           {member.avatar ? (
-                            <img src={member.avatar} alt={member.full_name} />
+                            <Image src={member.avatar} alt={member.full_name} width={40} height={40} style={{ borderRadius: '50%' }} />
                           ) : (
                             getUserInitials(member.full_name)
                           )}

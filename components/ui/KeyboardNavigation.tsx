@@ -643,7 +643,7 @@ const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({ children }) => 
           <Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1, border: 1, borderColor: 'divider' }}>
             <Typography variant="body2" color="text.secondary">
               <strong>Dica:</strong> Pressione <Chip label="?" size="small" sx={{ mx: 0.5 }} /> a qualquer momento para ver esta ajuda.
-              Os atalhos que começam com <Chip label="g" size="small" sx={{ mx: 0.5 }} /> são sequenciais - pressione 'g' primeiro, depois a segunda tecla.
+              Os atalhos que começam com <Chip label="g" size="small" sx={{ mx: 0.5 }} /> são sequenciais - pressione &apos;g&apos; primeiro, depois a segunda tecla.
             </Typography>
           </Box>
         </DialogContent>
