@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import Layout from '../components/layout/Layout'
 
 const HomePage: NextPage = () => {
@@ -28,12 +29,12 @@ const HomePage: NextPage = () => {
                   que buscam precisão, eficiência e compliance trabalhista.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a 
+                  <Link 
                     href="/login" 
                     className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Acessar Portal
-                  </a>
+                  </Link>
                   <a 
                     href="#funcionalidades" 
                     className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
@@ -102,12 +103,12 @@ const HomePage: NextPage = () => {
               <p className="text-xl text-gray-600 mb-8">
                 Acesse nossa plataforma e descubra como podemos transformar seus processos
               </p>
-              <a 
+              <Link 
                 href="/login" 
                 className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg"
               >
                 Começar Agora
-              </a>
+              </Link>
             </div>
           </section>
         </div>

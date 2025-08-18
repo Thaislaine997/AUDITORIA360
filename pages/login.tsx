@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../components/layout/Layout'
@@ -114,12 +115,12 @@ const LoginPage: NextPage = () => {
             </div>
             
             <div className="text-center">
-              <a 
+              <Link 
                 href="/" 
                 className="text-blue-100 hover:text-white transition-colors text-sm"
               >
                 ← Voltar ao site
-              </a>
+              </Link>
             </div>
           </div>
         </div>
