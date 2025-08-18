@@ -3,6 +3,7 @@
 ## 🚀 Guia de Onboarding Rápido
 
 ### Primeiro Passo: ACH - Diagrama de Vitalidade
+
 **Para novos membros da equipe, comece sempre pelo Diagrama de Vitalidade Sistémica:**
 
 ```bash
@@ -11,12 +12,14 @@ python scripts/python/run_holistic_consciousness_agent.py
 ```
 
 Este comando gera um relatório HTML interativo em `artifacts/ach/` que mostra:
+
 - 📊 **Saúde geral do sistema** (76.4% na última análise)
 - 🧬 **Censo Genômico**: Classificação de todos os arquivos (636 analisados)
 - 💓 **Pulso Vital**: Estado de cada componente (frontend, backend, database, etc.)
 - 🎨 **Mapa Visual**: Diagrama interativo clicável dos componentes
 
 **Por que começar pelo ACH?**
+
 - Visão holística instantânea de todo o sistema
 - Identifica componentes críticos que precisam de atenção
 - Fornece contexto arquitetural antes de mergulhar no código
@@ -29,8 +32,9 @@ Este comando gera um relatório HTML interativo em `artifacts/ach/` que mostra:
 **Python é a linguagem padrão para todos os novos scripts de automação no AUDITORIA360.**
 
 Esta decisão estratégica visa:
+
 - ✅ Consolidar a stack de automação em uma única linguagem
-- ✅ Reduzir a complexidade de manutenção 
+- ✅ Reduzir a complexidade de manutenção
 - ✅ Aproveitar o rico ecossistema Python para automação
 - ✅ Facilitar a colaboração entre desenvolvedores
 - ✅ Melhorar a testabilidade e debugabilidade dos scripts
@@ -38,18 +42,22 @@ Esta decisão estratégica visa:
 ### Diretrizes para Scripts de Automação
 
 #### 🔧 Para Novos Scripts
+
 - **OBRIGATÓRIO**: Todos os novos scripts de automação devem ser escritos em Python
 - **Localização**: `scripts/python/` para scripts específicos
 - **Nomenclatura**: Use snake_case (ex: `deploy_production.py`)
 - **Documentação**: Inclua docstrings detalhadas e comentários explicativos
 
 #### 🔄 Para Scripts Existentes
+
 - **Migração Progressiva**: Scripts em shell (.sh) e PowerShell (.ps1) serão migrados progressivamente
 - **Prioridade**: Scripts críticos de CI/CD têm prioridade na migração
 - **Compatibilidade**: Mantenha versões antigas funcionais durante a transição
 
 #### 📚 Bibliotecas Recomendadas
+
 Para automação em Python, utilize preferencialmente:
+
 - `subprocess` - Para execução de comandos shell
 - `pathlib` - Para manipulação de caminhos
 - `click` ou `argparse` - Para interfaces de linha de comando
@@ -79,18 +87,18 @@ def main():
     """Main function with clear error handling."""
     parser = argparse.ArgumentParser(description="Script description")
     parser.add_argument('--verbose', action='store_true', help='Enable verbose output')
-    
+
     args = parser.parse_args()
-    
+
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     try:
         # Script logic here
         logger.info("Script execution started")
         # ... implementation ...
         logger.info("Script execution completed successfully")
-        
+
     except Exception as e:
         logger.error(f"Script execution failed: {e}")
         raise
@@ -102,17 +110,20 @@ if __name__ == "__main__":
 ### 🔍 Padrões de Qualidade
 
 #### Code Style
+
 - Siga o PEP 8 para formatação de código
 - Use `black` para formatação automática
 - Use `isort` para organização de imports
 - Use `flake8` para linting
 
 #### Testes
+
 - Scripts críticos devem incluir testes unitários
 - Use `pytest` como framework de testes
 - Coloque testes em `tests/unit/scripts/`
 
 #### Documentação
+
 - Docstrings obrigatórias para funções públicas
 - Comentários para lógica complexa
 - README específico se o script for parte de um módulo maior
@@ -120,6 +131,7 @@ if __name__ == "__main__":
 ### 🚀 Exemplos de Migração
 
 #### Shell → Python
+
 ```bash
 # Antes (deploy.sh)
 #!/bin/bash
@@ -152,7 +164,7 @@ if __name__ == "__main__":
 
 ### 🎯 Próximos Passos
 
-1. **Migração Prioritária**: 
+1. **Migração Prioritária**:
    - `deploy_vercel.sh` → `deploy_vercel.py`
    - `cloudrun_deploy.sh` → `cloudrun_deploy.py`
    - Scripts de CI/CD críticos
@@ -168,6 +180,7 @@ if __name__ == "__main__":
 ### 📞 Suporte
 
 Para dúvidas sobre migração de scripts ou implementação de novos scripts em Python:
+
 - Consulte a documentação em `docs/`
 - Revise exemplos em `scripts/python/`
 - Abra uma issue para discussões técnicas

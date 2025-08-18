@@ -2,23 +2,23 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  output: 'export',
+  output: "export",
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
-  distDir: 'out',
+  distDir: "out",
   images: {
-    unoptimized: true
+    unoptimized: true,
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/AUDITORIA360' : '',
-  basePath: process.env.NODE_ENV === 'production' ? '/AUDITORIA360' : '',
+  assetPrefix: process.env.NODE_ENV === "production" ? "/AUDITORIA360" : "",
+  basePath: process.env.NODE_ENV === "production" ? "/AUDITORIA360" : "",
   eslint: {
     ignoreDuringBuilds: false,
-    dirs: ['pages', 'components', 'lib'] // Only lint Next.js relevant directories
+    dirs: ["pages", "components", "lib"], // Only lint Next.js relevant directories
   },
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  }
-}
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

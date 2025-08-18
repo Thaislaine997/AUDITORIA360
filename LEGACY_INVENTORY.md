@@ -1,14 +1,17 @@
 # INVENTÁRIO COMPLETO DO SISTEMA LEGADO - AUDITORIA360
+
 Gerado em: Mon Aug 18 14:54:46 UTC 2025
 
 ## FRONTEND LEGADO (src/frontend/)
 
 ### Estatísticas Gerais
+
 - Total de arquivos TypeScript/React: 212
 - Total de páginas: 14
 - Total de componentes: 14
 
 ### Páginas Legacy Identificadas
+
 - `AuditoriaDetailPage` - ./src/frontend/src/pages/AuditoriaDetailPage.tsx
 - `CCTDetailPage` - ./src/frontend/src/pages/CCTDetailPage.tsx
 - `ControleMensalPage` - ./src/frontend/src/pages/ControleMensalPage.tsx
@@ -25,6 +28,7 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
 - `ValidacaoIAPage` - ./src/frontend/src/pages/ValidacaoIAPage.tsx
 
 ### Componentes Legacy
+
 - ./src/frontend/src/components/TicketDetailModal.tsx
 - ./src/frontend/src/components/NotificacoesList.tsx
 - ./src/frontend/src/components/IAChatAssistant.tsx
@@ -44,22 +48,26 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
 ## BACKEND LEGADO (src/api/)
 
 ### APIs Python
+
 - ./src/api/main.py
 - ... (total: 1 arquivos Python)
 
 ## OUTROS SISTEMAS LEGADOS
 
 ### Portal de Demandas
+
 - Diretório: ./portal_demandas/
 - Arquivos: 9
 
 ### Supabase Functions
+
 - Diretório: ./supabase/
 - Functions: 2
 
 ## ARQUIVOS DE CONFIGURAÇÃO
 
 ### Configurações Principais
+
 - ✅ package.json
 - ✅ tsconfig.json
 - ✅ next.config.js
@@ -67,6 +75,7 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
 - ✅ .env.example
 
 ### Configurações de Desenvolvimento
+
 - ❌ .eslintrc.json (ausente)
 - ✅ .prettierrc
 - ✅ .gitignore
@@ -75,6 +84,7 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
 ## ARQUIVOS DUPLICADOS E OBSOLETOS
 
 ### Possíveis Duplicações
+
 - README files: 640
   - ./README_IA_INTEGRATION.md
   - ./node_modules/js-yaml/README.md
@@ -569,14 +579,14 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
   - ./node_modules/@types/jest/node_modules/react-is/README.md
   - ./node_modules/@types/jest/node_modules/pretty-format/README.md
   - ./node_modules/@types/jest/README.md
-  - ./node_modules/@types/babel__traverse/README.md
+  - ./node_modules/@types/babel\_\_traverse/README.md
   - ./node_modules/@types/istanbul-lib-report/README.md
   - ./node_modules/@types/react-dom/README.md
   - ./node_modules/@types/parse-json/README.md
   - ./node_modules/@types/node/README.md
   - ./node_modules/@types/jsdom/README.md
   - ./node_modules/@types/istanbul-reports/README.md
-  - ./node_modules/@types/babel__generator/README.md
+  - ./node_modules/@types/babel\_\_generator/README.md
   - ./node_modules/@types/tough-cookie/README.md
   - ./node_modules/@types/stack-utils/README.md
   - ./node_modules/@types/prop-types/README.md
@@ -584,9 +594,9 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
   - ./node_modules/@types/ws/README.md
   - ./node_modules/@types/next/README.md
   - ./node_modules/@types/yargs/README.md
-  - ./node_modules/@types/babel__template/README.md
+  - ./node_modules/@types/babel\_\_template/README.md
   - ./node_modules/@types/yargs-parser/README.md
-  - ./node_modules/@types/babel__core/README.md
+  - ./node_modules/@types/babel\_\_core/README.md
   - ./node_modules/@types/react/README.md
   - ./node_modules/@types/phoenix/README.md
   - ./node_modules/@types/json5/README.md
@@ -718,6 +728,7 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
   - ./assets/README.md
 
 ### Arquivos de Backup/Temporários
+
 - Total de arquivos backup/temporários: 2
   - ./.next/cache/webpack/client-production/index.pack.old
   - ./.next/cache/webpack/server-production/index.pack.old
@@ -725,20 +736,24 @@ Gerado em: Mon Aug 18 14:54:46 UTC 2025
 ## RECOMENDAÇÕES DE MIGRAÇÃO
 
 ### Prioridade Alta (Core Funcionalidades)
+
 - Dashboard principal
 - Sistema de autenticação
 - Gestão de clientes
 - Auditorias
 
 ### Prioridade Média (Funcionalidades Específicas)
+
 - Relatórios
 - Upload de documentos
 - Portal de demandas
 
 ### Prioridade Baixa (Funcionalidades Auxiliares)
+
 - Páginas de detalhe específicas
 - Componentes de UI avançados
 - Integrações secundárias
 
 ---
+
 **Inventário gerado automaticamente pelo script de migração AUDITORIA360**

@@ -7,12 +7,47 @@
 
 AUDITORIA360 é uma plataforma moderna e escalável para terceirização de Departamento Pessoal, **completamente refatorada** com **Next.js** (React) e integração **Supabase** para autenticação e banco de dados. A plataforma oferece deploy automático no **GitHub Pages** e área de login protegida para o portal AUDITORIA360.
 
+## ⚡ Início Rápido
+
+### Pré-requisitos
+
+- Node.js 18+
+- Git
+
+### Configuração em 3 passos
+
+```bash
+# 1. Clone e entre no projeto
+git clone https://github.com/Thaislaine997/AUDITORIA360.git
+cd AUDITORIA360
+
+# 2. Execute o setup automático
+npm run setup
+
+# 3. Configure variáveis de ambiente e inicie
+cp .env.example .env.local
+# (edite .env.local com suas variáveis Supabase)
+npm run dev
+```
+
+🌐 **Acesse:** http://localhost:3000
+
+### 🛠️ Comandos Principais
+
+```bash
+npm run dev         # Desenvolvimento local
+npm run build       # Build para produção
+npm run validate    # Validação completa (tipos + lint + build)
+npm run setup       # Configuração do ambiente
+npm run inventory   # Inventário do sistema legado
+```
+
 ### 🏢 DPEIXER - Assessoria & Terceirização
 
 A DPEIXER oferece soluções completas em Departamento Pessoal e Recursos Humanos, voltadas para contabilidades e empresas que buscam:
 
 - ✅ **Precisão** e segurança jurídica
-- ✅ **Eficiência operacional**  
+- ✅ **Eficiência operacional**
 - ✅ **Compliance** trabalhista
 - ✅ **Processos 100% digitais**
 
@@ -20,37 +55,42 @@ A DPEIXER oferece soluções completas em Departamento Pessoal e Recursos Humano
 
 ```
 AUDITORIA360/
-├── 📁 pages/                 # Páginas Next.js (SSG/SSR)
-│   ├── index.tsx            # Homepage institucional
-│   ├── login.tsx            # Página de autenticação
-│   ├── dashboard.tsx        # Dashboard protegido
-│   └── _app.tsx             # App wrapper
-├── 📁 components/            # Componentes React reutilizáveis  
-│   ├── ui/                  # Componentes base (Button, Loading)
-│   └── layout/              # Layouts (Header, Footer)
-├── 📁 lib/                   # Integrações (Supabase, APIs)
-├── 📁 styles/                # CSS global e Tailwind
-├── 📁 public/                # Assets estáticos
-├── 📁 .github/               # GitHub Actions e templates
-│   ├── workflows/            # CI/CD workflows
-│   └── ISSUE_TEMPLATE/       # Templates de issues
-├── 📄 next.config.js         # Configuração Next.js
-├── 📄 tailwind.config.js     # Configuração Tailwind CSS
-├── 📄 .env.example           # Variáveis de ambiente
-└── 📁 src/                   # Sistema legado (compatibilidade)
-    ├── frontend/             # React/Vite original
+├── 📁 pages/                 # Páginas Next.js (SSG/SSR) ✅
+│   ├── index.tsx            # Homepage institucional ✅
+│   ├── login.tsx            # Página de autenticação ✅
+│   ├── dashboard.tsx        # Dashboard protegido ✅
+│   └── _app.tsx             # App wrapper ✅
+├── 📁 components/            # Componentes React reutilizáveis ✅
+│   ├── ui/                  # Componentes base (Button, Loading) ✅
+│   └── layout/              # Layouts (Header, Footer) ✅
+├── 📁 lib/                   # Integrações (Supabase, APIs) ✅
+├── 📁 styles/                # CSS global e Tailwind ✅
+├── 📁 public/                # Assets estáticos ✅
+├── 📁 scripts/               # Scripts de automação ✅
+│   ├── setup-dev.sh         # Configuração automática ✅
+│   └── inventory_legacy.sh  # Inventário do sistema ✅
+├── 📁 .github/               # GitHub Actions e templates ✅
+│   ├── workflows/            # CI/CD workflows ✅
+│   └── ISSUE_TEMPLATE/       # Templates de issues ✅
+├── 📄 next.config.js         # Configuração Next.js ✅
+├── 📄 tailwind.config.js     # Configuração Tailwind CSS ✅
+├── 📄 .env.example           # Variáveis de ambiente ✅
+├── 📄 SECURITY.md            # Políticas de segurança ✅
+├── 📄 MIGRATION_CHECKLIST.md # Checklist de migração ✅
+└── 📁 src/                   # Sistema legado (compatibilidade) 🔄
+    ├── frontend/             # React/Vite original (212 arquivos)
     └── api/                  # APIs FastAPI existentes
 ```
 
 ### 🔧 Stack Tecnológica Modernizada
 
-| Componente | Tecnologia | Função |
-|------------|------------|---------|
-| **Frontend** | Next.js 14 + React 18 + TypeScript | Interface moderna e responsiva |
-| **Styling** | Tailwind CSS | Design system e componentes |
-| **Auth/DB** | Supabase | Autenticação e banco de dados |
-| **Deploy** | GitHub Pages | Hospedagem estática automatizada |
-| **CI/CD** | GitHub Actions | Deploy e integração contínua |
+| Componente   | Tecnologia                         | Função                           |
+| ------------ | ---------------------------------- | -------------------------------- |
+| **Frontend** | Next.js 14 + React 18 + TypeScript | Interface moderna e responsiva   |
+| **Styling**  | Tailwind CSS                       | Design system e componentes      |
+| **Auth/DB**  | Supabase                           | Autenticação e banco de dados    |
+| **Deploy**   | GitHub Pages                       | Hospedagem estática automatizada |
+| **CI/CD**    | GitHub Actions                     | Deploy e integração contínua     |
 
 ## 🚀 Instalação e Desenvolvimento
 
@@ -106,6 +146,7 @@ npm run build
 ### 2. Configurar Autenticação
 
 No painel Supabase:
+
 - Vá em **Authentication > Settings**
 - Configure **Site URL**: `https://thaislaine997.github.io`
 - Adicione **Redirect URLs**:
@@ -137,6 +178,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## 🎯 Funcionalidades Principais
 
 ### 🏠 Site Institucional Moderno
+
 - **Hero section** com proposta de valor clara
 - **Sobre a empresa** com diferenciais técnicos
 - **Serviços detalhados** e especializados
@@ -144,6 +186,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 - **Design responsivo** e otimizado (Tailwind CSS)
 
 ### 🔒 Portal AUDITORIA360 (Área Protegida)
+
 - **Login/Registro seguro** com Supabase Auth
 - **Dashboard inteligente** com métricas e KPIs
 - **Módulos integrados**:
@@ -155,6 +198,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
   - 📈 Gestão e Relatórios
 
 ### 🛡️ Segurança e Performance
+
 - **Autenticação robusta** via Supabase
 - **Rotas protegidas** com verificação server-side
 - **SSL/TLS automático** via GitHub Pages
@@ -163,13 +207,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## 💰 Planos e Valores DPEIXER
 
-| Plano | Valor/Mês | Inclui |
-|-------|-----------|---------|
-| **Plus** | R$ 39,90 | Folha mensal, eSocial, relatórios básicos, suporte por email |
-| **Premium** | R$ 49,90 | Plus + admissões/rescisões digitais + portal básico + suporte prioritário |
-| **Diamante** | R$ 69,90 | Premium + documentação personalizada + analytics + suporte 24/7 |
+| Plano        | Valor/Mês | Inclui                                                                    |
+| ------------ | --------- | ------------------------------------------------------------------------- |
+| **Plus**     | R$ 39,90  | Folha mensal, eSocial, relatórios básicos, suporte por email              |
+| **Premium**  | R$ 49,90  | Plus + admissões/rescisões digitais + portal básico + suporte prioritário |
+| **Diamante** | R$ 69,90  | Premium + documentação personalizada + analytics + suporte 24/7           |
 
 ### Diferenciais Exclusivos
+
 - 📍 **Ponto digital** com geolocalização (celular, tablet, físico)
 - 🎫 **Gestão automatizada** de benefícios (VR/VA/VT)
 - ✍️ **Assinatura eletrônica** para admissão/rescisão
@@ -179,30 +224,35 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## 📋 Serviços Técnicos Especializados
 
 ### 1. Processamento Mensal da Folha
+
 - Cálculo detalhado de salários, benefícios, descontos
 - Emissão automática de holerites e guias (INSS, FGTS, IRRF)
 - Integração direta com eSocial, DCTFWeb e FGTS Digital
 - Protocolos de conferência dupla e rastreabilidade completa
 
 ### 2. Compliance e Obrigações Acessórias
+
 - Gestão completa de declarações e devoluções
 - Aplicação automática de convenções coletivas
 - Revisões fiscais e previdenciárias proativas
 - Correção automática de inconsistências
 
 ### 3. Consultoria Trabalhista Especializada
+
 - Diagnóstico técnico de passivos trabalhistas
 - Revisão detalhada de contratos e políticas
 - Recomendações estratégicas para mitigação de riscos
 - Suporte jurídico especializado
 
 ### 4. Gestão de Informação e Plataforma
+
 - Integração segura com sistemas do cliente
 - Backups automáticos e controle de versões
 - Operação via plataforma própria ou acesso remoto
 - Monitoramento 24/7 e alertas inteligentes
 
 ### 5. Serviços Sob Demanda Flexíveis
+
 - Admissão/rescisão 100% digital
 - Recálculos técnicos e homologações online
 - Preço por evento, totalmente flexível
@@ -254,6 +304,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ### 📄 Páginas Disponíveis
 
 **Sistema Moderno (Next.js)**
+
 - `pages/index.tsx` - Homepage institucional
 - `pages/login.tsx` - Sistema de login/registro
 - `pages/dashboard.tsx` - Dashboard principal
@@ -262,6 +313,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 - `pages/legacy/relatorios.tsx` - Relatórios e análises
 
 **Sistema Legado (Compatibilidade)**
+
 - `src/frontend/src/pages/` - Páginas React/Vite originais
 - `src/api/` - APIs FastAPI existentes
 - `portal_demandas/` - Sistema de tickets
@@ -269,6 +321,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ### 🔧 Configuração e Deploy
 
 **Variáveis de Ambiente**
+
 ```env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -279,6 +332,7 @@ NODE_ENV=production
 ```
 
 **Deploy Automático**
+
 - Push para `main` → GitHub Actions → GitHub Pages
 - Configuração: `.github/workflows/deploy.yml`
 - Secrets necessários: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
@@ -296,12 +350,14 @@ make validate        # Validação completa do sistema
 ## 🚨 Migração e Compatibilidade
 
 ### ✅ Nova Arquitetura (Recomendada)
+
 - **Next.js 14** - `/pages`, `/components`, `/lib`
 - **Deploy automático** - GitHub Pages via Actions
 - **Autenticação moderna** - Supabase Auth integrado
 - **Performance otimizada** - Static generation + SSR
 
 ### 🔄 Sistema Legado (Compatibilidade)
+
 - **React/Vite** - `src/frontend/` (mantido para compatibilidade)
 - **FastAPI** - `src/api/` (APIs existentes funcionais)
 - **Supabase Functions** - `supabase/` (edge functions)
@@ -310,7 +366,7 @@ make validate        # Validação completa do sistema
 ### 📋 Roadmap de Migração
 
 - [x] ✅ Estrutura Next.js implementada
-- [x] ✅ Autenticação Supabase integrada  
+- [x] ✅ Autenticação Supabase integrada
 - [x] ✅ Deploy automático configurado
 - [x] ✅ Interface institucional moderna
 - [x] ✅ Dashboard protegido funcional
@@ -321,7 +377,7 @@ make validate        # Validação completa do sistema
 ## 📞 Suporte e Contato
 
 - 🌐 **Website**: [thaislaine997.github.io/AUDITORIA360](https://thaislaine997.github.io/AUDITORIA360)
-- 📧 **Email**: contato@dpeixer.com.br  
+- 📧 **Email**: contato@dpeixer.com.br
 - 📱 **Portal**: Acesse via `/login` para clientes
 - 🐛 **Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
 - 📚 **Documentação**: [Guia do Desenvolvedor](CONTRIBUTING_NEXTJS.md)
@@ -329,7 +385,7 @@ make validate        # Validação completa do sistema
 ---
 
 **AUDITORIA360** - Plataforma Moderna de Terceirização de Departamento Pessoal  
-*Desenvolvido com ❤️ usando Next.js + Supabase + GitHub Actions*
+_Desenvolvido com ❤️ usando Next.js + Supabase + GitHub Actions_
 
 ---
 
@@ -386,22 +442,23 @@ AUDITORIA360/
 
 ### 🔧 Stack Tecnológica
 
-| Componente | Tecnologia | Função |
-|------------|------------|---------|
-| **Backend** | FastAPI + Python | API REST, autenticação, regras de negócio |
-| **Frontend** | React + TypeScript | Interface admin e operacional |
-| **Banco de Dados** | Supabase (PostgreSQL) | Dados principais + RLS multi-tenant |
-| **Analytics** | DuckDB | Análise de dados e relatórios |
-| **AI/ML** | OpenAI API | Análise inteligente de folhas |
-| **Storage** | Cloudflare R2 | Armazenamento de arquivos |
-| **OCR** | PaddleOCR | Extração de dados de documentos |
-| **Deploy** | Docker + Vercel/Cloudflare | Infraestrutura serverless |
+| Componente         | Tecnologia                 | Função                                    |
+| ------------------ | -------------------------- | ----------------------------------------- |
+| **Backend**        | FastAPI + Python           | API REST, autenticação, regras de negócio |
+| **Frontend**       | React + TypeScript         | Interface admin e operacional             |
+| **Banco de Dados** | Supabase (PostgreSQL)      | Dados principais + RLS multi-tenant       |
+| **Analytics**      | DuckDB                     | Análise de dados e relatórios             |
+| **AI/ML**          | OpenAI API                 | Análise inteligente de folhas             |
+| **Storage**        | Cloudflare R2              | Armazenamento de arquivos                 |
+| **OCR**            | PaddleOCR                  | Extração de dados de documentos           |
+| **Deploy**         | Docker + Vercel/Cloudflare | Infraestrutura serverless                 |
 
 ## 🚀 Guia de Instalação e Setup
 
 ### Pré-requisitos
+
 - **Python 3.12+**
-- **Node.js 18+** 
+- **Node.js 18+**
 - **Docker** (opcional)
 - Conta **Supabase** (banco de dados)
 - API Key **OpenAI** (IA)
@@ -460,15 +517,16 @@ O sistema implementa **isolamento completo de dados** por contabilidade:
 
 ### Usuários de Demonstração
 
-| Tipo | Email | Senha | Contabilidade |
-|------|-------|--------|---------------|
-| Admin | admin@auditoria360.com | admin123 | - |
-| Operacional | contab1@exemplo.com | demo123 | Contabilidade A |
-| Operacional | contab2@exemplo.com | demo123 | Contabilidade B |
+| Tipo        | Email                  | Senha    | Contabilidade   |
+| ----------- | ---------------------- | -------- | --------------- |
+| Admin       | admin@auditoria360.com | admin123 | -               |
+| Operacional | contab1@exemplo.com    | demo123  | Contabilidade A |
+| Operacional | contab2@exemplo.com    | demo123  | Contabilidade B |
 
 ## 📡 Endpoints Principais da API
 
 ### 🔑 Autenticação
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -480,6 +538,7 @@ Content-Type: application/json
 ```
 
 ### 👥 Gestão de Clientes
+
 ```http
 # Criar cliente final
 POST /api/contabilidade/clientes
@@ -497,6 +556,7 @@ Authorization: Bearer <token>
 ```
 
 ### 🔍 Auditoria Automatizada
+
 ```http
 # Disparar auditoria mensal
 POST /api/contabilidade/auditorias
@@ -514,6 +574,7 @@ Authorization: Bearer <token>
 ```
 
 ### 📊 Relatórios e Analytics
+
 ```http
 # Score de risco do cliente
 GET /api/contabilidade/auditorias/AUD-12345/score_risco
@@ -527,6 +588,7 @@ Authorization: Bearer <token>
 ## 🔄 Fluxos de Uso Principais
 
 ### 1️⃣ Fluxo de Onboarding
+
 ```mermaid
 graph TD
     A[Admin cria nova contabilidade] --> B[Sistema envia convite por email]
@@ -537,6 +599,7 @@ graph TD
 ```
 
 ### 2️⃣ Fluxo de Auditoria Mensal
+
 ```mermaid
 graph TD
     A[Usuário seleciona cliente] --> B[Clica 'Disparar Auditoria']
@@ -554,6 +617,7 @@ graph TD
 
 1. **Coleta de dados**: Sistema reúne dados da folha + regras aplicáveis
 2. **Envio para IA**:
+
    ```json
    POST /api/ai/analyze-payroll
    {
@@ -575,10 +639,7 @@ graph TD
        "Falta de desconto sindical conforme convenção"
      ],
      "score_risco": 82,
-     "recomendacoes": [
-       "Revisar cálculo INSS",
-       "Verificar convenção coletiva"
-     ]
+     "recomendacoes": ["Revisar cálculo INSS", "Verificar convenção coletiva"]
    }
    ```
 
@@ -602,6 +663,7 @@ pytest --cov=src tests/
 ## 📈 Monitoramento e Validação
 
 ### Checklist Automático
+
 ```bash
 # Verificação rápida do sistema
 make checklist
@@ -614,6 +676,7 @@ make checklist-html
 ```
 
 ### Métricas de Qualidade
+
 - **Cobertura de testes**: >85% (obrigatório)
 - **Checklist interno**: >85% (atual: 85.2%)
 - **Validação de código**: Black + Flake8
@@ -644,6 +707,7 @@ make docs-full
 ## 🚀 Deploy para Produção
 
 ### Ambiente Staging
+
 ```bash
 # Build da aplicação
 docker build -t auditoria360:staging .
@@ -656,6 +720,7 @@ pytest tests/smoke/
 ```
 
 ### Produção (Vercel + Cloudflare)
+
 ```bash
 # Frontend (Vercel)
 cd src/frontend
@@ -672,14 +737,14 @@ make checklist-all
 
 ## 📚 Documentação Adicional
 
-| Documento | Descrição |
-|-----------|-----------|
-| [📋 Project Inventory](docs/PROJECT_INVENTORY.md) | Inventário completo de arquivos e componentes |
-| [🔐 Security & Compliance](docs/COMPLIANCE_SECURITY_GUIDE.md) | Guia LGPD e segurança |
-| [🚀 Production Guide](docs/PRODUCTION_DEPLOYMENT_GUIDE.md) | Procedimentos de produção |
-| [🧪 Testing Strategy](docs/TESTING_STRATEGY.md) | Estratégia de testes completa |
-| [📡 API Reference](docs/API_REFERENCE.md) | Documentação completa da API |
-| [🗺️ Roadmap](docs/ROADMAP.md) | Planejamento trimestral |
+| Documento                                                     | Descrição                                     |
+| ------------------------------------------------------------- | --------------------------------------------- |
+| [📋 Project Inventory](docs/PROJECT_INVENTORY.md)             | Inventário completo de arquivos e componentes |
+| [🔐 Security & Compliance](docs/COMPLIANCE_SECURITY_GUIDE.md) | Guia LGPD e segurança                         |
+| [🚀 Production Guide](docs/PRODUCTION_DEPLOYMENT_GUIDE.md)    | Procedimentos de produção                     |
+| [🧪 Testing Strategy](docs/TESTING_STRATEGY.md)               | Estratégia de testes completa                 |
+| [📡 API Reference](docs/API_REFERENCE.md)                     | Documentação completa da API                  |
+| [🗺️ Roadmap](docs/ROADMAP.md)                                 | Planejamento trimestral                       |
 
 ## 🤝 Contribuição e Suporte
 

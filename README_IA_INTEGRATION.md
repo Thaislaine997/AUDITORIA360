@@ -7,12 +7,14 @@ O AUDITORIA360 integra tecnologias de Inteligência Artificial para potencializa
 ## 🔗 Arquitetura de Integração
 
 ### Sistema Moderno (Next.js)
+
 - **Frontend**: Interface moderna com React 18 + TypeScript
 - **Autenticação**: Supabase Auth com proteção de rotas
 - **Deploy**: GitHub Actions para deploy automático
 - **SEO**: Otimização para motores de busca
 
 ### Sistema Legado (Compatibilidade)
+
 - **Frontend**: React/Vite original em `src/frontend/`
 - **API**: FastAPI existente em `src/api/`
 - **Banco**: Supabase + edge functions
@@ -21,21 +23,25 @@ O AUDITORIA360 integra tecnologias de Inteligência Artificial para potencializa
 ## 🤖 Funcionalidades de IA Integradas
 
 ### 1. Análise Preditiva de Compliance
+
 - **Localização**: `src/frontend/src/modules/ai/compliance-predictor.ts`
 - **Função**: Predição de riscos trabalhistas
 - **Integração**: Via Supabase Edge Functions
 
 ### 2. Processamento de Documentos
+
 - **Localização**: `supabase/functions/processar-pdf/`
 - **Função**: OCR e extração de dados automatizada
 - **IA**: Google Gemini API para análise de texto
 
 ### 3. Widget ROI Cognitivo
+
 - **Localização**: `src/frontend/src/components/ui/ROICognitivoWidget`
 - **Função**: Interface adaptativa baseada em comportamento
 - **Tecnologia**: Machine Learning para UX otimizada
 
 ### 4. Chatbot Inteligente
+
 - **Localização**: `src/frontend/src/pages/ChatbotPage.tsx`
 - **Função**: Suporte automatizado com IA
 - **Integração**: API externa + conhecimento da base
@@ -67,16 +73,19 @@ npx supabase functions deploy processar-pdf --no-verify-jwt
 ## 🔄 Fluxo de Migração IA
 
 ### Fase 1: Compatibilidade (✅ Concluída)
+
 - [x] Manter funcionalidades IA existentes no legado
 - [x] Integrar autenticação Supabase no sistema moderno
 - [x] Deploy automatizado funcionando
 
 ### Fase 2: Unificação (🔄 Em Progresso)
+
 - [x] Migrar páginas principais para Next.js
 - [ ] Integrar widgets IA no dashboard moderno
 - [ ] Unificar APIs de IA
 
 ### Fase 3: Otimização (⏳ Planejada)
+
 - [ ] Melhorar performance das predições
 - [ ] Implementar cache inteligente
 - [ ] Otimizar modelos de ML
@@ -91,6 +100,7 @@ npx supabase functions deploy processar-pdf --no-verify-jwt
 ## 🛠️ APIs de IA Disponíveis
 
 ### Análise de Texto
+
 ```typescript
 POST /api/ai/analyze-text
 {
@@ -100,6 +110,7 @@ POST /api/ai/analyze-text
 ```
 
 ### Predição de Riscos
+
 ```typescript
 POST /api/ai/predict-risks
 {
@@ -109,6 +120,7 @@ POST /api/ai/predict-risks
 ```
 
 ### Processamento de PDF
+
 ```typescript
 POST /api/ai/process-pdf
 Content-Type: multipart/form-data

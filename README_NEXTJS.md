@@ -12,7 +12,7 @@ AUDITORIA360 é uma plataforma moderna e escalável para terceirização de Depa
 A DPEIXER oferece soluções completas em Departamento Pessoal e Recursos Humanos, voltadas para contabilidades e empresas que buscam:
 
 - ✅ **Precisão** e segurança jurídica
-- ✅ **Eficiência operacional**  
+- ✅ **Eficiência operacional**
 - ✅ **Compliance** trabalhista
 - ✅ **Processos 100% digitais**
 
@@ -21,7 +21,7 @@ A DPEIXER oferece soluções completas em Departamento Pessoal e Recursos Humano
 ```
 AUDITORIA360/
 ├── 📁 pages/                 # Páginas Next.js (SSG/SSR)
-├── 📁 components/            # Componentes React reutilizáveis  
+├── 📁 components/            # Componentes React reutilizáveis
 ├── 📁 lib/                   # Integrações (Supabase, APIs)
 ├── 📁 styles/                # CSS global e Tailwind
 ├── 📁 public/                # Assets estáticos
@@ -35,13 +35,13 @@ AUDITORIA360/
 
 ### 🔧 Stack Tecnológica
 
-| Componente | Tecnologia | Função |
-|------------|------------|---------|
-| **Frontend** | Next.js + React + TypeScript | Interface moderna e responsiva |
-| **Styling** | Tailwind CSS | Design system e componentes |
-| **Auth/DB** | Supabase | Autenticação e banco de dados |
-| **Deploy** | GitHub Pages | Hospedagem estática automatizada |
-| **CI/CD** | GitHub Actions | Deploy e integração contínua |
+| Componente   | Tecnologia                   | Função                           |
+| ------------ | ---------------------------- | -------------------------------- |
+| **Frontend** | Next.js + React + TypeScript | Interface moderna e responsiva   |
+| **Styling**  | Tailwind CSS                 | Design system e componentes      |
+| **Auth/DB**  | Supabase                     | Autenticação e banco de dados    |
+| **Deploy**   | GitHub Pages                 | Hospedagem estática automatizada |
+| **CI/CD**    | GitHub Actions               | Deploy e integração contínua     |
 
 ## 🚀 Instalação e Desenvolvimento
 
@@ -97,6 +97,7 @@ npm run build
 ### 2. Configurar Autenticação
 
 No painel Supabase:
+
 - Vá em **Authentication > Settings**
 - Configure **Site URL**: `https://thaislaine997.github.io`
 - Adicione **Redirect URLs**:
@@ -128,6 +129,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## 🎯 Funcionalidades Principais
 
 ### 🏠 Site Institucional
+
 - **Hero section** com proposta de valor
 - **Sobre a empresa** com diferenciais
 - **Serviços detalhados** e técnicos
@@ -135,6 +137,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 - **Design responsivo** e moderno
 
 ### 🔒 Portal AUDITORIA360 (Área Protegida)
+
 - **Login/Registro** com Supabase Auth
 - **Dashboard** com métricas e KPIs
 - **Módulos integrados**:
@@ -147,13 +150,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## 💰 Planos e Valores
 
-| Plano | Valor/Mês | Inclui |
-|-------|-----------|---------|
-| **Plus** | R$ 39,90 | Folha mensal, eSocial, relatórios básicos |
-| **Premium** | R$ 49,90 | Plus + admissões/rescisões + portal básico |
-| **Diamante** | R$ 69,90 | Premium + docs personalizados + analytics |
+| Plano        | Valor/Mês | Inclui                                     |
+| ------------ | --------- | ------------------------------------------ |
+| **Plus**     | R$ 39,90  | Folha mensal, eSocial, relatórios básicos  |
+| **Premium**  | R$ 49,90  | Plus + admissões/rescisões + portal básico |
+| **Diamante** | R$ 69,90  | Premium + docs personalizados + analytics  |
 
 ### Diferenciais Inclusos
+
 - 📍 Ponto digital com geolocalização
 - 🎫 Gestão automatizada de benefícios (VR/VA/VT)
 - ✍️ Assinatura eletrônica integrada
@@ -180,7 +184,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## 📞 Suporte e Contato
 
 - 🌐 **Website**: [thaislaine997.github.io/AUDITORIA360](https://thaislaine997.github.io/AUDITORIA360)
-- 📧 **Email**: contato@dpeixer.com.br  
+- 📧 **Email**: contato@dpeixer.com.br
 - 📱 **Portal**: Acesse via `/login` para clientes
 - 🐛 **Issues**: [GitHub Issues](https://github.com/Thaislaine997/AUDITORIA360/issues)
 
@@ -196,4 +200,4 @@ Esta versão modernizada mantém compatibilidade com o sistema anterior. Os mód
 - `supabase/` - Configurações Supabase existentes
 
 **AUDITORIA360** - Plataforma Moderna de Terceirização de Departamento Pessoal  
-*Desenvolvido com ❤️ usando Next.js + Supabase*
+_Desenvolvido com ❤️ usando Next.js + Supabase_

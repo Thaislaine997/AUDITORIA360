@@ -1,37 +1,37 @@
-import { NextPage } from 'next'
-import Head from 'next/head'
-import Link from 'next/link'
-import { useState, FormEvent } from 'react'
-import { useRouter } from 'next/router'
-import Layout from '../components/layout/Layout'
-import { authHelpers } from '../lib/supabaseClient'
+import { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/router";
+import Layout from "../components/layout/Layout";
+import { authHelpers } from "../lib/supabaseClient";
 
 const LoginPage: NextPage = () => {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      const { data, error } = await authHelpers.signIn(email, password)
-      
+      const { data, error } = await authHelpers.signIn(email, password);
+
       if (error) {
-        setError(error.message)
+        setError(error.message);
       } else if (data.user) {
-        router.push('/dashboard')
+        router.push("/dashboard");
       }
     } catch (err) {
-      setError('Erro ao fazer login. Tente novamente.')
+      setError("Erro ao fazer login. Tente novamente.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -48,12 +48,10 @@ const LoginPage: NextPage = () => {
                 <h2 className="mt-6 text-4xl font-bold text-white">
                   AUDITORIA360
                 </h2>
-                <p className="mt-2 text-blue-100">
-                  Acesse sua conta
-                </p>
+                <p className="mt-2 text-blue-100">Acesse sua conta</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-xl p-8">
               <form className="space-y-6" onSubmit={handleSubmit}>
                 {error && (
@@ -61,9 +59,12 @@ const LoginPage: NextPage = () => {
                     {error}
                   </div>
                 )}
-                
+
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Email
                   </label>
                   <input
@@ -73,14 +74,17 @@ const LoginPage: NextPage = () => {
                     autoComplete="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                     placeholder="seu@email.com"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Senha
                   </label>
                   <input
@@ -90,7 +94,7 @@ const LoginPage: NextPage = () => {
                     autoComplete="current-password"
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                     placeholder="Sua senha"
                   />
@@ -102,7 +106,7 @@ const LoginPage: NextPage = () => {
                     disabled={loading}
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? 'Entrando...' : 'Entrar'}
+                    {loading ? "Entrando..." : "Entrar"}
                   </button>
                 </div>
 
@@ -113,10 +117,10 @@ const LoginPage: NextPage = () => {
                 </div>
               </form>
             </div>
-            
+
             <div className="text-center">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="text-blue-100 hover:text-white transition-colors text-sm"
               >
                 ← Voltar ao site
@@ -126,7 +130,7 @@ const LoginPage: NextPage = () => {
         </div>
       </Layout>
     </>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

@@ -7,18 +7,21 @@ A segurança é uma prioridade fundamental no AUDITORIA360. Este documento defin
 ## 🛡️ Princípios de Segurança
 
 ### 1. Segurança por Design
+
 - **Criptografia**: Todas as senhas são armazenadas com hash seguro
 - **HTTPS**: Obrigatório em ambientes de produção
 - **Autenticação**: Integração Supabase com autenticação robusta
 - **Autorização**: Controle de acesso baseado em roles
 
 ### 2. Proteção de Dados
+
 - **Dados Pessoais**: Conformidade com LGPD
 - **Dados Trabalhistas**: Proteção especial para informações sensíveis
 - **Backup Seguro**: Dados protegidos e auditáveis
 - **Logs de Auditoria**: Rastreamento completo de ações
 
 ### 3. Segurança de Infraestrutura
+
 - **CORS Restrito**: Configuração adequada para APIs
 - **Rate Limiting**: Proteção contra ataques de força bruta
 - **Monitoramento**: Logs centralizados e alertas automatizados
@@ -37,6 +40,7 @@ Se você descobrir uma vulnerabilidade de segurança, siga este processo:
 ### Informações Necessárias
 
 Inclua no seu relatório:
+
 - Descrição detalhada da vulnerabilidade
 - Passos para reproduzir o problema
 - Impacto potencial
@@ -77,6 +81,7 @@ SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 ### Logs de Auditoria
 
 Todas as ações sensíveis são logadas:
+
 - Autenticação e logout
 - Alterações de dados de clientes
 - Geração de relatórios
@@ -98,6 +103,7 @@ Todas as ações sensíveis são logadas:
 ## 🛠️ Ferramentas de Segurança
 
 ### Análise Estática
+
 ```bash
 # ESLint com regras de segurança
 npm run lint
@@ -110,6 +116,7 @@ git secrets --scan
 ```
 
 ### Monitoramento Contínuo
+
 - **GitHub Security Alerts**: Ativo
 - **Dependabot**: Atualizações automáticas
 - **CodeQL**: Análise de código
@@ -139,12 +146,14 @@ git secrets --scan
 ## 🤝 Responsabilidades
 
 ### Equipe de Desenvolvimento
+
 - Seguir padrões de código seguro
 - Revisar PRs com foco em segurança
 - Manter dependências atualizadas
 - Reportar vulnerabilidades imediatamente
 
 ### Usuários
+
 - Usar senhas fortes
 - Não compartilhar credenciais
 - Reportar comportamentos suspeitos

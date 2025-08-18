@@ -1,6 +1,7 @@
 # Checklist de Migração AUDITORIA360
 
 ## Status Geral da Migração
+
 - [x] ✅ Estrutura Next.js base implementada
 - [x] ✅ Configuração de build corrigida
 - [x] ✅ Páginas principais migradas (Home, Login, Dashboard)
@@ -10,6 +11,7 @@
 - [ ] 🔄 Limpeza de arquivos obsoletos
 
 ## Arquivos Base Migrados (✅ Concluído)
+
 - [x] `/pages/_app.tsx` - App wrapper principal
 - [x] `/pages/index.tsx` - Homepage institucional
 - [x] `/pages/login.tsx` - Página de autenticação
@@ -21,6 +23,7 @@
 ## Sistema Legado Identificado (📊 Total: 212 arquivos TS/TSX)
 
 ### Páginas Legadas para Migração
+
 ```
 ./src/frontend/src/pages/
 ├── SindicatoDetailPage.tsx
@@ -41,12 +44,14 @@
 ```
 
 ## Próximos Passos da Migração
+
 1. **Inventário Completo**: Catalogar todos os 212 arquivos por categoria
 2. **Migração por Prioridade**: Começar com funcionalidades core
 3. **Validação**: Testar cada migração antes de remover legado
 4. **Limpeza**: Remover arquivos obsoletos após validação
 
 ## Diretrizes de Migração
+
 - ✅ **Migrar antes de excluir**
 - ✅ **Validar cada rota e funcionalidade**
 - ✅ **Documentar cada alteração**

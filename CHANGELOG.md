@@ -8,9 +8,9 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+
 - Complete AUDITORIA360 modernization: migrate Next.js architecture, centralize documentation, and clean up legacy system ([#183](https://github.com/Thaislaine997/AUDITORIA360/pull/183)) - por @Copilot em 2025-08-15
 
-
 ### Changed
-- Refactor AUDITORIA360 to modern Next.js architecture with Supabase integration and automated GitHub Pages deployment ([#182](https://github.com/Thaislaine997/AUDITORIA360/pull/182)) - por @Copilot em 2025-08-15
 
+- Refactor AUDITORIA360 to modern Next.js architecture with Supabase integration and automated GitHub Pages deployment ([#182](https://github.com/Thaislaine997/AUDITORIA360/pull/182)) - por @Copilot em 2025-08-15

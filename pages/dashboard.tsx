@@ -1,43 +1,43 @@
-import { NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import Layout from '../components/layout/Layout'
-import { authHelpers } from '../lib/supabaseClient'
+import { NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Layout from "../components/layout/Layout";
+import { authHelpers } from "../lib/supabaseClient";
 
 const DashboardPage: NextPage = () => {
-  const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const currentUser = await authHelpers.getCurrentUser()
+        const currentUser = await authHelpers.getCurrentUser();
         if (!currentUser) {
-          router.push('/login')
-          return
+          router.push("/login");
+          return;
         }
-        setUser(currentUser)
+        setUser(currentUser);
       } catch (error) {
-        console.error('Error checking auth:', error)
-        router.push('/login')
+        console.error("Error checking auth:", error);
+        router.push("/login");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    checkAuth()
-  }, [router])
+    checkAuth();
+  }, [router]);
 
   const handleLogout = async () => {
     try {
-      await authHelpers.signOut()
-      router.push('/')
+      await authHelpers.signOut();
+      router.push("/");
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error("Error signing out:", error);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -49,7 +49,7 @@ const DashboardPage: NextPage = () => {
           </div>
         </div>
       </Layout>
-    )
+    );
   }
 
   return (
@@ -131,23 +131,31 @@ const DashboardPage: NextPage = () => {
             {/* Recent Activities */}
             <div className="bg-white rounded-lg shadow-md">
               <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">Atividades Recentes</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Atividades Recentes
+                </h2>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Auditoria finalizada - Cliente ABC Ltda</span>
+                    <span className="text-sm text-gray-600">
+                      Auditoria finalizada - Cliente ABC Ltda
+                    </span>
                     <span className="text-xs text-gray-400">2h atrás</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Novo cliente cadastrado - XYZ Corp</span>
+                    <span className="text-sm text-gray-600">
+                      Novo cliente cadastrado - XYZ Corp
+                    </span>
                     <span className="text-xs text-gray-400">4h atrás</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Pendência identificada - DEF S/A</span>
+                    <span className="text-sm text-gray-600">
+                      Pendência identificada - DEF S/A
+                    </span>
                     <span className="text-xs text-gray-400">1d atrás</span>
                   </div>
                 </div>
@@ -157,25 +165,35 @@ const DashboardPage: NextPage = () => {
             {/* Quick Actions */}
             <div className="bg-white rounded-lg shadow-md">
               <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">Ações Rápidas</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Ações Rápidas
+                </h2>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-4">
                   <button className="bg-blue-50 hover:bg-blue-100 p-4 rounded-lg text-center transition-colors">
                     <div className="text-2xl mb-2">🆕</div>
-                    <span className="text-sm font-medium text-blue-600">Nova Auditoria</span>
+                    <span className="text-sm font-medium text-blue-600">
+                      Nova Auditoria
+                    </span>
                   </button>
                   <button className="bg-green-50 hover:bg-green-100 p-4 rounded-lg text-center transition-colors">
                     <div className="text-2xl mb-2">👤</div>
-                    <span className="text-sm font-medium text-green-600">Novo Cliente</span>
+                    <span className="text-sm font-medium text-green-600">
+                      Novo Cliente
+                    </span>
                   </button>
                   <button className="bg-purple-50 hover:bg-purple-100 p-4 rounded-lg text-center transition-colors">
                     <div className="text-2xl mb-2">📊</div>
-                    <span className="text-sm font-medium text-purple-600">Relatórios</span>
+                    <span className="text-sm font-medium text-purple-600">
+                      Relatórios
+                    </span>
                   </button>
                   <button className="bg-orange-50 hover:bg-orange-100 p-4 rounded-lg text-center transition-colors">
                     <div className="text-2xl mb-2">⚙️</div>
-                    <span className="text-sm font-medium text-orange-600">Configurações</span>
+                    <span className="text-sm font-medium text-orange-600">
+                      Configurações
+                    </span>
                   </button>
                 </div>
               </div>
@@ -184,7 +202,7 @@ const DashboardPage: NextPage = () => {
         </div>
       </Layout>
     </>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;
