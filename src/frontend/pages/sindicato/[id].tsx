@@ -7,6 +7,7 @@ import { Groups, ArrowBack, Home, Info } from '@mui/icons-material';
 import { useSindicatos } from '../../lib/hooks/usePortalDemandasDomain';
 import { IAAnalysisButton } from '../../components/IAAnalysisButton';
 import { useIASuggestionStore } from '../../stores/iaSuggestionStore';
+// ...existing code...
 
 const SindicatoDetailPage: React.FC = () => {
   const router = useRouter();
