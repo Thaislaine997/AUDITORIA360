@@ -8,6 +8,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+- 🚨 Critical Fix: Restore Production Build - ESLint Errors & Configuration Conflicts Resolved ([#189](https://github.com/Thaislaine997/AUDITORIA360/pull/189)) - por @Copilot em 2025-08-18
+
+
+### Changed
 - Complete Structural Analysis and Diagnosis for AUDITORIA360 Modernization ([#188](https://github.com/Thaislaine997/AUDITORIA360/pull/188)) - por @Copilot em 2025-08-18
 
 
