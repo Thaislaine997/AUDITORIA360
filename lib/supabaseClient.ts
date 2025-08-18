@@ -1,47 +1,20 @@
-import { createClient } from '@supabase/supabase-js'
+// src/frontend/src/lib/supabaseClient.ts
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+import { createClient } from '@supabase/supabase-js';
 
-// Create a placeholder client for build time
-export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 
-// Authentication helpers with null checks
-export const authHelpers = {
-  signIn: async (email: string, password: string) => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    return { data, error }
-  },
+// For development/demo purposes, use placeholder values if env vars are missing
+// In production, these should be properly configured in .env.local
+const defaultUrl = 'https://demo.supabase.co'; // Placeholder URL
+const defaultKey = 'demo-key'; // Placeholder key
 
-  signUp: async (email: string, password: string) => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-    return { data, error }
-  },
+const finalUrl = supabaseUrl || defaultUrl;
+const finalKey = supabaseAnonKey || defaultKey;
 
-  signOut: async () => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { error } = await supabase.auth.signOut()
-    return { error }
-  },
-
-  getCurrentUser: async () => {
-    if (!supabase) return null
-    const { data: { user } } = await supabase.auth.getUser()
-    return user
-  },
-
-  onAuthStateChange: (callback: (event: string, session: any) => void) => {
-    if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } }
-    return supabase.auth.onAuthStateChange(callback)
-  }
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn("Supabase URL or Anon Key are missing from .env.local - using placeholder values for development");
 }
+
+export const supabase = createClient(finalUrl, finalKey);
