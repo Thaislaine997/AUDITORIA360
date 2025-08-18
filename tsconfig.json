@@ -41,6 +41,7 @@
     "node_modules",
     "src/frontend",
     "src/api",
+    "src/pages",
     "supabase/functions",
     "dist",
     "out",
