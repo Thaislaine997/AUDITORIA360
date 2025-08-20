@@ -124,8 +124,10 @@ genesis_documentation:
 # AUDITORIA360 Validation System
 # Complete operational checklist validation
 validate:
-	@echo "🚀 Running AUDITORIA360 Master Validation..."
-	python scripts/validation/master_validation.py
+	@echo "🚀 Validação simplificada: lint, build e test..."
+	npm run lint
+	npm run build
+	npm run test
 
 validate-staging:
 	@echo "🚀 Running AUDITORIA360 Validation against Staging..."
@@ -155,3 +157,10 @@ validate-report:
 	@echo "📊 Running Full Validation with Detailed Report..."
 	python scripts/validation/master_validation.py --output validation_report.json
 	@echo "Report saved to validation_report.json"
+
+# Frontend (Next.js) lint e testes
+lint-frontend:
+	npm run lint
+
+test-frontend:
+	npm run test

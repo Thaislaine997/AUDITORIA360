@@ -310,10 +310,13 @@ const ConfigurationVersioning: React.FC<ConfigurationVersioningProps> = ({
 
     // Mark current active version as archived
     setVersions(prev => 
-      prev.map(v => ({
-        ...v,
-        status: v.status === 'active' ? 'archived' as const : v.status
-      })).concat(newVersion)
+      [
+        ...prev.map(v => ({
+          ...v,
+          status: v.status === 'active' ? 'archived' as const : v.status
+        })),
+        newVersion
+      ]
     );
 
     setRollbackDialogOpen(false);

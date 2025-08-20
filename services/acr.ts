@@ -5,14 +5,13 @@
  * enabling distributed tracing from browser to backend services.
  */
 
-import { WebTracerProvider } from '@opentelemetry/sdk-web';
+ import { WebTracerProvider, BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-web';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
-import { BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-web';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 
 // ACR Configuration - Fallback for environments without full OpenTelemetry support

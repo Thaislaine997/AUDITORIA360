@@ -1,4 +1,5 @@
 
+import React from "react";
 
 export const EmpresasList: React.FC = () => null;
 export const SindicatosList: React.FC = () => null;

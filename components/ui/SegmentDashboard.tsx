@@ -76,7 +76,7 @@ const SegmentDashboard: React.FC<SegmentDashboardProps> = ({ onTemplateSelect })
       segment: 'Startups',
       icon: <TrendingUp />,
       color: '#4CAF50',
-      isRecommended: user?.preferred_segment === 'Startups',
+  isRecommended: user?.userType === 'Startups',
       widgets: [
         {
           id: 'burn_rate',
@@ -131,7 +131,7 @@ const SegmentDashboard: React.FC<SegmentDashboardProps> = ({ onTemplateSelect })
       segment: 'Varejo',
       icon: <Business />,
       color: '#2196F3',
-      isRecommended: user?.preferred_segment === 'Varejo',
+  isRecommended: user?.userType === 'Varejo',
       widgets: [
         {
           id: 'sales_revenue',
@@ -182,7 +182,7 @@ const SegmentDashboard: React.FC<SegmentDashboardProps> = ({ onTemplateSelect })
       segment: 'Serviços de Saúde',
       icon: <Security />,
       color: '#FF5722',
-      isRecommended: user?.preferred_segment === 'Serviços de Saúde',
+  isRecommended: user?.userType === 'Serviços de Saúde',
       widgets: [
         {
           id: 'patient_volume',
@@ -443,9 +443,9 @@ const SegmentDashboard: React.FC<SegmentDashboardProps> = ({ onTemplateSelect })
           KPIs e métricas mais relevantes para sua área de atuação.
         </Typography>
         
-        {user?.preferred_segment && (
+        {user?.userType && (
           <Alert severity="info" sx={{ mt: 2 }}>
-            Baseado no seu perfil, recomendamos o template para <strong>{user.preferred_segment}</strong>
+            Baseado no seu perfil, recomendamos o template para <strong>{user.userType}</strong>
           </Alert>
         )}
       </Box>

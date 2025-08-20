@@ -16,7 +16,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  VideoFrame,
 } from '@mui/material';
 import {
   CheckCircle,
@@ -214,7 +213,7 @@ const PersonalizedOnboarding: React.FC<OnboardingProps> = ({ userProfile, onComp
                 {getProfileTitle()}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Bem-vindo(a), {user?.full_name}!
+                Bem-vindo(a), {user?.fullName}!
               </Typography>
             </Box>
           </Box>

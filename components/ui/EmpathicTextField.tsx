@@ -19,7 +19,7 @@ import {
   ErrorOutline,
 } from '@mui/icons-material';
 import { useEmpathicForm } from '../../hooks/useNeuralSignals';
-import { EmpathicHelpDialog } from '../../pages/ChatbotPage';
+import EmpathicHelpDialog from '../../pages/ChatbotPage';
 
 interface EmpathicTextFieldProps extends Omit<TextFieldProps, 'error' | 'helperText'> {
   formId: string;
@@ -36,6 +36,7 @@ interface EmpathicTextFieldProps extends Omit<TextFieldProps, 'error' | 'helperT
     helpMessage?: string;
     example?: string;
   };
+    helperText?: React.ReactNode;
 }
 
 export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
@@ -46,9 +47,10 @@ export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
   value,
   onChange,
   onBlur,
-  ...textFieldProps
+    helperText,
+    ...textFieldProps
 }) => {
-  const [localValue, setLocalValue] = useState(value || '');
+  const [localValue, setLocalValue] = useState<string>(typeof value === 'string' ? value : '');
   const [errorState, setErrorState] = useState<string | null>(null);
   const [errorCount, setErrorCount] = useState(0);
   const [showEmpathicDialog, setShowEmpathicDialog] = useState(false);
@@ -86,7 +88,7 @@ export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
   // Handle value changes
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setLocalValue(newValue);
+    setLocalValue(typeof newValue === 'string' ? newValue : '');
     setHasUserInteracted(true);
     
     // Clear error when user starts typing again
@@ -101,7 +103,7 @@ export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
 
   // Handle blur (when user leaves the field)
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const validationError = validateField(localValue);
+    const validationError = validateField(typeof localValue === 'string' ? localValue : '');
     
     if (validationError && hasUserInteracted) {
       setErrorState(validationError);
@@ -155,7 +157,7 @@ export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
 
   // Handle auto-formatting on change
   useEffect(() => {
-    if (empathicHelp?.errorType && localValue) {
+    if (empathicHelp?.errorType && typeof localValue === 'string' && localValue) {
       const formatted = autoFormat(localValue, empathicHelp.errorType);
       if (formatted !== localValue) {
         setLocalValue(formatted);
@@ -186,7 +188,7 @@ export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
                 />
               )}
             </Box>
-          ) : textFieldProps.helperText
+          ) : helperText
         }
         InputProps={{
           ...textFieldProps.InputProps,
@@ -217,11 +219,11 @@ export const EmpathicTextField: React.FC<EmpathicTextFieldProps> = ({
       <EmpathicHelpDialog
         open={showEmpathicDialog}
         onClose={() => setShowEmpathicDialog(false)}
-        errorContext={{
+        errorContext={formId && empathicHelp ? {
           formId,
-          errorType: empathicHelp?.errorType || 'validation_error',
+          errorType: empathicHelp.errorType,
           errorCount: errorCount,
-        }}
+        } : { formId: '', errorType: '', errorCount: 0 }}
       />
 
       {/* Adaptive hint for high error count */}

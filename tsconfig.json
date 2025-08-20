@@ -22,8 +22,13 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@mui/material": ["./node_modules/@mui/material"],
+      "@mui/material/*": ["./node_modules/@mui/material/*"],
+      "@mui/system": ["./node_modules/@mui/system"],
+      "@mui/system/*": ["./node_modules/@mui/system/*"]
     },
     "forceConsistentCasingInFileNames": true
   },

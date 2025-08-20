@@ -4,7 +4,7 @@
  */
 
 export default {
-  async scheduled(event, env, ctx) {
+  async scheduled(event, env) {
     // Handle scheduled backup events
     console.log('Backup automation triggered by Cloudflare Cron');
     
@@ -19,7 +19,7 @@ export default {
     }
   },
 
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     // Handle manual backup triggers via HTTP
     const url = new URL(request.url);
     

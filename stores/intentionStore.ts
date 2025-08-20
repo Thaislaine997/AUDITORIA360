@@ -64,6 +64,9 @@ interface IntentionState {
   shouldAdaptUI: () => boolean;
   getNavigationPredictions: () => Record<string, number>;
   reset: () => void;
+
+  // API
+  sendIntentionToAPI: (intention: UserIntention) => Promise<void>;
 }
 
 export const useIntentionStore = create<IntentionState>()(

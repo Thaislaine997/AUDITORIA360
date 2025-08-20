@@ -63,7 +63,7 @@ export const AuditoriasList: React.FC = () => {
       </Box>
       <Grid container spacing={2}>
         {auditoriasFiltradas.map(a => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={a.id}>
+          <Grid xs={12} sm={6} md={4} key={a.id}>
             <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2, background: a.status === 'concluida' ? '#e8f5e9' : '#fff' }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -146,7 +146,7 @@ export const RelatoriosList: React.FC = () => {
       </Box>
       <Grid container spacing={2}>
         {relatoriosFiltrados.map(r => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={r.id}>
+          <Grid xs={12} sm={6} md={4} key={r.id}>
             <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2 }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -205,7 +205,7 @@ export const UploadsList: React.FC = () => {
       </Box>
       <Grid container spacing={2}>
         {uploadsFiltrados.map(u => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={u.id}>
+          <Grid xs={12} sm={6} md={4} key={u.id}>
             <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2 }}>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={1}>

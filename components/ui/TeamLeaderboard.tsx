@@ -15,7 +15,6 @@ import {
   Chip,
   LinearProgress,
   Paper,
-  Grid,
   FormControl,
   InputLabel,
   Select,
@@ -26,6 +25,7 @@ import {
   Badge,
   Alert,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import {
   EmojiEvents,
   Star,
@@ -200,16 +200,20 @@ const TeamLeaderboard: React.FC<TeamLeaderboardProps> = ({ departmentFilter }) =
   const getSortedMembers = () => {
     return [...teamMembers].sort((a, b) => {
       switch (metricType) {
-        case 'xp':
+        case 'xp': 
+          {
           return timeframe === 'weekly' ? b.weekly_xp - a.weekly_xp :
                  timeframe === 'monthly' ? b.monthly_xp - a.monthly_xp :
                  b.xp_points - a.xp_points;
+          }
         case 'configurations':
           return b.configurations_completed - a.configurations_completed;
         case 'success_rate':
-          const aRate = a.successful_sends / (a.successful_sends + a.failed_sends);
-          const bRate = b.successful_sends / (b.successful_sends + b.failed_sends);
-          return bRate - aRate;
+          {
+            const aRate = a.successful_sends / (a.successful_sends + a.failed_sends);
+            const bRate = b.successful_sends / (b.successful_sends + b.failed_sends);
+            return bRate - aRate;
+          }
         default:
           return b.xp_points - a.xp_points;
       }
@@ -273,10 +277,11 @@ const TeamLeaderboard: React.FC<TeamLeaderboardProps> = ({ departmentFilter }) =
       .substring(0, 2);
   };
 
-  if (user?.user_profile !== 'gestor' && user?.role !== 'ADMINISTRADOR') {
+  // Permitir apenas super_admin e contabilidade (gestores/administradores)
+  if (user?.role !== 'super_admin' && user?.role !== 'contabilidade') {
     return (
       <Alert severity="warning">
-        Apenas gestores podem visualizar o placar da equipe.
+        Apenas administradores ou gestores podem visualizar o placar da equipe.
       </Alert>
     );
   }
@@ -408,75 +413,40 @@ const TeamLeaderboard: React.FC<TeamLeaderboardProps> = ({ departmentFilter }) =
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Ranking - {getMetricLabel()}
+            Placar de Líderes
           </Typography>
-          
-          <TableContainer>
+          <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell width="60px">Posição</TableCell>
-                  <TableCell>Membro da Equipe</TableCell>
-                  <TableCell align="center">Nível</TableCell>
-                  <TableCell align="center">{getMetricLabel()}</TableCell>
-                  <TableCell align="center">Especializações</TableCell>
+                  <TableCell>Rank</TableCell>
+                  <TableCell>Nome</TableCell>
+                  <TableCell align="center">Cargo</TableCell>
+                  <TableCell align="center">Especialidades</TableCell>
                   <TableCell align="center">Conquistas Recentes</TableCell>
-                  <TableCell align="center">Performance</TableCell>
+                  <TableCell align="center">Taxa de Sucesso</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getSortedMembers().map((member, index) => (
-                  <TableRow 
-                    key={member.id}
-                    sx={{ 
-                      backgroundColor: index < 3 ? 'action.hover' : 'transparent',
-                      '&:hover': { backgroundColor: 'action.selected' }
-                    }}
-                  >
+                {getSortedMembers().map((member, idx) => (
+                  <TableRow key={member.id}>
+                    <TableCell>{getRankingIcon(idx + 1)}</TableCell>
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {getRankingIcon(index + 1)}
-                      </Box>
-                    </TableCell>
-                    
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar sx={{ mr: 2, bgcolor: 'secondary.main' }}>
-                          {member.avatar ? (
-                            <Image src={member.avatar} alt={member.full_name} width={40} height={40} style={{ borderRadius: '50%' }} />
-                          ) : (
-                            getUserInitials(member.full_name)
-                          )}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                          {getUserInitials(member.full_name)}
                         </Avatar>
                         <Box>
-                          <Typography variant="subtitle2" fontWeight="bold">
-                            {member.full_name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {member.position}
+                          <Typography variant="subtitle2">{member.full_name}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {member.email}
                           </Typography>
                         </Box>
                       </Box>
                     </TableCell>
-                    
+                    <TableCell align="center">{member.position}</TableCell>
                     <TableCell align="center">
-                      <Chip
-                        icon={<Star />}
-                        label={`Nível ${member.level}`}
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    
-                    <TableCell align="center">
-                      <Typography variant="h6" color="primary">
-                        {getMetricValue(member)}
-                      </Typography>
-                    </TableCell>
-                    
-                    <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
                         {member.skill_specializations.slice(0, 2).map((skill) => (
                           <Chip
                             key={skill}
@@ -497,7 +467,6 @@ const TeamLeaderboard: React.FC<TeamLeaderboardProps> = ({ departmentFilter }) =
                         )}
                       </Box>
                     </TableCell>
-                    
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
                         {member.recent_achievements.slice(0, 2).map((achievement) => (
@@ -512,7 +481,6 @@ const TeamLeaderboard: React.FC<TeamLeaderboardProps> = ({ departmentFilter }) =
                         ))}
                       </Box>
                     </TableCell>
-                    
                     <TableCell align="center">
                       <Box sx={{ minWidth: 120 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>

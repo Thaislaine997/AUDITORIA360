@@ -13,12 +13,12 @@ const DashboardPage: NextPage = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const currentUser = await authHelpers.getCurrentUser();
-        if (!currentUser) {
+        const { data, error } = await authHelpers.getUser();
+        if (error || !data?.user) {
           router.push("/login");
           return;
         }
-        setUser(currentUser);
+        setUser(data.user);
       } catch (error) {
         console.error("Error checking auth:", error);
         router.push("/login");

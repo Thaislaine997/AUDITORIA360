@@ -56,7 +56,7 @@ export const NotificacoesList: React.FC = () => {
       <Typography variant="h5" fontWeight={700} mb={2}>Notificações</Typography>
       <Grid container spacing={2}>
         {notificacoes.map(notif => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={notif.id}>
+          <Grid xs={12} sm={6} md={4} key={notif.id}>
             <NotificacaoCard notif={notif} marcarComoLida={marcarComoLida} onOpen={setModalNotif} />
           </Grid>
         ))}

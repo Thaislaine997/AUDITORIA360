@@ -66,7 +66,7 @@ export const TicketsList: React.FC = () => {
       <Typography variant="h5" fontWeight={700} mb={2}>Tickets</Typography>
       <Grid container spacing={2}>
         {tickets.map(ticket => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={ticket.id}>
+          <Grid xs={12} sm={6} md={4} key={ticket.id}>
             <TicketCard ticket={ticket} onOpen={setModalTicket} />
           </Grid>
         ))}

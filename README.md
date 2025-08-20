@@ -7,6 +7,12 @@
 
 AUDITORIA360 é uma plataforma moderna e escalável para terceirização de Departamento Pessoal, **completamente refatorada** com **Next.js** (React) e integração **Supabase** para autenticação e banco de dados. A plataforma oferece deploy automático no **GitHub Pages** e área de login protegida para o portal AUDITORIA360.
 
+## 📑 Plano Estratégico Unificado
+
+Consulte o novo documento central de governança, diagnóstico e roadmap:
+
+- [PLANO_ESTRATEGICO_UNIFICADO.md](./PLANO_ESTRATEGICO_UNIFICADO.md)
+
 ## ⚡ Início Rápido
 
 ### Pré-requisitos
@@ -337,14 +343,15 @@ NODE_ENV=production
 - Configuração: `.github/workflows/deploy.yml`
 - Secrets necessários: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-### 🛠️ Scripts Principais
+### Comandos Makefile Úteis
 
 ```bash
-npm run dev          # Desenvolvimento local
-npm run build        # Build para produção
-npm run test         # Executar testes
-npm run lint         # Linting e formatação
-make validate        # Validação completa do sistema
+make lint-frontend      # Lint do frontend (Next.js)
+make test-frontend      # Testes do frontend (Next.js)
+make lint               # Lint do backend (Python)
+make test               # Testes do backend (Python)
+make setup-hooks        # Instala hooks de pre-commit
+make validate           # Validação completa do sistema
 ```
 
 ## 🚨 Migração e Compatibilidade
