@@ -16,9 +16,11 @@ jobs:
       - name: Criar .env.local com secrets
         run: |
           echo "NEXT_PUBLIC_SUPABASE_URL=${SUPABASE}" >> .env.local
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}" >> .env.local
           echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" >> .env.local
         env:
           SUPABASE: ${{ secrets.SUPABASE }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
       - run: npm run build
       - name: Enviar arquivos para o servidor via SSH
