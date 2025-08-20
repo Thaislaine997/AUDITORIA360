@@ -31,7 +31,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: ".next,public,package.json,package-lock.json,.env.local"
-          target: "/home/dpeixera6e7dea56/auditoria360"
+          target: "/home/dpeixera6e7dea56/public_html"
       - name: Instalar dependências e iniciar app no servidor
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/dpeixera6e7dea56/auditoria360
+            cd /home/dpeixera6e7dea56/public_html
             npm install --production
             pm2 delete auditoria360 || true
             pm2 start npm --name auditoria360 -- run start
