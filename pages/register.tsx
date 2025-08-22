@@ -6,8 +6,9 @@ import { useRouter } from "next/router";
 import Layout from "../components/layout/Layout";
 import { authHelpers } from "../lib/supabaseClient";
 
-const LoginPage: NextPage = () => {
+const RegisterPage: NextPage = () => {
   const router = useRouter();
+  const [cnpj, setCnpj] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,14 +20,14 @@ const LoginPage: NextPage = () => {
     setError("");
 
     try {
-      const { data, error } = await authHelpers.signIn(email, password);
+      const { data, error } = await authHelpers.signUp(email, password, cnpj);
       if (error) {
         setError(error.message);
       } else if (data.user) {
         router.push("/dashboard");
       }
     } catch {
-      setError("Erro ao fazer login. Tente novamente.");
+      setError("Erro ao registrar. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -35,16 +36,14 @@ const LoginPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Login - AUDITORIA360</title>
+        <title>Primeiro Acesso - AUDITORIA360</title>
       </Head>
       <Layout showHeader={false}>
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-800 via-blue-800 to-blue-900 px-4">
           <div className="max-w-md w-full">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-extrabold text-white">
-                AUDITORIA<span className="text-blue-300">360</span>
-              </h1>
-              <p className="mt-2 text-blue-100">Acesse sua conta</p>
+              <h1 className="text-3xl font-extrabold text-white">Primeiro Acesso</h1>
+              <p className="mt-2 text-blue-100">Cadastre sua empresa e acesse a plataforma</p>
             </div>
 
             <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8">
@@ -54,6 +53,21 @@ const LoginPage: NextPage = () => {
                     {error}
                   </div>
                 )}
+
+                <div>
+                  <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">
+                    CNPJ
+                  </label>
+                  <input
+                    id="cnpj"
+                    type="text"
+                    required
+                    value={cnpj}
+                    onChange={(e) => setCnpj(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-600"
+                    placeholder="00.000.000/0001-00"
+                  />
+                </div>
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -81,13 +95,8 @@ const LoginPage: NextPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-600"
-                    placeholder="••••••••"
+                    placeholder="Mínimo 6 caracteres"
                   />
-                  <div className="flex justify-end mt-2">
-                    <Link href="/recuperar-senha" className="text-xs text-blue-600 hover:underline">
-                      Esqueceu a senha?
-                    </Link>
-                  </div>
                 </div>
 
                 <button
@@ -95,31 +104,22 @@ const LoginPage: NextPage = () => {
                   disabled={loading}
                   className="w-full py-3 px-4 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {loading ? "Entrando..." : "Entrar"}
+                  {loading ? "Registrando..." : "Registrar"}
                 </button>
               </form>
             </div>
 
             <div className="mt-6 text-center text-sm text-blue-100">
-              <p>Primeiro acesso?</p>
-              <Link href="/register" className="mt-2 inline-block text-blue-300 hover:text-white transition">
-                Criar conta →
+              <p>Já tem conta?</p>
+              <Link href="/login" className="mt-2 inline-block text-blue-300 hover:text-white transition">
+                Fazer login →
               </Link>
             </div>
           </div>
         </div>
       </Layout>
-      <style jsx>{`
-        .animate-shake {
-          animation: shake 0.3s;
-        }
-        @keyframes shake {
-          25% { transform: translateX(-4px); }
-          75% { transform: translateX(4px); }
-        }
-      `}</style>
     </>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
