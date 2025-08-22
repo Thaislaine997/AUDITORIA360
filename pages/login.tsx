@@ -3,8 +3,13 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
 import Layout from "../components/layout/Layout";
 import { authHelpers } from "../lib/supabaseClient";
+import FloatingShapes from "../components/ui/FloatingShapes";
+import GlassCard from "../components/ui/GlassCard";
+import ModernInput from "../components/ui/ModernInput";
+import ModernButton from "../components/ui/ModernButton";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -38,86 +43,151 @@ const LoginPage: NextPage = () => {
         <title>Login - AUDITORIA360</title>
       </Head>
       <Layout showHeader={false}>
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 px-4">
-          <div className="max-w-md w-full">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-extrabold text-white">
+        <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 px-4 overflow-hidden">
+          {/* Floating background shapes */}
+          <FloatingShapes />
+          
+          {/* Main content */}
+          <motion.div 
+            className="max-w-md w-full relative z-10"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {/* Logo and title */}
+            <motion.div 
+              className="text-center mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <motion.h1 
+                className="text-5xl font-extrabold text-white mb-2"
+                animate={{ 
+                  textShadow: [
+                    "0 0 20px rgba(59, 130, 246, 0.5)",
+                    "0 0 30px rgba(59, 130, 246, 0.8)",
+                    "0 0 20px rgba(59, 130, 246, 0.5)"
+                  ]
+                }}
+                transition={{ 
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
                 AUDITORIA<span className="text-blue-300">360</span>
-              </h1>
-              <p className="mt-2 text-blue-100">Acesse sua conta</p>
-            </div>
+              </motion.h1>
+              <motion.p 
+                className="text-blue-100 text-lg font-medium"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                Acesse sua conta
+              </motion.p>
+            </motion.div>
 
-            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8">
+            {/* Glass login card */}
+            <GlassCard className="p-8" opacity={0.95}>
               <form className="space-y-6" onSubmit={handleSubmit}>
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg animate-shake">
-                    {error}
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="bg-red-50/90 backdrop-blur-sm border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3"
+                  >
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 0.5 }}
+                      className="w-5 h-5 text-red-500"
+                    >
+                      ⚠️
+                    </motion.div>
+                    <span className="font-medium">{error}</span>
+                  </motion.div>
                 )}
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-600"
-                    placeholder="seu@email.com"
-                  />
+                <ModernInput
+                  id="email"
+                  type="email"
+                  label="Email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={setEmail}
+                  required
+                  error=""
+                />
+
+                <ModernInput
+                  id="password"
+                  type="password"
+                  label="Senha"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={setPassword}
+                  required
+                  error=""
+                />
+
+                <div className="flex justify-end">
+                  <Link 
+                    href="/recuperar-senha" 
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200 hover:underline"
+                  >
+                    Esqueceu a senha?
+                  </Link>
                 </div>
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Senha
-                  </label>
-                  <input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-600"
-                    placeholder="••••••••"
-                  />
-                  <div className="flex justify-end mt-2">
-                    <Link href="/recuperar-senha" className="text-xs text-blue-600 hover:underline">
-                      Esqueceu a senha?
-                    </Link>
-                  </div>
-                </div>
-
-                <button
+                <ModernButton
                   type="submit"
+                  variant="primary"
+                  size="lg"
                   disabled={loading}
-                  className="w-full py-3 px-4 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                  loading={loading}
+                  className="w-full"
                 >
                   {loading ? "Entrando..." : "Entrar"}
-                </button>
+                </ModernButton>
               </form>
-            </div>
+            </GlassCard>
 
-            <div className="mt-6 text-center text-sm text-blue-100">
-              <p>Primeiro acesso?</p>
-              <Link href="/register" className="mt-2 inline-block text-blue-300 hover:text-white transition">
-                Criar conta →
+            {/* Register link */}
+            <motion.div 
+              className="mt-8 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <p className="text-blue-100 mb-3">Primeiro acesso?</p>
+              <Link href="/register">
+                <motion.span
+                  className="inline-flex items-center gap-2 text-blue-300 hover:text-white transition-colors duration-200 font-medium text-lg group"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Criar conta
+                  <motion.span
+                    className="inline-block"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ 
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    →
+                  </motion.span>
+                </motion.span>
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Gradient overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
         </div>
       </Layout>
-      <style jsx>{`
-        .animate-shake {
-          animation: shake 0.3s;
-        }
-        @keyframes shake {
-          25% { transform: translateX(-4px); }
-          75% { transform: translateX(4px); }
-        }
-      `}</style>
     </>
   );
 };
