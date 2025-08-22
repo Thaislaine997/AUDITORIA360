@@ -19,7 +19,7 @@ import {
   ErrorOutline,
 } from '@mui/icons-material';
 import { useEmpathicForm } from '../../hooks/useNeuralSignals';
-import EmpathicHelpDialog from '../../pages/ChatbotPage';
+import EmpathicHelpDialog from './EmpathicHelpDialog';
 
 interface EmpathicTextFieldProps extends Omit<TextFieldProps, 'error' | 'helperText'> {
   formId: string;

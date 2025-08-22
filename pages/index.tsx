@@ -1,5 +1,6 @@
 
 import React from "react";
+import { motion } from "framer-motion";
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -293,13 +294,13 @@ const HomePage: NextPage = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Banner/Hero comercial, institucional, com selos e CTA */}
+      {/* HERO INSTITUCIONAL E COMERCIAL REORGANIZADO */}
       <Box id="quem-somos" sx={{
         background: `linear-gradient(120deg, #0d47a1ee 80%, #1976d2cc 100%), url('${banner.file}') center/cover`,
         color: "white",
-        py: { xs: 10, md: 16 },
+        py: { xs: 10, md: 14 },
         textAlign: "center",
-        minHeight: 420,
+        minHeight: 480,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -309,208 +310,115 @@ const HomePage: NextPage = () => {
         overflow: 'hidden',
       }}>
         <Container maxWidth="md" sx={{ position: 'relative', zIndex: 2 }}>
-          {/* Slogan institucional */}
-          <Typography variant="h2" fontWeight={900} gutterBottom sx={{ letterSpacing: 1, textShadow: '0 2px 16px #000a', fontSize: { xs: 32, md: 48 } }}>
-            RH Inteligente, Seguro e Humano para sua Empresa
-          </Typography>
-          <Typography variant="h5" sx={{ mb: 3, opacity: 0.97, textShadow: '0 1px 8px #0008', fontWeight: 600 }}>
-            +20 anos de experiência nacional em BPO de RH, Folha e Consultoria. <br />
-            <span style={{ color: '#ffe082', fontWeight: 900 }}>Atendimento em todo o Brasil.</span>
-          </Typography>
-          {/* Destaques animados */}
-          <Grid container spacing={2} justifyContent="center" sx={{ mb: 2 }}>
-            <Grid item xs={12} sm={4}>
-              <Box sx={{
-                bgcolor: 'rgba(25, 118, 210, 0.85)',
-                borderRadius: 3,
-                px: 2.5,
-                py: 1.5,
-                boxShadow: 6,
-                mb: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1.5,
-                animation: 'fadeInUp 1s',
-                minHeight: 56,
-              }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="Especialistas" style={{ height: 32, marginRight: 8 }} />
-                <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', textShadow: '0 1px 6px #0006', fontSize: { xs: 16, md: 18 } }}>Especialistas em RH</Typography>
-              </Box>
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
+            <Typography variant="h2" fontWeight={900} gutterBottom sx={{ letterSpacing: 1, textShadow: '0 2px 16px #000a', fontSize: { xs: 28, md: 42 } }}>
+              <span style={{ color: '#ffe082', fontWeight: 900 }}>DPEIXER</span> – Assessoria & Terceirização
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 2, opacity: 0.97, textShadow: '0 1px 8px #0008', fontWeight: 600 }}>
+              Soluções Integradas em RH, DP e Auditoria Inteligente
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 3, fontSize: 18, opacity: 0.95, maxWidth: 700, mx: 'auto', textShadow: '0 1px 8px #0008' }}>
+              A DPEIXER é especialista em Gestão de Recursos Humanos (BPO), Departamento Pessoal Terceirizado, Consultoria Trabalhista e Plataforma de Auditoria Digital.<br />
+              Nosso propósito é simplificar processos, reduzir custos, garantir conformidade legal e entregar inteligência estratégica para empresas de todos os portes e escritórios contábeis.
+            </Typography>
+            <Grid container spacing={2} justifyContent="center" sx={{ mb: 2 }}>
+              <Grid item xs={12} sm={4}>
+                <Box sx={{ bgcolor: 'rgba(25, 118, 210, 0.85)', borderRadius: 3, px: 2.5, py: 1.5, boxShadow: 6, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, minHeight: 56 }}>
+                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="Especialistas" style={{ height: 32, marginRight: 8 }} />
+                  <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', fontSize: { xs: 16, md: 18 } }}>+20 anos de experiência</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box sx={{ bgcolor: 'rgba(25, 118, 210, 0.85)', borderRadius: 3, px: 2.5, py: 1.5, boxShadow: 6, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, minHeight: 56 }}>
+                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Tecnologia" style={{ height: 32, marginRight: 8 }} />
+                  <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', fontSize: { xs: 16, md: 18 } }}>Plataforma própria</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box sx={{ bgcolor: 'rgba(25, 118, 210, 0.85)', borderRadius: 3, px: 2.5, py: 1.5, boxShadow: 6, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, minHeight: 56 }}>
+                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135781.png" alt="Foco no cliente" style={{ height: 32, marginRight: 8 }} />
+                  <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', fontSize: { xs: 16, md: 18 } }}>Atendimento humanizado</Typography>
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <Box sx={{
-                bgcolor: 'rgba(25, 118, 210, 0.85)',
-                borderRadius: 3,
-                px: 2.5,
-                py: 1.5,
-                boxShadow: 6,
-                mb: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1.5,
-                animation: 'fadeInUp 1.2s',
-                minHeight: 56,
-              }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Tecnologia" style={{ height: 32, marginRight: 8 }} />
-                <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', textShadow: '0 1px 6px #0006', fontSize: { xs: 16, md: 18 } }}>Tecnologia exclusiva</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Box sx={{
-                bgcolor: 'rgba(25, 118, 210, 0.85)',
-                borderRadius: 3,
-                px: 2.5,
-                py: 1.5,
-                boxShadow: 6,
-                mb: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1.5,
-                animation: 'fadeInUp 1.4s',
-                minHeight: 56,
-              }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135781.png" alt="Foco no cliente" style={{ height: 32, marginRight: 8 }} />
-                <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', textShadow: '0 1px 6px #0006', fontSize: { xs: 16, md: 18 } }}>Foco no cliente</Typography>
-              </Box>
-            </Grid>
-          </Grid>
-          {/* Selos de confiança */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mb: 2, flexWrap: 'wrap' }}>
-            <Box sx={{ bgcolor: '#fff', color: 'primary.main', borderRadius: 3, px: 2.5, py: 1, boxShadow: 4, fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', gap: 1, minWidth: 170 }}>
-              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="20 anos" style={{ height: 28, marginRight: 8 }} />
-              +20 anos de experiência
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', gap: 2, mt: 3 }}>
+              <Link href="#planos" passHref legacyBehavior>
+                <Button variant="contained" color="secondary" size="large" sx={{ px: 7, py: 2.5, fontWeight: 800, fontSize: 20, borderRadius: 3, boxShadow: 4 }}>
+                  Veja planos e valores
+                </Button>
+              </Link>
+              <Link href="#plataforma" passHref legacyBehavior>
+                <Button variant="outlined" color="inherit" size="large" sx={{ px: 5, py: 2.5, fontWeight: 800, fontSize: 18, borderRadius: 3, boxShadow: 2, border: '2px solid #fff', color: '#fff', '&:hover': { bgcolor: '#fff', color: 'primary.main' } }}>
+                  Conheça a Plataforma
+                </Button>
+              </Link>
             </Box>
-            <Box sx={{ bgcolor: '#fff', color: 'primary.main', borderRadius: 3, px: 2.5, py: 1, boxShadow: 4, fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', gap: 1, minWidth: 170 }}>
-              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135792.png" alt="Atendimento nacional" style={{ height: 28, marginRight: 8 }} />
-              Atendimento nacional
-            </Box>
-            <Box sx={{ bgcolor: '#fff', color: 'primary.main', borderRadius: 3, px: 2.5, py: 1, boxShadow: 4, fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', gap: 1, minWidth: 170 }}>
-              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135779.png" alt="Clientes satisfeitos" style={{ height: 28, marginRight: 8 }} />
-              Clientes satisfeitos
-            </Box>
-          </Box>
-          {/* CTA principal e secundário */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', gap: 2, mt: 3 }}>
-            <Link href="#planos" passHref legacyBehavior>
-              <Button variant="contained" color="secondary" size="large" sx={{ px: 7, py: 2.5, fontWeight: 800, fontSize: 20, borderRadius: 3, boxShadow: 4 }}>
-                Solicite uma demonstração
-              </Button>
-            </Link>
-            <Link href="#contato" passHref legacyBehavior>
-              <Button variant="outlined" color="inherit" size="large" sx={{ px: 5, py: 2.5, fontWeight: 800, fontSize: 18, borderRadius: 3, boxShadow: 2, border: '2px solid #fff', color: '#fff', '&:hover': { bgcolor: '#fff', color: 'primary.main' } }}>
-                Fale com um especialista
-              </Button>
-            </Link>
-          </Box>
+          </motion.div>
         </Container>
-        {/* Animação sutil de fundo */}
-        <Box sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
-          zIndex: 1,
-        }}>
-          <Box sx={{
-            position: 'absolute',
-            top: { xs: 30, md: 60 },
-            left: { xs: 10, md: 60 },
-            width: 80,
-            height: 80,
-            bgcolor: 'secondary.light',
-            opacity: 0.13,
-            borderRadius: '50%',
-            filter: 'blur(2px)',
-            animation: 'floatY 5s ease-in-out infinite',
-          }} />
-          <Box sx={{
-            position: 'absolute',
-            bottom: { xs: 20, md: 60 },
-            right: { xs: 10, md: 60 },
-            width: 100,
-            height: 100,
-            bgcolor: 'primary.light',
-            opacity: 0.11,
-            borderRadius: '50%',
-            filter: 'blur(2px)',
-            animation: 'floatY 7s ease-in-out infinite reverse',
-          }} />
-        </Box>
-        <style jsx global>{`
-          @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          @keyframes floatY {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-18px); }
-            100% { transform: translateY(0); }
-          }
-        `}</style>
-        <Box sx={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 40, background: 'linear-gradient(0deg, #fff 0%, transparent 100%)', zIndex: 3 }} />
       </Box>
 
   {/* ...existing code... */}
-      <Box sx={{ background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 10 }}>
+
+      {/* PLATAFORMA EXCLUSIVA DE AUDITORIA E GESTÃO */}
+      <Box id="plataforma" sx={{ background: 'linear-gradient(120deg, #1976d2 60%, #0d47a1 100%)', color: 'white', py: 10, boxShadow: 8 }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 5, letterSpacing: 1 }}>
-            Por que escolher a DPEIXER?
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Tecnologia" style={{ height: 44, marginRight: 16 }} />
-                <Box>
-                  <Typography variant="h6" fontWeight={800} color="primary" gutterBottom>Tecnologia Proprietária</Typography>
-                  <Typography variant="body2">Plataforma AUDITORIA360 exclusiva, automação, relatórios inteligentes e integração total com eSocial.</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="Especialistas" style={{ height: 44, marginRight: 16 }} />
-                <Box>
-                  <Typography variant="h6" fontWeight={800} color="primary" gutterBottom>Especialistas em BPO de RH</Typography>
-                  <Typography variant="body2">+20 anos de experiência em terceirização, folha, DP e projetos de RH sob medida.</Typography>
-                </Box>
-              </Box>
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
+            <Typography variant="h4" fontWeight={900} align="center" sx={{ mb: 3, letterSpacing: 1, textShadow: '0 2px 12px #000a' }}>
+              💎 Plataforma <span style={{ color: '#ffe082' }}>AUDITORIA360</span> – Nosso Diferencial
+            </Typography>
+            <Typography variant="h6" align="center" sx={{ mb: 4, opacity: 0.95, fontWeight: 500 }}>
+              A AUDITORIA360 é uma plataforma exclusiva da DPEIXER que une auditoria digital, gestão inteligente e compliance automatizado.
+            </Typography>
+            <Grid container spacing={4} justifyContent="center">
+              <Grid item xs={12} md={6}>
+                <ul style={{ fontSize: 18, lineHeight: 1.7, color: '#fff', marginBottom: 0 }}>
+                  <li>📊 Dashboards em tempo real com indicadores de folha e RH</li>
+                  <li>✅ Alertas automáticos de conformidade (obrigações, prazos e riscos)</li>
+                  <li>🔒 Segurança e LGPD garantida com protocolos avançados de proteção</li>
+                  <li>🤝 Integração com sistemas contábeis e folha de pagamento</li>
+                  <li>📥 Upload seguro de documentos e histórico digital organizado</li>
+                  <li>⚡ Economia de tempo com tarefas repetitivas automatizadas</li>
+                </ul>
+              </Grid>
+              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/logo.png" alt="Plataforma AUDITORIA360" style={{ maxHeight: 120, maxWidth: '100%', filter: 'drop-shadow(0 2px 12px #000a)' }} />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135792.png" alt="Atendimento" style={{ height: 44, marginRight: 16 }} />
-                <Box>
-                  <Typography variant="h6" fontWeight={800} color="primary" gutterBottom>Atendimento Consultivo</Typography>
-                  <Typography variant="body2">Suporte humanizado, multicanal, com SLA definido e acompanhamento estratégico.</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135779.png" alt="Compliance" style={{ height: 44, marginRight: 16 }} />
-                <Box>
-                  <Typography variant="h6" fontWeight={800} color="primary" gutterBottom>Compliance e Segurança</Typography>
-                  <Typography variant="body2">Processos auditados, conformidade total com legislação e proteção de dados (LGPD).</Typography>
-                </Box>
-              </Box>
+            <Box sx={{ textAlign: 'center', mt: 4 }}>
+              <Link href="/plataforma" passHref legacyBehavior>
+                <Button variant="contained" color="secondary" size="large" sx={{ px: 7, py: 2.5, fontWeight: 800, fontSize: 20, borderRadius: 3, boxShadow: 4 }}>
+                  Conheça a Plataforma
+                </Button>
+              </Link>
+            </Box>
+          </motion.div>
+        </Container>
+      </Box>
+
+      {/* DIFERENCIAIS DPEIXER */}
+      <Box sx={{ background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 8 }}>
+        <Container maxWidth="lg">
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
+            <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 5, letterSpacing: 1 }}>
+              ⚖️ Diferenciais DPEIXER
+            </Typography>
+            <Grid container spacing={4} justifyContent="center">
+              <Grid item xs={12} md={6}>
+                <ul style={{ fontSize: 17, lineHeight: 1.7, color: '#1976d2', marginBottom: 0 }}>
+                  <li>SLA de atendimento garantido em até 48 horas úteis</li>
+                  <li>Conformidade 100% com legislação trabalhista e LGPD</li>
+                  <li>Plataforma AUDITORIA360 exclusiva</li>
+                  <li>Redução de custos operacionais com terceirização especializada</li>
+                  <li>Transparência total nos processos e relatórios detalhados</li>
+                  <li>Atendimento humanizado + suporte digital</li>
+                  <li>Descontos progressivos para grandes volumes</li>
+                </ul>
+              </Grid>
+              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="Diferenciais" style={{ maxHeight: 120, maxWidth: '100%' }} />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135781.png" alt="Flexibilidade" style={{ height: 44, marginRight: 16 }} />
-                <Box>
-                  <Typography variant="h6" fontWeight={800} color="primary" gutterBottom>Flexibilidade e Customização</Typography>
-                  <Typography variant="body2">Soluções adaptadas à realidade de cada cliente, com planos e integrações sob demanda.</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135767.png" alt="Foco no cliente" style={{ height: 44, marginRight: 16 }} />
-                <Box>
-                  <Typography variant="h6" fontWeight={800} color="primary" gutterBottom>Foco no seu negócio</Typography>
-                  <Typography variant="body2">Você dedica energia ao crescimento, enquanto cuidamos de toda a rotina trabalhista, previdenciária e de RH.</Typography>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
+          </motion.div>
         </Container>
       </Box>
 
@@ -523,39 +431,34 @@ const HomePage: NextPage = () => {
       {/* Como funciona na prática? (único bloco de etapas) */}
       <Box sx={{ background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', py: 8 }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 6, letterSpacing: 1 }}>
-            Como funciona na prática?
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={12} md={3}>
-              <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4, background: '#fff', minHeight: 180, textAlign: 'center' }}>
-                <Typography variant="h3" color="primary" fontWeight={900}>1</Typography>
-                <Typography variant="h6" fontWeight={700} gutterBottom>Diagnóstico</Typography>
-                <Typography variant="body2">Análise dos processos atuais, necessidades e oportunidades.</Typography>
-              </Card>
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
+            <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 6, letterSpacing: 1 }}>
+              🚀 Como funciona na prática?
+            </Typography>
+            <Grid container spacing={4} justifyContent="center">
+              {[
+                { n: 1, title: 'Diagnóstico', desc: 'Análise dos processos atuais, necessidades e oportunidades.' },
+                { n: 2, title: 'Implantação', desc: 'Migração de dados, parametrização, treinamento.' },
+                { n: 3, title: 'Gestão mensal', desc: 'Processamento da folha, obrigações e suporte contínuo.' },
+                { n: 4, title: 'Auditoria e evolução', desc: 'Acompanhamento de indicadores e melhorias contínuas.' },
+              ].map((etapa, idx) => (
+                <Grid item xs={12} md={3} key={etapa.n}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.6, delay: idx * 0.15 }}
+                  >
+                    <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4, background: '#fff', minHeight: 180, textAlign: 'center' }}>
+                      <Typography variant="h3" color="primary" fontWeight={900}>{etapa.n}</Typography>
+                      <Typography variant="h6" fontWeight={700} gutterBottom>{etapa.title}</Typography>
+                      <Typography variant="body2">{etapa.desc}</Typography>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              ))}
             </Grid>
-            <Grid item xs={12} md={3}>
-              <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4, background: '#fff', minHeight: 180, textAlign: 'center' }}>
-                <Typography variant="h3" color="primary" fontWeight={900}>2</Typography>
-                <Typography variant="h6" fontWeight={700} gutterBottom>Implantação</Typography>
-                <Typography variant="body2">Migração de dados, parametrização, treinamento.</Typography>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4, background: '#fff', minHeight: 180, textAlign: 'center' }}>
-                <Typography variant="h3" color="primary" fontWeight={900}>3</Typography>
-                <Typography variant="h6" fontWeight={700} gutterBottom>Gestão mensal</Typography>
-                <Typography variant="body2">Processamento da folha, obrigações e suporte contínuo.</Typography>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4, background: '#fff', minHeight: 180, textAlign: 'center' }}>
-                <Typography variant="h3" color="primary" fontWeight={900}>4</Typography>
-                <Typography variant="h6" fontWeight={700} gutterBottom>Auditoria e evolução</Typography>
-                <Typography variant="body2">Acompanhamento de indicadores e melhorias contínuas.</Typography>
-              </Card>
-            </Grid>
-          </Grid>
+          </motion.div>
         </Container>
       </Box>
 
@@ -649,58 +552,96 @@ const HomePage: NextPage = () => {
       <Divider id="servicos" sx={{ mb: 6, borderColor: '#1976d2', borderWidth: 2 }} />
       <Box id="servicos" sx={{ mb: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 8, position: 'relative', overflow: 'hidden' }}>
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Typography variant="h4" fontWeight={900} color="primary" align="center" gutterBottom sx={{ letterSpacing: 1, textShadow: '0 2px 8px #90caf9' }}>
-            Serviços Especializados
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 4, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 320, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>BPO de RH</Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  O BPO de RH (Business Process Outsourcing) é a terceirização completa dos processos de RH, desde a admissão até o desligamento, incluindo gestão de benefícios, ponto, férias, folha, obrigações legais e atendimento ao colaborador. Permite que sua empresa foque no core business, ganhe eficiência, reduza custos e tenha acesso a especialistas e tecnologia de ponta.
-                </Typography>
-                <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                  <li>Gestão de admissões, férias, rescisões e movimentações</li>
-                  <li>Gestão de benefícios (VT, VR, saúde, etc.)</li>
-                  <li>Gestão do ponto digital e banco de horas</li>
-                  <li>Atendimento ao colaborador e gestores</li>
-                  <li>Relatórios gerenciais e people analytics</li>
-                  <li>Compliance e atualização legal</li>
-                </ul>
-              </Card>
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
+            <Typography variant="h4" fontWeight={900} color="primary" align="center" gutterBottom sx={{ letterSpacing: 1, textShadow: '0 2px 8px #90caf9' }}>
+              🛠️ Nossos Serviços
+            </Typography>
+            <Typography variant="h6" color="secondary" align="center" sx={{ mt: 2, mb: 4, fontWeight: 700 }}>
+              Soluções completas para empresas de todos os portes e escritórios contábeis
+            </Typography>
+            <Grid container spacing={4} justifyContent="center">
+              {/* BPO de RH */}
+              <Grid item xs={12} md={6} lg={3}>
+                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
+                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
+                    <img src="/workspaces/AUDITORIA360/public/pexels-olly-3771836.jpg" alt="BPO de RH" style={{ height: 80 }} />
+                  </Box>
+                  <Box sx={{ p: 3 }}>
+                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>BPO de Recursos Humanos</Typography>
+                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
+                      <li>Admissões e rescisões digitais (100% online e com assinatura eletrônica)</li>
+                      <li>Gestão completa do ponto eletrônico e controle de jornada</li>
+                      <li>Administração de benefícios (vale-transporte, alimentação, saúde, etc.)</li>
+                      <li>Gestão de férias e afastamentos</li>
+                      <li>Homologações por videoconferência</li>
+                      <li>Portal do empregado com autoatendimento e relatórios gerenciais</li>
+                      <li>Relatórios estratégicos e indicadores de desempenho (People Analytics)</li>
+                    </ul>
+                  </Box>
+                </Card>
+              </Grid>
+              {/* DP Terceirizado */}
+              <Grid item xs={12} md={6} lg={3}>
+                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
+                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
+                    <img src="/workspaces/AUDITORIA360/public/pexels-campaign-creators-1181406.jpg" alt="DP Terceirizado" style={{ height: 80 }} />
+                  </Box>
+                  <Box sx={{ p: 3 }}>
+                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Departamento Pessoal Terceirizado</Typography>
+                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
+                      <li>Cálculo e processamento da folha de pagamento</li>
+                      <li>Emissão de guias de encargos (INSS, FGTS, IRRF etc.)</li>
+                      <li>Integração completa com o eSocial</li>
+                      <li>Administração de férias, 13º salário e rescisões contratuais</li>
+                      <li>Entrega de obrigações acessórias trabalhistas</li>
+                      <li>Cumprimento rigoroso da LGPD (proteção de dados)</li>
+                      <li>Suporte completo e seguro para o RH interno ou escritório contábil</li>
+                    </ul>
+                  </Box>
+                </Card>
+              </Grid>
+              {/* Consultoria e Assessoria */}
+              <Grid item xs={12} md={6} lg={3}>
+                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
+                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
+                    <img src="/workspaces/AUDITORIA360/public/pexels-rio-lecatompessy-3033831.jpg" alt="Consultoria e Assessoria" style={{ height: 80 }} />
+                  </Box>
+                  <Box sx={{ p: 3 }}>
+                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Consultoria e Assessoria Trabalhista</Typography>
+                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
+                      <li>Auditoria completa de processos de RH e DP</li>
+                      <li>Diagnóstico de passivos trabalhistas e previdenciários</li>
+                      <li>Adequação à legislação vigente e normas do eSocial</li>
+                      <li>Consultoria estratégica para escritórios contábeis e empresas</li>
+                      <li>Treinamentos personalizados para equipes de RH e gestores</li>
+                      <li>Planejamento e implementação de melhorias de processos</li>
+                    </ul>
+                  </Box>
+                </Card>
+              </Grid>
+              {/* Serviços Sob Demanda */}
+              <Grid item xs={12} md={6} lg={3}>
+                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
+                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
+                    <img src="/logo.png" alt="Serviços Sob Demanda" style={{ height: 80 }} />
+                  </Box>
+                  <Box sx={{ p: 3 }}>
+                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Serviços Sob Demanda</Typography>
+                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
+                      <li>Regularizações específicas (CAGED, RAIS, DIRF etc.)</li>
+                      <li>Apoio em fiscalizações e autos de infração</li>
+                      <li>Elaboração e revisão de contratos e documentos trabalhistas</li>
+                      <li>Recrutamento e Seleção sob demanda</li>
+                      <li>Projetos de transformação digital em RH e DP</li>
+                    </ul>
+                  </Box>
+                </Card>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 4, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 320, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Terceirização de Folha de Pagamento</Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  Cuidamos de todo o processamento da folha de pagamento, encargos, obrigações acessórias, eSocial, cálculos, relatórios e suporte. Reduza riscos trabalhistas, evite multas e tenha total conformidade com a legislação.
-                </Typography>
-                <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                  <li>Processamento mensal da folha e encargos</li>
-                  <li>Geração de guias, relatórios e obrigações acessórias</li>
-                  <li>Gestão de admissões, rescisões e férias</li>
-                  <li>Entrega e validação do eSocial</li>
-                  <li>Suporte técnico e consultivo</li>
-                  <li>Auditoria e compliance contínuo</li>
-                </ul>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 4, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 320, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Consultoria e Treinamentos</Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  Consultoria trabalhista, auditoria de processos, adequação à legislação, treinamentos práticos e workshops para equipes e gestores. Soluções sob medida para cada desafio do seu RH.
-                </Typography>
-                <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                  <li>Consultoria em DP, RH e legislação</li>
-                  <li>Auditoria de processos e compliance</li>
-                  <li>Treinamentos presenciais e online</li>
-                  <li>Workshops temáticos e capacitação</li>
-                  <li>Projetos especiais sob demanda</li>
-                </ul>
-              </Card>
-            </Grid>
-          </Grid>
+            <Typography variant="caption" color="text.secondary" align="center" display="block" sx={{ mt: 3 }}>
+              *Valores base para empresas até 10 colaboradores. Consulte condições para outros portes e serviços personalizados.
+            </Typography>
+          </motion.div>
         </Container>
       </Box>
 
@@ -729,112 +670,88 @@ const HomePage: NextPage = () => {
           Planos e Valores
         </Typography>
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Grid container spacing={4} justifyContent="center">
-            {planosRH.map((plan) => (
-              <Grid item xs={12} md={4} key={plan.name}>
-                <Card
-                  variant="outlined"
-                  sx={{
-                    borderRadius: 4,
-                    borderColor: plan.popular ? "secondary.main" : "grey.300",
-                    boxShadow: plan.popular ? 10 : 4,
-                    background: plan.popular
-                      ? "linear-gradient(120deg, #1976d2 60%, #90caf9 100%)"
-                      : "#fff",
-                    color: plan.popular ? "#fff" : "inherit",
-                    position: 'relative',
-                    overflow: 'visible',
-                    transition: "all .3s cubic-bezier(.4,2,.6,1)",
-                    '&:hover': {
-                      transform: 'translateY(-8px) scale(1.045)',
-                      boxShadow: 20,
-                      background: plan.popular
-                        ? 'linear-gradient(120deg, #1565c0 60%, #90caf9 100%)'
-                        : 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)',
-                    },
-                  }}
-                >
-                  {plan.popular && (
-                    <Box sx={{
-                      position: 'absolute',
-                      top: -22,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      bgcolor: 'secondary.main',
-                      color: 'white',
-                      px: 3,
-                      py: 0.7,
-                      borderRadius: 3,
-                      fontWeight: 900,
-                      fontSize: 18,
-                      zIndex: 2,
-                      boxShadow: 4,
-                      border: '2.5px solid #fff',
-                      letterSpacing: 1,
-                    }}>
-                      Mais Popular
-                    </Box>
-                  )}
-                  <CardContent>
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <img
-                        src={plan.icon}
-                        alt="icon"
-                        style={{ height: 36, marginRight: 10, opacity: 0.9 }}
-                      />
-                      <Typography variant="h6" fontWeight={900} gutterBottom>
-                        {plan.name}
-                      </Typography>
-                    </Box>
-                    <Typography
-                      variant="h4"
-                      color={plan.popular ? "#fff" : "primary"}
-                      fontWeight={900}
-                    >
-                      R$ {plan.price}
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        color={plan.popular ? "#e3f2fd" : "text.secondary"}
-                      >
-                        /mês por vida
-                      </Typography>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color={plan.popular ? "#e3f2fd" : "text.secondary"}
-                      sx={{ mb: 2, mt: 1 }}
-                    >
-                      {plan.description}
-                    </Typography>
-                    <ul
-                      style={{
-                        paddingLeft: 20,
-                        margin: 0,
-                        color: plan.popular ? "#e3f2fd" : undefined,
-                        fontWeight: 500,
-                        fontSize: 16,
-                      }}
-                    >
-                      {plan.features.map((f, i) => (
-                        <li key={i}>{f}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      fullWidth
-                      variant={plan.popular ? "contained" : "outlined"}
-                      color={plan.popular ? "secondary" : "primary"}
-                      sx={{ fontWeight: 800, fontSize: 18, py: 1.5, borderRadius: 2 }}
-                    >
-                      Contratar Plano
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <Typography variant="h5" color="secondary" align="center" sx={{ mb: 4, fontWeight: 700 }}>
+            BPO de RH
+          </Typography>
+          <Box sx={{ overflowX: 'auto', mb: 4 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 12px #90caf933', marginBottom: 24 }}>
+              <thead>
+                <tr style={{ background: '#e3f2fd' }}>
+                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Plano</th>
+                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Valor</th>
+                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Principais Recursos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Plus RH</td>
+                  <td style={{ padding: 14 }}>R$ 39,90/vida</td>
+                  <td style={{ padding: 14 }}>Gestão de ponto, férias, benefícios, portal do empregado.</td>
+                </tr>
+                <tr style={{ background: '#f5faff' }}>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Premium RH</td>
+                  <td style={{ padding: 14 }}>R$ 49,90/vida</td>
+                  <td style={{ padding: 14 }}>Tudo do Plus + admissões e rescisões digitais.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Diamante RH</td>
+                  <td style={{ padding: 14 }}>R$ 69,90/vida</td>
+                  <td style={{ padding: 14 }}>Tudo do Premium + documentação personalizada, reuniões estratégicas, people analytics.</td>
+                </tr>
+                <tr style={{ background: '#f5faff' }}>
+                  <td colSpan={3} style={{ padding: 14, fontWeight: 600, color: '#1976d2', textAlign: 'center' }}>
+                    Valores progressivos: descontos de até 6% por volume de colaboradores.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </Box>
+          <Typography variant="h5" color="secondary" align="center" sx={{ mb: 4, fontWeight: 700 }}>
+            Terceirização de DP
+          </Typography>
+          <Box sx={{ overflowX: 'auto', mb: 2 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 12px #90caf933', marginBottom: 24 }}>
+              <thead>
+                <tr style={{ background: '#e3f2fd' }}>
+                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Categoria</th>
+                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Valor</th>
+                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Observações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Funcionários (Simples Nacional)</td>
+                  <td style={{ padding: 14 }}>R$ 23,00/vida</td>
+                  <td style={{ padding: 14 }}>Folha, encargos, obrigações, eSocial, atendimento.</td>
+                </tr>
+                <tr style={{ background: '#f5faff' }}>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Professores / alocação de custos</td>
+                  <td style={{ padding: 14 }}>R$ 25,00/vida</td>
+                  <td style={{ padding: 14 }}>Gestão diferenciada, múltiplos vínculos.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Pró-labore</td>
+                  <td style={{ padding: 14 }}>R$ 18,00/vida</td>
+                  <td style={{ padding: 14 }}>Processamento mensal, obrigações acessórias.</td>
+                </tr>
+                <tr style={{ background: '#f5faff' }}>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Admissão/rescisão extra</td>
+                  <td style={{ padding: 14 }}>R$ 10,00</td>
+                  <td style={{ padding: 14 }}>Por evento adicional ao pacote.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: 14, fontWeight: 700 }}>Recálculo de guias</td>
+                  <td style={{ padding: 14 }}>a partir de R$ 15,00</td>
+                  <td style={{ padding: 14 }}>Por demanda, conforme complexidade.</td>
+                </tr>
+                <tr style={{ background: '#f5faff' }}>
+                  <td colSpan={3} style={{ padding: 14, fontWeight: 600, color: '#1976d2', textAlign: 'center' }}>
+                    Consultoria mensal gratuita até 100 vidas.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </Box>
         </Container>
         <Box sx={{
           position: 'absolute',
@@ -849,89 +766,45 @@ const HomePage: NextPage = () => {
         }} />
       </Box>
 
-      {/* Footer */}
-      <Box component="footer" sx={{
-        bgcolor: 'grey.900',
-        color: 'grey.100',
-        py: 8,
-        mt: 10,
-        boxShadow: 12,
-        borderTopLeftRadius: { xs: 16, md: 40 },
-        borderTopRightRadius: { xs: 16, md: 40 },
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <Box sx={{
-          position: 'absolute',
-          top: -60,
-          left: -60,
-          width: 180,
-          height: 180,
-          bgcolor: 'primary.main',
-          opacity: 0.08,
-          borderRadius: '50%',
-          zIndex: 0,
-        }} />
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Grid container spacing={6} alignItems="flex-start">
-            <Grid item xs={12} md={4} sx={{ mb: { xs: 4, md: 0 } }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <img src="/logo.png" alt="Logo DPEIXER" style={{ height: 36, marginRight: 10, filter: 'drop-shadow(0 2px 8px #0006)' }} />
-                <Typography variant="h6" fontWeight={900} color="inherit" sx={{ letterSpacing: 1 }}>
-                  DPEIXER
-                </Typography>
-              </Box>
-              <Typography variant="body2" color="grey.300" sx={{ mb: 2 }}>
-                BPO de RH, Terceirização de Folha, Consultoria e Portal AUDITORIA360.
+      {/* Footer institucional escuro */}
+      <Box component="footer" sx={{ background: 'linear-gradient(90deg, #0d47a1 60%, #1976d2 100%)', color: '#fff', py: 6, mt: 0, boxShadow: 8 }}>
+        <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'flex-start', md: 'center' }, justifyContent: 'space-between', gap: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, md: 0 } }}>
+            <img src="/logo.png" alt="Logo DPEIXER" style={{ height: 48, marginRight: 16, filter: 'drop-shadow(0 2px 8px #0006)' }} />
+            <Box>
+              <Typography variant="h6" fontWeight={900} sx={{ letterSpacing: 1 }}>DPEIXER</Typography>
+              <Typography variant="caption" sx={{ color: '#fff', opacity: 0.85, fontWeight: 500, letterSpacing: 1 }}>
+                BPO de RH, Folha, Consultoria e Tecnologia
               </Typography>
-              <Divider sx={{ bgcolor: 'grey.800', my: 2 }} />
-              <Typography variant="caption" color="grey.600">
-                &copy; {new Date().getFullYear()} DPEIXER. Todos os direitos reservados.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Typography variant="h6" fontWeight={900} gutterBottom color="inherit" sx={{ letterSpacing: 1 }}>
-                Serviços
-              </Typography>
-              <ul style={{ paddingLeft: 20, margin: 0, color: "#e3f2fd", fontWeight: 500, fontSize: 16, lineHeight: 2 }}>
-                <li>Terceirização de Folha</li>
-                <li>Consultoria Trabalhista</li>
-                <li>Treinamentos</li>
-                <li>Portal AUDITORIA360</li>
-              </ul>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Typography variant="h6" fontWeight={900} gutterBottom color="inherit" sx={{ letterSpacing: 1 }}>
-                Portal
-              </Typography>
-              <Link href="/login" passHref legacyBehavior>
-                <Button color="secondary" variant="contained" sx={{ color: "#fff", fontWeight: 700, boxShadow: 2, mt: 1, borderRadius: 2, px: 4 }}>
-                  Acessar AUDITORIA360
-                </Button>
-              </Link>
-              <Typography variant="body2" color="grey.300" sx={{ mt: 3 }}>
-                Gestão completa e auditoria inteligente
-              </Typography>
-              <Divider sx={{ bgcolor: 'grey.800', my: 2 }} />
-              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                <a href="mailto:contato@dpeixer.com.br" style={{ color: '#90caf9', textDecoration: 'none', fontWeight: 700 }}>contato@dpeixer.com.br</a>
-                <span style={{ color: '#90caf9' }}>|</span>
-                <a href="https://www.linkedin.com/company/dpeixer" target="_blank" rel="noopener noreferrer" style={{ color: '#90caf9', textDecoration: 'none', fontWeight: 700 }}>LinkedIn</a>
-              </Box>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 700 }}>Contato</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <PhoneIcon fontSize="small" sx={{ mr: 0.5 }} />
+              <a href="tel:+5547933835427" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>(47) 93383-5427</a>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <WhatsAppIcon fontSize="small" sx={{ color: '#25d366' }} />
+              <a href="https://wa.link/vbonkz" target="_blank" rel="noopener" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>WhatsApp</a>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <InstagramIcon fontSize="small" />
+              <a href="https://www.instagram.com/dpeixer_assessoria?igsh=MTF4dXRoODdseDJ0aw%3D%3D&utm_source=qr" target="_blank" rel="noopener" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>Instagram</a>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <LinkedInIcon fontSize="small" />
+              <a href="https://www.linkedin.com/company/dpeixer-assessoria-terceiriza%C3%A7%C3%A3o/about/?viewAsMember=true" target="_blank" rel="noopener" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>LinkedIn</a>
+            </Box>
+          </Box>
+          <Box sx={{ textAlign: { xs: 'left', md: 'right' }, mt: { xs: 3, md: 0 } }}>
+            <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>Endereço</Typography>
+            <Typography variant="body2">Atendimento nacional remoto<br />Base: Joinville/SC</Typography>
+            <Typography variant="caption" sx={{ color: '#fff', opacity: 0.7, mt: 1, display: 'block' }}>
+              &copy; {new Date().getFullYear()} DPEIXER. Todos os direitos reservados.
+            </Typography>
+          </Box>
         </Container>
-        <Box sx={{
-          position: 'absolute',
-          bottom: -60,
-          right: -60,
-          width: 180,
-          height: 180,
-          bgcolor: 'secondary.main',
-          opacity: 0.08,
-          borderRadius: '50%',
-          zIndex: 0,
-        }} />
       </Box>
     </>
   );
