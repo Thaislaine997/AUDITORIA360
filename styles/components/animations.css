@@ -36,6 +36,122 @@
   }
 }
 
+/* Enhanced glassmorphism animations */
+@keyframes glassFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Floating shapes animations */
+@keyframes floatShape1 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(10px, -15px) rotate(90deg);
+  }
+  50% {
+    transform: translate(-5px, -10px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-15px, 5px) rotate(270deg);
+  }
+}
+
+@keyframes floatShape2 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translate(-20px, -10px) rotate(120deg) scale(1.1);
+  }
+  66% {
+    transform: translate(15px, -20px) rotate(240deg) scale(0.9);
+  }
+}
+
+@keyframes floatShape3 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(25px, -30px) rotate(180deg);
+  }
+}
+
+/* Button animations */
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 119, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 119, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 119, 255, 0);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Error message shake with enhanced effect */
+@keyframes enhancedShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-4px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(4px);
+  }
+}
+
+/* Scale in animation for form elements */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Glow effect */
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(0, 119, 255, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(0, 119, 255, 0.6));
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out;
 }
@@ -46,4 +162,45 @@
 
 .animate-pulse {
   animation: pulse 2s infinite;
+}
+
+.animate-glass-float {
+  animation: glassFloat 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-float-1 {
+  animation: floatShape1 20s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: floatShape2 25s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: floatShape3 30s ease-in-out infinite;
+}
+
+.animate-button-pulse {
+  animation: buttonPulse 2s infinite;
+}
+
+.animate-gradient-shift {
+  animation: gradientShift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-enhanced-shake {
+  animation: enhancedShake 0.5s;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
 }
