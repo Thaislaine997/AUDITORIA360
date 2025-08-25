@@ -1,38 +1,8 @@
-
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  Divider,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  useMediaQuery,
-  useTheme,
-  Tooltip,
-  Fade,
-} from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import PhoneIcon from '@mui/icons-material/Phone';
 
 const navigation = [
   { name: 'Quem Somos', href: '#quem-somos' },
@@ -42,770 +12,584 @@ const navigation = [
   { name: 'Contato', href: '#contato' },
 ];
 
-function scrollToSection(id: string) {
+const scrollToSection = (id: string) => {
   if (typeof window !== 'undefined') {
     const el = document.querySelector(id);
     if (el) {
-      const yOffset = -90; // compensa header fixo
+      const yOffset = -90;
       const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   }
-}
-// Sobre a Empresa
-const sobreEmpresa = [
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-    title: "Missão",
-    color: "primary",
-    desc: "Simplificar e potencializar a gestão de pessoas, promovendo eficiência, segurança e inovação para empresas de todos os portes.",
-  },
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/1828/1828885.png",
-    title: "Valores",
-    color: "success.main",
-    desc: "Ética, transparência, parceria, inovação, excelência e foco no cliente.",
-  },
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/1828/1828886.png",
-    title: "Princípios",
-    color: "secondary",
-    desc: (
-      <>
-        Atendimento humanizado.<br />Compromisso com resultados.<br />Segurança e conformidade em todos os processos.
-      </>
-    ),
-  },
-];
-
-// Diferenciais reais DPEIXER
-const diferenciais = [
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png",
-    title: "Tecnologia Proprietária",
-    desc: "Plataforma AUDITORIA360 exclusiva, com automação, relatórios inteligentes e integração total com eSocial.",
-  },
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135789.png",
-    title: "Especialistas em BPO de RH",
-    desc: "Equipe multidisciplinar com +20 anos de experiência em terceirização, folha, DP e projetos de RH sob medida.",
-  },
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135792.png",
-    title: "Atendimento Consultivo",
-    desc: "Suporte humanizado, multicanal e proativo, com SLA definido e acompanhamento estratégico.",
-  },
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135779.png",
-    title: "Compliance e Segurança",
-    desc: "Processos auditados, conformidade total com legislação e proteção de dados (LGPD).",
-  },
-  {
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135781.png",
-    title: "Flexibilidade e Customização",
-    desc: "Soluções adaptadas à realidade de cada cliente, com planos e integrações sob demanda.",
-  },
-];
-
-// Planos de RH
-const planosRH = [
-  {
-    name: "Plus RH",
-    price: "39,90",
-    description:
-      "Todos os serviços de RH, exceto admissão, rescisão e documentos personalizados.",
-    features: [
-      "Gestão do ponto digital",
-      "Portal do empregado",
-      "Gestão de benefícios",
-      "Gestão de férias",
-      "Relatórios básicos",
-      "Suporte por email",
-    ],
-    popular: false,
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-  },
-  {
-    name: "Premium RH",
-    price: "49,90",
-    description: "Tudo do Plus + admissões e rescisões digitais.",
-    features: [
-      "Todos os recursos do Plus RH",
-      "Admissões/rescisões digitais",
-      "Homologações por videochamada",
-      "Portal AUDITORIA360 básico",
-      "Suporte prioritário",
-    ],
-    popular: true,
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135716.png",
-  },
-  {
-    name: "Diamante RH",
-    price: "69,90",
-    description:
-      "Premium + documentação personalizada, reuniões estratégicas, people analytics.",
-    features: [
-      "Todos os recursos do Premium RH",
-      "Documentação personalizada",
-      "Reuniões estratégicas mensais",
-      "People Analytics avançado",
-      "Portal AUDITORIA360 completo",
-      "Suporte dedicado 24/7",
-    ],
-    popular: false,
-    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135717.png",
-  },
-];
-
-const bannerOptions = [
-  {
-    label: 'Unsplash',
-    file: '/hero-bg-unsplash.jpg',
-    url: 'https://unsplash.com/photos/people-in-a-meeting-room-5QgIuuBxKwM',
-  },
-  {
-    label: 'Pexels',
-    file: '/hero-bg-pexels.jpg',
-    url: 'https://www.pexels.com/photo/group-of-people-having-a-meeting-1181406/',
-  },
-  {
-    label: 'Pixabay',
-    file: '/hero-bg-pixabay.jpg',
-    url: 'https://pixabay.com/photos/startup-meeting-brainstorming-594090/',
-  },
-];
+};
 
 const HomePage: NextPage = () => {
-  const [bannerIdx, setBannerIdx] = React.useState(0);
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const banner = bannerOptions[bannerIdx];
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <>
       <Head>
-        <title>DPEIXER | BPO de RH, Terceirização de Folha, Consultoria e Portal AUDITORIA360</title>
+        <title>DPEIXER - Auditoria, RH e DP sem complicação</title>
         <meta name="description" content="Especialistas em assessoria, terceirização de DP e RH, consultoria, treinamentos e serviços sob demanda. Portal AUDITORIA360: tecnologia, compliance e excelência para contabilidades e empresas." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </Head>
-      {/* Header Institucional Moderno */}
-      <AppBar position="fixed" color="default" elevation={4} sx={{ background: 'linear-gradient(90deg, #0d47a1 60%, #1976d2 100%)', color: 'white', boxShadow: '0 4px 24px #0002', zIndex: 1201 }}>
-        <Toolbar sx={{ minHeight: 72, px: { xs: 1, md: 4 } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <img src="/logo.png" onError={(e) => { e.currentTarget.style.display = 'none'; }} alt="Logo DPEIXER" style={{ height: 44, marginRight: 16, filter: 'drop-shadow(0 2px 8px #0006)' }} />
-            <Box>
-              <Typography variant="h5" color="inherit" sx={{ fontWeight: 900, letterSpacing: 1, lineHeight: 1 }}>
+      
+      <div className="bg-gray-50 font-sans">
+        {/* Header */}
+        <header className="bg-white shadow-lg fixed w-full top-0 z-50">
+          <nav className="container mx-auto px-6 py-4">
+            <div className="flex justify-between items-center">
+              <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 DPEIXER
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#fff', opacity: 0.85, fontWeight: 500, letterSpacing: 1 }}>
-                BPO de RH, Folha, Consultoria e Tecnologia
-              </Typography>
-            </Box>
-          </Box>
-          {/* Contatos e redes sociais desktop */}
-          {!isMobile && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mr: 3 }}>
-              <Tooltip title="Fale conosco" arrow TransitionComponent={Fade}>
-                <Button startIcon={<PhoneIcon />} href="tel:+5547933835427" sx={{ color: '#fff', fontWeight: 700, textTransform: 'none', fontSize: 16 }}>
-                  (47) 93383-5427
-                </Button>
-              </Tooltip>
-              <Tooltip title="WhatsApp" arrow TransitionComponent={Fade}>
-                <IconButton href="https://wa.link/vbonkz" target="_blank" rel="noopener" sx={{ color: '#25d366' }}>
-                  <WhatsAppIcon fontSize="medium" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Instagram" arrow TransitionComponent={Fade}>
-                <IconButton href="https://www.instagram.com/dpeixer_assessoria?igsh=MTF4dXRoODdseDJ0aw%3D%3D&utm_source=qr" target="_blank" rel="noopener" sx={{ color: '#fff' }}>
-                  <InstagramIcon fontSize="medium" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="LinkedIn" arrow TransitionComponent={Fade}>
-                <IconButton href="https://www.linkedin.com/company/dpeixer-assessoria-terceiriza%C3%A7%C3%A3o/about/?viewAsMember=true" target="_blank" rel="noopener" sx={{ color: '#fff' }}>
-                  <LinkedInIcon fontSize="medium" />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          )}
-          {/* Navegação */}
-          {!isMobile ? (
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              {navigation.map((item) => (
-                <Button key={item.name} color="inherit" onClick={() => scrollToSection(item.href)} sx={{ fontWeight: 700, letterSpacing: 1, px: 2, py: 1, borderRadius: 2, transition: 'background .2s', '&:hover': { background: '#1565c0' } }}>{item.name}</Button>
-              ))}
-              <Link href="/login" passHref legacyBehavior>
-                <Button variant="contained" color="secondary" sx={{ fontWeight: 800, boxShadow: 3, borderRadius: 2, px: 3, py: 1.2, ml: 1, fontSize: 16 }}>
-                  Portal AUDITORIA360
-                </Button>
-              </Link>
-            </Box>
-          ) : (
-            <>
-              <IconButton edge="end" color="inherit" onClick={() => setDrawerOpen(true)} aria-label="menu" sx={{ ml: 1 }}>
-                <MenuIcon fontSize="large" />
-              </IconButton>
-              <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)} PaperProps={{ sx: { width: 260, background: 'linear-gradient(120deg, #1976d2 60%, #90caf9 100%)', color: '#fff' } }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', p: 2, pb: 1 }}>
-                    <img src="/logo.png" alt="Logo DPEIXER" style={{ height: 36, marginRight: 10 }} />
-                    <Typography variant="h6" fontWeight={900}>DPEIXER</Typography>
-                  </Box>
-                  <List>
-                    {navigation.map((item) => (
-                      <ListItem key={item.name} disablePadding>
-                        <ListItemButton onClick={() => { scrollToSection(item.href); setDrawerOpen(false); }}>
-                          <ListItemText primary={item.name} primaryTypographyProps={{ fontWeight: 700, fontSize: 17 }} />
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                    <ListItem disablePadding>
-                      <Link href="/login" passHref legacyBehavior>
-                        <ListItemButton component="a">
-                          <ListItemText primary="Portal AUDITORIA360" primaryTypographyProps={{ fontWeight: 800, fontSize: 17 }} />
-                        </ListItemButton>
-                      </Link>
-                    </ListItem>
-                  </List>
-                  <Box sx={{ flexGrow: 1 }} />
-                  <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1.5, pb: 2 }}>
-                    <Tooltip title="WhatsApp" arrow TransitionComponent={Fade}>
-                      <IconButton href="https://wa.link/vbonkz" target="_blank" rel="noopener" sx={{ color: '#25d366' }}>
-                        <WhatsAppIcon fontSize="medium" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Instagram" arrow TransitionComponent={Fade}>
-                      <IconButton href="https://www.instagram.com/dpeixer_assessoria?igsh=MTF4dXRoODdseDJ0aw%3D%3D&utm_source=qr" target="_blank" rel="noopener" sx={{ color: '#fff' }}>
-                        <InstagramIcon fontSize="medium" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="LinkedIn" arrow TransitionComponent={Fade}>
-                      <IconButton href="https://www.linkedin.com/company/dpeixer-assessoria-terceiriza%C3%A7%C3%A3o/about/?viewAsMember=true" target="_blank" rel="noopener" sx={{ color: '#fff' }}>
-                        <LinkedInIcon fontSize="medium" />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Box sx={{ textAlign: 'center', pb: 2, color: '#fff', opacity: 0.7, fontSize: 13 }}>
-                    <PhoneIcon fontSize="small" sx={{ verticalAlign: 'middle', mr: 0.5 }} /> (47) 93383-5427
-                  </Box>
-                </Box>
-              </Drawer>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
-
-      {/* HERO INSTITUCIONAL E COMERCIAL REORGANIZADO */}
-      <Box id="quem-somos" sx={{
-        background: `linear-gradient(120deg, #0d47a1ee 80%, #1976d2cc 100%), url('${banner.file}') center/cover`,
-        color: "white",
-        py: { xs: 10, md: 14 },
-        textAlign: "center",
-        minHeight: 480,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        boxShadow: 8,
-        position: 'relative',
-        transition: 'background-image 0.5s',
-        overflow: 'hidden',
-      }}>
-        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 2 }}>
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
-            <Typography variant="h2" fontWeight={900} gutterBottom sx={{ letterSpacing: 1, textShadow: '0 2px 16px #000a', fontSize: { xs: 28, md: 42 } }}>
-              <span style={{ color: '#ffe082', fontWeight: 900 }}>DPEIXER</span> – Assessoria & Terceirização
-            </Typography>
-            <Typography variant="h5" sx={{ mb: 2, opacity: 0.97, textShadow: '0 1px 8px #0008', fontWeight: 600 }}>
-              Soluções Integradas em RH, DP e Auditoria Inteligente
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 3, fontSize: 18, opacity: 0.95, maxWidth: 700, mx: 'auto', textShadow: '0 1px 8px #0008' }}>
-              A DPEIXER é especialista em Gestão de Recursos Humanos (BPO), Departamento Pessoal Terceirizado, Consultoria Trabalhista e Plataforma de Auditoria Digital.<br />
-              Nosso propósito é simplificar processos, reduzir custos, garantir conformidade legal e entregar inteligência estratégica para empresas de todos os portes e escritórios contábeis.
-            </Typography>
-            <Grid container spacing={2} justifyContent="center" sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={4}>
-                <Box sx={{ bgcolor: 'rgba(25, 118, 210, 0.85)', borderRadius: 3, px: 2.5, py: 1.5, boxShadow: 6, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, minHeight: 56 }}>
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="Especialistas" style={{ height: 32, marginRight: 8 }} />
-                  <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', fontSize: { xs: 16, md: 18 } }}>+20 anos de experiência</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box sx={{ bgcolor: 'rgba(25, 118, 210, 0.85)', borderRadius: 3, px: 2.5, py: 1.5, boxShadow: 6, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, minHeight: 56 }}>
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Tecnologia" style={{ height: 32, marginRight: 8 }} />
-                  <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', fontSize: { xs: 16, md: 18 } }}>Plataforma própria</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box sx={{ bgcolor: 'rgba(25, 118, 210, 0.85)', borderRadius: 3, px: 2.5, py: 1.5, boxShadow: 6, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, minHeight: 56 }}>
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135781.png" alt="Foco no cliente" style={{ height: 32, marginRight: 8 }} />
-                  <Typography variant="h6" fontWeight={800} sx={{ color: '#fff', fontSize: { xs: 16, md: 18 } }}>Atendimento humanizado</Typography>
-                </Box>
-              </Grid>
-            </Grid>
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', gap: 2, mt: 3 }}>
-              <Link href="#planos" passHref legacyBehavior>
-                <Button variant="contained" color="secondary" size="large" sx={{ px: 7, py: 2.5, fontWeight: 800, fontSize: 20, borderRadius: 3, boxShadow: 4 }}>
-                  Veja planos e valores
-                </Button>
-              </Link>
-              <Link href="#plataforma" passHref legacyBehavior>
-                <Button variant="outlined" color="inherit" size="large" sx={{ px: 5, py: 2.5, fontWeight: 800, fontSize: 18, borderRadius: 3, boxShadow: 2, border: '2px solid #fff', color: '#fff', '&:hover': { bgcolor: '#fff', color: 'primary.main' } }}>
-                  Conheça a Plataforma
-                </Button>
-              </Link>
-            </Box>
-          </motion.div>
-        </Container>
-      </Box>
-
-  {/* ...existing code... */}
-
-      {/* PLATAFORMA EXCLUSIVA DE AUDITORIA E GESTÃO */}
-      <Box id="plataforma" sx={{ background: 'linear-gradient(120deg, #1976d2 60%, #0d47a1 100%)', color: 'white', py: 10, boxShadow: 8 }}>
-        <Container maxWidth="lg">
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
-            <Typography variant="h4" fontWeight={900} align="center" sx={{ mb: 3, letterSpacing: 1, textShadow: '0 2px 12px #000a' }}>
-              💎 Plataforma <span style={{ color: '#ffe082' }}>AUDITORIA360</span> – Nosso Diferencial
-            </Typography>
-            <Typography variant="h6" align="center" sx={{ mb: 4, opacity: 0.95, fontWeight: 500 }}>
-              A AUDITORIA360 é uma plataforma exclusiva da DPEIXER que une auditoria digital, gestão inteligente e compliance automatizado.
-            </Typography>
-            <Grid container spacing={4} justifyContent="center">
-              <Grid item xs={12} md={6}>
-                <ul style={{ fontSize: 18, lineHeight: 1.7, color: '#fff', marginBottom: 0 }}>
-                  <li>📊 Dashboards em tempo real com indicadores de folha e RH</li>
-                  <li>✅ Alertas automáticos de conformidade (obrigações, prazos e riscos)</li>
-                  <li>🔒 Segurança e LGPD garantida com protocolos avançados de proteção</li>
-                  <li>🤝 Integração com sistemas contábeis e folha de pagamento</li>
-                  <li>📥 Upload seguro de documentos e histórico digital organizado</li>
-                  <li>⚡ Economia de tempo com tarefas repetitivas automatizadas</li>
-                </ul>
-              </Grid>
-              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/logo.png" alt="Plataforma AUDITORIA360" style={{ maxHeight: 120, maxWidth: '100%', filter: 'drop-shadow(0 2px 12px #000a)' }} />
-              </Grid>
-            </Grid>
-            <Box sx={{ textAlign: 'center', mt: 4 }}>
-              <Link href="/plataforma" passHref legacyBehavior>
-                <Button variant="contained" color="secondary" size="large" sx={{ px: 7, py: 2.5, fontWeight: 800, fontSize: 20, borderRadius: 3, boxShadow: 4 }}>
-                  Conheça a Plataforma
-                </Button>
-              </Link>
-            </Box>
-          </motion.div>
-        </Container>
-      </Box>
-
-      {/* DIFERENCIAIS DPEIXER */}
-      <Box sx={{ background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 8 }}>
-        <Container maxWidth="lg">
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
-            <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 5, letterSpacing: 1 }}>
-              ⚖️ Diferenciais DPEIXER
-            </Typography>
-            <Grid container spacing={4} justifyContent="center">
-              <Grid item xs={12} md={6}>
-                <ul style={{ fontSize: 17, lineHeight: 1.7, color: '#1976d2', marginBottom: 0 }}>
-                  <li>SLA de atendimento garantido em até 48 horas úteis</li>
-                  <li>Conformidade 100% com legislação trabalhista e LGPD</li>
-                  <li>Plataforma AUDITORIA360 exclusiva</li>
-                  <li>Redução de custos operacionais com terceirização especializada</li>
-                  <li>Transparência total nos processos e relatórios detalhados</li>
-                  <li>Atendimento humanizado + suporte digital</li>
-                  <li>Descontos progressivos para grandes volumes</li>
-                </ul>
-              </Grid>
-              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="Diferenciais" style={{ maxHeight: 120, maxWidth: '100%' }} />
-              </Grid>
-            </Grid>
-          </motion.div>
-        </Container>
-      </Box>
-
-
-
-
-
-
-
-      {/* Como funciona na prática? (único bloco de etapas) */}
-      <Box sx={{ background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', py: 8 }}>
-        <Container maxWidth="lg">
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
-            <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 6, letterSpacing: 1 }}>
-              🚀 Como funciona na prática?
-            </Typography>
-            <Grid container spacing={4} justifyContent="center">
-              {[
-                { n: 1, title: 'Diagnóstico', desc: 'Análise dos processos atuais, necessidades e oportunidades.' },
-                { n: 2, title: 'Implantação', desc: 'Migração de dados, parametrização, treinamento.' },
-                { n: 3, title: 'Gestão mensal', desc: 'Processamento da folha, obrigações e suporte contínuo.' },
-                { n: 4, title: 'Auditoria e evolução', desc: 'Acompanhamento de indicadores e melhorias contínuas.' },
-              ].map((etapa, idx) => (
-                <Grid item xs={12} md={3} key={etapa.n}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.6, delay: idx * 0.15 }}
+              </div>
+              <div className="hidden md:flex space-x-8">
+                {navigation.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className="text-gray-700 hover:text-purple-600 transition-colors duration-300 font-medium"
                   >
-                    <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4, background: '#fff', minHeight: 180, textAlign: 'center' }}>
-                      <Typography variant="h3" color="primary" fontWeight={900}>{etapa.n}</Typography>
-                      <Typography variant="h6" fontWeight={700} gutterBottom>{etapa.title}</Typography>
-                      <Typography variant="body2">{etapa.desc}</Typography>
-                    </Card>
-                  </motion.div>
-                </Grid>
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+              <button 
+                className="md:hidden"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          </nav>
+        </header>
+
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 text-white pt-24 pb-20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-black opacity-10"></div>
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="flex flex-col lg:flex-row items-center">
+              <div className="lg:w-1/2 mb-12 lg:mb-0">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="mb-6"
+                >
+                  <span className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide">
+                    💻 Plataforma AUDITORIA360
+                  </span>
+                </motion.div>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="text-5xl lg:text-7xl font-black mb-6 leading-tight"
+                >
+                  <span className="text-yellow-300">Auditoria</span>, RH e DP<br/>
+                  <span className="text-3xl lg:text-4xl font-semibold text-gray-200">sem complicação</span>
+                </motion.h1>
+                <motion.p 
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="text-xl mb-8 text-gray-100 leading-relaxed"
+                >
+                  Nosso maior diferencial: <strong>tecnologia própria</strong> para gestão e auditoria de RH e DP. 
+                  Transforme sua gestão de pessoas com nossa plataforma exclusiva.
+                </motion.p>
+                <motion.div 
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                  className="flex flex-col sm:flex-row gap-4"
+                >
+                  <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold hover:bg-yellow-300 transition-all transform hover:scale-105 shadow-lg hover:shadow-yellow-400/25">
+                    📞 Entre em Contato
+                  </button>
+                  <button className="backdrop-blur-md bg-white/10 border border-white/20 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-gray-900 transition-all">
+                    📞 (47) 93383-5427
+                  </button>
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
+                  className="mt-8 flex items-center space-x-6 text-sm"
+                >
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                    </svg>
+                    SLA 30 minutos
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                    </svg>
+                    LGPD Compliant
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                    </svg>
+                    Todo Brasil
+                  </div>
+                </motion.div>
+              </div>
+              <div className="lg:w-1/2 flex justify-center">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.4 }}
+                  className="relative"
+                >
+                  <div className="w-96 h-96 relative">
+                    {/* Dashboard mockup */}
+                    <div className="absolute inset-0 bg-white rounded-3xl shadow-2xl p-6 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                      <div className="h-full bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-gray-800 font-bold">AUDITORIA360</h3>
+                          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="bg-white rounded-lg p-3 shadow-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600">📊 Folha Processada</span>
+                              <span className="text-green-600 font-bold">✓</span>
+                            </div>
+                          </div>
+                          <div className="bg-white rounded-lg p-3 shadow-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600">⚡ Automação Ativa</span>
+                              <span className="text-blue-600 font-bold">90%</span>
+                            </div>
+                          </div>
+                          <div className="bg-white rounded-lg p-3 shadow-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600">🔒 Segurança LGPD</span>
+                              <span className="text-purple-600 font-bold">100%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Floating elements */}
+                    <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-2xl animate-bounce">
+                      📈
+                    </div>
+                    <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white animate-pulse">
+                      ✓
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* AUDITORIA360 Platform */}
+        <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center bg-blue-100 text-blue-800 px-6 py-3 rounded-full font-semibold mb-6"
+              >
+                💻 Plataforma AUDITORIA360
+              </motion.div>
+              <motion.h2 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-5xl font-black text-gray-900 mb-6"
+              >
+                Nosso maior <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">diferencial</span>
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-xl text-gray-600 max-w-4xl mx-auto"
+              >
+                Tecnologia própria para gestão e auditoria de RH e DP com impacto comprovado
+              </motion.p>
+            </div>
+            
+            {/* Platform Features Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {[
+                { icon: "📊", title: "Dashboards em Tempo Real", desc: "KPIs de folha, admissões, rescisões e afastamentos", color: "blue" },
+                { icon: "✅", title: "Alertas Automáticos", desc: "Prazos, obrigações e riscos trabalhistas", color: "green" },
+                { icon: "🔒", title: "Segurança Total", desc: "LGPD com criptografia avançada", color: "purple" },
+                { icon: "📂", title: "Histórico Digital", desc: "Armazenamento em nuvem seguro", color: "orange" }
+              ].map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className={`bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-l-4 ${
+                    feature.color === 'blue' ? 'border-blue-500' :
+                    feature.color === 'green' ? 'border-green-500' :
+                    feature.color === 'purple' ? 'border-purple-500' :
+                    'border-orange-500'
+                  }`}
+                >
+                  <div className="text-3xl mb-4">{feature.icon}</div>
+                  <h3 className="font-bold text-gray-900 mb-2">{feature.title}</h3>
+                  <p className="text-gray-600 text-sm">{feature.desc}</p>
+                </motion.div>
               ))}
-            </Grid>
-          </motion.div>
-        </Container>
-      </Box>
+            </div>
 
-      {/* Perguntas Frequentes */}
-      <Box id="faq" sx={{ background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 8 }}>
-        <Container maxWidth="md">
-          <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 6, letterSpacing: 1 }}>
-            Perguntas Frequentes
-          </Typography>
-          <Box sx={{ background: '#fff', borderRadius: 4, boxShadow: 4, p: 4 }}>
-            <Typography variant="subtitle1" fontWeight={700} color="secondary" gutterBottom>
-              O que está incluso na terceirização da folha?
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 3 }}>
-              Processamento completo da folha, encargos, obrigações acessórias, admissão, rescisão, férias, relatórios, atendimento e acesso à plataforma AUDITORIA360.
-            </Typography>
-            <Typography variant="subtitle1" fontWeight={700} color="secondary" gutterBottom>
-              Como é feito o atendimento?
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 3 }}>
-              Atendimento consultivo, humanizado e multicanal (telefone, e-mail, portal e WhatsApp), com SLA definido e especialistas dedicados.
-            </Typography>
-            <Typography variant="subtitle1" fontWeight={700} color="secondary" gutterBottom>
-              A DPEIXER atende empresas de qualquer porte?
-            </Typography>
-            <Typography variant="body2">
-              Sim! Atendemos desde pequenas empresas até grandes grupos, inclusive contabilidades e escritórios de BPO.
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
+            {/* Additional Features */}
+            <div className="grid md:grid-cols-2 gap-8">
+              <motion.div
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+                  <span className="text-white text-xl">📥</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Upload Inteligente</h3>
+                <p className="text-gray-600">Documentos com versionamento automático e organização inteligente</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+                  <span className="text-white text-xl">⚡</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Automação Total</h3>
+                <p className="text-gray-600">Tarefas repetitivas automatizadas: envio de obrigações, relatórios</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
 
-      {/* CTA Final */}
-      <Box sx={{ background: 'linear-gradient(90deg, #1976d2 60%, #90caf9 100%)', color: 'white', py: 8, textAlign: 'center', boxShadow: 8 }}>
-        <Container maxWidth="md">
-          <Typography variant="h4" fontWeight={900} sx={{ mb: 2, letterSpacing: 1 }}>
-            Pronto para transformar o RH da sua empresa?
-          </Typography>
-          <Typography variant="h6" sx={{ mb: 4, opacity: 0.95 }}>
-            Fale com nossos especialistas e descubra como a DPEIXER pode revolucionar sua gestão de pessoas.
-          </Typography>
-          <Link href="/login" passHref legacyBehavior>
-            <Button variant="contained" color="secondary" size="large" sx={{ px: 7, py: 2.5, fontWeight: 800, fontSize: 20, borderRadius: 3, boxShadow: 4 }}>
-              Solicitar contato
-            </Button>
-          </Link>
-        </Container>
-      </Box>
+        {/* About Company */}
+        <section id="quem-somos" className="py-20 bg-white">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <motion.h2
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-4xl font-bold text-gray-900 mb-4"
+              >
+                Quem Somos
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-xl text-gray-600 max-w-4xl mx-auto mb-8"
+              >
+                A DPEIXER Assessoria & Terceirização nasceu para transformar a forma como empresas e escritórios contábeis administram Recursos Humanos (RH), Departamento Pessoal (DP) e Obrigações Trabalhistas.
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-lg text-gray-600 max-w-4xl mx-auto"
+              >
+                Nosso compromisso é ir além do operacional: atuamos como parceiros estratégicos, que unem experiência técnica, tecnologia própria e atendimento humanizado para garantir segurança jurídica, eficiência de processos e redução de custos.
+              </motion.p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8 mb-20">
+              {[
+                { title: "Missão", desc: "Simplificar e organizar os processos de gestão de pessoas com tecnologia e excelência.", color: "blue", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
+                { title: "Valores", desc: "Ética, transparência, inovação, parceria, segurança e foco total no cliente.", color: "green", icon: "M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" },
+                { title: "Visão", desc: "Ser a maior referência em terceirização de RH e DP no Brasil com foco em inovação.", color: "purple", icon: "M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" }
+              ].map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className={`text-center p-8 rounded-2xl bg-gradient-to-br ${
+                    item.color === 'blue' ? 'from-blue-50 to-purple-50' :
+                    item.color === 'green' ? 'from-green-50 to-blue-50' :
+                    'from-purple-50 to-pink-50'
+                  } hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}
+                >
+                  <div className={`w-16 h-16 ${
+                    item.color === 'blue' ? 'bg-blue-500' :
+                    item.color === 'green' ? 'bg-green-500' :
+                    'bg-purple-500'
+                  } rounded-full flex items-center justify-center mx-auto mb-6`}>
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path d={item.icon}/>
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{item.title}</h3>
+                  <p className="text-gray-600">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Experience Highlights */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 text-white"
+            >
+              <div className="grid md:grid-cols-4 gap-6 text-center">
+                <div>
+                  <div className="text-3xl font-bold mb-2">8+</div>
+                  <p className="text-blue-100">Anos de experiência acumulada em RH e DP</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold mb-2">100%</div>
+                  <p className="text-blue-100">Processos digitais e adequados à LGPD</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold mb-2">30%</div>
+                  <p className="text-blue-100">Redução média nos custos de RH</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold mb-2">24/7</div>
+                  <p className="text-blue-100">Portal do empregado para autoatendimento</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
-      {/* Sobre a DPEIXER (institucional, sem repetir diferenciais/valores) */}
-      <Box id="sobre" sx={{ background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 8, position: 'relative', overflow: 'hidden' }}>
-        <Container maxWidth="lg">
-          <Typography variant="h4" fontWeight={900} color="primary" align="center" sx={{ mb: 6, letterSpacing: 1 }}>
-            Sobre a DPEIXER
-          </Typography>
-          <Typography variant="body1" align="center" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
-            A DPEIXER nasceu para transformar a gestão de pessoas no Brasil, unindo tecnologia, experiência e atendimento humano. Somos referência em soluções de RH, folha e consultoria para empresas de todos os portes, com atuação nacional e foco em inovação e segurança.
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            {sobreEmpresa.map((item) => (
-              <Grid item xs={12} md={4} key={item.title}>
-                <Card sx={{
-                  p: 4,
-                  borderRadius: 5,
-                  boxShadow: 8,
-                  textAlign: 'center',
-                  background: `linear-gradient(120deg, #fff 60%, #e3f2fd 100%)`,
-                  border: '2px solid #1976d2',
-                  transition: 'transform .25s, box-shadow .25s',
-                  '&:hover': {
-                    transform: 'translateY(-8px) scale(1.03)',
-                    boxShadow: 16,
-                    background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)',
-                  },
-                }}>
-                  <Box sx={{ mb: 2 }}>
-                    <img src={item.icon} alt={item.title} style={{ height: 56, filter: 'drop-shadow(0 2px 8px #1976d2aa)' }} />
-                  </Box>
-                  <Typography variant="h5" fontWeight={900} color={item.color} gutterBottom sx={{ letterSpacing: 1 }}>{item.title}</Typography>
-                  <Typography variant="body1" color="text.secondary">{item.desc}</Typography>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+        {/* Services */}
+        <section id="servicos" className="py-20 bg-gray-50">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <motion.h2
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-4xl font-bold text-gray-900 mb-4"
+              >
+                Nossos Serviços
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-xl text-gray-600 max-w-3xl mx-auto"
+              >
+                Soluções completas em gestão de pessoas, departamento pessoal e consultoria trabalhista 
+                com tecnologia proprietária e atendimento especializado.
+              </motion.p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {[
+                {
+                  title: "BPO de Recursos Humanos",
+                  desc: "Transformamos o RH em um núcleo estratégico, eliminando tarefas manuais e trazendo inteligência.",
+                  gradient: "from-blue-500 to-purple-600",
+                  features: [
+                    "Admissões e rescisões digitais com assinatura eletrônica",
+                    "Gestão completa de ponto eletrônico e escalas",
+                    "Administração de benefícios corporativos",
+                    "Portal do empregado para autoatendimento 24/7",
+                    "Relatórios e indicadores (People Analytics)"
+                  ],
+                  benefit: "Redução de 30% nos custos de RH",
+                  benefitColor: "blue"
+                },
+                {
+                  title: "Departamento Pessoal Terceirizado",
+                  desc: "O DP é o coração das obrigações legais da sua empresa. Nós cuidamos de tudo com precisão e conformidade.",
+                  gradient: "from-green-500 to-blue-600",
+                  features: [
+                    "Cálculo e processamento da folha de pagamento",
+                    "Emissão de guias e encargos (INSS, FGTS, IRRF)",
+                    "Envio e validação no eSocial, DCTFWeb e FGTS Digital",
+                    "Auditoria de processos para identificar riscos",
+                    "SLA de atendimento: resposta em até 30 minutos"
+                  ],
+                  benefit: "Redução de passivos trabalhistas",
+                  benefitColor: "green"
+                }
+              ].map((service, index) => (
+                <motion.div
+                  key={service.title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                >
+                  <div className={`w-12 h-12 bg-gradient-to-r ${service.gradient} rounded-lg flex items-center justify-center mb-6`}>
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path d={index === 0 ? "M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" : "M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"}/>
+                      {index === 1 && <path fillRule="evenodd" d="M4 5a2 2 0 012-2v1a2 2 0 002 2h8a2 2 0 002-2V3a2 2 0 012 2v6h-3a3 3 0 00-3 3v4a1 1 0 01-1 1H6a2 2 0 01-2-2V5zm8 8a3 3 0 013-3h3v4a2 2 0 01-2 2h-4v-3z"/>}
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h3>
+                  <p className="text-gray-600 mb-6">{service.desc}</p>
+                  <ul className="space-y-3 text-gray-600 mb-6">
+                    {service.features.map((feature, fIndex) => (
+                      <li key={fIndex} className="flex items-start">
+                        <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className={`p-4 ${service.benefitColor === 'blue' ? 'bg-blue-50' : 'bg-green-50'} rounded-lg`}>
+                    <p className={`text-sm ${service.benefitColor === 'blue' ? 'text-blue-800' : 'text-green-800'} font-semibold`}>
+                      Benefícios: {service.benefit}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-  {/* Removido bloco de diferenciais para evitar repetição, já incluso no bloco Por que escolher a DPEIXER? */}
+        {/* FAQ Section */}
+        <section id="faq" className="py-20 bg-white">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Perguntas Frequentes</h2>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8"
+            >
+              {[
+                {
+                  q: "O que está incluso na terceirização da folha?",
+                  a: "Processamento completo da folha, encargos, obrigações acessórias, admissão, rescisão, férias, relatórios, atendimento e acesso à plataforma AUDITORIA360."
+                },
+                {
+                  q: "Como é feito o atendimento?",
+                  a: "Atendimento consultivo, humanizado e multicanal (telefone, e-mail, portal e WhatsApp), com SLA definido e especialistas dedicados."
+                },
+                {
+                  q: "A DPEIXER atende empresas de qualquer porte?",
+                  a: "Sim! Atendemos desde pequenas empresas até grandes grupos, inclusive contabilidades e escritórios de BPO."
+                }
+              ].map((faq, index) => (
+                <div key={index} className="mb-6 last:mb-0">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{faq.q}</h3>
+                  <p className="text-gray-600">{faq.a}</p>
+                  {index < 2 && <hr className="my-6 border-gray-200" />}
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
 
-      {/* Serviços detalhados */}
-      <Divider id="servicos" sx={{ mb: 6, borderColor: '#1976d2', borderWidth: 2 }} />
-      <Box id="servicos" sx={{ mb: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', py: 8, position: 'relative', overflow: 'hidden' }}>
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.7 }}>
-            <Typography variant="h4" fontWeight={900} color="primary" align="center" gutterBottom sx={{ letterSpacing: 1, textShadow: '0 2px 8px #90caf9' }}>
-              🛠️ Nossos Serviços
-            </Typography>
-            <Typography variant="h6" color="secondary" align="center" sx={{ mt: 2, mb: 4, fontWeight: 700 }}>
-              Soluções completas para empresas de todos os portes e escritórios contábeis
-            </Typography>
-            <Grid container spacing={4} justifyContent="center">
-              {/* BPO de RH */}
-              <Grid item xs={12} md={6} lg={3}>
-                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
-                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
-                    <img src="/workspaces/AUDITORIA360/public/pexels-olly-3771836.jpg" alt="BPO de RH" style={{ height: 80 }} />
-                  </Box>
-                  <Box sx={{ p: 3 }}>
-                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>BPO de Recursos Humanos</Typography>
-                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                      <li>Admissões e rescisões digitais (100% online e com assinatura eletrônica)</li>
-                      <li>Gestão completa do ponto eletrônico e controle de jornada</li>
-                      <li>Administração de benefícios (vale-transporte, alimentação, saúde, etc.)</li>
-                      <li>Gestão de férias e afastamentos</li>
-                      <li>Homologações por videoconferência</li>
-                      <li>Portal do empregado com autoatendimento e relatórios gerenciais</li>
-                      <li>Relatórios estratégicos e indicadores de desempenho (People Analytics)</li>
-                    </ul>
-                  </Box>
-                </Card>
-              </Grid>
-              {/* DP Terceirizado */}
-              <Grid item xs={12} md={6} lg={3}>
-                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
-                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
-                    <img src="/workspaces/AUDITORIA360/public/pexels-campaign-creators-1181406.jpg" alt="DP Terceirizado" style={{ height: 80 }} />
-                  </Box>
-                  <Box sx={{ p: 3 }}>
-                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Departamento Pessoal Terceirizado</Typography>
-                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                      <li>Cálculo e processamento da folha de pagamento</li>
-                      <li>Emissão de guias de encargos (INSS, FGTS, IRRF etc.)</li>
-                      <li>Integração completa com o eSocial</li>
-                      <li>Administração de férias, 13º salário e rescisões contratuais</li>
-                      <li>Entrega de obrigações acessórias trabalhistas</li>
-                      <li>Cumprimento rigoroso da LGPD (proteção de dados)</li>
-                      <li>Suporte completo e seguro para o RH interno ou escritório contábil</li>
-                    </ul>
-                  </Box>
-                </Card>
-              </Grid>
-              {/* Consultoria e Assessoria */}
-              <Grid item xs={12} md={6} lg={3}>
-                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
-                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
-                    <img src="/workspaces/AUDITORIA360/public/pexels-rio-lecatompessy-3033831.jpg" alt="Consultoria e Assessoria" style={{ height: 80 }} />
-                  </Box>
-                  <Box sx={{ p: 3 }}>
-                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Consultoria e Assessoria Trabalhista</Typography>
-                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                      <li>Auditoria completa de processos de RH e DP</li>
-                      <li>Diagnóstico de passivos trabalhistas e previdenciários</li>
-                      <li>Adequação à legislação vigente e normas do eSocial</li>
-                      <li>Consultoria estratégica para escritórios contábeis e empresas</li>
-                      <li>Treinamentos personalizados para equipes de RH e gestores</li>
-                      <li>Planejamento e implementação de melhorias de processos</li>
-                    </ul>
-                  </Box>
-                </Card>
-              </Grid>
-              {/* Serviços Sob Demanda */}
-              <Grid item xs={12} md={6} lg={3}>
-                <Card sx={{ p: 0, borderRadius: 4, boxShadow: 8, background: 'linear-gradient(120deg, #fff 60%, #e3f2fd 100%)', border: '2px solid #1976d2', minHeight: 380, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
-                  <Box sx={{ height: 120, width: '100%', overflow: 'hidden', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
-                    <img src="/logo.png" alt="Serviços Sob Demanda" style={{ height: 80 }} />
-                  </Box>
-                  <Box sx={{ p: 3 }}>
-                    <Typography variant="h6" fontWeight={900} color="primary" gutterBottom>Serviços Sob Demanda</Typography>
-                    <ul style={{ paddingLeft: 20, margin: 0, fontSize: 15 }}>
-                      <li>Regularizações específicas (CAGED, RAIS, DIRF etc.)</li>
-                      <li>Apoio em fiscalizações e autos de infração</li>
-                      <li>Elaboração e revisão de contratos e documentos trabalhistas</li>
-                      <li>Recrutamento e Seleção sob demanda</li>
-                      <li>Projetos de transformação digital em RH e DP</li>
-                    </ul>
-                  </Box>
-                </Card>
-              </Grid>
-            </Grid>
-            <Typography variant="caption" color="text.secondary" align="center" display="block" sx={{ mt: 3 }}>
-              *Valores base para empresas até 10 colaboradores. Consulte condições para outros portes e serviços personalizados.
-            </Typography>
-          </motion.div>
-        </Container>
-      </Box>
+        {/* CTA Final */}
+        <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 text-center">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-4xl font-bold mb-4">Pronto para transformar o RH da sua empresa?</h2>
+              <p className="text-xl mb-8 opacity-90">Entre em contato conosco e descubra como podemos ajudar</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold hover:bg-yellow-300 transition-all transform hover:scale-105">
+                  📞 Fale Conosco
+                </button>
+                <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-blue-600 transition-all">
+                  📧 Solicitar Proposta
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
-      {/* Planos */}
-      <Divider id="planos" sx={{ mb: 6, borderColor: '#1976d2', borderWidth: 2 }} />
-      <Box id="planos" sx={{ mb: 8, background: 'linear-gradient(120deg, #e3f2fd 60%, #fff 100%)', py: 8, position: 'relative', overflow: 'hidden' }}>
-        <Box sx={{
-          position: 'absolute',
-          top: -40,
-          left: -40,
-          width: 120,
-          height: 120,
-          bgcolor: 'primary.light',
-          opacity: 0.12,
-          borderRadius: '50%',
-          zIndex: 0,
-        }} />
-        <Typography
-          variant="h4"
-          fontWeight={900}
-          gutterBottom
-          align="center"
-          color="primary"
-          sx={{ letterSpacing: 1, textShadow: '0 2px 8px #90caf9' }}
-        >
-          Planos e Valores
-        </Typography>
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Typography variant="h5" color="secondary" align="center" sx={{ mb: 4, fontWeight: 700 }}>
-            BPO de RH
-          </Typography>
-          <Box sx={{ overflowX: 'auto', mb: 4 }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 12px #90caf933', marginBottom: 24 }}>
-              <thead>
-                <tr style={{ background: '#e3f2fd' }}>
-                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Plano</th>
-                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Valor</th>
-                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Principais Recursos</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Plus RH</td>
-                  <td style={{ padding: 14 }}>R$ 39,90/vida</td>
-                  <td style={{ padding: 14 }}>Gestão de ponto, férias, benefícios, portal do empregado.</td>
-                </tr>
-                <tr style={{ background: '#f5faff' }}>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Premium RH</td>
-                  <td style={{ padding: 14 }}>R$ 49,90/vida</td>
-                  <td style={{ padding: 14 }}>Tudo do Plus + admissões e rescisões digitais.</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Diamante RH</td>
-                  <td style={{ padding: 14 }}>R$ 69,90/vida</td>
-                  <td style={{ padding: 14 }}>Tudo do Premium + documentação personalizada, reuniões estratégicas, people analytics.</td>
-                </tr>
-                <tr style={{ background: '#f5faff' }}>
-                  <td colSpan={3} style={{ padding: 14, fontWeight: 600, color: '#1976d2', textAlign: 'center' }}>
-                    Valores progressivos: descontos de até 6% por volume de colaboradores.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Box>
-          <Typography variant="h5" color="secondary" align="center" sx={{ mb: 4, fontWeight: 700 }}>
-            Terceirização de DP
-          </Typography>
-          <Box sx={{ overflowX: 'auto', mb: 2 }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 12px #90caf933', marginBottom: 24 }}>
-              <thead>
-                <tr style={{ background: '#e3f2fd' }}>
-                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Categoria</th>
-                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Valor</th>
-                  <th style={{ padding: 16, fontWeight: 900, fontSize: 18, color: '#1976d2', borderBottom: '2px solid #1976d2' }}>Observações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Funcionários (Simples Nacional)</td>
-                  <td style={{ padding: 14 }}>R$ 23,00/vida</td>
-                  <td style={{ padding: 14 }}>Folha, encargos, obrigações, eSocial, atendimento.</td>
-                </tr>
-                <tr style={{ background: '#f5faff' }}>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Professores / alocação de custos</td>
-                  <td style={{ padding: 14 }}>R$ 25,00/vida</td>
-                  <td style={{ padding: 14 }}>Gestão diferenciada, múltiplos vínculos.</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Pró-labore</td>
-                  <td style={{ padding: 14 }}>R$ 18,00/vida</td>
-                  <td style={{ padding: 14 }}>Processamento mensal, obrigações acessórias.</td>
-                </tr>
-                <tr style={{ background: '#f5faff' }}>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Admissão/rescisão extra</td>
-                  <td style={{ padding: 14 }}>R$ 10,00</td>
-                  <td style={{ padding: 14 }}>Por evento adicional ao pacote.</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: 14, fontWeight: 700 }}>Recálculo de guias</td>
-                  <td style={{ padding: 14 }}>a partir de R$ 15,00</td>
-                  <td style={{ padding: 14 }}>Por demanda, conforme complexidade.</td>
-                </tr>
-                <tr style={{ background: '#f5faff' }}>
-                  <td colSpan={3} style={{ padding: 14, fontWeight: 600, color: '#1976d2', textAlign: 'center' }}>
-                    Consultoria mensal gratuita até 100 vidas.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Box>
-        </Container>
-        <Box sx={{
-          position: 'absolute',
-          bottom: -40,
-          right: -40,
-          width: 120,
-          height: 120,
-          bgcolor: 'secondary.light',
-          opacity: 0.12,
-          borderRadius: '50%',
-          zIndex: 0,
-        }} />
-      </Box>
-
-      {/* Footer institucional escuro */}
-      <Box component="footer" sx={{ background: 'linear-gradient(90deg, #0d47a1 60%, #1976d2 100%)', color: '#fff', py: 6, mt: 0, boxShadow: 8 }}>
-        <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'flex-start', md: 'center' }, justifyContent: 'space-between', gap: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, md: 0 } }}>
-            <img src="/logo.png" alt="Logo DPEIXER" style={{ height: 48, marginRight: 16, filter: 'drop-shadow(0 2px 8px #0006)' }} />
-            <Box>
-              <Typography variant="h6" fontWeight={900} sx={{ letterSpacing: 1 }}>DPEIXER</Typography>
-              <Typography variant="caption" sx={{ color: '#fff', opacity: 0.85, fontWeight: 500, letterSpacing: 1 }}>
-                BPO de RH, Folha, Consultoria e Tecnologia
-              </Typography>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 700 }}>Contato</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <PhoneIcon fontSize="small" sx={{ mr: 0.5 }} />
-              <a href="tel:+5547933835427" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>(47) 93383-5427</a>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <WhatsAppIcon fontSize="small" sx={{ color: '#25d366' }} />
-              <a href="https://wa.link/vbonkz" target="_blank" rel="noopener" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>WhatsApp</a>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <InstagramIcon fontSize="small" />
-              <a href="https://www.instagram.com/dpeixer_assessoria?igsh=MTF4dXRoODdseDJ0aw%3D%3D&utm_source=qr" target="_blank" rel="noopener" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>Instagram</a>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <LinkedInIcon fontSize="small" />
-              <a href="https://www.linkedin.com/company/dpeixer-assessoria-terceiriza%C3%A7%C3%A3o/about/?viewAsMember=true" target="_blank" rel="noopener" style={{ color: '#fff', textDecoration: 'none', fontWeight: 700 }}>LinkedIn</a>
-            </Box>
-          </Box>
-          <Box sx={{ textAlign: { xs: 'left', md: 'right' }, mt: { xs: 3, md: 0 } }}>
-            <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>Endereço</Typography>
-            <Typography variant="body2">Atendimento nacional remoto<br />Base: Joinville/SC</Typography>
-            <Typography variant="caption" sx={{ color: '#fff', opacity: 0.7, mt: 1, display: 'block' }}>
-              &copy; {new Date().getFullYear()} DPEIXER. Todos os direitos reservados.
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
+        {/* Footer */}
+        <footer id="contato" className="bg-gray-900 text-white py-16">
+          <div className="container mx-auto px-6">
+            <div className="grid md:grid-cols-3 gap-8">
+              <div>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+                  DPEIXER
+                </h3>
+                <p className="text-gray-400 mb-4">
+                  Transformando a gestão de RH e DP com tecnologia e excelência.
+                </p>
+                <div className="flex space-x-4">
+                  <a href="#" className="bg-blue-600 p-3 rounded-full hover:bg-blue-700 transition-colors">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                    </svg>
+                  </a>
+                  <a href="#" className="bg-blue-600 p-3 rounded-full hover:bg-blue-700 transition-colors">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Contato</h4>
+                <div className="space-y-2 text-gray-400">
+                  <p>📞 (47) 93383-5427</p>
+                  <p>📧 contato@dpeixer.com.br</p>
+                  <p>📍 Santa Catarina, Brasil</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Links Rápidos</h4>
+                <div className="space-y-2">
+                  {navigation.map((item) => (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.href)}
+                      className="block text-gray-400 hover:text-white transition-colors"
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <hr className="border-gray-800 my-8" />
+            <div className="text-center text-gray-400">
+              <p>&copy; 2024 DPEIXER Assessoria & Terceirização. Todos os direitos reservados.</p>
+            </div>
+          </div>
+        </footer>
+      </div>
     </>
   );
 };
