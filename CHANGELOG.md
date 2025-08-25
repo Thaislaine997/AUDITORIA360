@@ -8,6 +8,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+- 🎨 Modernize login page with enhanced animations, glassmorphism, and floating shapes ([#190](https://github.com/Thaislaine997/AUDITORIA360/pull/190)) - por @Copilot em 2025-08-25
+
+
+### Changed
 - 🚨 Critical Fix: Restore Production Build - ESLint Errors & Configuration Conflicts Resolved ([#189](https://github.com/Thaislaine997/AUDITORIA360/pull/189)) - por @Copilot em 2025-08-18
 
 
