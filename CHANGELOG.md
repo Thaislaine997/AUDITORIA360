@@ -8,6 +8,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+- ✨ Enhanced Register Page with Modern Glassmorphism Design and Animations ([#192](https://github.com/Thaislaine997/AUDITORIA360/pull/192)) - por @Copilot em 2025-08-25
+
+
+### Changed
 - Enhance password recovery page with modern glassmorphism design and animations ([#191](https://github.com/Thaislaine997/AUDITORIA360/pull/191)) - por @Copilot em 2025-08-25
 
 
