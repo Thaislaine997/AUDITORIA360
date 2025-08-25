@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Layout from "../components/layout/Layout";
+import { motion } from "framer-motion";
 import { authHelpers } from "../lib/supabaseClient";
 import Link from "next/link";
 
@@ -50,10 +50,14 @@ const DashboardPage: NextPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <motion.div 
+            className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <p className="text-gray-600 font-medium">Carregando Portal AUDITORIA360...</p>
         </div>
       </div>
     );
@@ -67,118 +71,118 @@ const DashboardPage: NextPage = () => {
     <>
       <Head>
         <title>Dashboard - Portal AUDITORIA360</title>
-        <meta
-          name="description"
-          content="Dashboard do Portal AUDITORIA360 - Gestão completa da folha de pagamento e auditoria inteligente."
-        />
+        <meta name="description" content="Dashboard do Portal AUDITORIA360 - Gestão completa da folha de pagamento e auditoria inteligente." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 font-sans">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-blue-600">AUDITORIA360</h1>
-                <span className="ml-3 text-sm text-gray-500">Portal de Gestão</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">
-                  Olá, {user.user_metadata?.full_name || user.email}
-                </span>
+              <motion.div 
+                className="flex items-center space-x-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  AUDITORIA360
+                </div>
+                <div className="h-6 w-px bg-gray-300"></div>
+                <div className="text-sm text-gray-600">Dashboard</div>
+              </motion.div>
+              
+              <motion.div 
+                className="flex items-center space-x-4"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="text-sm text-gray-600">
+                  Bem-vindo, <span className="font-medium">{user.user_metadata?.full_name || user.email}</span>
+                </div>
                 <button
                   onClick={handleSignOut}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 font-medium transform hover:scale-105"
                 >
                   Sair
                 </button>
-              </div>
+              </motion.div>
             </div>
           </div>
         </header>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
-          <div className="mb-8">
+          <motion.div 
+            className="mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Bem-vindo ao Portal AUDITORIA360
             </h2>
             <p className="text-gray-600">
               Sua central de controle para gestão da folha de pagamento e auditoria inteligente.
             </p>
-          </div>
+          </motion.div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatsCard
-              title="Folhas Processadas"
-              value="127"
-              subtitle="Este mês"
-              color="blue"
-            />
-            <StatsCard
-              title="Auditorias Ativas"
-              value="34"
-              subtitle="Em andamento"
-              color="green"
-            />
-            <StatsCard
-              title="Demandas Abertas"
-              value="12"
-              subtitle="Aguardando análise"
-              color="yellow"
-            />
-            <StatsCard
-              title="Compliance"
-              value="98.5%"
-              subtitle="Taxa de conformidade"
-              color="purple"
-            />
+            {[
+              { title: "Folhas Processadas", value: "127", subtitle: "Este mês", color: "blue", icon: "📊" },
+              { title: "Auditorias Ativas", value: "34", subtitle: "Em andamento", color: "green", icon: "✅" },
+              { title: "Demandas Abertas", value: "12", subtitle: "Aguardando análise", color: "yellow", icon: "🎫" },
+              { title: "Compliance", value: "98.5%", subtitle: "Taxa de conformidade", color: "purple", icon: "🔒" }
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+              >
+                <StatsCard {...stat} />
+              </motion.div>
+            ))}
           </div>
 
           {/* Dashboard Modules */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            <DashboardModule
-              title="Controle da Folha Mensal"
-              description="Resumo, status, valores e gráficos da folha de pagamento"
-              icon="📊"
-              href="/folha"
-            />
-            <DashboardModule
-              title="Portal de Demandas"
-              description="Gestão de tickets: abertos, em andamento, finalizados"
-              icon="🎫"
-              href="/demandas"
-            />
-            <DashboardModule
-              title="Portal de Auditoria"
-              description="Upload de resumos e análise automática integrada"
-              icon="🔍"
-              href="/auditoria"
-            />
-            <DashboardModule
-              title="Tabelas Oficiais"
-              description="INSS, FGTS, IRRF, salário família e mínimo atualizados"
-              icon="📋"
-              href="/tabelas"
-            />
-            <DashboardModule
-              title="Portal CCT"
-              description="Convenções coletivas: importar, status e buscas online"
-              icon="📄"
-              href="/cct"
-            />
-            <DashboardModule
-              title="Gestão e Relatórios"
-              description="Relatórios integrados com todas as funcionalidades"
-              icon="📈"
-              href="/relatorios"
-            />
-          </div>
+          <motion.div 
+            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            {[
+              { title: "Controle da Folha Mensal", description: "Resumo, status, valores e gráficos da folha de pagamento", icon: "📊", href: "/folha" },
+              { title: "Portal de Demandas", description: "Gestão de tickets: abertos, em andamento, finalizados", icon: "🎫", href: "/demandas" },
+              { title: "Portal de Auditoria", description: "Upload de resumos e análise automática integrada", icon: "🔍", href: "/auditoria" },
+              { title: "Tabelas Oficiais", description: "INSS, FGTS, IRRF, salário família e mínimo atualizados", icon: "📋", href: "/tabelas" },
+              { title: "Portal CCT", description: "Convenções coletivas: importar, status e buscas online", icon: "📄", href: "/cct" },
+              { title: "Gestão e Relatórios", description: "Relatórios integrados com todas as funcionalidades", icon: "📈", href: "/relatorios" }
+            ].map((module, index) => (
+              <motion.div
+                key={module.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+              >
+                <DashboardModule {...module} />
+              </motion.div>
+            ))}
+          </motion.div>
 
           {/* Recent Activity */}
-          <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <motion.div 
+            className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
+          >
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Atividade Recente</h3>
             <div className="space-y-4">
               <ActivityItem
@@ -199,68 +203,81 @@ const DashboardPage: NextPage = () => {
                 time="1 dia atrás"
                 status="success"
               />
-              <ActivityItem
-                title="CCT atualizada"
-                description="Sindicato dos Metalúrgicos - Nova convenção importada"
-                time="2 dias atrás"
-                status="info"
-              />
             </div>
-          </div>
+          </motion.div>
 
           {/* Quick Actions */}
-          <div className="mt-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 text-white">
+          <motion.div 
+            className="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.4 }}
+          >
             <h3 className="text-lg font-semibold mb-4">Ações Rápidas</h3>
-            <div className="flex flex-wrap gap-4">
-              <button className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                Nova Auditoria
-              </button>
-              <button className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                Processar Folha
-              </button>
-              <button className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                Gerar Relatório
-              </button>
-              <button className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                Importar CCT
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link href="/folha/controle-mensal">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                  <div className="text-2xl mb-2">🚀</div>
+                  <div className="font-medium">Processar Folha</div>
+                  <div className="text-blue-100 text-sm">Iniciar processamento mensal</div>
+                </div>
+              </Link>
+              <Link href="/ia/validacao">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                  <div className="text-2xl mb-2">🤖</div>
+                  <div className="font-medium">Validação IA</div>
+                  <div className="text-blue-100 text-sm">Análise inteligente automática</div>
+                </div>
+              </Link>
+              <Link href="/relatorios/templates">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                  <div className="text-2xl mb-2">📋</div>
+                  <div className="font-medium">Gerar Relatório</div>
+                  <div className="text-blue-100 text-sm">Relatórios personalizados</div>
+                </div>
+              </Link>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </main>
       </div>
     </>
   );
 };
 
+// Enhanced StatsCard with animations and modern design
 function StatsCard({
   title,
   value,
   subtitle,
   color,
+  icon,
 }: {
   title: string;
   value: string;
   subtitle: string;
   color: "blue" | "green" | "yellow" | "purple";
+  icon: string;
 }) {
   const colorClasses = {
-    blue: "text-blue-600 bg-blue-50 border-blue-200",
-    green: "text-green-600 bg-green-50 border-green-200",
-    yellow: "text-yellow-600 bg-yellow-50 border-yellow-200",
-    purple: "text-purple-600 bg-purple-50 border-purple-200",
+    blue: "border-blue-200 hover:shadow-blue-100",
+    green: "border-green-200 hover:shadow-green-100",
+    yellow: "border-yellow-200 hover:shadow-yellow-100",
+    purple: "border-purple-200 hover:shadow-purple-100",
   };
 
   return (
-    <div className={`p-6 rounded-lg border ${colorClasses[color]}`}>
-      <h3 className="text-sm font-medium text-gray-600">{title}</h3>
-      <p className={`text-2xl font-bold mt-1 ${colorClasses[color].split(" ")[0]}`}>
-        {value}
-      </p>
-      <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+    <div className={`bg-white p-6 rounded-2xl border-l-4 ${colorClasses[color]} shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-gray-600">{title}</h3>
+        <span className="text-2xl">{icon}</span>
+      </div>
+      <p className="text-3xl font-bold text-gray-900 mb-1">{value}</p>
+      <p className="text-sm text-gray-500">{subtitle}</p>
     </div>
   );
 }
 
+// Enhanced DashboardModule with hover effects
 function DashboardModule({
   title,
   description,
@@ -274,12 +291,17 @@ function DashboardModule({
 }) {
   return (
     <Link href={href}>
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 group">
         <div className="flex items-start">
-          <div className="text-3xl mr-4">{icon}</div>
+          <div className="text-3xl mr-4 group-hover:scale-110 transition-transform duration-300">{icon}</div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{title}</h3>
             <p className="text-gray-600 text-sm">{description}</p>
+          </div>
+          <div className="text-gray-400 group-hover:text-blue-500 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -287,6 +309,7 @@ function DashboardModule({
   );
 }
 
+// Enhanced ActivityItem with status indicators
 function ActivityItem({
   title,
   description,
@@ -298,19 +321,19 @@ function ActivityItem({
   time: string;
   status: "success" | "info" | "warning";
 }) {
-  const statusClasses = {
-    success: "bg-green-100 text-green-600",
-    info: "bg-blue-100 text-blue-600",
-    warning: "bg-yellow-100 text-yellow-600",
+  const statusConfig = {
+    success: { color: "bg-green-500", icon: "✓" },
+    info: { color: "bg-blue-500", icon: "ℹ" },
+    warning: { color: "bg-yellow-500", icon: "⚠" },
   };
 
+  const config = statusConfig[status];
+
   return (
-    <div className="flex items-start space-x-3 py-2">
-      <div
-        className={`w-2 h-2 rounded-full mt-2 ${statusClasses[status]
-          .replace("text-", "bg-")
-          .replace("100", "600")}`}
-      ></div>
+    <div className="flex items-start space-x-3 py-3 hover:bg-gray-50 rounded-lg px-2 transition-colors">
+      <div className={`w-8 h-8 ${config.color} rounded-full flex items-center justify-center text-white text-sm font-bold`}>
+        {config.icon}
+      </div>
       <div className="flex-1">
         <p className="text-sm font-medium text-gray-900">{title}</p>
         <p className="text-sm text-gray-600">{description}</p>

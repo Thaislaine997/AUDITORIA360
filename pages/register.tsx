@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
-import Layout from "../components/layout/Layout";
+import { motion } from "framer-motion";
 import { authHelpers } from "../lib/supabaseClient";
 
 const RegisterPage: NextPage = () => {
@@ -37,161 +37,201 @@ const RegisterPage: NextPage = () => {
     <>
       <Head>
         <title>Primeiro Acesso - AUDITORIA360</title>
+        <meta name="description" content="Crie sua conta no Portal AUDITORIA360" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </Head>
-      <Layout showHeader={false}>
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-          {/* Enhanced gradient background with animation */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 animate-gradient-shift"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-blue-800/20 via-transparent to-purple-900/20"></div>
-          
-          {/* Floating decorative shapes */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-xl animate-float-1"></div>
-          <div className="absolute top-1/4 right-16 w-24 h-24 bg-indigo-400/15 rounded-full blur-lg animate-float-2"></div>
-          <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-purple-400/8 rounded-full blur-2xl animate-float-3"></div>
-          <div className="absolute bottom-20 right-20 w-28 h-28 bg-cyan-400/12 rounded-full blur-xl animate-float-1" style={{animationDelay: '10s'}}></div>
-          <div className="absolute top-1/3 left-1/3 w-16 h-16 bg-blue-300/20 rounded-full blur-md animate-float-2" style={{animationDelay: '5s'}}></div>
-          
-          <div className="relative z-10 max-w-md w-full px-4">
-            {/* Header with enhanced animation */}
-            <div className="text-center mb-8 animate-fade-in">
-              <h1 className="text-4xl font-extrabold text-white mb-2 animate-glow">
-                Primeiro <span className="text-blue-300">Acesso</span>
-              </h1>
-              <p className="text-lg text-blue-100/80">
-                Cadastre sua empresa e acesse a plataforma
-              </p>
-              <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-indigo-400 mx-auto mt-4 rounded-full"></div>
-            </div>
-
-            {/* Enhanced glassmorphism card */}
-            <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 animate-glass-float">
-              {/* Card shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer rounded-3xl"></div>
-              
-              <form className="space-y-6 relative z-10 animate-scale-in" onSubmit={handleSubmit}>
-                {error && (
-                  <div className="bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-100 px-4 py-3 rounded-xl animate-enhanced-shake flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-red-300" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <span>{error}</span>
-                  </div>
-                )}
-
-                <div className="space-y-6">
-                  <div className="group">
-                    <label htmlFor="cnpj" className="block text-sm font-semibold text-white/90 mb-2">
-                      CNPJ
-                    </label>
-                    <input
-                      id="cnpj"
-                      type="text"
-                      required
-                      value={cnpj}
-                      onChange={(e) => setCnpj(e.target.value)}
-                      className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300 hover:bg-white/25"
-                      placeholder="00.000.000/0001-00"
-                    />
-                  </div>
-
-                  <div className="group">
-                    <label htmlFor="email" className="block text-sm font-semibold text-white/90 mb-2">
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300 hover:bg-white/25"
-                      placeholder="seu@email.com"
-                    />
-                  </div>
-
-                  <div className="group">
-                    <label htmlFor="password" className="block text-sm font-semibold text-white/90 mb-2">
-                      Senha
-                    </label>
-                    <input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300 hover:bg-white/25"
-                      placeholder="Mínimo 6 caracteres"
-                    />
-                  </div>
-                </div>
-
-                {/* Enhanced animated button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`
-                    w-full py-4 px-6 rounded-xl font-semibold text-white text-lg
-                    bg-gradient-to-r from-blue-500 to-indigo-600 
-                    hover:from-blue-600 hover:to-indigo-700
-                    focus:outline-none focus:ring-2 focus:ring-blue-400/50
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                    transform transition-all duration-300
-                    hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/25
-                    active:scale-[0.98]
-                    relative overflow-hidden
-                    ${loading ? 'animate-button-pulse' : ''}
-                  `}
-                >
-                  {/* Button shimmer effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                  <span className="relative z-10 flex items-center justify-center">
-                    {loading ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Registrando...
-                      </>
-                    ) : (
-                      "Criar Conta"
-                    )}
-                  </span>
-                </button>
-              </form>
-            </div>
-
-            {/* Enhanced footer */}
-            <div className="mt-8 text-center animate-fade-in" style={{animationDelay: '0.3s'}}>
-              <p className="text-blue-100/80 mb-3">Já tem conta?</p>
-              <Link 
-                href="/login" 
-                className="inline-flex items-center space-x-2 text-blue-300 hover:text-white transition-all duration-300 text-lg font-medium group"
-              >
-                <span>Fazer login</span>
-                <svg className="w-5 h-5 transform transition-transform group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </Layout>
       
-      <style jsx>{`
-        /* Enhanced responsivity */
-        @media (max-width: 768px) {
-          .floating-shape {
-            transform: scale(0.7);
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .floating-shape {
-            transform: scale(0.5);
-          }
-        }
-      `}</style>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 px-4 overflow-hidden relative font-sans">
+        {/* Background animated shapes */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute top-1/4 right-16 w-24 h-24 bg-indigo-400/15 rounded-full blur-lg animate-bounce"></div>
+          <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-purple-400/8 rounded-full blur-2xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-20 bg-blue-300/20 rounded-full blur-lg animate-bounce delay-1000"></div>
+        </div>
+
+        {/* Main content */}
+        <motion.div 
+          className="max-w-md w-full relative z-10"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          {/* Logo and title */}
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.h1 
+              className="text-5xl font-extrabold text-white mb-2"
+              animate={{ 
+                textShadow: [
+                  "0 0 20px rgba(59, 130, 246, 0.5)",
+                  "0 0 30px rgba(59, 130, 246, 0.8)",
+                  "0 0 20px rgba(59, 130, 246, 0.5)"
+                ]
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              AUDITORIA<span className="text-blue-300">360</span>
+            </motion.h1>
+            <motion.p 
+              className="text-blue-100 text-lg font-medium"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Primeiro Acesso
+            </motion.p>
+          </motion.div>
+
+          {/* Registration card */}
+          <motion.div
+            className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-8 shadow-2xl"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="bg-red-50/90 backdrop-blur-sm border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3"
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 0.5 }}
+                    className="w-5 h-5 text-red-500"
+                  >
+                    ⚠️
+                  </motion.div>
+                  <span className="font-medium">{error}</span>
+                </motion.div>
+              )}
+
+              <div>
+                <label htmlFor="cnpj" className="block text-sm font-medium text-white mb-2">
+                  CNPJ
+                </label>
+                <input
+                  id="cnpj"
+                  type="text"
+                  value={cnpj}
+                  onChange={(e) => setCnpj(e.target.value)}
+                  required
+                  placeholder="00.000.000/0001-00"
+                  className="w-full px-4 py-3 rounded-xl backdrop-blur-sm bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="seu@email.com"
+                  className="w-full px-4 py-3 rounded-xl backdrop-blur-sm bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
+                  Senha
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="Mínimo 6 caracteres"
+                  className="w-full px-4 py-3 rounded-xl backdrop-blur-sm bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 px-6 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 ${
+                  loading 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'hover:shadow-lg hover:shadow-blue-500/25'
+                }`}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Criando conta...
+                  </div>
+                ) : (
+                  'Criar Conta'
+                )}
+              </button>
+            </form>
+          </motion.div>
+
+          {/* Login link */}
+          <motion.div 
+            className="mt-8 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <p className="text-blue-100 mb-3">Já possui uma conta?</p>
+            <Link href="/login">
+              <motion.span
+                className="inline-flex items-center gap-2 text-blue-300 hover:text-white transition-colors duration-200 font-medium text-lg group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Fazer login
+                <motion.span
+                  className="inline-block"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  →
+                </motion.span>
+              </motion.span>
+            </Link>
+          </motion.div>
+
+          {/* Back to home */}
+          <motion.div 
+            className="mt-6 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <Link href="/">
+              <span className="text-blue-200 hover:text-white transition-colors duration-200 text-sm font-medium">
+                ← Voltar ao início
+              </span>
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+      </div>
     </>
   );
 };
