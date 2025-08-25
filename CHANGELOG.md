@@ -8,6 +8,10 @@ e este projeto segue [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não lançado]
 
 ### Changed
+- Modernize all AUDITORIA360 pages with Tailwind CSS design system and enhanced UX ([#193](https://github.com/Thaislaine997/AUDITORIA360/pull/193)) - por @Copilot em 2025-08-25
+
+
+### Changed
 - ✨ Enhanced Register Page with Modern Glassmorphism Design and Animations ([#192](https://github.com/Thaislaine997/AUDITORIA360/pull/192)) - por @Copilot em 2025-08-25
 
 
